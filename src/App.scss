@@ -1,6 +1,14 @@
 $theme-colors: (
-        "info": tomato,
-        "danger": teal
+/*        "info": tomato,
+        "danger": teal*/
 );
 
+$font-size-base: 13;
+$line-height-base: 1.4;
+
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+/* Show it is fixed to the top */
+body {
+  padding-top: 4.5rem;
+}

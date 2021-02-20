@@ -1,38 +1,85 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import Jumbotron from 'react-bootstrap/Jumbotron';
-import Toast from 'react-bootstrap/Toast';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 
-const ExampleToast = ({ children }) => {
-  const [show, toggleShow] = useState(true);
+import BiometricsForm from './forms/Biometrics';
+import ICLPowerForm from './forms/ICLPower';
+import PatientForm from './forms/Patient';
+import SpectacleRefractionForm from './forms/SpectacleRefraction';
 
-  return (
-    <>
-      {!show && <Button onClick={() => toggleShow(true)}>Show Toast</Button>}
-      <Toast show={show} onClose={() => toggleShow(false)}>
-        <Toast.Header>
-          <strong className="mr-auto">React-Bootstrap</strong>
-        </Toast.Header>
-        <Toast.Body>{children}</Toast.Body>
-      </Toast>
-    </>
-  );
+
+class FullForm extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event) {
+    alert('An essay was submitted: ' + this.state.value);
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <Form onSubmit={this.handleSubmit}>
+        <Row>
+          <Col md="12">
+            <PatientForm />
+          </Col>
+        </Row>
+        <hr />
+        <Row>
+          <Col md={{ span: 3 }}>
+            <BiometricsForm />
+          </Col>
+          <Col md={{ span: 3, offset: 1 }}>
+            <SpectacleRefractionForm />
+          </Col>
+          <Col md={{ span: 3, offset: 1 }}>
+            <ICLPowerForm />
+          </Col>
+        </Row>
+{/*
+        <hr />
+        <Row>
+          <Col>
+            <Button variant="primary" type="submit" value="Submit">Calculate</Button>
+          </Col>
+        </Row>
+*/}
+      </Form>
+    );
+  }
 };
 
 const App = () => (
-  <Container className="p-3">
-    <Jumbotron>
-      <h1 className="header">Welcome To React-Bootstrap</h1>
-      <ExampleToast>
-        We now have Toasts
-        <span role="img" aria-label="tada">
-          🎉
-        </span>
-      </ExampleToast>
-    </Jumbotron>
-  </Container>
+  <>
+    <Navbar bg="dark" variant="dark" fixed="top">
+    <Container>
+      <Navbar.Brand href="#">ICL Size Calc</Navbar.Brand>
+      <Nav className="mr-auto">
+        {/*<Nav.Link href="#home">Home</Nav.Link>
+        <Nav.Link href="#features">Features</Nav.Link>
+        <Nav.Link href="#pricing">Pricing</Nav.Link>*/}
+      </Nav>
+      <Form inline>
+        <Button variant="danger">Reset</Button>
+      </Form>
+    </Container>
+    </Navbar>
+    <Container>
+      <FullForm />
+    </Container>
+  </>
 );
 
 export default App;
