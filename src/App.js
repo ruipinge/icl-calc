@@ -1,4 +1,5 @@
 import React from 'react';
+import { RecoilRoot } from 'recoil'
 
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -63,6 +64,7 @@ class FullForm extends React.Component {
 
 const App = () => (
   <>
+  <RecoilRoot>
     <Navbar bg="dark" variant="dark" fixed="top">
     <Container>
       <Navbar.Brand href="#">ICL Size Calc</Navbar.Brand>
@@ -79,6 +81,7 @@ const App = () => (
     <Container>
       <FullForm />
     </Container>
+  </RecoilRoot>
   </>
 );
 
