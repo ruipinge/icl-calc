@@ -30,12 +30,12 @@ class BiometricsForm extends React.Component {
 
         <UnitInput defaultValue="0" label="Angle to Angle" unit="mm" labelTitle="" unitTitle="millimetres" />
         <UnitInput defaultValue="0" label="White to White" unit="mm" unitTitle="millimetres" />
-        <UnitInput defaultValue="0" label="Crystaline Lens Rise" unit="μm" unitTitle="nanometres" />
+        <UnitInput defaultValue="0" label="Crystaline Lens Rise" unit="nm" unitTitle="nanometres" />
         <UnitInput defaultValue="0" label="Anterior Chamber Depth" unit="mm" unitTitle="millimetres" />
         <UnitInput defaultValue="45" label="Anterior Chamber Angle nasal" unit="º" unitTitle="degrees" />
         <UnitInput defaultValue="45" label="Anterior Chamber Angle temporal" unit="º" unitTitle="degrees" />
-        <UnitInput defaultValue="45" label="Keratometry - Flat Meridian" unit="dpt" unitTyiyle="dioptres" />
-        <UnitInput defaultValue="45" label="Central Corneal Thickness" unit="μm" unitTyiyle="micrometres" />
+        <UnitInput defaultValue="45" label="Keratometry - Flat Meridian" unit="dpt" unitTitle="dioptres" />
+        <UnitInput defaultValue="45" label="Central Corneal Thickness" unit="μm" unitTitle="micrometres" />
       </>
     );
   }

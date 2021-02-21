@@ -16,10 +16,16 @@ interface FormValuesType {
   age: number;
   dateOfBirth: string;
   eye: 'left' | 'right';
-  biometrics: {
-    ata: number;
-    // TODO: ... more
-  };
+
+  // Biometrics:
+  ata: number;
+  wtw: number;
+  clr: number;
+  acp: number;
+  acan: number;
+  acat: number;
+  kfm: number;
+  cct: number;
 }
 
 
@@ -80,10 +86,15 @@ const App = () => {
     age: -1,
     dateOfBirth: '',
     eye: 'left',
-    biometrics: {
-      ata: 123,
-    },
-
+    // Biometrics:
+    ata: 0,
+    wtw: 0,
+    clr: 0,
+    acp: 0,
+    acan: 0,
+    acat: 0,
+    kfm: 0,
+    cct: 0,
   };
 
   return (
