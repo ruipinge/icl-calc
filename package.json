@@ -10,7 +10,6 @@
   "bugs": {
     "url": "https://github.com/ruipinge/icl-calc/issues"
   },
-  "homepage": "https://github.com/ruipinge/icl-calc",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
