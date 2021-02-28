@@ -12,3 +12,14 @@ $line-height-base: 1.4;
 body {
   padding-top: 4.5rem;
 }
+
+/**
+ * Move inner invalid icon (!) from right of the input into left by overriding
+ * the following styles:
+ * https://github.com/twbs/bootstrap/blob/v4.6.0/scss/mixins/_forms.scss#L88-L91
+ */
+input.form-control.is-invalid.text-right {
+  padding-left: $input-height-inner;
+  padding-right: $input-padding-x;
+  background-position: left $input-height-inner-quarter center;
+}
