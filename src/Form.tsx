@@ -2,6 +2,9 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
+import { FieldWithUnit } from './FieldWithUnit'
+
+
 const ICLSchema = Yup.object().shape({
   name: Yup.string()
     .min(5, "Too Short!")
@@ -14,32 +17,39 @@ const ICLSchema = Yup.object().shape({
 });
 
 
-const FieldWithUnit = ({ label, name, unit, placeholder, error }) => {
+export interface FormValues {
+  name: string;
+  age: number;
+  dateOfBirth: string;
+  eye: 'left' | 'right';
 
-  return (
-    <div className="form-group row">
-      <label htmlFor={name + 'field'} className="col-sm-6 col-form-label">{label}</label>
-      <div className="col-sm-6">
-        <div className="input-group">
-          <Field name={name} className={(error ? 'is-invalid' : '') + ' form-control text-right'} placeholder={placeholder} autoComplete="off" />
-          {unit
-            ? <div className="input-group-append">
-                <span className="input-group-text">{unit}</span>
-              </div>
-            : null
-          }
-          <ErrorMessage name={name} component="div" className="invalid-feedback text-right" />
-        </div>
-      </div>
-    </div>
-  );
+  // Biometrics
+  ata: number;
+  wtw: number;
+  clr: number;
+  acp: number;
+  acan: number;
+  acat: number;
+  kfm: number;
+  cct: number;
+
+  // Spectacle Refraction
+  sphere: number;
+  cylinder: number;
+  axis: number;
 };
 
 
-export const Pinge = ({ initialValues, renderICLPower }) => {
+interface ContainerProps {
+  initialValues: FormValues;
+  setStatus: (arg1: boolean) => void;
+}
+
+
+
+export const PingeForm: React.FC<ContainerProps> = ({ initialValues, setStatus }) => {
   return (
     <div>
-      <h2>Patient</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={ICLSchema}
@@ -52,6 +62,7 @@ export const Pinge = ({ initialValues, renderICLPower }) => {
       >
         {({ isSubmitting, errors, touched, values }) => (
           <Form>
+            <h2>Patient</h2>
             <div className="form-row">
               <div className="form-group col-md-4">
                 <label htmlFor="fieldName">Name</label>
@@ -77,21 +88,21 @@ export const Pinge = ({ initialValues, renderICLPower }) => {
             {errors.name && touched.name ? <div>{errors.name}</div> : null}
             <ErrorMessage name="name" component="div" />
             <hr />
-            {false && renderICLPower && renderICLPower({ param1: values.name })}
+            {false && setStatus && setStatus(true)}
             <button type="submit" disabled={isSubmitting} style={{display: 'none'}}>
               Submit
             </button>
             <div className="form-row">
               <div className="col-md-4">
                 <h2>Biometrics</h2>
-                <FieldWithUnit label="Angle to Angle" name="ata" unit="mm" error={errors.ata} />
-                <FieldWithUnit label="White to White" name="wtw" unit="mm" unitTitle="millimetres" error={errors.wtw} />
-                <FieldWithUnit label="Crystaline Lens Rise" name="clr" unit="nm" unitTitle="nanometres" error={errors.clr} />
-                <FieldWithUnit label="Anterior Chamber Depth" name="acp" unit="mm" unitTitle="millimetres" error={errors.acp} />
-                <FieldWithUnit label="Anterior Chamber Angle nasal" name="acan" unit="º" unitTitle="degrees" error={errors.acan} />
-                <FieldWithUnit label="Anterior Chamber Angle temporal" name="acat" unit="º" unitTitle="degrees" error={errors.acat} />
-                <FieldWithUnit label="Keratometry - Flat Meridian" name="kfm" unit="dpt" unitTitle="dioptres" error={errors.kfm} />
-                <FieldWithUnit label="Central Corneal Thickness" name="cct" unit="μm" unitTitle="micrometres" error={errors.cct} />
+                <FieldWithUnit label="Angle to Angle" name={'ata'} unit={'mm'} error={errors.ata} />
+                <FieldWithUnit label="White to White" name={'wtw'} unit={'mm'} unitTitle={'millimetres'} error={errors.wtw} />
+                <FieldWithUnit label="Crystaline Lens Rise" name={'clr'} unit={'nm'} unitTitle={'nanometres'} error={errors.clr} />
+                <FieldWithUnit label="Anterior Chamber Depth" name={'acp'} unit={'mm'} unitTitle={'millimetres'} error={errors.acp} />
+                <FieldWithUnit label="Anterior Chamber Angle nasal" name={'acan'} unit={'º'} unitTitle={'degrees'} error={errors.acan} />
+                <FieldWithUnit label="Anterior Chamber Angle temporal" name={'acat'} unit={'º'} unitTitle={'degrees'} error={errors.acat} />
+                <FieldWithUnit label="Keratometry - Flat Meridian" name={'kfm'} unit={'dpt'} unitTitle={'dioptres'} error={errors.kfm} />
+                <FieldWithUnit label="Central Corneal Thickness" name={'cct'} unit={'μm'} unitTitle={'micrometres'} error={errors.cct} />
               </div>
               <div className="col-md-3 offset-md-1">
                 <h2>Spectacle Refraction</h2>
@@ -101,10 +112,10 @@ export const Pinge = ({ initialValues, renderICLPower }) => {
               </div>
               <div className="col-md-3 offset-md-1">
                 <h2>ICL Power</h2>
-                <FieldWithUnit label="Sphere" name="iclSphere" unit="dpt" unitTitle="dioptres" error={errors.iclSphere} />
-                <FieldWithUnit label="Cylinder" name="iclCylinder" unit="dpt" unitTitle="dioptres" error={errors.iclCylinder} />
-                <FieldWithUnit label="Axis" name="iclAxis" unit="º" unitTitle="degrees" error={errors.iclAxis} />
-                <FieldWithUnit label="Spherical Equivalent" name="iclSphericalEquivalent" unit="º" unitTitle="degrees" error={errors.iclSphericalEquivalent} />
+                <FieldWithUnit label="Sphere" name="iclSphere" value={values.sphere} unit="dpt" unitTitle="dioptres" disabled={true} />
+                <FieldWithUnit label="Cylinder" name="iclCylinder" value={values.cylinder} unit="dpt" unitTitle="dioptres" disabled={true} />
+                <FieldWithUnit label="Axis" name="iclAxis" value={values.axis} unit="º" unitTitle="degrees" disabled={true} />
+                <FieldWithUnit label="Spherical Equivalent" value={-1.1} name="iclSphericalEquivalent" unit="º" unitTitle="degrees" disabled={true} />
               </div>
             </div>
           </Form>

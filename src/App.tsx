@@ -4,29 +4,13 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-import { Pinge } from './forms/Pinge';
+import { PingeForm, FormValues } from './Form';
 
 
-interface FormValuesType {
-  name: string;
-  age: number;
-  dateOfBirth: string;
-  eye: 'left' | 'right';
-
-  // Biometrics:
-  ata: number;
-  wtw: number;
-  clr: number;
-  acp: number;
-  acan: number;
-  acat: number;
-  kfm: number;
-  cct: number;
-}
 
 
 // function FullForm()  extends React.Component {
@@ -76,16 +60,17 @@ interface FormValuesType {
 //   }
 // };
 
-const renderICLPower = ({ param1 }: { param1: string }) => (
+const renderICLPower = ( param1: boolean ) => (
   <div>renderICLPower: {param1}</div>
 );
 
 const App = () => {
-  const initialValues: FormValuesType = {
+  const initialValues: FormValues = {
     name: '',
     age: -1,
     dateOfBirth: '',
     eye: 'left',
+
     // Biometrics:
     ata: 0,
     wtw: 0,
@@ -95,6 +80,11 @@ const App = () => {
     acat: 0,
     kfm: 0,
     cct: 0,
+
+    // Spectacle Refraction
+    sphere: 0,
+    cylinder: 0,
+    axis: 0,
   };
 
   return (
@@ -113,9 +103,9 @@ const App = () => {
       </Container>
       </Navbar>
       <Container>
-        <Pinge
+        <PingeForm
           initialValues={initialValues}
-          renderICLPower={renderICLPower}
+          setStatus={renderICLPower}
         />
       </Container>
     </>
