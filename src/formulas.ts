@@ -1,20 +1,23 @@
+const round = (val: number, decimals: number = 2) =>
+  Math.round(val * Math.pow(10, decimals)) / Math.pow(10, decimals);
+
 const calcPosMeridian = (sphere: number) => {
   return -1.33756 + 0.9446 * sphere;
 };
 
-const calcNegMeridian = (sphere: number, cylinder: number) => {
-  return -1.33756 + 0.9446 * (sphere + cylinder);
+const calcNegMeridian = (sphere: number, cylindre: number) => {
+  return -1.33756 + 0.9446 * (sphere + cylindre);
 };
 
-export const calcIclSphere = (sphere: number, cylinder: number) => {
-  return calcNegMeridian(sphere, cylinder);
+export const calcIclSphere = (sphere: number, cylindre: number) => {
+  return round(calcNegMeridian(sphere, cylindre));
 };
 
-export const calcIclCylinder = (sphere: number, cylinder: number) => {
+export const calcIclCylindre = (sphere: number, cylindre: number) => {
   const posMer = calcPosMeridian(sphere),
-    negMer = calcNegMeridian(sphere, cylinder);
+    negMer = calcNegMeridian(sphere, cylindre);
 
-  return posMer - negMer;
+  return round(posMer - negMer);
 };
 
 export const calcIclAxis = (axis: number) => {
@@ -26,11 +29,11 @@ export const calcIclAxis = (axis: number) => {
     return axis - 90;
   }
 
-  return axis;
+  return round(axis, 1);
 };
 
-export const calcIclCylinderEquivalent = (sphere: number, cylinder: number) => {
-  const negCylinder =
-    calcNegMeridian(sphere, cylinder) - calcPosMeridian(sphere);
-  return calcPosMeridian(sphere) + negCylinder / 2;
+export const calcIclCylindreEquivalent = (sphere: number, cylindre: number) => {
+  const negCylindre =
+    calcNegMeridian(sphere, cylindre) - calcPosMeridian(sphere);
+  return round(calcPosMeridian(sphere) + negCylindre / 2);
 };

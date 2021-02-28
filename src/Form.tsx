@@ -1,41 +1,20 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
 
 import { FieldWithUnit } from './FieldWithUnit';
+import { ICLSchema } from './ICLSchema';
 import {
   calcIclSphere,
-  calcIclCylinder,
+  calcIclCylindre,
   calcIclAxis,
-  calcIclCylinderEquivalent
+  calcIclCylindreEquivalent
 } from './formulas';
-
-const ICLSchema = Yup.object().shape({
-  patient: Yup.object().shape({
-    name: Yup.string()
-      .min(5, 'Too Short!')
-      .max(10, 'Too Long!')
-      .required('Required')
-  }),
-  biometrics: Yup.object().shape({
-    ata: Yup.number()
-      .min(0, 'Too Short!')
-      .max(10, 'Too Long!')
-      .required('Required')
-  }),
-  spectacleRefraction: Yup.object().shape({
-    axis: Yup.number()
-      .min(0, 'Too Short!')
-      .max(180, 'Too Long!')
-      .required('Required')
-  })
-});
 
 interface Biometrics {
   ata: number;
   wtw: number;
   clr: number;
-  acp: number;
+  acd: number;
   acan: number;
   acat: number;
   kfm: number;
@@ -44,7 +23,7 @@ interface Biometrics {
 
 interface SpectacleRefraction {
   sphere: number;
-  cylinder: number;
+  cylindre: number;
   axis: number;
 }
 
@@ -92,7 +71,8 @@ export const PingeForm: React.FC<ContainerProps> = ({
                   name="patient.name"
                   className="form-control"
                   id="fieldName"
-                  automcomplete="off"
+                  placeholder="enter patient name"
+                  autoComplete="off"
                 />
               </div>
               <div className="form-group col-md-2 offset-md-1">
@@ -148,56 +128,56 @@ export const PingeForm: React.FC<ContainerProps> = ({
                 <FieldWithUnit
                   label="Angle to Angle"
                   name="biometrics.ata"
-                  unit={'mm'}
+                  unit="mm"
                   error={errors.biometrics?.ata}
                 />
                 <FieldWithUnit
                   label="White to White"
                   name="biometrics.wtw"
-                  unit={'mm'}
-                  unitTitle={'millimetres'}
+                  unit="mm"
+                  unitTitle="millimetres"
                   error={errors.biometrics?.wtw}
                 />
                 <FieldWithUnit
                   label="Crystaline Lens Rise"
                   name="biometrics.clr"
-                  unit={'nm'}
-                  unitTitle={'nanometres'}
+                  unit="nm"
+                  unitTitle="nanometres"
                   error={errors.biometrics?.clr}
                 />
                 <FieldWithUnit
                   label="Anterior Chamber Depth"
-                  name="biometrics.acp"
-                  unit={'mm'}
-                  unitTitle={'millimetres'}
-                  error={errors.biometrics?.acp}
+                  name="biometrics.acd"
+                  unit="mm"
+                  unitTitle="millimetres"
+                  error={errors.biometrics?.acd}
                 />
                 <FieldWithUnit
                   label="Anterior Chamber Angle nasal"
-                  name="abiometrics.can"
-                  unit={'º'}
-                  unitTitle={'degrees'}
+                  name="biometrics.acan"
+                  unit="º"
+                  unitTitle="degrees"
                   error={errors.biometrics?.acan}
                 />
                 <FieldWithUnit
                   label="Anterior Chamber Angle temporal"
-                  name="abiometrics.cat"
-                  unit={'º'}
-                  unitTitle={'degrees'}
+                  name="biometrics.acat"
+                  unit="º"
+                  unitTitle="degrees"
                   error={errors.biometrics?.acat}
                 />
                 <FieldWithUnit
                   label="Keratometry - Flat Meridian"
                   name="biometrics.kfm"
-                  unit={'dpt'}
-                  unitTitle={'dioptres'}
+                  unit="dpt"
+                  unitTitle="dioptres"
                   error={errors.biometrics?.kfm}
                 />
                 <FieldWithUnit
                   label="Central Corneal Thickness"
                   name="biometrics.cct"
-                  unit={'μm'}
-                  unitTitle={'micrometres'}
+                  unit="μm"
+                  unitTitle="micrometres"
                   error={errors.biometrics?.cct}
                 />
               </div>
@@ -211,11 +191,11 @@ export const PingeForm: React.FC<ContainerProps> = ({
                   error={errors.spectacleRefraction?.sphere}
                 />
                 <FieldWithUnit
-                  label="Cylinder"
-                  name="spectacleRefraction.cylinder"
+                  label="Cylindre"
+                  name="spectacleRefraction.cylindre"
                   unit="dpt"
                   unitTitle="dioptres"
-                  error={errors.spectacleRefraction?.cylinder}
+                  error={errors.spectacleRefraction?.cylindre}
                 />
                 <FieldWithUnit
                   label="Axis"
@@ -227,24 +207,23 @@ export const PingeForm: React.FC<ContainerProps> = ({
               </div>
               <div className="col-md-3 offset-md-1">
                 <h2>ICL Power</h2>
-                <p>{calcIclAxis(values.spectacleRefraction.axis)}</p>
                 <FieldWithUnit
                   label="Sphere"
                   name="iclSphere"
                   value={calcIclSphere(
                     values.spectacleRefraction.sphere,
-                    values.spectacleRefraction.cylinder
+                    values.spectacleRefraction.cylindre
                   )}
                   unit="dpt"
                   unitTitle="dioptres"
                   disabled={true}
                 />
                 <FieldWithUnit
-                  label="Cylinder"
-                  name="iclCylinder"
-                  value={calcIclCylinder(
+                  label="Cylindre"
+                  name="iclCylindre"
+                  value={calcIclCylindre(
                     values.spectacleRefraction.sphere,
-                    values.spectacleRefraction.cylinder
+                    values.spectacleRefraction.cylindre
                   )}
                   unit="dpt"
                   unitTitle="dioptres"
@@ -260,9 +239,9 @@ export const PingeForm: React.FC<ContainerProps> = ({
                 />
                 <FieldWithUnit
                   label="Spherical Equivalent"
-                  value={calcIclCylinderEquivalent(
+                  value={calcIclCylindreEquivalent(
                     values.spectacleRefraction.sphere,
-                    values.spectacleRefraction.cylinder
+                    values.spectacleRefraction.cylindre
                   )}
                   name="iclSphericalEquivalent"
                   unit="º"

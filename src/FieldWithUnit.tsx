@@ -8,7 +8,7 @@ interface FieldWithUnitProps {
   unit?: string;
   unitTitle?: string;
   placeholder?: string;
-  error?: any;
+  error?: string;
   value?: number;
   disabled?: boolean;
 }
@@ -50,7 +50,7 @@ export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
           )}
           {unit ? (
             <div className="input-group-append">
-              <span className="input-group-text" title="{unitTitle}">
+              <span className="input-group-text" title={unitTitle}>
                 {unit}
               </span>
             </div>

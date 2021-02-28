@@ -13,7 +13,7 @@ const renderICLPower = (param1: boolean) => <div>renderICLPower: {param1}</div>;
 export const FormContainer = () => {
   const initialValues: ICLForm = {
     patient: {
-      name: 'pinge',
+      name: '',
       age: -1,
       dateOfBirth: '',
       eye: 'left'
@@ -22,7 +22,7 @@ export const FormContainer = () => {
       ata: 0,
       wtw: 0,
       clr: 0,
-      acp: 0,
+      acd: 0,
       acan: 0,
       acat: 0,
       kfm: 0,
@@ -30,7 +30,7 @@ export const FormContainer = () => {
     },
     spectacleRefraction: {
       sphere: 0,
-      cylinder: 0,
+      cylindre: 0,
       axis: 0
     }
   };
