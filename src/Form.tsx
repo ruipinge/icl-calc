@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import { FieldWithUnit } from './FieldWithUnit'
+import { calcIclSphere, calcIclCylinder, calcIclAxis, calcIclCylinderEquivalent } from './formulas'
 
 
 const ICLSchema = Yup.object().shape({
@@ -112,10 +113,10 @@ export const PingeForm: React.FC<ContainerProps> = ({ initialValues, setStatus }
               </div>
               <div className="col-md-3 offset-md-1">
                 <h2>ICL Power</h2>
-                <FieldWithUnit label="Sphere" name="iclSphere" value={values.sphere} unit="dpt" unitTitle="dioptres" disabled={true} />
-                <FieldWithUnit label="Cylinder" name="iclCylinder" value={values.cylinder} unit="dpt" unitTitle="dioptres" disabled={true} />
-                <FieldWithUnit label="Axis" name="iclAxis" value={values.axis} unit="º" unitTitle="degrees" disabled={true} />
-                <FieldWithUnit label="Spherical Equivalent" value={-1.1} name="iclSphericalEquivalent" unit="º" unitTitle="degrees" disabled={true} />
+                <FieldWithUnit label="Sphere" name="iclSphere" value={calcIclSphere(values.sphere, values.cylinder)} unit="dpt" unitTitle="dioptres" disabled={true} />
+                <FieldWithUnit label="Cylinder" name="iclCylinder" value={calcIclCylinder(values.sphere, values.cylinder)} unit="dpt" unitTitle="dioptres" disabled={true} />
+                <FieldWithUnit label="Axis" name="iclAxis" value={calcIclAxis(values.axis)} unit="º" unitTitle="degrees" disabled={true} />
+                <FieldWithUnit label="Spherical Equivalent" value={calcIclCylinderEquivalent(values.sphere, values.cylinder)} name="iclSphericalEquivalent" unit="º" unitTitle="degrees" disabled={true} />
               </div>
             </div>
           </Form>

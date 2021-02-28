@@ -11,55 +11,6 @@ import Button from 'react-bootstrap/Button';
 import { PingeForm, FormValues } from './Form';
 
 
-
-
-// function FullForm()  extends React.Component {
-
-//   constructor(props) {
-//     super(props);
-//     this.state = {};
-
-//     this.handleSubmit = this.handleSubmit.bind(this);
-//   }
-
-//   handleSubmit(event) {
-//     alert('An essay was submitted: ' + this.state.value);
-//     event.preventDefault();
-//   }
-
-//   render() {
-//     return (
-//       <Form onSubmit={this.handleSubmit}>
-//         <Row>
-//           <Col md="12">
-//             <PatientForm />
-//           </Col>
-//         </Row>
-//         <hr />
-//         <Row>
-//           <Col md={{ span: 3 }}>
-//             <BiometricsForm />
-//           </Col>
-//           <Col md={{ span: 3, offset: 1 }}>
-//             <SpectacleRefractionForm />
-//           </Col>
-//           <Col md={{ span: 3, offset: 1 }}>
-//             <ICLPowerForm />
-//           </Col>
-//         </Row>
-// {/*
-//         <hr />
-//         <Row>
-//           <Col>
-//             <Button variant="primary" type="submit" value="Submit">Calculate</Button>
-//           </Col>
-//         </Row>
-// */}
-//       </Form>
-//     );
-//   }
-// };
-
 const renderICLPower = ( param1: boolean ) => (
   <div>renderICLPower: {param1}</div>
 );
