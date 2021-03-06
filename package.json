@@ -70,5 +70,8 @@
     "trailingComma": "none",
     "singleQuote": true,
     "printWidth": 80
+  },
+  "devDependencies": {
+    "date-fns": "^2.19.0"
   }
 }

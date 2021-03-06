@@ -14,7 +14,6 @@ export const ICLContainer = () => {
   const initialValues: ICLInputs = {
     patient: {
       name: '',
-      age: -1,
       dateOfBirth: '',
       eye: 'left'
     },

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { differenceInYears } from 'date-fns';
 
 import { FieldWithUnit } from './components/FieldWithUnit';
 import { ICLSchema } from './ICLSchema';
@@ -12,7 +13,6 @@ import {
 
 interface Patient {
   name: string;
-  age: number;
   dateOfBirth: string;
   eye: 'left' | 'right';
 }
@@ -62,7 +62,7 @@ export const ICLForm: React.FC<ContainerProps> = ({
           }, 400);
         }}
       >
-        {({ isSubmitting, errors, touched, values }) => (
+        {({ errors, touched, values }) => (
           <Form>
             <h2>Patient</h2>
             <div className="form-row">
@@ -80,20 +80,45 @@ export const ICLForm: React.FC<ContainerProps> = ({
                 <label htmlFor="fieldDateOfBirth">Date of Birth</label>
                 <Field
                   name="patient.dateOfBirth"
-                  className="form-control"
+                  className={
+                    (errors.patient?.dateOfBirth && touched.patient?.dateOfBirth
+                      ? 'is-invalid'
+                      : '') + ' form-control'
+                  }
                   id="fieldDateOfBirth"
                   placeholder="yyyy-mm-dd"
-                  automcomplete="off"
+                  autoComplete="off"
+                  maxLength={10}
+                />
+                <ErrorMessage
+                  name="patient.dateOfBirth"
+                  component="div"
+                  className="invalid-feedback"
                 />
               </div>
               <div className="form-group col-md-1 offset-md-1">
                 <label htmlFor="fieldAge">Age</label>
-                <Field
-                  name="patient.age"
-                  className="form-control"
-                  id="fieldAge"
-                  automcomplete="off"
-                />
+                <div className="input-group">
+                  <input
+                    name="patient.age"
+                    className="form-control text-right"
+                    id="fieldAge"
+                    disabled={true}
+                    value={
+                      values.patient.dateOfBirth && !errors.patient?.dateOfBirth
+                        ? differenceInYears(
+                            new Date(),
+                            new Date(values.patient.dateOfBirth)
+                          ) || ''
+                        : ''
+                    }
+                  />
+                  <div className="input-group-append">
+                    <span className="input-group-text" title="years">
+                      yr.
+                    </span>
+                  </div>
+                </div>
               </div>
               <div className="form-group col-md-2 offset-md-1">
                 <label htmlFor="fieldEye">Eye</label>
@@ -102,7 +127,7 @@ export const ICLForm: React.FC<ContainerProps> = ({
                   name="eye"
                   className="form-control"
                   id="fieldEye"
-                  automcomplete="off"
+                  autoComplete="off"
                 >
                   <option value="">Select...</option>
                   <option value="left">Left</option>
@@ -110,19 +135,7 @@ export const ICLForm: React.FC<ContainerProps> = ({
                 </Field>
               </div>
             </div>
-            {errors.patient?.name && touched.patient?.name ? (
-              <div>{errors.patient.name}</div>
-            ) : null}
-            <ErrorMessage name="name" component="div" />
             <hr />
-            {false && setStatus && setStatus(true)}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              style={{ display: 'none' }}
-            >
-              Submit
-            </button>
             <div className="form-row">
               <div className="col-md-4">
                 <h2>Biometrics</h2>

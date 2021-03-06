@@ -20,11 +20,7 @@ const ACQ_MIN = 2.7,
 
 export const ICLSchema = Yup.object().shape({
   patient: Yup.object().shape({
-    // TODO:
-    dateOfBirth: Yup.string()
-      .min(5, 'Too Short!')
-      .max(10, 'Too Long!')
-      .required('Required')
+    dateOfBirth: Yup.date().optional().typeError('Invalid date. (yyyy-mm-dd)')
   }),
   biometrics: Yup.object().shape({
     ata: Yup.number()
