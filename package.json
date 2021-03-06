@@ -35,7 +35,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --coverage",
     "eject": "react-scripts eject",
     "clean": "rm -rf ./node_modules ./coverage ./npm-debug.log ./build",
     "format": "prettier --write './src/**.{js,jsx,ts,tsx}'",
@@ -63,6 +63,16 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/",
+      "!src/**/*.d.ts"
+    ],
+    "coverageReporters": [
+      "lcov"
     ]
   },
   "prettier": {

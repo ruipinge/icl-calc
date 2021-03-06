@@ -1,5 +1,8 @@
 # ICL Size Calc
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/ruipinge/icl-calc/branch/master/graph/badge.svg?token=XVTKUDYAU6)](https://codecov.io/gh/ruipinge/icl-calc)
+
 An Implantable Collamer Lenses (ICL) vault size calculator available as a web application. The last working version can be found [here](https://ruipinge.github.io/icl-calc/).
 
 ## Instructions
@@ -14,6 +17,8 @@ TODO: write some instructions
 2. Clone git repository: `git clone git@github.com:ruipinge/icl-calc.git && cd icl-calc`
 3. Install npm dependencies: `npm ci`
 4. Run the local server: `npm start`
+
+Run tests: `npm test`
 
 ## Tech
 

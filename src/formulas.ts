@@ -1,12 +1,15 @@
+const FACTOR0 = -1.33756,
+  FACTOR1 = 0.9446;
+
 const round = (val: number, decimals: number = 2) =>
   Math.round(val * Math.pow(10, decimals)) / Math.pow(10, decimals);
 
 const calcPosMeridian = (sphere: number) => {
-  return -1.33756 + 0.9446 * sphere;
+  return FACTOR0 + FACTOR1 * sphere;
 };
 
 const calcNegMeridian = (sphere: number, cylindre: number) => {
-  return -1.33756 + 0.9446 * (sphere + cylindre);
+  return FACTOR0 + FACTOR1 * (sphere + cylindre);
 };
 
 export const calcIclSphere = (sphere: number, cylindre: number) => {
@@ -22,11 +25,11 @@ export const calcIclCylindre = (sphere: number, cylindre: number) => {
 
 export const calcIclAxis = (axis: number) => {
   if (axis >= 0 && axis < 90) {
-    return axis + 90;
+    return round(axis + 90, 1);
   }
 
   if (axis > 90 && axis <= 180) {
-    return axis - 90;
+    return round(axis - 90, 1);
   }
 
   return round(axis, 1);

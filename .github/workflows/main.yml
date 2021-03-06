@@ -32,6 +32,16 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Coverage
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ${{github.workspace}}/coverage/lcov.info
+          flags: unittests
+          name: icl-calc-tests
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
+
   deploy:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
