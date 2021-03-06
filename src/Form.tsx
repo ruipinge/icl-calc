@@ -14,10 +14,10 @@ interface Biometrics {
   ata: number;
   wtw: number;
   clr: number;
-  acd: number;
+  acq: number;
   acan: number;
   acat: number;
-  kfm: number;
+  kf: number;
   cct: number;
 }
 
@@ -25,6 +25,7 @@ interface SpectacleRefraction {
   sphere: number;
   cylindre: number;
   axis: number;
+  vertex: number;
 }
 
 interface Patient {
@@ -126,55 +127,55 @@ export const PingeForm: React.FC<ContainerProps> = ({
               <div className="col-md-4">
                 <h2>Biometrics</h2>
                 <FieldWithUnit
-                  label="Angle to Angle"
+                  label="Angle to Angle (AtA)"
                   name="biometrics.ata"
                   unit="mm"
                   error={errors.biometrics?.ata}
                 />
                 <FieldWithUnit
-                  label="White to White"
+                  label="White to White (WtW)"
                   name="biometrics.wtw"
                   unit="mm"
                   unitTitle="millimetres"
                   error={errors.biometrics?.wtw}
                 />
                 <FieldWithUnit
-                  label="Crystaline Lens Rise"
+                  label="Crystaline Lens Rise (CLR)"
                   name="biometrics.clr"
                   unit="nm"
                   unitTitle="nanometres"
                   error={errors.biometrics?.clr}
                 />
                 <FieldWithUnit
-                  label="Anterior Chamber Depth"
-                  name="biometrics.acd"
+                  label="Internal Anterior Chamber Depth (ACQ)"
+                  name="biometrics.acq"
                   unit="mm"
                   unitTitle="millimetres"
-                  error={errors.biometrics?.acd}
+                  error={errors.biometrics?.acq}
                 />
                 <FieldWithUnit
-                  label="Anterior Chamber Angle nasal"
+                  label="Anterior Chamber Angle nasal (ACAn)"
                   name="biometrics.acan"
                   unit="º"
                   unitTitle="degrees"
                   error={errors.biometrics?.acan}
                 />
                 <FieldWithUnit
-                  label="Anterior Chamber Angle temporal"
+                  label="Anterior Chamber Angle temporal (ACAt)"
                   name="biometrics.acat"
                   unit="º"
                   unitTitle="degrees"
                   error={errors.biometrics?.acat}
                 />
                 <FieldWithUnit
-                  label="Keratometry - Flat Meridian"
-                  name="biometrics.kfm"
+                  label="Keratometry - Flat Meridian (Kf)"
+                  name="biometrics.kf"
                   unit="dpt"
                   unitTitle="dioptres"
-                  error={errors.biometrics?.kfm}
+                  error={errors.biometrics?.kf}
                 />
                 <FieldWithUnit
-                  label="Central Corneal Thickness"
+                  label="Central Corneal Thickness (CCT)"
                   name="biometrics.cct"
                   unit="μm"
                   unitTitle="micrometres"
@@ -203,6 +204,13 @@ export const PingeForm: React.FC<ContainerProps> = ({
                   unit="º"
                   unitTitle="degrees"
                   error={errors.spectacleRefraction?.axis}
+                />
+                <FieldWithUnit
+                  label="Vertex"
+                  name="spectacleRefraction.vertex"
+                  unit="mm"
+                  unitTitle="millimetres"
+                  error={errors.spectacleRefraction?.vertex}
                 />
               </div>
               <div className="col-md-3 offset-md-1">

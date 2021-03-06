@@ -22,16 +22,17 @@ export const FormContainer = () => {
       ata: 0,
       wtw: 0,
       clr: 0,
-      acd: 0,
+      acq: 0,
       acan: 0,
       acat: 0,
-      kfm: 0,
+      kf: 0,
       cct: 0
     },
     spectacleRefraction: {
       sphere: 0,
       cylindre: 0,
-      axis: 0
+      axis: 0,
+      vertex: 0
     }
   };
 
