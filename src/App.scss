@@ -1,12 +1,7 @@
-$theme-colors: (
-/*        "info": tomato,
-        "danger": teal*/
-);
-
 $font-size-base: 13;
 $line-height-base: 1.4;
 
-@import "../node_modules/bootstrap/scss/bootstrap";
+@import '../node_modules/bootstrap/scss/bootstrap';
 
 /* Show it is fixed to the top */
 body {
@@ -22,4 +17,19 @@ input.form-control.is-invalid.text-right {
   padding-left: $input-height-inner;
   padding-right: $input-padding-x;
   background-position: left $input-height-inner-quarter center;
+}
+
+/**
+ * Remove Chrome spin buttons from number type inputs
+ * Inspiration:
+ * - https://stackoverflow.com/questions/28320349/input-type-number-hide-arrows-from-right-part-of-input
+ * - https://stackoverflow.com/questions/25461223/disable-webkits-spin-buttons-on-input-type-number-in-angularjs
+ */
+input[type='number'] {
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  -moz-appearance: textfield;
 }

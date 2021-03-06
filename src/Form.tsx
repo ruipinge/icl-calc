@@ -1,7 +1,7 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
-import { FieldWithUnit } from './FieldWithUnit';
+import { FieldWithUnit } from './components/FieldWithUnit';
 import { ICLSchema } from './ICLSchema';
 import {
   calcIclSphere,
@@ -9,6 +9,13 @@ import {
   calcIclAxis,
   calcIclCylindreEquivalent
 } from './formulas';
+
+interface Patient {
+  name: string;
+  age: number;
+  dateOfBirth: string;
+  eye: 'left' | 'right';
+}
 
 interface Biometrics {
   ata: number;
@@ -26,13 +33,6 @@ interface SpectacleRefraction {
   cylindre: number;
   axis: number;
   vertex: number;
-}
-
-interface Patient {
-  name: string;
-  age: number;
-  dateOfBirth: string;
-  eye: 'left' | 'right';
 }
 
 export interface ICLForm {
