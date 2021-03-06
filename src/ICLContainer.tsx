@@ -1,11 +1,5 @@
 import React from 'react';
 
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-
 import { ICLForm, ICLInputs } from './ICLForm';
 
 const renderICLPower = (param1: boolean) => <div>renderICLPower: {param1}</div>;
@@ -37,22 +31,31 @@ export const ICLContainer = () => {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" fixed="top">
-        <Container>
-          <Navbar.Brand href="#">ICL Size Calc</Navbar.Brand>
-          <Nav className="mr-auto">
-            {/*<Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#features">Features</Nav.Link>
-          <Nav.Link href="#pricing">Pricing</Nav.Link>*/}
-          </Nav>
-          <Form inline>
-            <Button variant="danger">Reset</Button>
-          </Form>
-        </Container>
-      </Navbar>
-      <Container>
+      <nav className="navbar navbar-expand navbar-dark bg-dark fixed-top">
+        <div className="container">
+          <a className="navbar-brand" href="#">
+            ICL Size Calc
+          </a>
+          <ul className="navbar-nav mr-auto">
+            {/*
+            <li class="nav-item active">
+              <a class="nav-link" href="#home">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            */}
+          </ul>
+          <form className="form-inline">
+            <button type="button" className="btn btn-danger">
+              Reset
+            </button>
+          </form>
+        </div>
+      </nav>
+      <div className="container">
         <ICLForm initialValues={initialValues} setStatus={renderICLPower} />
-      </Container>
+      </div>
     </>
   );
 };
