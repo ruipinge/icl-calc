@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { ICLForm, ICLInputs } from './ICLForm';
 
-const renderICLPower = (param1: boolean) => <div>renderICLPower: {param1}</div>;
+const setStatus = (a: any) => console.log(a);
 
 export const ICLContainer = () => {
   const initialValues: ICLInputs = {
@@ -29,6 +29,8 @@ export const ICLContainer = () => {
     }
   };
 
+  const [val, setVal] = useState(0);
+
   return (
     <>
       <nav className="navbar navbar-expand navbar-dark bg-dark fixed-top">
@@ -47,14 +49,24 @@ export const ICLContainer = () => {
             */}
           </ul>
           <form className="form-inline">
-            <button type="button" className="btn btn-danger">
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={() => {
+                setVal((state) => state + 1);
+              }}
+            >
               Reset
             </button>
           </form>
         </div>
       </nav>
       <div className="container">
-        <ICLForm initialValues={initialValues} setStatus={renderICLPower} />
+        <ICLForm
+          initialValues={initialValues}
+          key={val}
+          setStatus={setStatus}
+        />
       </div>
     </>
   );
