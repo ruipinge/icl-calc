@@ -6,12 +6,12 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-import { PingeForm, ICLForm } from './Form';
+import { ICLForm, ICLInputs } from './ICLForm';
 
 const renderICLPower = (param1: boolean) => <div>renderICLPower: {param1}</div>;
 
-export const FormContainer = () => {
-  const initialValues: ICLForm = {
+export const ICLContainer = () => {
+  const initialValues: ICLInputs = {
     patient: {
       name: '',
       age: -1,
@@ -52,7 +52,7 @@ export const FormContainer = () => {
         </Container>
       </Navbar>
       <Container>
-        <PingeForm initialValues={initialValues} setStatus={renderICLPower} />
+        <ICLForm initialValues={initialValues} setStatus={renderICLPower} />
       </Container>
     </>
   );

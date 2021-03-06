@@ -35,18 +35,18 @@ interface SpectacleRefraction {
   vertex: number;
 }
 
-export interface ICLForm {
+export interface ICLInputs {
   patient: Patient;
   biometrics: Biometrics;
   spectacleRefraction: SpectacleRefraction;
 }
 
 interface ContainerProps {
-  initialValues: ICLForm;
+  initialValues: ICLInputs;
   setStatus: (arg1: boolean) => void;
 }
 
-export const PingeForm: React.FC<ContainerProps> = ({
+export const ICLForm: React.FC<ContainerProps> = ({
   initialValues,
   setStatus
 }) => {

@@ -1,5 +1,5 @@
-import { FormContainer } from './FormContainer';
+import { ICLContainer } from './ICLContainer';
 
-const App = () => <FormContainer />;
+const App = () => <ICLContainer />;
 
 export default App;
