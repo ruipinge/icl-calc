@@ -1,7 +1,22 @@
 import * as Yup from 'yup';
 
-const INVALID_ERROR = 'Invalid value.';
-const REQUIRED_ERROR = 'Required value.';
+const ACQ_MIN = 2.7,
+  ACQ_MAX = 6.0,
+  KF_MIN = 20,
+  KF_MAX = 70,
+  CCT_MIN = 300,
+  CCT_MAX = 700,
+  SPHERE_MIN = -25,
+  SPHERE_MAX = 0,
+  CYLINDRE_MIN = -8,
+  CYLINDRE_MAX = 0,
+  INVALID_ERROR = 'Invalid value.',
+  REQUIRED_ERROR = 'Required value.',
+  ACQ_INVALID_ERROR = `${INVALID_ERROR} [${ACQ_MIN}, ${ACQ_MAX}]`,
+  KF_INVALID_ERROR = `${INVALID_ERROR} [${KF_MIN}, ${KF_MAX}]`,
+  CCT_INVALID_ERROR = `${INVALID_ERROR} [${CCT_MIN}, ${CCT_MAX}]`,
+  SPHERE_INVALID_ERROR = `${INVALID_ERROR} [${SPHERE_MIN}, ${SPHERE_MAX}]`,
+  CYLINDRE_INVALID_ERROR = `${INVALID_ERROR} [${CYLINDRE_MIN}, ${CYLINDRE_MAX}]`;
 
 export const ICLSchema = Yup.object().shape({
   patient: Yup.object().shape({
@@ -26,8 +41,8 @@ export const ICLSchema = Yup.object().shape({
       .max(1000, INVALID_ERROR),
     acq: Yup.number()
       .required(REQUIRED_ERROR)
-      .min(2.7, INVALID_ERROR)
-      .max(6.0, INVALID_ERROR),
+      .min(ACQ_MIN, ACQ_INVALID_ERROR)
+      .max(ACQ_MAX, ACQ_INVALID_ERROR),
     acan: Yup.number()
       .required(REQUIRED_ERROR)
       .min(0, INVALID_ERROR)
@@ -38,22 +53,22 @@ export const ICLSchema = Yup.object().shape({
       .max(70, INVALID_ERROR),
     kf: Yup.number()
       .required(REQUIRED_ERROR)
-      .min(20, INVALID_ERROR)
-      .max(70, INVALID_ERROR),
+      .min(KF_MIN, KF_INVALID_ERROR)
+      .max(KF_MAX, KF_INVALID_ERROR),
     cct: Yup.number()
       .required(REQUIRED_ERROR)
-      .min(300, INVALID_ERROR)
-      .max(700, INVALID_ERROR)
+      .min(CCT_MIN, CCT_INVALID_ERROR)
+      .max(CCT_MAX, CCT_INVALID_ERROR)
   }),
   spectacleRefraction: Yup.object().shape({
     sphere: Yup.number()
       .required(REQUIRED_ERROR)
-      .min(-25, INVALID_ERROR)
-      .max(0, INVALID_ERROR),
+      .min(SPHERE_MIN, SPHERE_INVALID_ERROR)
+      .max(SPHERE_MAX, SPHERE_INVALID_ERROR),
     cylindre: Yup.number()
       .required(REQUIRED_ERROR)
-      .min(-8, INVALID_ERROR)
-      .max(0, INVALID_ERROR),
+      .min(CYLINDRE_MIN, CYLINDRE_INVALID_ERROR)
+      .max(CYLINDRE_MAX, CYLINDRE_INVALID_ERROR),
     axis: Yup.number()
       .required(REQUIRED_ERROR)
       .min(0, INVALID_ERROR)
