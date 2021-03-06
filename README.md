@@ -1,68 +1,41 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ICL Size Calc
 
-## Available Scripts
+An Implantable Collamer Lenses (ICL) vault size calculator available as a web application. The last working version can be found [here](https://ruipinge.github.io/icl-calc/).
 
-In the project directory, you can run:
+## Instructions
 
-### `npm start`
+TODO: write some instructions
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+![alt text](https://ruipinge.github.io/icl-calc/instructions.png)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Development
 
-### `npm test`
+1. Install [Node.js](https://nodejs.org/en/download/current/)
+2. Clone git repository: `git clone git@github.com:ruipinge/icl-calc.git && cd icl-calc`
+3. Install npm dependencies: `npm ci`
+4. Run the local server: `npm start`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Tech
 
-### `npm run build`
+- [JavaScript](https://www.javascript.com/), [TypeScript](https://www.typescriptlang.org/)
+- [React](https://reactjs.org/), [Formik](https://formik.org/), [Yup](https://github.com/jquense/yup)
+- [Jest](https://jestjs.io/)
+- [Bootstrap](https://getbootstrap.com/)
+- [GitHub Actions](https://github.com/features/actions), [GitHub Pages](https://pages.github.com/)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Data
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+TODO: Disclaimer: the statistical data used in this appliction is real data, blabla...
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Authors
 
-### `npm run eject`
+- [Pedro Miguel Serra](https://www.linkedin.com/in/pedro-serra-44697321/), MSc, PhD
+- [Rui Pinge](https://ruipinge.github.io/resume), Software Engineer
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## References
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+[1] [Determining vault size in implantable collamer lenses: preoperative anatomy and lens parameters](https://doi.org/10.1097/j.jcrs.0000000000000146)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Warranty
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+This project is available under the [MIT License](https://github.com/ruipinge/icl-calc/blob/master/LICENSE) without any kind of warranty. The authors cannot be held responsible for any consequense of its usage.
