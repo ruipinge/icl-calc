@@ -35,7 +35,7 @@ export const ICLContainer = () => {
     <>
       <nav className="navbar navbar-expand navbar-dark bg-dark fixed-top">
         <div className="container">
-          <a className="navbar-brand" href="#">
+          <a className="navbar-brand" href="/icl-calc">
             ICL Size Calc
           </a>
           <ul className="navbar-nav mr-auto">
