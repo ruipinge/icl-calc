@@ -6,28 +6,28 @@ import {
 } from './formulas';
 
 it('calculates ICL Power Sphere', () => {
-  expect(calcIclSphere(0, 0)).toEqual(-1.34);
-  expect(calcIclSphere(-1, -1)).toEqual(-3.23);
-  expect(calcIclSphere(1, 1)).toEqual(0.55);
-  expect(calcIclSphere(-25, 0)).toEqual(-24.95);
-  expect(calcIclSphere(-25, -8)).toEqual(-32.51);
-  expect(calcIclSphere(-12.567, -4.1267)).toEqual(-17.11);
-  expect(calcIclSphere(0, -8)).toEqual(-8.89);
-  expect(calcIclSphere(NaN, -8)).toBe(NaN);
-  expect(calcIclSphere(NaN, NaN)).toBe(NaN);
-  expect(calcIclSphere(0, NaN)).toBe(NaN);
+  expect(calcIclSphere({ sphere: 0, cylindre: 0 })).toEqual(-1.34);
+  expect(calcIclSphere({ sphere: -1, cylindre: -1 })).toEqual(-3.23);
+  expect(calcIclSphere({ sphere: 1, cylindre: 1 })).toEqual(0.55);
+  expect(calcIclSphere({ sphere: -25, cylindre: 0 })).toEqual(-24.95);
+  expect(calcIclSphere({ sphere: -25, cylindre: -8 })).toEqual(-32.51);
+  expect(calcIclSphere({ sphere: -12.567, cylindre: -4.1267 })).toEqual(-17.11);
+  expect(calcIclSphere({ sphere: 0, cylindre: -8 })).toEqual(-8.89);
+  expect(calcIclSphere({ sphere: NaN, cylindre: -8 })).toBe(NaN);
+  expect(calcIclSphere({ sphere: NaN, cylindre: NaN })).toBe(NaN);
+  expect(calcIclSphere({ sphere: 0, cylindre: NaN })).toBe(NaN);
 });
 
 it('calculates ICL Power Cylindre', () => {
-  expect(calcIclCylindre(0, 0)).toEqual(0);
-  expect(calcIclCylindre(-1, -1)).toEqual(0.94);
-  expect(calcIclCylindre(1, 1)).toEqual(-0.94);
-  expect(calcIclCylindre(-25, 0)).toEqual(0);
-  expect(calcIclCylindre(-25, -8)).toEqual(7.56);
-  expect(calcIclCylindre(0, -8)).toEqual(7.56);
-  expect(calcIclCylindre(NaN, -8)).toBe(NaN);
-  expect(calcIclCylindre(NaN, NaN)).toBe(NaN);
-  expect(calcIclCylindre(0, NaN)).toBe(NaN);
+  expect(calcIclCylindre({ sphere: 0, cylindre: 0 })).toEqual(0);
+  expect(calcIclCylindre({ sphere: -1, cylindre: -1 })).toEqual(0.94);
+  expect(calcIclCylindre({ sphere: 1, cylindre: 1 })).toEqual(-0.94);
+  expect(calcIclCylindre({ sphere: -25, cylindre: 0 })).toEqual(0);
+  expect(calcIclCylindre({ sphere: -25, cylindre: -8 })).toEqual(7.56);
+  expect(calcIclCylindre({ sphere: 0, cylindre: -8 })).toEqual(7.56);
+  expect(calcIclCylindre({ sphere: NaN, cylindre: -8 })).toBe(NaN);
+  expect(calcIclCylindre({ sphere: NaN, cylindre: NaN })).toBe(NaN);
+  expect(calcIclCylindre({ sphere: 0, cylindre: NaN })).toBe(NaN);
 });
 
 it('calculates ICL Power Axis', () => {
@@ -49,9 +49,15 @@ it('calculates ICL Power Axis', () => {
 });
 
 it('calculates ICL Power Cylindre Equivalent', () => {
-  expect(calcIclCylindreEquivalent(0, 0)).toEqual(-1.34);
-  expect(calcIclCylindreEquivalent(10, 10)).toEqual(12.83);
-  expect(calcIclCylindreEquivalent(-25, -8)).toEqual(-28.73);
-  expect(calcIclCylindreEquivalent(-25, 0)).toEqual(-24.95);
-  expect(calcIclCylindreEquivalent(0, -8)).toEqual(-5.12);
+  expect(calcIclCylindreEquivalent({ sphere: 0, cylindre: 0 })).toEqual(-1.34);
+  expect(calcIclCylindreEquivalent({ sphere: 10, cylindre: 10 })).toEqual(
+    12.83
+  );
+  expect(calcIclCylindreEquivalent({ sphere: -25, cylindre: -8 })).toEqual(
+    -28.73
+  );
+  expect(calcIclCylindreEquivalent({ sphere: -25, cylindre: 0 })).toEqual(
+    -24.95
+  );
+  expect(calcIclCylindreEquivalent({ sphere: 0, cylindre: -8 })).toEqual(-5.12);
 });

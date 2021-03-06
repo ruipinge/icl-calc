@@ -230,10 +230,10 @@ export const ICLForm: React.FC<ContainerProps> = ({
               <FieldWithUnit
                 label="Sphere"
                 name="iclSphere"
-                value={calcIclSphere(
-                  values.spectacleRefraction.sphere,
-                  values.spectacleRefraction.cylindre
-                )}
+                value={calcIclSphere({
+                  sphere: values.spectacleRefraction.sphere,
+                  cylindre: values.spectacleRefraction.cylindre
+                })}
                 unit="dpt"
                 unitTitle="dioptres"
                 disabled={true}
@@ -241,10 +241,10 @@ export const ICLForm: React.FC<ContainerProps> = ({
               <FieldWithUnit
                 label="Cylindre"
                 name="iclCylindre"
-                value={calcIclCylindre(
-                  values.spectacleRefraction.sphere,
-                  values.spectacleRefraction.cylindre
-                )}
+                value={calcIclCylindre({
+                  sphere: values.spectacleRefraction.sphere,
+                  cylindre: values.spectacleRefraction.cylindre
+                })}
                 unit="dpt"
                 unitTitle="dioptres"
                 disabled={true}
@@ -259,10 +259,10 @@ export const ICLForm: React.FC<ContainerProps> = ({
               />
               <FieldWithUnit
                 label="Spherical Equivalent"
-                value={calcIclCylindreEquivalent(
-                  values.spectacleRefraction.sphere,
-                  values.spectacleRefraction.cylindre
-                )}
+                value={calcIclCylindreEquivalent({
+                  sphere: values.spectacleRefraction.sphere,
+                  cylindre: values.spectacleRefraction.cylindre
+                })}
                 name="iclSphericalEquivalent"
                 unit="º"
                 unitTitle="degrees"
