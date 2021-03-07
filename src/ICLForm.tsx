@@ -37,18 +37,17 @@ export interface ICLInputs {
 
 interface ContainerProps {
   initialValues: ICLInputs;
-  setStatus: (inputs: ICLInputs) => void;
 }
 
-export const ICLForm: React.FC<ContainerProps> = ({
-  initialValues,
-  setStatus
-}) => {
+export const ICLForm: React.FC<ContainerProps> = ({ initialValues }) => {
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={ICLSchema}
-      onSubmit={() => {}}
+      onSubmit={
+        /* istanbul ignore next */
+        () => {}
+      }
     >
       {({ errors, touched, values, ...otherProps }) => (
         <Form>

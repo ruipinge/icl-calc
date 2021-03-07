@@ -71,6 +71,11 @@
       "!<rootDir>/node_modules/",
       "!src/**/*.d.ts"
     ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/build/",
+      "<rootDir>/node_modules/",
+      "<rootDir>/src/index.tsx"
+    ],
     "coverageReporters": [
       "lcov"
     ]

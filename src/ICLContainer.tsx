@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 
 import { ICLForm, ICLInputs } from './ICLForm';
 
-const setStatus = (a: any) => console.log(a);
-
 export const ICLContainer = () => {
   const initialValues: ICLInputs = {
     patient: {
@@ -62,11 +60,7 @@ export const ICLContainer = () => {
         </div>
       </nav>
       <div className="container">
-        <ICLForm
-          initialValues={initialValues}
-          key={val}
-          setStatus={setStatus}
-        />
+        <ICLForm initialValues={initialValues} key={val} />
       </div>
     </>
   );
