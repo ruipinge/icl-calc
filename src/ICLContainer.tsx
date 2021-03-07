@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { ICLForm, ICLInputs } from './ICLForm';
+import { ICLInputs } from './patient';
+import { ICLForm } from './ICLForm';
 
 export const ICLContainer = () => {
   const initialValues: ICLInputs = {

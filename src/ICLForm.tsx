@@ -9,31 +9,8 @@ import {
   calcIclAxis,
   calcIclCylindreEquivalent
 } from './formulas';
-import { PatientInfo, PatientInfoFields } from './patient/PatientInfoFields';
-
-interface Biometrics {
-  ata: number;
-  wtw: number;
-  clr: number;
-  acq: number;
-  acan: number;
-  acat: number;
-  kf: number;
-  cct: number;
-}
-
-interface SpectacleRefraction {
-  sphere: number;
-  cylindre: number;
-  axis: number;
-  vertex: number;
-}
-
-export interface ICLInputs {
-  patient: PatientInfo;
-  biometrics: Biometrics;
-  spectacleRefraction: SpectacleRefraction;
-}
+import { PatientInfoFields } from './patient/PatientInfoFields';
+import { ICLInputs } from './patient';
 
 interface ContainerProps {
   initialValues: ICLInputs;
@@ -52,9 +29,9 @@ export const ICLForm: React.FC<ContainerProps> = ({ initialValues }) => {
       {({ errors, touched, values, ...otherProps }) => (
         <Form>
           <PatientInfoFields
-            values={values.patient}
-            errors={errors.patient}
-            touched={touched.patient}
+            values={values}
+            errors={errors}
+            touched={touched}
             {...otherProps}
           />
           <hr />

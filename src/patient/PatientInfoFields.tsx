@@ -1,13 +1,8 @@
 import { Field, ErrorMessage, FormikState } from 'formik';
 import { differenceInYears } from 'date-fns';
 
+import { ICLInputs } from '.';
 import { getClassName } from '../util';
-
-export interface PatientInfo {
-  name: string;
-  dateOfBirth: string;
-  eye: 'left' | 'right';
-}
 
 export const calcAge = ({
   dateOfBirth,
@@ -25,7 +20,7 @@ export const PatientInfoFields = ({
   errors,
   values,
   touched
-}: FormikState<PatientInfo | undefined>) => (
+}: FormikState<Pick<ICLInputs, 'patient'>>) => (
   <>
     <h2>Patient</h2>
     <div className="form-row">
@@ -44,8 +39,8 @@ export const PatientInfoFields = ({
         <Field
           name="patient.dateOfBirth"
           className={getClassName({
-            error: errors?.dateOfBirth,
-            touched: touched?.dateOfBirth
+            error: errors.patient?.dateOfBirth,
+            touched: touched.patient?.dateOfBirth
           })}
           id="fieldDateOfBirth"
           placeholder="yyyy-mm-dd"
@@ -67,8 +62,8 @@ export const PatientInfoFields = ({
             id="fieldAge"
             disabled={true}
             value={calcAge({
-              dateOfBirth: values?.dateOfBirth,
-              error: errors?.dateOfBirth
+              dateOfBirth: values.patient?.dateOfBirth,
+              error: errors.patient?.dateOfBirth
             })}
           />
           <div className="input-group-append">

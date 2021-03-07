@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom';
 
-import { ICLForm, ICLInputs } from './ICLForm';
+import { ICLInputs } from './patient';
+import { ICLForm } from './ICLForm';
 
 const initialValues: ICLInputs = {
   patient: {
