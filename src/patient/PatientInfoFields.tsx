@@ -1,6 +1,8 @@
 import { Field, ErrorMessage, FormikState } from 'formik';
 import { differenceInYears } from 'date-fns';
 
+import { getClassName } from '../util';
+
 export interface PatientInfo {
   name: string;
   dateOfBirth: string;
@@ -18,15 +20,6 @@ export const calcAge = ({
     !error &&
     differenceInYears(new Date(), new Date(dateOfBirth))) ||
   0;
-
-export const getDateOfBirthClassName = ({
-  error,
-  touched
-}: {
-  error?: string;
-  touched?: boolean;
-}): string =>
-  ['form-control', ...(error && touched ? ['is-invalid'] : [])].join(' ');
 
 export const PatientInfoFields = ({
   errors,
@@ -50,7 +43,7 @@ export const PatientInfoFields = ({
         <label htmlFor="fieldDateOfBirth">Date of Birth</label>
         <Field
           name="patient.dateOfBirth"
-          className={getDateOfBirthClassName({
+          className={getClassName({
             error: errors?.dateOfBirth,
             touched: touched?.dateOfBirth
           })}
@@ -65,7 +58,7 @@ export const PatientInfoFields = ({
           className="invalid-feedback"
         />
       </div>
-      <div className="form-group col-md-1 offset-md-1">
+      <div className="form-group col-md-2">
         <label htmlFor="fieldAge">Age</label>
         <div className="input-group">
           <input

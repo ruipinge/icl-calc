@@ -1,25 +1,44 @@
 import * as React from 'react';
 
 import { Field, ErrorMessage } from 'formik';
+import { getClassName } from '../util';
+
+type Unit = 'mm' | 'nm' | 'º' | 'dpt' | 'μm';
+
+const UNITS: Map<Unit, string> = new Map([
+  ['mm', 'millimetres'],
+  ['nm', 'nanometres'],
+  ['º', 'degrees'],
+  ['dpt', 'dioptres'],
+  ['μm', 'micrometres']
+]);
 
 interface FieldWithUnitProps {
   label: string;
   name: string;
-  unit?: string;
-  unitTitle?: string;
+  unit: Unit;
+  touched?: boolean;
   placeholder?: string;
   error?: string;
   value?: number;
   disabled?: boolean;
 }
 
+const UnitSufix = ({ unit }: { unit: Unit }) => (
+  <div className="input-group-append">
+    <span className="input-group-text" title={UNITS.get(unit)}>
+      {unit}
+    </span>
+  </div>
+);
+
 export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
   label,
   name,
   unit,
-  unitTitle,
   placeholder,
   error,
+  touched,
   value,
   disabled
 }) => {
@@ -34,27 +53,23 @@ export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
             <input
               name={name}
               value={value}
-              className={'form-control text-right'}
+              className="form-control text-right"
               disabled={true}
             />
           ) : (
             <Field
               type="number"
               name={name}
-              className={
-                (error ? 'is-invalid' : '') + ' form-control text-right'
-              }
+              className={getClassName({
+                error: error,
+                touched: touched,
+                base: ['form-control', 'text-right']
+              })}
               placeholder={placeholder}
               autoComplete="off"
             />
           )}
-          {unit ? (
-            <div className="input-group-append">
-              <span className="input-group-text" title={unitTitle}>
-                {unit}
-              </span>
-            </div>
-          ) : null}
+          <UnitSufix unit={unit} />
           <ErrorMessage
             name={name}
             component="div"

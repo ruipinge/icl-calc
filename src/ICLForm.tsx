@@ -66,55 +66,56 @@ export const ICLForm: React.FC<ContainerProps> = ({ initialValues }) => {
                 name="biometrics.ata"
                 unit="mm"
                 error={errors.biometrics?.ata}
+                touched={touched.biometrics?.ata}
               />
               <FieldWithUnit
                 label="White to White (WtW)"
                 name="biometrics.wtw"
                 unit="mm"
-                unitTitle="millimetres"
                 error={errors.biometrics?.wtw}
+                touched={touched.biometrics?.wtw}
               />
               <FieldWithUnit
                 label="Crystaline Lens Rise (CLR)"
                 name="biometrics.clr"
                 unit="nm"
-                unitTitle="nanometres"
                 error={errors.biometrics?.clr}
+                touched={touched.biometrics?.clr}
               />
               <FieldWithUnit
                 label="Internal Anterior Chamber Depth (ACQ)"
                 name="biometrics.acq"
                 unit="mm"
-                unitTitle="millimetres"
                 error={errors.biometrics?.acq}
+                touched={touched.biometrics?.acq}
               />
               <FieldWithUnit
                 label="Anterior Chamber Angle nasal (ACAn)"
                 name="biometrics.acan"
                 unit="º"
-                unitTitle="degrees"
                 error={errors.biometrics?.acan}
+                touched={touched.biometrics?.acan}
               />
               <FieldWithUnit
                 label="Anterior Chamber Angle temporal (ACAt)"
                 name="biometrics.acat"
                 unit="º"
-                unitTitle="degrees"
                 error={errors.biometrics?.acat}
+                touched={touched.biometrics?.acat}
               />
               <FieldWithUnit
                 label="Keratometry - Flat Meridian (Kf)"
                 name="biometrics.kf"
                 unit="dpt"
-                unitTitle="dioptres"
                 error={errors.biometrics?.kf}
+                touched={touched.biometrics?.kf}
               />
               <FieldWithUnit
                 label="Central Corneal Thickness (CCT)"
                 name="biometrics.cct"
                 unit="μm"
-                unitTitle="micrometres"
                 error={errors.biometrics?.cct}
+                touched={touched.biometrics?.cct}
               />
             </div>
             <div className="col-md-3 offset-md-1">
@@ -123,29 +124,29 @@ export const ICLForm: React.FC<ContainerProps> = ({ initialValues }) => {
                 label="Sphere"
                 name="spectacleRefraction.sphere"
                 unit="dpt"
-                unitTitle="dioptres"
                 error={errors.spectacleRefraction?.sphere}
+                touched={touched.spectacleRefraction?.sphere}
               />
               <FieldWithUnit
                 label="Cylindre"
                 name="spectacleRefraction.cylindre"
                 unit="dpt"
-                unitTitle="dioptres"
                 error={errors.spectacleRefraction?.cylindre}
+                touched={touched.spectacleRefraction?.cylindre}
               />
               <FieldWithUnit
                 label="Axis"
                 name="spectacleRefraction.axis"
                 unit="º"
-                unitTitle="degrees"
                 error={errors.spectacleRefraction?.axis}
+                touched={touched.spectacleRefraction?.axis}
               />
               <FieldWithUnit
                 label="Vertex"
                 name="spectacleRefraction.vertex"
                 unit="mm"
-                unitTitle="millimetres"
                 error={errors.spectacleRefraction?.vertex}
+                touched={touched.spectacleRefraction?.vertex}
               />
             </div>
             <div className="col-md-3 offset-md-1">
@@ -158,7 +159,6 @@ export const ICLForm: React.FC<ContainerProps> = ({ initialValues }) => {
                   cylindre: values.spectacleRefraction.cylindre
                 })}
                 unit="dpt"
-                unitTitle="dioptres"
                 disabled={true}
               />
               <FieldWithUnit
@@ -169,7 +169,6 @@ export const ICLForm: React.FC<ContainerProps> = ({ initialValues }) => {
                   cylindre: values.spectacleRefraction.cylindre
                 })}
                 unit="dpt"
-                unitTitle="dioptres"
                 disabled={true}
               />
               <FieldWithUnit
@@ -177,7 +176,6 @@ export const ICLForm: React.FC<ContainerProps> = ({ initialValues }) => {
                 name="iclAxis"
                 value={calcIclAxis(values.spectacleRefraction.axis)}
                 unit="º"
-                unitTitle="degrees"
                 disabled={true}
               />
               <FieldWithUnit
@@ -188,7 +186,6 @@ export const ICLForm: React.FC<ContainerProps> = ({ initialValues }) => {
                 })}
                 name="iclSphericalEquivalent"
                 unit="º"
-                unitTitle="degrees"
                 disabled={true}
               />
             </div>
