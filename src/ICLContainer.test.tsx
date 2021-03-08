@@ -1,30 +1,32 @@
-import ReactDOM from 'react-dom';
+import TestRenderer from 'react-test-renderer';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { ICLContainer } from './ICLContainer';
 
 it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<ICLContainer />, div);
-  ReactDOM.unmountComponentAtNode(div);
+  const tree = TestRenderer.create(<ICLContainer />).toJSON();
+  expect(tree).toMatchSnapshot();
 });
 
 it('re-renders ICLForm on reset button click (testing-library)', async () => {
-  render(<ICLContainer />);
+  const { asFragment } = render(<ICLContainer />);
+  expect(asFragment()).toMatchSnapshot();
 
   await waitFor(() => {
     fireEvent.change(screen.getByLabelText('Name'), {
-      target: { value: 'John' }
+      target: { value: 'Blake' }
     });
   });
 
   expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe(
-    'John'
+    'Blake'
   );
+  expect(asFragment()).toMatchSnapshot();
 
   await waitFor(() => {
     fireEvent.click(screen.getByText('Reset'));
   });
 
   expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe('');
+  expect(asFragment()).toMatchSnapshot();
 });

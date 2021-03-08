@@ -1,33 +1,9 @@
 import { useState } from 'react';
 
-import { ICLInputs } from './patient';
+import { INITIAL_VALUES } from './patient';
 import { ICLForm } from './ICLForm';
 
 export const ICLContainer = () => {
-  const initialValues: ICLInputs = {
-    patient: {
-      name: '',
-      dateOfBirth: '',
-      eye: 'left'
-    },
-    biometrics: {
-      ata: 0,
-      wtw: 0,
-      clr: 0,
-      acq: 0,
-      acan: 0,
-      acat: 0,
-      kf: 0,
-      cct: 0
-    },
-    spectacleRefraction: {
-      sphere: 0,
-      cylindre: 0,
-      axis: 0,
-      vertex: 0
-    }
-  };
-
   const [val, setVal] = useState(0);
 
   return (
@@ -61,7 +37,7 @@ export const ICLContainer = () => {
         </div>
       </nav>
       <div className="container">
-        <ICLForm initialValues={initialValues} key={val} />
+        <ICLForm initialValues={INITIAL_VALUES} key={val} />
       </div>
     </>
   );
