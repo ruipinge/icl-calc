@@ -1,7 +1,7 @@
 import { Field, ErrorMessage, FormikState } from 'formik';
 import { differenceInYears } from 'date-fns';
 
-import { ICLInputs } from '.';
+import { ICLInputs } from '../types';
 import { getClassName } from '../util';
 
 export const calcAge = ({
@@ -16,13 +16,13 @@ export const calcAge = ({
     differenceInYears(new Date(), new Date(dateOfBirth))) ||
   0;
 
-export const PatientInfoFields = ({
+export const Info = ({
   errors,
   values,
   touched
 }: FormikState<Pick<ICLInputs, 'patient'>>) => (
   <>
-    <h2>Patient</h2>
+    <h4>Information</h4>
     <div className="form-row">
       <div className="form-group col-md-4">
         <label htmlFor="fieldName">Name</label>

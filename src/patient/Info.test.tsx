@@ -1,4 +1,4 @@
-import { calcAge } from './PatientInfoFields';
+import { calcAge } from './Info';
 
 it('calculates age', () => {
   expect(calcAge({})).toBe(0);

@@ -1,44 +1,117 @@
-import { useState } from 'react';
-
-import { INITIAL_VALUES } from './patient';
-import { ICLForm } from './ICLForm';
+import { Formik } from 'formik';
+import {
+  BrowserRouter as Router,
+  NavLink,
+  Route,
+  Switch
+} from 'react-router-dom';
+import { ICLSchema } from './ICLSchema';
+import { Matrix } from './matrix';
+import { Normality } from './normality';
+import { Patient } from './patient';
+import { Regression } from './regression';
+import { INITIAL_VALUES } from './types';
 
 export const ICLContainer = () => {
-  const [val, setVal] = useState(0);
+  const initialValues = INITIAL_VALUES;
 
   return (
-    <>
-      <nav className="navbar navbar-expand navbar-dark bg-dark fixed-top">
-        <div className="container">
-          <a className="navbar-brand" href="/icl-calc">
-            ICL Size Calc
-          </a>
-          <ul className="navbar-nav mr-auto">
-            {/*
-            <li class="nav-item active">
-              <a class="nav-link" href="#home">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            */}
-          </ul>
-          <form className="form-inline">
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={() => {
-                setVal((state) => state + 1);
-              }}
-            >
-              Reset
-            </button>
-          </form>
-        </div>
-      </nav>
-      <div className="container">
-        <ICLForm initialValues={INITIAL_VALUES} key={val} />
-      </div>
-    </>
+    <Formik
+      initialValues={initialValues}
+      validationSchema={ICLSchema}
+      onSubmit={
+        /* istanbul ignore next */
+        () => {}
+      }
+    >
+      {({ errors, touched, values, resetForm, ...otherProps }) => (
+        <>
+          <nav className="navbar navbar-expand navbar-dark bg-dark fixed-top">
+            <div className="container">
+              <a className="navbar-brand" href={process.env.PUBLIC_URL || '/'}>
+                ICL Size Calc
+              </a>
+              <form className="form-inline">
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() => {
+                    resetForm();
+                  }}
+                >
+                  Reset
+                </button>
+              </form>
+            </div>
+          </nav>
+          <div className="container">
+            <Router basename={process.env.PUBLIC_URL}>
+              <ul className="nav nav-pills" style={{ marginBottom: '1rem' }}>
+                <li className="nav-item">
+                  <NavLink
+                    exact={true}
+                    className="nav-link"
+                    activeClassName="active"
+                    to="/"
+                  >
+                    Patient
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    exact={true}
+                    className="nav-link"
+                    activeClassName="active"
+                    to="/normality"
+                  >
+                    Biometric Normality
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    exact={true}
+                    className="nav-link"
+                    activeClassName="active"
+                    to="/matrix"
+                  >
+                    Floating Matrix
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    exact={true}
+                    className="nav-link"
+                    activeClassName="active"
+                    to="/regression"
+                  >
+                    Regression
+                  </NavLink>
+                </li>
+              </ul>
+              <hr />
+              <Switch>
+                <Route path="/normality">
+                  <Normality />
+                </Route>
+                <Route path="/matrix">
+                  <Matrix />
+                </Route>
+                <Route path="/regression">
+                  <Regression />
+                </Route>
+                <Route path="/">
+                  <Patient
+                    values={values}
+                    errors={errors}
+                    touched={touched}
+                    {...otherProps}
+                  />
+                </Route>
+              </Switch>
+            </Router>
+          </div>
+        </>
+      )}
+    </Formik>
   );
 };

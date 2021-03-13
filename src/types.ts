@@ -28,6 +28,10 @@ export interface ICLInputs {
   spectacleRefraction: SpectacleRefraction;
 }
 
+export interface ContainerProps {
+  initialValues: ICLInputs;
+}
+
 export const INITIAL_VALUES: ICLInputs = {
   patient: {
     name: '',
