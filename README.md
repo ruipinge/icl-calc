@@ -19,7 +19,7 @@ TODO: write some instructions
 3. Install npm dependencies: `npm ci`
 4. Run the local server: `npm start`
 
-Run tests: `npm test`
+Run tests: `npm test` (or `npm test -- --watchAll=false` to build coverage report from scratch)
 
 ## Tech
 
