@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![build](https://github.com/ruipinge/icl-calc/workflows/main/badge.svg)](https://github.com/ruipinge/icl-calc/actions)
+[![Maintainability](https://api.codeclimate.com/v1/badges/386ed8d68c41f3873530/maintainability)](https://codeclimate.com/github/ruipinge/icl-calc/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/386ed8d68c41f3873530/test_coverage)](https://codeclimate.com/github/ruipinge/icl-calc/test_coverage)
 [![codecov](https://codecov.io/gh/ruipinge/icl-calc/branch/master/graph/badge.svg?token=XVTKUDYAU6)](https://codecov.io/gh/ruipinge/icl-calc)
 
 An Implantable Collamer Lenses (ICL) vault size calculator available as a web application. The last working version can be found [here](https://ruipinge.github.io/icl-calc/).

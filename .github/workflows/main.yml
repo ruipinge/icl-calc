@@ -40,7 +40,15 @@ jobs:
           flags: unittests
           name: icl-calc-tests
           fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
+          verbose: false # optional (default = false)
+
+      - name: Code Climate
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: f2ea7af8e046090fb114aa95b903c3e2980fba5afbbb715cd6cecabd7aba27b3
+        with:
+          coverageLocations: |
+            ${{github.workspace}}/coverage/lcov.info:lcov
 
   deploy:
     if: github.ref == 'refs/heads/master'
