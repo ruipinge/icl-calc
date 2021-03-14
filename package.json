@@ -2,6 +2,7 @@
   "name": "icl-calc",
   "version": "0.0.0-development",
   "author": "Rui Pinge",
+  "private": true,
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -12,6 +13,7 @@
     "url": "https://github.com/ruipinge/icl-calc/issues"
   },
   "dependencies": {
+    "@semantic-release/git": "^9.0.0",
     "@sentry/react": "^6.2.2",
     "@sentry/tracing": "^6.2.2",
     "@testing-library/jest-dom": "^5.11.9",
@@ -102,7 +104,9 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      "@semantic-release/github"
+      "@semantic-release/github",
+      "@semantic-release/npm",
+      "@semantic-release/git"
     ]
   }
 }
