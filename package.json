@@ -44,7 +44,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --coverage",
+    "test": "REACT_APP_VERSION=0.0.t react-scripts test --coverage",
     "eject": "react-scripts eject",
     "clean": "rm -rf ./node_modules ./coverage ./npm-debug.log ./build",
     "format": "prettier --write './src/**.{js,jsx,ts,tsx}'",

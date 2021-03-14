@@ -92,9 +92,9 @@ exports[`renders Biometric Normality on #normality route 1`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li
@@ -257,9 +257,9 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li
@@ -1104,9 +1104,9 @@ exports[`renders Patient for inexistent route 1`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li
@@ -1952,9 +1952,9 @@ exports[`renders Patient form on # route 1`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li
@@ -2117,9 +2117,9 @@ exports[`renders Regression on #regression route 1`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li
@@ -2965,9 +2965,9 @@ exports[`renders without crashing 1`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li
@@ -3813,9 +3813,9 @@ exports[`resets form when clicking reset button 1`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li
@@ -4661,9 +4661,9 @@ exports[`resets form when clicking reset button 2`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li
@@ -5509,9 +5509,9 @@ exports[`resets form when clicking reset button 3`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li

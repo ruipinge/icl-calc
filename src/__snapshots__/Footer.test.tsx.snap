@@ -16,9 +16,9 @@ exports[`renders without crashing 1`] = `
           class="d-inline-block"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v0.0.t"
           >
-            v1.0.2
+            v0.0.t
           </a>
         </li>
         <li
