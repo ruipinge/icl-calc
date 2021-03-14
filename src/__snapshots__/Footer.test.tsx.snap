@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders without crashing 1`] = `
+<DocumentFragment>
+  <footer
+    class="p-3 p-md-5 mt-5 bg-light text-center text-sm-left"
+    style="font-size: 0.875rem; color: rgb(99, 112, 124);"
+  >
+    <div
+      class="container"
+    >
+      <ul
+        class="bd-footer-links pl-0 mb-3"
+      >
+        <li
+          class="d-inline-block"
+        >
+          <a
+            href="https://github.com/ruipinge/icl-calc/releases/tag/v1.0.2"
+          >
+            v1.0.2
+          </a>
+        </li>
+        <li
+          class="d-inline-block ml-3"
+        >
+          <a
+            href="https://github.com/ruipinge/icl-calc/blob/master/README.md#instructions"
+          >
+            Instructions
+          </a>
+        </li>
+        <li
+          class="d-inline-block ml-3"
+        >
+          <a
+            href="https://github.com/ruipinge/icl-calc/blob/master/README.md#data"
+          >
+            Data
+          </a>
+        </li>
+        <li
+          class="d-inline-block ml-3"
+        >
+          <a
+            href="https://github.com/ruipinge/icl-calc"
+          >
+            GitHub
+          </a>
+        </li>
+      </ul>
+      <p
+        class="mb-0"
+      >
+        Designed and built with love by 
+        <a
+          href="https://www.linkedin.com/in/pedro-serra-44697321/"
+        >
+          Pedro Serra
+        </a>
+         and 
+        <a
+          href="https://ruipinge.github.io/resume"
+        >
+          Rui Pinge
+        </a>
+        .
+      </p>
+      <p
+        class="mb-0"
+      >
+        Available under the 
+        <a
+          href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
+          rel="license noopener"
+          target="_blank"
+        >
+          MIT License
+        </a>
+         without any kind of warranty.
+      </p>
+      <p
+        class="mb-0"
+      >
+        The authors cannot be held responsible for any consequense of its usage.
+      </p>
+    </div>
+  </footer>
+</DocumentFragment>
+`;

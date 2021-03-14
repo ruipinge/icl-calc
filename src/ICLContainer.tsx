@@ -1,5 +1,6 @@
 import { Formik } from 'formik';
 import { HashRouter as Router, NavLink, Route, Switch } from 'react-router-dom';
+import { Footer } from './Footer';
 import { ICLSchema } from './ICLSchema';
 import { Matrix } from './matrix';
 import { Normality } from './normality';
@@ -105,6 +106,7 @@ export const ICLContainer = () => {
               </Switch>
             </Router>
           </div>
+          <Footer />
         </>
       )}
     </Formik>

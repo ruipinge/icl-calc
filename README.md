@@ -8,7 +8,7 @@
 
 An Implantable Collamer Lenses (ICL) vault size calculator available as a web application. The last working version can be found [here](https://ruipinge.github.io/icl-calc/).
 
-## Instructions
+## [Instructions](#instructions)
 
 TODO: write some instructions
 
@@ -31,7 +31,7 @@ Run tests: `npm test` (or `npm test -- --watchAll=false` to build coverage repor
 - [Bootstrap](https://getbootstrap.com/)
 - [GitHub Actions](https://github.com/features/actions), [GitHub Pages](https://pages.github.com/)
 
-## Data
+## [Data](#data)
 
 TODO: Disclaimer: the statistical data used in this appliction is real data, blabla...
 
@@ -44,6 +44,6 @@ TODO: Disclaimer: the statistical data used in this appliction is real data, bla
 
 [1] [Determining vault size in implantable collamer lenses: preoperative anatomy and lens parameters](https://doi.org/10.1097/j.jcrs.0000000000000146)
 
-## Warranty
+## [Warranty](#warranty)
 
 This project is available under the [MIT License](https://github.com/ruipinge/icl-calc/blob/master/LICENSE) without any kind of warranty. The authors cannot be held responsible for any consequense of its usage.
