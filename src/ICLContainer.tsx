@@ -1,10 +1,5 @@
 import { Formik } from 'formik';
-import {
-  BrowserRouter as Router,
-  NavLink,
-  Route,
-  Switch
-} from 'react-router-dom';
+import { HashRouter as Router, NavLink, Route, Switch } from 'react-router-dom';
 import { ICLSchema } from './ICLSchema';
 import { Matrix } from './matrix';
 import { Normality } from './normality';
@@ -45,7 +40,7 @@ export const ICLContainer = () => {
             </div>
           </nav>
           <div className="container">
-            <Router basename={process.env.PUBLIC_URL}>
+            <Router hashType="noslash">
               <ul className="nav nav-pills" style={{ marginBottom: '1rem' }}>
                 <li className="nav-item">
                   <NavLink

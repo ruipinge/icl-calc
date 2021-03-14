@@ -9,8 +9,8 @@ import { ICLContainer } from './ICLContainer';
  * @param route - route to be used; default: the configured base url
  * @returns
  */
-const renderWithRouter = (ui: JSX.Element, route: string = '/') => {
-  window.history.pushState({}, 'Test page', process.env.PUBLIC_URL + route);
+const renderWithRouter = (ui: JSX.Element, route: string = '#') => {
+  window.history.pushState({}, 'Test page', route);
   return render(ui, { wrapper: BrowserRouter });
 };
 
@@ -75,27 +75,27 @@ it('switches to Regression tab when clicked', async () => {
   expect(screen.getByText(/Regression is coming soon/)).toBeVisible();
 });
 
-it('renders Patient form on / route', () => {
+it('renders Patient form on # route', () => {
   const { asFragment } = renderWithRouter(<ICLContainer />);
   expect(asFragment()).toMatchSnapshot();
 });
 
-it('renders Biometric Normality on /normality route', () => {
-  const { asFragment } = renderWithRouter(<ICLContainer />, '/normality');
+it('renders Biometric Normality on #normality route', () => {
+  const { asFragment } = renderWithRouter(<ICLContainer />, '#normality');
   expect(asFragment()).toMatchSnapshot();
 });
 
-it('renders Floating Matrix on /matrix route', () => {
-  const { asFragment } = renderWithRouter(<ICLContainer />, '/matrix');
+it('renders Floating Matrix on #matrix route', () => {
+  const { asFragment } = renderWithRouter(<ICLContainer />, '#matrix');
   expect(asFragment()).toMatchSnapshot();
 });
 
-it('renders Regression on /regression route', () => {
-  const { asFragment } = renderWithRouter(<ICLContainer />, '/regression');
+it('renders Regression on #regression route', () => {
+  const { asFragment } = renderWithRouter(<ICLContainer />, '#regression');
   expect(asFragment()).toMatchSnapshot();
 });
 
 it('renders Patient for inexistent route', () => {
-  const { asFragment } = renderWithRouter(<ICLContainer />, '/does-not-exist');
+  const { asFragment } = renderWithRouter(<ICLContainer />, '#does-not-exist');
   expect(asFragment()).toMatchSnapshot();
 });
