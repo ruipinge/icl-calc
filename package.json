@@ -1,6 +1,6 @@
 {
   "name": "icl-calc",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "author": "Rui Pinge",
   "license": "MIT",
   "repository": {
@@ -34,6 +34,7 @@
     "react-scripts": "4.0.2",
     "react-test-renderer": "^17.0.1",
     "sass": "^1.32.8",
+    "semantic-release": "^17.4.2",
     "typescript": "^4.1.5",
     "web-vitals": "^1.1.0",
     "yup": "^0.32.9"
@@ -45,7 +46,8 @@
     "eject": "react-scripts eject",
     "clean": "rm -rf ./node_modules ./coverage ./npm-debug.log ./build",
     "format": "prettier --write './src/**.{js,jsx,ts,tsx}'",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "semantic-release": "semantic-release"
   },
   "eslintConfig": {
     "extends": [
@@ -92,5 +94,15 @@
     "trailingComma": "none",
     "singleQuote": true,
     "printWidth": 80
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github"
+    ]
   }
 }
