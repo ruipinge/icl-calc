@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/icl-calc/static/css/main.ecf17ec9.chunk.css",
-    "main.js": "/icl-calc/static/js/main.b8920180.chunk.js",
-    "main.js.map": "/icl-calc/static/js/main.b8920180.chunk.js.map",
+    "main.css": "/icl-calc/static/css/main.c1764076.chunk.css",
+    "main.js": "/icl-calc/static/js/main.704a342f.chunk.js",
+    "main.js.map": "/icl-calc/static/js/main.704a342f.chunk.js.map",
     "runtime-main.js": "/icl-calc/static/js/runtime-main.1f5a76d2.js",
     "runtime-main.js.map": "/icl-calc/static/js/runtime-main.1f5a76d2.js.map",
-    "static/js/2.8a76d8fe.chunk.js": "/icl-calc/static/js/2.8a76d8fe.chunk.js",
-    "static/js/2.8a76d8fe.chunk.js.map": "/icl-calc/static/js/2.8a76d8fe.chunk.js.map",
+    "static/js/2.17c8edf7.chunk.js": "/icl-calc/static/js/2.17c8edf7.chunk.js",
+    "static/js/2.17c8edf7.chunk.js.map": "/icl-calc/static/js/2.17c8edf7.chunk.js.map",
     "index.html": "/icl-calc/index.html",
-    "static/css/main.ecf17ec9.chunk.css.map": "/icl-calc/static/css/main.ecf17ec9.chunk.css.map",
-    "static/js/2.8a76d8fe.chunk.js.LICENSE.txt": "/icl-calc/static/js/2.8a76d8fe.chunk.js.LICENSE.txt"
+    "static/css/main.c1764076.chunk.css.map": "/icl-calc/static/css/main.c1764076.chunk.css.map",
+    "static/js/2.17c8edf7.chunk.js.LICENSE.txt": "/icl-calc/static/js/2.17c8edf7.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.1f5a76d2.js",
-    "static/js/2.8a76d8fe.chunk.js",
-    "static/css/main.ecf17ec9.chunk.css",
-    "static/js/main.b8920180.chunk.js"
+    "static/js/2.17c8edf7.chunk.js",
+    "static/css/main.c1764076.chunk.css",
+    "static/js/main.704a342f.chunk.js"
   ]
 }
