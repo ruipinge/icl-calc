@@ -282,54 +282,63 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
           <th
             class="text-right"
             scope="col"
+            title="Spherical Equivalent (SE) less than -6 dpt"
           >
             Low
           </th>
           <th
             class="text-right"
             scope="col"
+            title="Spherical Equivalent (SE) between -6 dpt and -12 dpt"
           >
             Moderate
           </th>
           <th
             class="text-right"
             scope="col"
+            title="Spherical Equivalent (SE) greater than -12 dpt"
           >
             High
           </th>
           <th
             class="text-right"
             scope="col"
+            title="Spherical Equivalent (SE) less than -6 dpt"
           >
             Low
           </th>
           <th
             class="text-right"
             scope="col"
+            title="Spherical Equivalent (SE) between -6 dpt and -12 dpt"
           >
             Moderate
           </th>
           <th
             class="text-right"
             scope="col"
+            title="Spherical Equivalent (SE) greater than -12 dpt"
           >
             High
           </th>
           <th
             class="text-right"
             scope="col"
+            title="Spherical Equivalent (SE) less than -6 dpt"
           >
             Low
           </th>
           <th
             class="text-right"
             scope="col"
+            title="Spherical Equivalent (SE) between -6 dpt and -12 dpt"
           >
             Moderate
           </th>
           <th
             class="text-right"
             scope="col"
+            title="Spherical Equivalent (SE) greater than -12 dpt"
           >
             High
           </th>
@@ -829,6 +838,34 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
         </tr>
       </tbody>
     </table>
+    <ul
+      class="list-inline"
+    >
+      <li
+        class="list-inline-item"
+      >
+        <strong>
+          Angle to Angle (AtA): 
+        </strong>
+        0 mm.
+      </li>
+      <li
+        class="list-inline-item"
+      >
+        <strong>
+          Crystaline Lens Rise (CLR): 
+        </strong>
+        0 mm.
+      </li>
+      <li
+        class="list-inline-item"
+      >
+        <strong>
+          Number of matching Eyes: 
+        </strong>
+        0/372.
+      </li>
+    </ul>
   </div>
   <footer
     class="p-3 p-md-5 mt-5 bg-light text-center text-sm-left"
@@ -1647,7 +1684,7 @@ exports[`renders Patient for inexistent route 1`] = `
             class="col-sm-6 col-form-label"
             for="iclSphericalEquivalentfield"
           >
-            Spherical Equivalent
+            Spherical Equivalent (SE)
           </label>
           <div
             class="col-sm-6"
@@ -2495,7 +2532,7 @@ exports[`renders Patient form on # route 1`] = `
             class="col-sm-6 col-form-label"
             for="iclSphericalEquivalentfield"
           >
-            Spherical Equivalent
+            Spherical Equivalent (SE)
           </label>
           <div
             class="col-sm-6"
@@ -3508,7 +3545,7 @@ exports[`renders without crashing 1`] = `
             class="col-sm-6 col-form-label"
             for="iclSphericalEquivalentfield"
           >
-            Spherical Equivalent
+            Spherical Equivalent (SE)
           </label>
           <div
             class="col-sm-6"
@@ -4356,7 +4393,7 @@ exports[`resets form when clicking reset button 1`] = `
             class="col-sm-6 col-form-label"
             for="iclSphericalEquivalentfield"
           >
-            Spherical Equivalent
+            Spherical Equivalent (SE)
           </label>
           <div
             class="col-sm-6"
@@ -5204,7 +5241,7 @@ exports[`resets form when clicking reset button 2`] = `
             class="col-sm-6 col-form-label"
             for="iclSphericalEquivalentfield"
           >
-            Spherical Equivalent
+            Spherical Equivalent (SE)
           </label>
           <div
             class="col-sm-6"
@@ -6052,7 +6089,7 @@ exports[`resets form when clicking reset button 3`] = `
             class="col-sm-6 col-form-label"
             for="iclSphericalEquivalentfield"
           >
-            Spherical Equivalent
+            Spherical Equivalent (SE)
           </label>
           <div
             class="col-sm-6"

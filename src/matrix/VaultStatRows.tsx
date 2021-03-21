@@ -1,7 +1,7 @@
 import { MatrixFilter, filterFlatRows } from './data';
 
+import { DataPoint } from '../db';
 import { MatrixRow } from './components';
-import { Row } from '../db';
 import { round } from '../formulas';
 
 export const getVaultVals = ({
@@ -9,15 +9,17 @@ export const getVaultVals = ({
   reducer
 }: {
   filter: MatrixFilter;
-  reducer: (rows: Row[]) => number;
+  reducer: (points: DataPoint[]) => number;
 }): number[] =>
-  filterFlatRows(filter).map((rows: Row[]) => round(reducer(rows), 5));
+  filterFlatRows(filter).map((points: DataPoint[]) =>
+    round(reducer(points), 5)
+  );
 
 export const getVaultAverages = (filter: MatrixFilter): number[] =>
   getVaultVals({
     filter,
-    reducer: (rows: Row[]) =>
-      rows.reduce((memo, row) => memo + row[11], 0) / rows.length || 0
+    reducer: (points: DataPoint[]) =>
+      points.reduce((memo, point) => memo + point.vault, 0) / points.length || 0
   });
 
 type lessGreater = (a: number, b: number) => boolean;
@@ -33,10 +35,10 @@ export const getVaultMaxMin = ({
 }): number[] =>
   getVaultVals({
     filter,
-    reducer: (rows: Row[]) =>
-      rows.reduce(
-        (memo, row) =>
-          memo === 0 || comparator(memo, row[11]) ? row[11] : memo,
+    reducer: (points: DataPoint[]) =>
+      points.reduce(
+        (memo, point) =>
+          memo === 0 || comparator(memo, point.vault) ? point.vault : memo,
         0
       )
   });
@@ -61,10 +63,33 @@ const VaultSizeRow = ({
   />
 );
 
+interface VaultStat {
+  label: string;
+  func: (filter: MatrixFilter) => number[];
+}
+const VAULT_STATS: VaultStat[] = [
+  {
+    label: 'Average',
+    func: getVaultAverages
+  },
+  {
+    label: 'Minimum',
+    func: getVaultMins
+  },
+  {
+    label: 'Maximum',
+    func: getVaultMaxs
+  }
+];
+
 export const VaultStatRows = (filter: MatrixFilter) => (
   <>
-    <VaultSizeRow label="Average" values={getVaultAverages(filter)} />
-    <VaultSizeRow label="Minimum" values={getVaultMins(filter)} />
-    <VaultSizeRow label="Maximum" values={getVaultMaxs(filter)} />
+    {VAULT_STATS.map((stat) => (
+      <VaultSizeRow
+        key={stat.label}
+        label={stat.label}
+        values={stat.func(filter)}
+      />
+    ))}
   </>
 );

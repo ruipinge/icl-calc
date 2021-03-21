@@ -1,15 +1,15 @@
-import { ROWS } from './db';
+import { DATA_POINTS } from './db';
 
 it('validates data length', () => {
-  expect(ROWS.length).toBe(372);
+  expect(DATA_POINTS.length).toBe(372);
 });
 
 it('validates data integrity', () => {
-  ROWS.forEach((row) => {
-    expect(row.length).toBe(18);
-    row.forEach((col) => {
-      expect(typeof col).toBe('number');
-      expect(col).not.toBe(NaN);
-    });
+  DATA_POINTS.forEach((point) => {
+    expect(point.ata).not.toBe(NaN);
+    expect(point.clr).not.toBe(NaN);
+    expect(point.iclSe).not.toBe(NaN);
+    expect(point.iclSize).not.toBe(NaN);
+    expect(point.vault).not.toBe(NaN);
   });
 });

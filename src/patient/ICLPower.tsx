@@ -44,7 +44,7 @@ export const ICLPower = ({
       disabled={true}
     />
     <FieldWithUnit
-      label="Spherical Equivalent"
+      label="Spherical Equivalent (SE)"
       value={calcIclCylindreEquivalent({
         sphere: values.spectacleRefraction.sphere,
         cylindre: values.spectacleRefraction.cylindre

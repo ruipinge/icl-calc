@@ -1,4 +1,4 @@
-import { LENS_SIZES, MYOPIA_LEVEL } from '../db';
+import { LENS_SIZES, MYOPIA_LEVELS } from './data';
 
 export const MatrixRow = ({
   label,
@@ -23,6 +23,6 @@ export const MatrixRow = ({
 
 export const DividerRow = () => (
   <tr className="table-bordered">
-    <td colSpan={LENS_SIZES.length * MYOPIA_LEVEL.length + 1} />
+    <td colSpan={LENS_SIZES.length * MYOPIA_LEVELS.length + 1} />
   </tr>
 );

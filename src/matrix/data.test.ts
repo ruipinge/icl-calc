@@ -1,8 +1,14 @@
-import { LensSizeIndex, buildIndex } from '../db';
-import { MatrixFilter, filterFlatRows } from './data';
+import { DataPoint, mapRowsToDataPoint } from '../db';
+import {
+  LENS_SIZES,
+  MYOPIA_LEVELS,
+  MatrixFilter,
+  filterFlatRows,
+  getDataPoints
+} from './data';
 
 // prettier-ignore
-const indexedRows: LensSizeIndex = buildIndex([
+const dataPoints: DataPoint[] = mapRowsToDataPoint([
     //[Age, ICLSize, ICLSE,  ACD, CCT,  ACQ,   ATA,   CLR, pre-op ACA nasal, pre-op ACA Temp, Ave Pre-op ACA nasal, vault, post-op ACA nasal, post-op ACA Temp, Ave Post-op ACA nasal,  WTW, Keratometry, gender]
       [ 23,    12.6,    -5, 4.02, 610, 3.41, 11.72, -0.08,             44.9,            49.2,                47.05,   1.1,              18.9,             24.4,                 21.65, 11.3,       44.35,      0],
       [ 23,    12.6,    -5, 4.02, 610, 3.41, 11.72, -0.08,             44.9,            49.2,                47.05,   1.2,              18.9,             24.4,                 21.65, 11.3,       44.35,      0],
@@ -44,11 +50,37 @@ const indexedRows: LensSizeIndex = buildIndex([
 export const FILTER: MatrixFilter = {
   ata: 11.7,
   clr: 0,
-  indexedRows: indexedRows
+  dataPoints: dataPoints
 };
 
-it('filter rows', () => {
+it('filter mocked data points', () => {
   const flatRows = filterFlatRows(FILTER);
   expect(flatRows.length).toBe(9);
-  flatRows.forEach((rows) => expect(rows.length).toBe(3));
+  flatRows.forEach((points) => expect(points.length).toBe(3));
+});
+
+it('filter real data points', () => {
+  const flatRows = filterFlatRows({
+    ata: 11.7,
+    clr: 0
+  });
+  expect(flatRows.length).toBe(9);
+
+  expect(flatRows[0].length).toBe(0);
+  expect(flatRows[1].length).toBe(2);
+  expect(flatRows[2].length).toBe(5);
+  expect(flatRows[3].length).toBe(0);
+  expect(flatRows[4].length).toBe(7);
+  expect(flatRows[5].length).toBe(5);
+  expect(flatRows[6].length).toBe(0);
+  expect(flatRows[7].length).toBe(0);
+  expect(flatRows[8].length).toBe(0);
+});
+
+it('filter real data points for Lens and Myopia', () => {
+  const points = getDataPoints({
+    lens: LENS_SIZES[0],
+    myopia: MYOPIA_LEVELS[0]
+  });
+  expect(points.length).toBe(5);
 });

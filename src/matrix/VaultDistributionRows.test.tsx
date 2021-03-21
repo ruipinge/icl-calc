@@ -62,7 +62,18 @@ it('formats vault size texts with min and max', () => {
   });
 });
 
-it('counts rows by vault range', () => {
-  const a = countByVaultRange({ rows: [[1, 2]], range: {} });
+it('counts data points by vault range', () => {
+  const a = countByVaultRange({
+    points: [
+      {
+        ata: 1,
+        clr: 2,
+        iclSe: 3,
+        iclSize: 4,
+        vault: 5
+      }
+    ],
+    range: {}
+  });
   expect(a).toBe(0);
 });

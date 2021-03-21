@@ -4,7 +4,7 @@ import TestRenderer from 'react-test-renderer';
 import { FILTER as filter } from './data.test';
 
 it('renders without crashing', () => {
-  const tree = TestRenderer.create(<Matrix ata={0} clr={0} />).toJSON();
+  const tree = TestRenderer.create(<Matrix ata={11.7} clr={0} />).toJSON();
   expect(tree).toMatchSnapshot();
 });
 
