@@ -61,7 +61,7 @@ it('switches to Floating Matrix tab when clicked', async () => {
   });
 
   expect(screen.queryByLabelText('Name')).toBeNull();
-  expect(screen.getByText(/Floating Matrix is coming soon/)).toBeVisible();
+  expect(screen.getByText(/Number of Eyes/)).toBeVisible();
 });
 
 it('switches to Regression tab when clicked', async () => {

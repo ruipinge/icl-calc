@@ -38,7 +38,7 @@ export const Footer = () => (
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
           target="_blank"
-          rel="license noopener"
+          rel="license noopener noreferrer"
         >
           MIT License
         </a>{' '}

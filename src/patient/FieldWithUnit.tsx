@@ -6,11 +6,11 @@ import { getClassName } from '../util';
 type Unit = 'mm' | 'nm' | 'º' | 'dpt' | 'μm';
 
 const UNITS: Map<Unit, string> = new Map([
-  ['mm', 'millimetres'],
-  ['nm', 'nanometres'],
+  ['mm', 'millimetres'], // 10^(-3) metres
+  ['μm', 'micrometres'], // 10^(-6) metres (aka "micron", or "micra")
+  ['nm', 'nanometres'], // 10^(-9) metres
   ['º', 'degrees'],
-  ['dpt', 'dioptres'],
-  ['μm', 'micrometres']
+  ['dpt', 'dioptres']
 ]);
 
 interface FieldWithUnitProps {

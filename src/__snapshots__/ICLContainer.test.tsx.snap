@@ -148,7 +148,7 @@ exports[`renders Biometric Normality on #normality route 1`] = `
         Available under the 
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
-          rel="license noopener"
+          rel="license noopener noreferrer"
           target="_blank"
         >
           MIT License
@@ -241,7 +241,594 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
       </li>
     </ul>
     <hr />
-    Floating Matrix is coming soon...
+    <table
+      class="table table-bordered table-hover"
+    >
+      <thead>
+        <tr>
+          <th
+            scope="col"
+          >
+            Lens Size
+          </th>
+          <th
+            class="text-right"
+            colspan="3"
+            scope="col"
+          >
+            12.6 mm
+          </th>
+          <th
+            class="text-right"
+            colspan="3"
+            scope="col"
+          >
+            13.2 mm
+          </th>
+          <th
+            class="text-right"
+            colspan="3"
+            scope="col"
+          >
+            13.7 mm
+          </th>
+        </tr>
+        <tr>
+          <th
+            scope="col"
+          >
+            Myopia
+          </th>
+          <th
+            class="text-right"
+            scope="col"
+          >
+            Low
+          </th>
+          <th
+            class="text-right"
+            scope="col"
+          >
+            Moderate
+          </th>
+          <th
+            class="text-right"
+            scope="col"
+          >
+            High
+          </th>
+          <th
+            class="text-right"
+            scope="col"
+          >
+            Low
+          </th>
+          <th
+            class="text-right"
+            scope="col"
+          >
+            Moderate
+          </th>
+          <th
+            class="text-right"
+            scope="col"
+          >
+            High
+          </th>
+          <th
+            class="text-right"
+            scope="col"
+          >
+            Low
+          </th>
+          <th
+            class="text-right"
+            scope="col"
+          >
+            Moderate
+          </th>
+          <th
+            class="text-right"
+            scope="col"
+          >
+            High
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th
+            scope="row"
+            title="Number of Eyes matching the column criteria"
+          >
+            Number of Eyes
+          </th>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+        </tr>
+        <tr
+          class="table-bordered"
+        >
+          <td
+            colspan="10"
+          />
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            title="Average Vault size in millimetres"
+          >
+            Average Vault
+          </th>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            title="Minimum Vault size in millimetres"
+          >
+            Minimum Vault
+          </th>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            title="Maximum Vault size in millimetres"
+          >
+            Maximum Vault
+          </th>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+        </tr>
+        <tr
+          class="table-bordered"
+        >
+          <td
+            colspan="10"
+          />
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            title="Percentage of Eyes with Vault size less than 0.25 mm"
+          >
+            % Vault &lt; 0.25
+          </th>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            title="Percentage of Eyes with Vault size between 0.25 mm and 0.5 mm"
+          >
+            % 0.25 &lt; Vault &lt; 0.5
+          </th>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            title="Percentage of Eyes with Vault size between 0.5 mm and 0.75 mm"
+          >
+            % 0.5 &lt; Vault &lt; 0.75
+          </th>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            title="Percentage of Eyes with Vault size between 0.75 mm and 1 mm"
+          >
+            % 0.75 &lt; Vault &lt; 1
+          </th>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            title="Percentage of Eyes with Vault size greater or equal than 1 mm"
+          >
+            % 1 &lt; Vault
+          </th>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+          <td
+            class="text-right"
+          >
+            0
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <footer
     class="p-3 p-md-5 mt-5 bg-light text-center text-sm-left"
@@ -313,7 +900,7 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
         Available under the 
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
-          rel="license noopener"
+          rel="license noopener noreferrer"
           target="_blank"
         >
           MIT License
@@ -614,9 +1201,9 @@ exports[`renders Patient for inexistent route 1`] = `
               >
                 <span
                   class="input-group-text"
-                  title="nanometres"
+                  title="micrometres"
                 >
-                  nm
+                  μm
                 </span>
               </div>
             </div>
@@ -1160,7 +1747,7 @@ exports[`renders Patient for inexistent route 1`] = `
         Available under the 
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
-          rel="license noopener"
+          rel="license noopener noreferrer"
           target="_blank"
         >
           MIT License
@@ -1462,9 +2049,9 @@ exports[`renders Patient form on # route 1`] = `
               >
                 <span
                   class="input-group-text"
-                  title="nanometres"
+                  title="micrometres"
                 >
-                  nm
+                  μm
                 </span>
               </div>
             </div>
@@ -2008,7 +2595,7 @@ exports[`renders Patient form on # route 1`] = `
         Available under the 
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
-          rel="license noopener"
+          rel="license noopener noreferrer"
           target="_blank"
         >
           MIT License
@@ -2173,7 +2760,7 @@ exports[`renders Regression on #regression route 1`] = `
         Available under the 
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
-          rel="license noopener"
+          rel="license noopener noreferrer"
           target="_blank"
         >
           MIT License
@@ -2475,9 +3062,9 @@ exports[`renders without crashing 1`] = `
               >
                 <span
                   class="input-group-text"
-                  title="nanometres"
+                  title="micrometres"
                 >
-                  nm
+                  μm
                 </span>
               </div>
             </div>
@@ -3021,7 +3608,7 @@ exports[`renders without crashing 1`] = `
         Available under the 
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
-          rel="license noopener"
+          rel="license noopener noreferrer"
           target="_blank"
         >
           MIT License
@@ -3323,9 +3910,9 @@ exports[`resets form when clicking reset button 1`] = `
               >
                 <span
                   class="input-group-text"
-                  title="nanometres"
+                  title="micrometres"
                 >
-                  nm
+                  μm
                 </span>
               </div>
             </div>
@@ -3869,7 +4456,7 @@ exports[`resets form when clicking reset button 1`] = `
         Available under the 
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
-          rel="license noopener"
+          rel="license noopener noreferrer"
           target="_blank"
         >
           MIT License
@@ -4171,9 +4758,9 @@ exports[`resets form when clicking reset button 2`] = `
               >
                 <span
                   class="input-group-text"
-                  title="nanometres"
+                  title="micrometres"
                 >
-                  nm
+                  μm
                 </span>
               </div>
             </div>
@@ -4717,7 +5304,7 @@ exports[`resets form when clicking reset button 2`] = `
         Available under the 
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
-          rel="license noopener"
+          rel="license noopener noreferrer"
           target="_blank"
         >
           MIT License
@@ -5019,9 +5606,9 @@ exports[`resets form when clicking reset button 3`] = `
               >
                 <span
                   class="input-group-text"
-                  title="nanometres"
+                  title="micrometres"
                 >
-                  nm
+                  μm
                 </span>
               </div>
             </div>
@@ -5565,7 +6152,7 @@ exports[`resets form when clicking reset button 3`] = `
         Available under the 
         <a
           href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
-          rel="license noopener"
+          rel="license noopener noreferrer"
           target="_blank"
         >
           MIT License

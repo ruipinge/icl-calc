@@ -90,7 +90,10 @@ export const ICLContainer = () => {
                   <Normality />
                 </Route>
                 <Route path="/matrix">
-                  <Matrix />
+                  <Matrix
+                    ata={values.biometrics.ata}
+                    clr={values.biometrics.clr * 0.001} // CLR in Matrix is in millimetres
+                  />
                 </Route>
                 <Route path="/regression">
                   <Regression />

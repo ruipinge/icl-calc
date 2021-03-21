@@ -26,7 +26,7 @@ export const Biometrics = ({
     <FieldWithUnit
       label="Crystaline Lens Rise (CLR)"
       name="biometrics.clr"
-      unit="nm"
+      unit="μm"
       error={errors.biometrics?.clr}
       touched={touched.biometrics?.clr}
     />
