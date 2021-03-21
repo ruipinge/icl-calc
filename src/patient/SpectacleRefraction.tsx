@@ -1,7 +1,6 @@
-import { FormikState } from 'formik';
-
-import { ICLInputs } from '../types';
 import { FieldWithUnit } from './FieldWithUnit';
+import { FormikState } from 'formik';
+import { ICLInputs } from '../types';
 
 export const SpectacleRefraction = ({
   errors,

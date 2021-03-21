@@ -1,12 +1,13 @@
-import { Formik } from 'formik';
-import { HashRouter as Router, NavLink, Route, Switch } from 'react-router-dom';
+import { NavLink, Route, HashRouter as Router, Switch } from 'react-router-dom';
+
 import { Footer } from './Footer';
+import { Formik } from 'formik';
 import { ICLSchema } from './ICLSchema';
+import { INITIAL_VALUES } from './types';
 import { Matrix } from './matrix';
 import { Normality } from './normality';
 import { Patient } from './patient';
 import { Regression } from './regression';
-import { INITIAL_VALUES } from './types';
 
 export const ICLContainer = () => {
   const initialValues = INITIAL_VALUES;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Field, ErrorMessage } from 'formik';
+import { ErrorMessage, Field } from 'formik';
 import { getClassName } from '../util';
 
 type Unit = 'mm' | 'nm' | 'º' | 'dpt' | 'μm';

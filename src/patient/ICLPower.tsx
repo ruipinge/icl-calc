@@ -1,13 +1,13 @@
-import { FormikState } from 'formik';
-
-import { ICLInputs } from '../types';
-import { FieldWithUnit } from './FieldWithUnit';
 import {
-  calcIclSphere,
-  calcIclCylindre,
   calcIclAxis,
-  calcIclCylindreEquivalent
+  calcIclCylindre,
+  calcIclCylindreEquivalent,
+  calcIclSphere
 } from '../formulas';
+
+import { FieldWithUnit } from './FieldWithUnit';
+import { FormikState } from 'formik';
+import { ICLInputs } from '../types';
 
 export const ICLPower = ({
   errors,

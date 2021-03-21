@@ -1,8 +1,8 @@
 import {
-  calcIclSphere,
-  calcIclCylindre,
   calcIclAxis,
-  calcIclCylindreEquivalent
+  calcIclCylindre,
+  calcIclCylindreEquivalent,
+  calcIclSphere
 } from './formulas';
 
 it('calculates ICL Power Sphere', () => {

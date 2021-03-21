@@ -1,9 +1,11 @@
+import './App.scss';
+
 import * as Sentry from '@sentry/react';
+
+import App from './App';
 import { Integrations } from '@sentry/tracing';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import './App.scss';
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({

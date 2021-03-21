@@ -1,6 +1,5 @@
-import { FormikState } from 'formik';
-
 import { Biometrics } from './Biometrics';
+import { FormikState } from 'formik';
 import { ICLInputs } from '../types';
 import { ICLPower } from './ICLPower';
 import { Info } from './Info';

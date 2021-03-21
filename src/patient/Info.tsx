@@ -1,7 +1,7 @@
-import { Field, ErrorMessage, FormikState } from 'formik';
-import { differenceInYears } from 'date-fns';
+import { ErrorMessage, Field, FormikState } from 'formik';
 
 import { ICLInputs } from '../types';
+import { differenceInYears } from 'date-fns';
 import { getClassName } from '../util';
 
 export const calcAge = ({
