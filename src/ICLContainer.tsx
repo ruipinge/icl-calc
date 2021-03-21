@@ -1,13 +1,15 @@
-import { NavLink, Route, HashRouter as Router, Switch } from 'react-router-dom';
+import { Route, HashRouter as Router, Switch } from 'react-router-dom';
 
-import { Footer } from './Footer';
+import { Footer } from './misc/Footer';
 import { Formik } from 'formik';
 import { ICLSchema } from './ICLSchema';
 import { INITIAL_VALUES } from './types';
 import { Matrix } from './matrix';
+import { NavBar } from './misc/NavBar';
 import { Normality } from './normality';
 import { Patient } from './patient';
 import { Regression } from './regression';
+import { TabLinks } from './misc/TabLinks';
 
 export const ICLContainer = () => {
   const initialValues = INITIAL_VALUES;
@@ -23,68 +25,10 @@ export const ICLContainer = () => {
     >
       {({ errors, touched, values, resetForm, ...otherProps }) => (
         <>
-          <nav className="navbar navbar-expand navbar-dark bg-dark fixed-top">
-            <div className="container">
-              <a className="navbar-brand" href={process.env.PUBLIC_URL || '/'}>
-                ICL Size Calc
-              </a>
-              <form className="form-inline">
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={() => {
-                    resetForm();
-                  }}
-                >
-                  Reset
-                </button>
-              </form>
-            </div>
-          </nav>
+          <NavBar resetForm={resetForm} />
           <div className="container">
             <Router hashType="noslash">
-              <ul className="nav nav-pills" style={{ marginBottom: '1rem' }}>
-                <li className="nav-item">
-                  <NavLink
-                    exact={true}
-                    className="nav-link"
-                    activeClassName="active"
-                    to="/"
-                  >
-                    Patient
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    exact={true}
-                    className="nav-link"
-                    activeClassName="active"
-                    to="/normality"
-                  >
-                    Biometric Normality
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    exact={true}
-                    className="nav-link"
-                    activeClassName="active"
-                    to="/matrix"
-                  >
-                    Floating Matrix
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    exact={true}
-                    className="nav-link"
-                    activeClassName="active"
-                    to="/regression"
-                  >
-                    Regression
-                  </NavLink>
-                </li>
-              </ul>
+              <TabLinks />
               <hr />
               <Switch>
                 <Route path="/normality">

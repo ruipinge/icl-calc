@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders DividerRow without crashing 1`] = `
+<DocumentFragment>
+  <table>
+    <tbody>
+      <tr
+        class="table-bordered"
+      >
+        <td
+          colspan="10"
+        />
+      </tr>
+    </tbody>
+  </table>
+</DocumentFragment>
+`;
+
+exports[`renders MatrixRow without crashing 1`] = `
+<DocumentFragment>
+  <table>
+    <tbody>
+      <tr>
+        <th
+          scope="row"
+          title="Some title"
+        >
+          Some label
+        </th>
+        <td
+          class="text-right"
+        >
+          1
+        </td>
+        <td
+          class="text-right"
+        >
+          2
+        </td>
+        <td
+          class="text-right"
+        >
+          3
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</DocumentFragment>
+`;
