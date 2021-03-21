@@ -29,7 +29,7 @@ export const filterFlatRows = (filter: MatrixFilter): DbRow[][] => {
         (memoMyopia, myopia) => [
           ...memoMyopia,
           ...[
-            (indexedRows[lensSize][myopia] || []).filter(
+            indexedRows[lensSize][myopia].filter(
               (row: DbRow) =>
                 filter.ata >= row[6] - ATA_DEVIATION &&
                 filter.ata <= row[6] + ATA_DEVIATION &&
