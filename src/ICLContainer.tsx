@@ -41,36 +41,32 @@ const TabContent = ({
   </Switch>
 );
 
-export const ICLContainer = () => {
-  const initialValues = INITIAL_VALUES;
-
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={ICLSchema}
-      onSubmit={
-        /* istanbul ignore next */
-        () => {}
-      }
-    >
-      {({ errors, touched, values, resetForm, ...otherProps }) => (
-        <>
-          <NavBar resetForm={resetForm} />
-          <div className="container">
-            <Router hashType="noslash">
-              <TabLinks />
-              <hr />
-              <TabContent
-                values={values}
-                errors={errors}
-                touched={touched}
-                {...otherProps}
-              />
-            </Router>
-          </div>
-          <Footer />
-        </>
-      )}
-    </Formik>
-  );
-};
+export const ICLContainer = () => (
+  <Formik
+    initialValues={INITIAL_VALUES}
+    validationSchema={ICLSchema}
+    onSubmit={
+      /* istanbul ignore next */
+      () => {}
+    }
+  >
+    {({ errors, touched, values, resetForm, ...otherProps }) => (
+      <>
+        <NavBar resetForm={resetForm} />
+        <div className="container">
+          <Router hashType="noslash">
+            <TabLinks />
+            <hr />
+            <TabContent
+              values={values}
+              errors={errors}
+              touched={touched}
+              {...otherProps}
+            />
+          </Router>
+        </div>
+        <Footer />
+      </>
+    )}
+  </Formik>
+);
