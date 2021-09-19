@@ -19,7 +19,13 @@ const TabContent = ({
 }: FormikState<ICLInputs>) => (
   <Switch>
     <Route path="/normality">
-      <Normality />
+      <Normality
+        ata={values.biometrics.ata}
+        clr={values.biometrics.clr}
+        acq={values.biometrics.acq}
+        aca={(values.biometrics.acan + values.biometrics.acat) / 2.0}
+        wtw={values.biometrics.wtw}
+      />
     </Route>
     <Route path="/matrix">
       <Matrix

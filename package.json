@@ -13,6 +13,7 @@
     "url": "https://github.com/ruipinge/icl-calc/issues"
   },
   "dependencies": {
+    "@amcharts/amcharts4": "^4.10.17",
     "@semantic-release/git": "^9.0.0",
     "@sentry/react": "^6.2.2",
     "@sentry/tracing": "^6.2.2",
