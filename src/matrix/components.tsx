@@ -13,8 +13,8 @@ export const MatrixRow = ({
     <th scope="row" title={title}>
       {label}
     </th>
-    {values.map((val, i) => (
-      <td key={i} className="text-right">
+    {values.map((val, index) => (
+      <td key={index} className="text-right">
         {val}
       </td>
     ))}
