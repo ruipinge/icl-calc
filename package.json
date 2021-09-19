@@ -101,7 +101,10 @@
     "coveragePathIgnorePatterns": [
       "<rootDir>/build/",
       "<rootDir>/node_modules/",
-      "<rootDir>/src/index.tsx"
+      "<rootDir>/src/index.tsx",
+      "<rootDir>/src/normality/Histogram.tsx",
+      "<rootDir>/src/normality/index.tsx",
+      "<rootDir>/src/normality/linear-gauge/index.ts"
     ],
     "coverageReporters": [
       "lcov",

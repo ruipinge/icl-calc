@@ -32,7 +32,3 @@ ignore:
   - '**/vendor'
   - '**/*_test.go'
   - '**/*.d.ts'
-  # While using amcharts 4 that isn't supported by jest
-  - './src/normality/Histogram.tsx'
-  - './src/normality/index.tsx'
-  - './src/normality/linear-gauge/index.ts'

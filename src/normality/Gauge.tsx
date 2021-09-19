@@ -1,6 +1,9 @@
 import { LinearGauge, Zone } from './linear-gauge';
 import { useLayoutEffect, useRef } from 'react';
 
+import { number } from '@amcharts/amcharts4/core';
+import { string } from 'yup/lib/locale';
+
 /**
  * https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
  *
@@ -19,18 +22,56 @@ export const quantile = (values: number[], quantile: number) => {
   return sorted[base];
 };
 
-const buildZones = (values: number[]): Zone[] => {
-  const qq = [0.025, 0.25, 0.5, 0.75, 0.975].map((q) => quantile(values, q));
-  const green = getComputedStyle(document.body).getPropertyValue('--success');
-  const red = getComputedStyle(document.body).getPropertyValue('--danger');
-  const yellow = getComputedStyle(document.body).getPropertyValue('--warning');
-  return [
-    { min: Math.min(...values), max: qq[0], color: red },
-    { min: qq[0], max: qq[1], color: yellow },
-    { min: qq[1], max: qq[3], color: green },
-    { min: qq[3], max: qq[4], color: yellow },
-    { min: qq[4], max: Math.max(...values), color: red }
-  ];
+export type Quantile = {
+  readonly value: number;
+  readonly color: string;
+};
+
+const QUANTILES: Quantile[] = [
+  {
+    value: 0.025,
+    color: getComputedStyle(document.body).getPropertyValue('--danger')
+  },
+  {
+    value: 0.25,
+    color: getComputedStyle(document.body).getPropertyValue('--warning')
+  },
+  {
+    value: 0.75,
+    color: getComputedStyle(document.body).getPropertyValue('--success')
+  },
+  {
+    value: 0.975,
+    color: getComputedStyle(document.body).getPropertyValue('--warning')
+  },
+  {
+    value: 1.0,
+    color: getComputedStyle(document.body).getPropertyValue('--danger')
+  }
+];
+
+export const buildZones = ({
+  values,
+  quantiles = QUANTILES
+}: {
+  values: number[];
+  quantiles?: Quantile[];
+}): Zone[] => {
+  const qq = quantiles.map((q) => quantile(values, q.value));
+  return quantiles.map((q, index) => {
+    if (index === 0) {
+      return {
+        min: Math.min(...values),
+        max: qq[0],
+        color: q.color
+      };
+    }
+    return {
+      min: qq[index - 1],
+      max: qq[index],
+      color: q.color
+    };
+  });
 };
 
 export const Gauge = ({
@@ -42,6 +83,7 @@ export const Gauge = ({
 }) => {
   const container = useRef<HTMLDivElement>(null);
 
+  /* istanbul ignore next */
   useLayoutEffect(() => {
     if (container.current === null) {
       return;
@@ -51,7 +93,7 @@ export const Gauge = ({
     x.setOptions({
       divisions: 5,
       subDivisions: 2,
-      zones: buildZones(values),
+      zones: buildZones({ values: values }),
       value: value
     });
 
