@@ -56,6 +56,7 @@ it('builds default zones correctly', () => {
     { min: 7, max: 7, color: '' }
   ]);
 });
+
 it('builds zones correctly', () => {
   expect(
     buildZones({

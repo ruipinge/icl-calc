@@ -1,7 +1,26 @@
-import { HISTOGRAM_DATA, VALUES } from '../db';
+import { HISTOGRAM_DATA, HistogramEntry, VALUES } from '../db';
 
 import { Gauge } from './Gauge';
 import { Histogram } from './Histogram';
+
+const Graph = ({
+  title,
+  value,
+  histogramSeries,
+  gaugeValues
+}: {
+  title: string;
+  value: number;
+  histogramSeries: HistogramEntry[];
+  gaugeValues: number[];
+}) => (
+  <>
+    <div className="col-md-4">
+      <Histogram title={title} data={histogramSeries} />
+      <Gauge value={value} values={gaugeValues} />
+    </div>
+  </>
+);
 
 export const Normality = ({
   ata,
@@ -18,43 +37,38 @@ export const Normality = ({
 }) => (
   <>
     <div className="row">
-      <div className="col-md-4">
-        <Histogram
-          title={'Angle to Angle - AtA (mm)'}
-          data={HISTOGRAM_DATA.ata}
-        />
-        <Gauge value={ata} values={VALUES.ATA} />
-      </div>
-      <div className="col-md-4">
-        <Histogram
-          title={'Crystalline Lens Rise - CLR (μm)'}
-          data={HISTOGRAM_DATA.clr}
-        />
-        <Gauge value={clr} values={VALUES.CLR} />
-      </div>
-      <div className="col-md-4">
-        <Histogram
-          title={'Internal Anterior Chamber Depth  - ACQ (mm)'}
-          data={HISTOGRAM_DATA.acq}
-        />
-        <Gauge value={acq} values={VALUES.ACQ} />
-      </div>
+      <Graph
+        title={'Angle to Angle - AtA (mm)'}
+        histogramSeries={HISTOGRAM_DATA.ata}
+        value={ata}
+        gaugeValues={VALUES.ATA}
+      />
+      <Graph
+        title={'Crystalline Lens Rise - CLR (μm)'}
+        histogramSeries={HISTOGRAM_DATA.clr}
+        value={clr}
+        gaugeValues={VALUES.CLR}
+      />
+      <Graph
+        title={'Internal Anterior Chamber Depth - ACQ (mm)'}
+        histogramSeries={HISTOGRAM_DATA.acq}
+        value={acq}
+        gaugeValues={VALUES.ACQ}
+      />
     </div>
     <div className="row">
-      <div className="col-md-4">
-        <Histogram
-          title={'Average Anterior Chamber Angle  - ACA (º)'}
-          data={HISTOGRAM_DATA.aca}
-        />
-        <Gauge value={aca} values={VALUES.ACA} />
-      </div>
-      <div className="col-md-4">
-        <Histogram
-          title={'White to White  - WtW (mm)'}
-          data={HISTOGRAM_DATA.wtw}
-        />
-        <Gauge value={wtw} values={VALUES.WTW} />
-      </div>
+      <Graph
+        title={'Average Anterior Chamber Angle - ACA (º)'}
+        histogramSeries={HISTOGRAM_DATA.aca}
+        value={aca}
+        gaugeValues={VALUES.ACA}
+      />
+      <Graph
+        title={'White to White - WtW (mm)'}
+        histogramSeries={HISTOGRAM_DATA.wtw}
+        value={wtw}
+        gaugeValues={VALUES.WTW}
+      />
       <div className="col-md-4"></div>
     </div>
   </>

@@ -18,9 +18,16 @@ export type Options = {
   readonly subDivisions?: number;
   readonly subDivisionHeight?: number;
   readonly value?: number;
-  readonly zones?: readonly Zone[];
+  readonly zones?: Zone[];
   readonly zoneHeight?: number;
 };
+
+const defaultZoneHeight = 12;
+const defaultDivisions = 5;
+const defaultDivisionHeight = 18;
+const defaultDivisionColor = '#000000';
+const defaultSubDivisions = 1;
+const defaultSubDivisionHeight = 8;
 
 const defaultZones = [
   {
@@ -140,21 +147,84 @@ const createPointer = (pointer: Pointer): SVGElement => {
 
 export class LinearGauge {
   readonly el: HTMLElement;
+  zones: Zone[];
+  zoneHeight: number;
+  value?: number;
+  pointer: Pointer;
+  container?: HTMLDivElement;
+  divisions: number;
+  divisionHeight: number;
+  subDivisionHeight: number;
+  subDivisions: number;
 
   constructor(htmlElement: HTMLElement) {
     this.el = htmlElement;
+    this.zones = [];
+    this.zoneHeight = defaultZoneHeight;
+    this.pointer = defaultPointer;
+    this.divisions = defaultDivisions;
+    this.divisionHeight = defaultDivisionHeight;
+    this.subDivisions = defaultSubDivisions;
+    this.subDivisionHeight = defaultSubDivisionHeight;
+  }
+
+  renderPointer(value?: number) {
+    const min = this.zones[0].min;
+    const max = this.zones[this.zones.length - 1].max;
+
+    if (value !== undefined && value >= min && value <= max) {
+      const totalRange = max - min;
+      const valuePercent = ((value - min) / totalRange) * 100;
+
+      const pointerSvg = createPointer(this.pointer);
+      pointerSvg.style.setProperty(
+        'left',
+        `calc(${valuePercent}% - ${Math.floor(this.pointer.width / 2)}px)`
+      );
+      pointerSvg.style.setProperty('top', `${this.zoneHeight}px`);
+      this.container?.appendChild(pointerSvg);
+    }
+  }
+
+  renderSubDivisions() {
+    const totalSubDivisions = this.divisions * this.subDivisions;
+    Array(totalSubDivisions)
+      .fill(0)
+      .map((_, sub) => sub)
+      .filter((sub) => sub % this.subDivisions !== 0)
+      .map((subDivision) =>
+        createSubDivision({
+          subDivision: subDivision,
+          totalSubDivisions: totalSubDivisions,
+          subDivisionHeight: this.subDivisionHeight
+        })
+      )
+      .forEach((div) => this.container?.appendChild(div));
+  }
+
+  renderDivisions() {
+    Array(this.divisions + 1)
+      .fill(0)
+      .map((_, division) =>
+        createDivision({
+          division: division,
+          divisions: this.divisions,
+          height: this.divisionHeight
+        })
+      )
+      .forEach((div) => this.container?.appendChild(div));
   }
 
   setOptions({
-    divisionColor = '#000000',
-    divisions = 5,
-    divisionHeight = 18,
+    divisionColor = defaultDivisionColor,
+    divisions = defaultDivisions,
+    divisionHeight = defaultDivisionHeight,
     pointer = defaultPointer,
-    subDivisions = 1,
-    subDivisionHeight = 8,
+    subDivisions = defaultSubDivisions,
+    subDivisionHeight = defaultSubDivisionHeight,
     value,
     zones = defaultZones,
-    zoneHeight = 12
+    zoneHeight = defaultZoneHeight
   }: Options): LinearGauge {
     const container = createDiv({
       styles: {
@@ -165,45 +235,23 @@ export class LinearGauge {
       }
     });
 
-    const min = zones[0].min;
-    const max = zones[zones.length - 1].max;
+    this.container = container;
+    this.zones = zones;
+    this.zoneHeight = zoneHeight;
+    this.pointer = pointer;
+    this.divisions = divisions;
+    this.divisionHeight = divisionHeight;
+    this.subDivisions = subDivisions;
+    this.subDivisionHeight = subDivisionHeight;
 
     // Pointer
-    if (value !== undefined && value >= min && value <= max) {
-      const totalRange = max - min;
-      const valuePercent = ((value - min) / totalRange) * 100;
-
-      const pointerSvg = createPointer(pointer);
-      pointerSvg.style.setProperty(
-        'left',
-        `calc(${valuePercent}% - ${Math.floor(pointer.width / 2)}px)`
-      );
-      pointerSvg.style.setProperty('top', `${zoneHeight}px`);
-      container.appendChild(pointerSvg);
-    }
+    this.renderPointer(value);
 
     // Sub-Divisions
-    const totalSubDivisions = divisions * subDivisions;
-    Array(totalSubDivisions)
-      .fill(0)
-      .map((_, sub) => sub)
-      .filter((sub) => sub % subDivisions !== 0)
-      .map((subDivision) =>
-        createSubDivision({ subDivision, totalSubDivisions, subDivisionHeight })
-      )
-      .forEach((div) => container.appendChild(div));
+    this.renderSubDivisions();
 
     // Divisions
-    Array(divisions + 1)
-      .fill(0)
-      .map((_, division) =>
-        createDivision({
-          division: division,
-          divisions: divisions,
-          height: divisionHeight
-        })
-      )
-      .forEach((div) => container.appendChild(div));
+    this.renderDivisions();
 
     // Zones
     zones

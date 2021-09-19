@@ -7,7 +7,7 @@ import { string } from 'yup/lib/locale';
 /**
  * https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
  *
- * @param {number[]} values - Data set
+ * @param {number[]} values - Dataset
  * @param {number} quantile - Quantile [0.0, 1.0]
  * @returns {number}
  */
