@@ -42,7 +42,7 @@ it('resets form when clicking reset button', async () => {
   expect(asFragment()).toMatchSnapshot();
 });
 
-it('switches to Biometric Normality tab when clicked', async () => {
+xit('switches to Biometric Normality tab when clicked', async () => {
   renderWithRouter(<ICLContainer />);
 
   await waitFor(() => {
@@ -80,7 +80,7 @@ it('renders Patient form on # route', () => {
   expect(asFragment()).toMatchSnapshot();
 });
 
-it('renders Biometric Normality on #normality route', () => {
+xit('renders Biometric Normality on #normality route', () => {
   const { asFragment } = renderWithRouter(<ICLContainer />, '#normality');
   expect(asFragment()).toMatchSnapshot();
 });
