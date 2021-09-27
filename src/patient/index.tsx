@@ -1,4 +1,4 @@
-import { Biometrics } from './Biometrics';
+import { Biometry } from './Biometry';
 import { FormikState } from 'formik';
 import { ICLInputs } from '../types';
 import { ICLPower } from './ICLPower';
@@ -16,7 +16,7 @@ export const Patient = ({
     <hr />
     <div className="form-row">
       <div className="col-md-4">
-        <Biometrics
+        <Biometry
           values={values}
           errors={errors}
           touched={touched}

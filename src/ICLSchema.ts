@@ -22,7 +22,7 @@ export const ICLSchema = Yup.object().shape({
   patient: Yup.object().shape({
     dateOfBirth: Yup.date().optional().typeError('Invalid date. (yyyy-mm-dd)')
   }),
-  biometrics: Yup.object().shape({
+  biometry: Yup.object().shape({
     ata: Yup.number()
       .required(REQUIRED_ERROR)
       .min(0, INVALID_ERROR)
