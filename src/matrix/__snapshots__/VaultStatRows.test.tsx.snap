@@ -5,9 +5,9 @@ Array [
   <tr>
     <th
       scope="row"
-      title="Average Vault size in millimetres"
+      title="Average Vault size in micrometres"
     >
-      Average Vault
+      Average Vault (μm)
     </th>
     <td
       className="text-right"
@@ -58,9 +58,9 @@ Array [
   <tr>
     <th
       scope="row"
-      title="Minimum Vault size in millimetres"
+      title="Minimum Vault size in micrometres"
     >
-      Minimum Vault
+      Minimum Vault (μm)
     </th>
     <td
       className="text-right"
@@ -111,9 +111,9 @@ Array [
   <tr>
     <th
       scope="row"
-      title="Maximum Vault size in millimetres"
+      title="Maximum Vault size in micrometres"
     >
-      Maximum Vault
+      Maximum Vault (μm)
     </th>
     <td
       className="text-right"

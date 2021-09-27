@@ -57,8 +57,8 @@ const VaultSizeRow = ({
   values: number[];
 }) => (
   <MatrixRow
-    label={`${label} Vault`}
-    title={`${label} Vault size in millimetres`}
+    label={`${label} Vault (μm)`}
+    title={`${label} Vault size in micrometres`}
     values={values}
   />
 );

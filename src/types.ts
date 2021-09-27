@@ -8,7 +8,7 @@ export interface Biometrics {
   ata: number;
   wtw: number;
   clr: number;
-  acq: number;
+  acd: number;
   acan: number;
   acat: number;
   kf: number;
@@ -38,7 +38,7 @@ export const INITIAL_VALUES: ICLInputs = {
     ata: 0,
     wtw: 0,
     clr: 0,
-    acq: 0,
+    acd: 0,
     acan: 0,
     acat: 0,
     kf: 0,

@@ -30,11 +30,11 @@ export const Biometrics = ({
       touched={touched.biometrics?.clr}
     />
     <FieldWithUnit
-      label="Internal Anterior Chamber Depth (ACQ)"
-      name="biometrics.acq"
+      label="Internal Anterior Chamber Depth (ACD)"
+      name="biometrics.acd"
       unit="mm"
-      error={errors.biometrics?.acq}
-      touched={touched.biometrics?.acq}
+      error={errors.biometrics?.acd}
+      touched={touched.biometrics?.acd}
     />
     <FieldWithUnit
       label="Anterior Chamber Angle nasal (ACAn)"

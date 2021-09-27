@@ -50,7 +50,7 @@ export const ICLPower = ({
         cylindre: values.spectacleRefraction.cylindre
       })}
       name="iclSphericalEquivalent"
-      unit="º"
+      unit="dpt"
       disabled={true}
     />
   </>

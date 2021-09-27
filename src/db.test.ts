@@ -1,7 +1,7 @@
 import { DATA_POINTS } from './db';
 
 it('validates data length', () => {
-  expect(DATA_POINTS.length).toBe(372);
+  expect(DATA_POINTS.length).toBe(542);
 });
 
 it('validates data integrity', () => {

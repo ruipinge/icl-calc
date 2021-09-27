@@ -22,16 +22,13 @@ const TabContent = ({
       <Normality
         ata={values.biometrics.ata}
         clr={values.biometrics.clr}
-        acq={values.biometrics.acq}
+        acd={values.biometrics.acd}
         aca={(values.biometrics.acan + values.biometrics.acat) / 2.0}
         wtw={values.biometrics.wtw}
       />
     </Route>
     <Route path="/matrix">
-      <Matrix
-        ata={values.biometrics.ata}
-        clr={values.biometrics.clr * 0.001} // CLR in Matrix is in millimetres
-      />
+      <Matrix ata={values.biometrics.ata} clr={values.biometrics.clr} />
     </Route>
     <Route path="/regression">
       <Regression />

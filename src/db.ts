@@ -3,14 +3,17 @@ import raw from 'raw.macro';
 const CSV = raw('./data.csv');
 
 export interface DataPoint {
+  age: number;
   iclSize: number;
   iclSe: number;
-  acq: number;
+  acd: number;
+  cct: number;
   ata: number;
   clr: number;
   aca: number;
   vault: number;
   wtw: number;
+  keratometry: number;
 }
 
 export const mapCsvToRows = (csv: string): number[][] =>
@@ -27,14 +30,17 @@ export const mapCsvToRows = (csv: string): number[][] =>
 
 export const mapRowsToDataPoint = (rows: number[][]): DataPoint[] =>
   rows.map((row) => ({
+    age: row[0],
     iclSize: row[1],
     iclSe: row[2],
-    acq: row[5],
-    ata: row[6],
-    clr: row[7],
-    aca: row[10],
-    vault: row[11],
-    wtw: row[15]
+    acd: row[3],
+    cct: row[4],
+    ata: row[5],
+    clr: row[6],
+    aca: row[7],
+    vault: row[8],
+    wtw: row[9],
+    keratometry: row[10]
   }));
 
 const mapCsvToDataPoint = (csv: string): DataPoint[] =>
@@ -45,7 +51,7 @@ export const DATA_POINTS: DataPoint[] = mapCsvToDataPoint(CSV);
 export const VALUES = {
   ATA: DATA_POINTS.map((point) => point.ata),
   CLR: DATA_POINTS.map((point) => point.clr),
-  ACQ: DATA_POINTS.map((point) => point.acq),
+  ACD: DATA_POINTS.map((point) => point.acd),
   ACA: DATA_POINTS.map((point) => point.aca),
   WTW: DATA_POINTS.map((point) => point.wtw)
 };
@@ -87,7 +93,7 @@ const getHistogramData = (source: number[]): HistogramEntry[] => {
 export const HISTOGRAM_DATA = {
   ata: getHistogramData(VALUES.ATA),
   clr: getHistogramData(VALUES.CLR),
-  acq: getHistogramData(VALUES.ACQ),
+  acd: getHistogramData(VALUES.ACD),
   aca: getHistogramData(VALUES.ACA),
   wtw: getHistogramData(VALUES.WTW)
 };
