@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
 
-const ACQ_MIN = 2.7,
-  ACQ_MAX = 6.0,
-  KF_MIN = 20,
-  KF_MAX = 70,
+const ACD_MIN = 2.7,
+  ACD_MAX = 6.0,
+  KF_MIN = 35,
+  KF_MAX = 50,
   CCT_MIN = 300,
   CCT_MAX = 700,
   SPHERE_MIN = -25,
@@ -12,7 +12,7 @@ const ACQ_MIN = 2.7,
   CYLINDRE_MAX = 0,
   INVALID_ERROR = 'Invalid value.',
   REQUIRED_ERROR = 'Required value.',
-  ACQ_INVALID_ERROR = `${INVALID_ERROR} [${ACQ_MIN}, ${ACQ_MAX}]`,
+  ACD_INVALID_ERROR = `${INVALID_ERROR} [${ACD_MIN}, ${ACD_MAX}]`,
   KF_INVALID_ERROR = `${INVALID_ERROR} [${KF_MIN}, ${KF_MAX}]`,
   CCT_INVALID_ERROR = `${INVALID_ERROR} [${CCT_MIN}, ${CCT_MAX}]`,
   SPHERE_INVALID_ERROR = `${INVALID_ERROR} [${SPHERE_MIN}, ${SPHERE_MAX}]`,
@@ -22,7 +22,7 @@ export const ICLSchema = Yup.object().shape({
   patient: Yup.object().shape({
     dateOfBirth: Yup.date().optional().typeError('Invalid date. (yyyy-mm-dd)')
   }),
-  biometrics: Yup.object().shape({
+  biometry: Yup.object().shape({
     ata: Yup.number()
       .required(REQUIRED_ERROR)
       .min(0, INVALID_ERROR)
@@ -35,10 +35,10 @@ export const ICLSchema = Yup.object().shape({
       .required(REQUIRED_ERROR)
       .min(-1000, INVALID_ERROR)
       .max(1000, INVALID_ERROR),
-    acq: Yup.number()
+    acd: Yup.number()
       .required(REQUIRED_ERROR)
-      .min(ACQ_MIN, ACQ_INVALID_ERROR)
-      .max(ACQ_MAX, ACQ_INVALID_ERROR),
+      .min(ACD_MIN, ACD_INVALID_ERROR)
+      .max(ACD_MAX, ACD_INVALID_ERROR),
     acan: Yup.number()
       .required(REQUIRED_ERROR)
       .min(0, INVALID_ERROR)
@@ -71,7 +71,7 @@ export const ICLSchema = Yup.object().shape({
       .max(180, INVALID_ERROR),
     vertex: Yup.number()
       .required(REQUIRED_ERROR)
-      .min(0, INVALID_ERROR)
-      .max(20, INVALID_ERROR)
+      .min(8, INVALID_ERROR)
+      .max(15, INVALID_ERROR)
   })
 });

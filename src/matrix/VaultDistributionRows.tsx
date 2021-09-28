@@ -44,16 +44,16 @@ interface VaultDestributionTexts {
 
 const FORMATTERS = {
   minMax: (min: number, max: number) => ({
-    title: `Percentage of Eyes with Vault size between ${min} mm and ${max} mm`,
-    label: `% ${min} < Vault < ${max}`
+    title: `Percentage of Eyes with Vault size between ${min} and ${max} micrometres`,
+    label: `% ${min} < Vault < ${max} (μm)`
   }),
   min: (min: number) => ({
-    title: `Percentage of Eyes with Vault size greater or equal than ${min} mm`,
-    label: `% ${min} < Vault`
+    title: `Percentage of Eyes with Vault size greater or equal than ${min} micrometres`,
+    label: `% ${min} < Vault (μm)`
   }),
   max: (max: number) => ({
-    title: `Percentage of Eyes with Vault size less than ${max} mm`,
-    label: `% Vault < ${max}`
+    title: `Percentage of Eyes with Vault size less than ${max} micrometres`,
+    label: `% Vault < ${max} (μm)`
   }),
   empty: {
     label: '',
@@ -99,22 +99,22 @@ interface VaultSizeRange {
 }
 const VAULT_SIZE_RANGES: VaultSizeRange[] = [
   {
-    max: 0.25
+    max: 250
   },
   {
-    min: 0.25,
-    max: 0.5
+    min: 250,
+    max: 500
   },
   {
-    min: 0.5,
-    max: 0.75
+    min: 500,
+    max: 750
   },
   {
-    min: 0.75,
-    max: 1
+    min: 750,
+    max: 1000
   },
   {
-    min: 1
+    min: 1000
   }
 ];
 

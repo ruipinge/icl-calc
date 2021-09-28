@@ -25,13 +25,13 @@ const Graph = ({
 export const Normality = ({
   ata,
   clr,
-  acq,
+  acd,
   aca,
   wtw
 }: {
   ata: number;
   clr: number;
-  acq: number;
+  acd: number;
   aca: number;
   wtw: number;
 }) => (
@@ -50,10 +50,10 @@ export const Normality = ({
         gaugeValues={VALUES.CLR}
       />
       <Graph
-        title={'Internal Anterior Chamber Depth - ACQ (mm)'}
-        histogramSeries={HISTOGRAM_DATA.acq}
-        value={acq}
-        gaugeValues={VALUES.ACQ}
+        title={'Internal Anterior Chamber Depth - ACD (mm)'}
+        histogramSeries={HISTOGRAM_DATA.acd}
+        value={acd}
+        gaugeValues={VALUES.ACD}
       />
     </div>
     <div className="row">

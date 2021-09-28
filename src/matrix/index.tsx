@@ -76,7 +76,7 @@ export const Matrix = (filter: MatrixFilter) => (
       </li>
       <li className="list-inline-item">
         <strong>Crystaline Lens Rise (CLR): </strong>
-        {filter.clr} mm.
+        {filter.clr * 0.001} mm.
       </li>
       <li className="list-inline-item">
         <strong>Number of matching Eyes: </strong>

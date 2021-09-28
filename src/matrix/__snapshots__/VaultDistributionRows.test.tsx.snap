@@ -5,9 +5,9 @@ Array [
   <tr>
     <th
       scope="row"
-      title="Percentage of Eyes with Vault size less than 0.25 mm"
+      title="Percentage of Eyes with Vault size less than 250 micrometres"
     >
-      % Vault &lt; 0.25
+      % Vault &lt; 250 (μm)
     </th>
     <td
       className="text-right"
@@ -58,9 +58,9 @@ Array [
   <tr>
     <th
       scope="row"
-      title="Percentage of Eyes with Vault size between 0.25 mm and 0.5 mm"
+      title="Percentage of Eyes with Vault size between 250 and 500 micrometres"
     >
-      % 0.25 &lt; Vault &lt; 0.5
+      % 250 &lt; Vault &lt; 500 (μm)
     </th>
     <td
       className="text-right"
@@ -111,9 +111,9 @@ Array [
   <tr>
     <th
       scope="row"
-      title="Percentage of Eyes with Vault size between 0.5 mm and 0.75 mm"
+      title="Percentage of Eyes with Vault size between 500 and 750 micrometres"
     >
-      % 0.5 &lt; Vault &lt; 0.75
+      % 500 &lt; Vault &lt; 750 (μm)
     </th>
     <td
       className="text-right"
@@ -164,9 +164,9 @@ Array [
   <tr>
     <th
       scope="row"
-      title="Percentage of Eyes with Vault size between 0.75 mm and 1 mm"
+      title="Percentage of Eyes with Vault size between 750 and 1000 micrometres"
     >
-      % 0.75 &lt; Vault &lt; 1
+      % 750 &lt; Vault &lt; 1000 (μm)
     </th>
     <td
       className="text-right"
@@ -217,9 +217,9 @@ Array [
   <tr>
     <th
       scope="row"
-      title="Percentage of Eyes with Vault size greater or equal than 1 mm"
+      title="Percentage of Eyes with Vault size greater or equal than 1000 micrometres"
     >
-      % 1 &lt; Vault
+      % 1000 &lt; Vault (μm)
     </th>
     <td
       className="text-right"

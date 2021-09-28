@@ -15,15 +15,15 @@ it('renders without crashing', () => {
 
 it('calculates vault size averages', () => {
   const avgs = getVaultAverages(filter);
-  expect(avgs).toEqual([1.2, 1.5, 1.8, 2.1, 2.4, 2.7, 3.0, 3.3, 3.6]);
+  expect(avgs).toEqual([1200, 1500, 1800, 2100, 2400, 2700, 3000, 3300, 3600]);
 });
 
 it('calculates vault size minimums', () => {
   const avgs = getVaultMins(filter);
-  expect(avgs).toEqual([1.1, 1.4, 1.7, 2.0, 2.3, 2.6, 2.9, 3.2, 3.5]);
+  expect(avgs).toEqual([1100, 1400, 1700, 2000, 2300, 2600, 2900, 3200, 3500]);
 });
 
 it('calculates vault size maximums', () => {
   const avgs = getVaultMaxs(filter);
-  expect(avgs).toEqual([1.3, 1.6, 1.9, 2.2, 2.5, 2.8, 3.1, 3.4, 3.7]);
+  expect(avgs).toEqual([1300, 1600, 1900, 2200, 2500, 2800, 3100, 3400, 3700]);
 });

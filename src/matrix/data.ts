@@ -1,7 +1,7 @@
 import { DATA_POINTS, DataPoint } from '../db';
 
 const ATA_DEVIATION: number = 0.1; // millimetres
-const CLR_DEVIATION: number = 100 * 0.001; // millimetres
+const CLR_DEVIATION: number = 100; // micrometres
 
 export const NUM_DATA_POINTS = DATA_POINTS.length;
 
@@ -90,7 +90,7 @@ export const getDataPoints = ({
       point.iclSe < myopia.max
   );
 
-const filter = ({
+export const filterPoint = ({
   ata,
   clr,
   point
@@ -101,8 +101,8 @@ const filter = ({
 }) =>
   ata >= point.ata - ATA_DEVIATION &&
   ata <= point.ata + ATA_DEVIATION &&
-  clr >= point.clr - CLR_DEVIATION && // clr in db is in millimetres
-  clr <= point.clr + CLR_DEVIATION; // clr in db is in millimetres
+  clr >= point.clr - CLR_DEVIATION && // clr in db is in micrometres
+  clr <= point.clr + CLR_DEVIATION; // clr in db is in micrometres
 
 export const filterFlatRows = ({
   ata,
@@ -120,7 +120,7 @@ export const filterFlatRows = ({
               lens: lens,
               myopia: level,
               dataPoints: dataPoints
-            }).filter((point: DataPoint) => filter({ ata, clr, point }))
+            }).filter((point: DataPoint) => filterPoint({ ata, clr, point }))
           ]
         ],
         [] as DataPoint[][]

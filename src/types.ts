@@ -4,11 +4,11 @@ export interface PatientInfo {
   eye: 'left' | 'right';
 }
 
-export interface Biometrics {
+export interface Biometry {
   ata: number;
   wtw: number;
   clr: number;
-  acq: number;
+  acd: number;
   acan: number;
   acat: number;
   kf: number;
@@ -24,7 +24,7 @@ export interface SpectacleRefraction {
 
 export interface ICLInputs {
   patient: PatientInfo;
-  biometrics: Biometrics;
+  biometry: Biometry;
   spectacleRefraction: SpectacleRefraction;
 }
 
@@ -34,11 +34,11 @@ export const INITIAL_VALUES: ICLInputs = {
     dateOfBirth: '',
     eye: 'left'
   },
-  biometrics: {
+  biometry: {
     ata: 0,
     wtw: 0,
     clr: 0,
-    acq: 0,
+    acd: 0,
     acan: 0,
     acat: 0,
     kf: 0,

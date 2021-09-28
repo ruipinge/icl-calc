@@ -121,12 +121,12 @@ Array [
         <td
           className="text-right"
         >
-          2
+          5
         </td>
         <td
           className="text-right"
         >
-          5
+          6
         </td>
         <td
           className="text-right"
@@ -136,12 +136,12 @@ Array [
         <td
           className="text-right"
         >
-          7
+          8
         </td>
         <td
           className="text-right"
         >
-          5
+          6
         </td>
         <td
           className="text-right"
@@ -169,9 +169,9 @@ Array [
       <tr>
         <th
           scope="row"
-          title="Average Vault size in millimetres"
+          title="Average Vault size in micrometres"
         >
-          Average Vault
+          Average Vault (μm)
         </th>
         <td
           className="text-right"
@@ -181,12 +181,12 @@ Array [
         <td
           className="text-right"
         >
-          0.85
+          618
         </td>
         <td
           className="text-right"
         >
-          0.55
+          585
         </td>
         <td
           className="text-right"
@@ -196,12 +196,12 @@ Array [
         <td
           className="text-right"
         >
-          0.96429
+          915
         </td>
         <td
           className="text-right"
         >
-          0.714
+          680
         </td>
         <td
           className="text-right"
@@ -222,9 +222,9 @@ Array [
       <tr>
         <th
           scope="row"
-          title="Minimum Vault size in millimetres"
+          title="Minimum Vault size in micrometres"
         >
-          Minimum Vault
+          Minimum Vault (μm)
         </th>
         <td
           className="text-right"
@@ -234,12 +234,12 @@ Array [
         <td
           className="text-right"
         >
-          0.6
+          350
         </td>
         <td
           className="text-right"
         >
-          0.3
+          300
         </td>
         <td
           className="text-right"
@@ -249,12 +249,12 @@ Array [
         <td
           className="text-right"
         >
-          0.59
+          570
         </td>
         <td
           className="text-right"
         >
-          0.43
+          430
         </td>
         <td
           className="text-right"
@@ -275,9 +275,9 @@ Array [
       <tr>
         <th
           scope="row"
-          title="Maximum Vault size in millimetres"
+          title="Maximum Vault size in micrometres"
         >
-          Maximum Vault
+          Maximum Vault (μm)
         </th>
         <td
           className="text-right"
@@ -287,12 +287,12 @@ Array [
         <td
           className="text-right"
         >
-          1.1
+          1100
         </td>
         <td
           className="text-right"
         >
-          1.02
+          1020
         </td>
         <td
           className="text-right"
@@ -302,12 +302,12 @@ Array [
         <td
           className="text-right"
         >
-          1.29
+          1290
         </td>
         <td
           className="text-right"
         >
-          0.88
+          880
         </td>
         <td
           className="text-right"
@@ -335,9 +335,9 @@ Array [
       <tr>
         <th
           scope="row"
-          title="Percentage of Eyes with Vault size less than 0.25 mm"
+          title="Percentage of Eyes with Vault size less than 250 micrometres"
         >
-          % Vault &lt; 0.25
+          % Vault &lt; 250 (μm)
         </th>
         <td
           className="text-right"
@@ -388,15 +388,10 @@ Array [
       <tr>
         <th
           scope="row"
-          title="Percentage of Eyes with Vault size between 0.25 mm and 0.5 mm"
+          title="Percentage of Eyes with Vault size between 250 and 500 micrometres"
         >
-          % 0.25 &lt; Vault &lt; 0.5
+          % 250 &lt; Vault &lt; 500 (μm)
         </th>
-        <td
-          className="text-right"
-        >
-          0
-        </td>
         <td
           className="text-right"
         >
@@ -410,7 +405,7 @@ Array [
         <td
           className="text-right"
         >
-          0
+          0.333
         </td>
         <td
           className="text-right"
@@ -420,7 +415,12 @@ Array [
         <td
           className="text-right"
         >
-          0.2
+          0
+        </td>
+        <td
+          className="text-right"
+        >
+          0.167
         </td>
         <td
           className="text-right"
@@ -441,19 +441,14 @@ Array [
       <tr>
         <th
           scope="row"
-          title="Percentage of Eyes with Vault size between 0.5 mm and 0.75 mm"
+          title="Percentage of Eyes with Vault size between 500 and 750 micrometres"
         >
-          % 0.5 &lt; Vault &lt; 0.75
+          % 500 &lt; Vault &lt; 750 (μm)
         </th>
         <td
           className="text-right"
         >
           0
-        </td>
-        <td
-          className="text-right"
-        >
-          0.5
         </td>
         <td
           className="text-right"
@@ -463,17 +458,7 @@ Array [
         <td
           className="text-right"
         >
-          0
-        </td>
-        <td
-          className="text-right"
-        >
-          0.286
-        </td>
-        <td
-          className="text-right"
-        >
-          0.2
+          0.333
         </td>
         <td
           className="text-right"
@@ -483,50 +468,12 @@ Array [
         <td
           className="text-right"
         >
-          0
+          0.375
         </td>
         <td
           className="text-right"
         >
-          0
-        </td>
-      </tr>
-      <tr>
-        <th
-          scope="row"
-          title="Percentage of Eyes with Vault size between 0.75 mm and 1 mm"
-        >
-          % 0.75 &lt; Vault &lt; 1
-        </th>
-        <td
-          className="text-right"
-        >
-          0
-        </td>
-        <td
-          className="text-right"
-        >
-          0
-        </td>
-        <td
-          className="text-right"
-        >
-          0
-        </td>
-        <td
-          className="text-right"
-        >
-          0
-        </td>
-        <td
-          className="text-right"
-        >
-          0.286
-        </td>
-        <td
-          className="text-right"
-        >
-          0.6
+          0.333
         </td>
         <td
           className="text-right"
@@ -547,14 +494,34 @@ Array [
       <tr>
         <th
           scope="row"
-          title="Percentage of Eyes with Vault size greater or equal than 1 mm"
+          title="Percentage of Eyes with Vault size between 750 and 1000 micrometres"
         >
-          % 1 &lt; Vault
+          % 750 &lt; Vault &lt; 1000 (μm)
         </th>
         <td
           className="text-right"
         >
           0
+        </td>
+        <td
+          className="text-right"
+        >
+          0
+        </td>
+        <td
+          className="text-right"
+        >
+          0.167
+        </td>
+        <td
+          className="text-right"
+        >
+          0
+        </td>
+        <td
+          className="text-right"
+        >
+          0.25
         </td>
         <td
           className="text-right"
@@ -564,7 +531,7 @@ Array [
         <td
           className="text-right"
         >
-          0.2
+          0
         </td>
         <td
           className="text-right"
@@ -574,7 +541,40 @@ Array [
         <td
           className="text-right"
         >
-          0.429
+          0
+        </td>
+      </tr>
+      <tr>
+        <th
+          scope="row"
+          title="Percentage of Eyes with Vault size greater or equal than 1000 micrometres"
+        >
+          % 1000 &lt; Vault (μm)
+        </th>
+        <td
+          className="text-right"
+        >
+          0
+        </td>
+        <td
+          className="text-right"
+        >
+          0.2
+        </td>
+        <td
+          className="text-right"
+        >
+          0.167
+        </td>
+        <td
+          className="text-right"
+        >
+          0
+        </td>
+        <td
+          className="text-right"
+        >
+          0.375
         </td>
         <td
           className="text-right"
@@ -626,9 +626,9 @@ Array [
       <strong>
         Number of matching Eyes: 
       </strong>
-      19
+      25
       /
-      372
+      542
       .
     </li>
   </ul>,
