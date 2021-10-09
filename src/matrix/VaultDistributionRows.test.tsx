@@ -17,12 +17,12 @@ it('renders without crashing', () => {
 
 it('calculates vault size distribution with max', () => {
   const row = getVaultDistribution({ filter, range: { max: 1500 } });
-  expect(row).toEqual([1, 0.333, 0, 0, 0, 0, 0, 0, 0]);
+  expect(row).toEqual([100, 33.3, 0, 0, 0, 0, 0, 0, 0]);
 });
 
 it('calculates vault size distribution with min', () => {
   const row = getVaultDistribution({ filter, range: { min: 3400 } });
-  expect(row).toEqual([0, 0, 0, 0, 0, 0, 0, 0.333, 1]);
+  expect(row).toEqual([0, 0, 0, 0, 0, 0, 0, 33.3, 100]);
 });
 
 it('calculates vault size distribution with min and max', () => {
@@ -30,7 +30,7 @@ it('calculates vault size distribution with min and max', () => {
     filter,
     range: { min: 2200, max: 2700 }
   });
-  expect(row).toEqual([0, 0, 0, 0.333, 1, 0.333, 0, 0, 0]);
+  expect(row).toEqual([0, 0, 0, 33.3, 100, 33.3, 0, 0, 0]);
 });
 
 it('formats vault size texts without range', () => {

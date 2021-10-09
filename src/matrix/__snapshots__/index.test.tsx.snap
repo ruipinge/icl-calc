@@ -400,17 +400,12 @@ Array [
         <td
           className="text-right"
         >
-          0.4
+          40
         </td>
         <td
           className="text-right"
         >
-          0.333
-        </td>
-        <td
-          className="text-right"
-        >
-          0
+          33.3
         </td>
         <td
           className="text-right"
@@ -420,7 +415,12 @@ Array [
         <td
           className="text-right"
         >
-          0.167
+          0
+        </td>
+        <td
+          className="text-right"
+        >
+          16.7
         </td>
         <td
           className="text-right"
@@ -453,12 +453,12 @@ Array [
         <td
           className="text-right"
         >
-          0.4
+          40
         </td>
         <td
           className="text-right"
         >
-          0.333
+          33.3
         </td>
         <td
           className="text-right"
@@ -468,12 +468,12 @@ Array [
         <td
           className="text-right"
         >
-          0.375
+          37.5
         </td>
         <td
           className="text-right"
         >
-          0.333
+          33.3
         </td>
         <td
           className="text-right"
@@ -511,7 +511,7 @@ Array [
         <td
           className="text-right"
         >
-          0.167
+          16.7
         </td>
         <td
           className="text-right"
@@ -521,12 +521,12 @@ Array [
         <td
           className="text-right"
         >
-          0.25
+          25
         </td>
         <td
           className="text-right"
         >
-          0.5
+          50
         </td>
         <td
           className="text-right"
@@ -559,12 +559,12 @@ Array [
         <td
           className="text-right"
         >
-          0.2
+          20
         </td>
         <td
           className="text-right"
         >
-          0.167
+          16.7
         </td>
         <td
           className="text-right"
@@ -574,7 +574,7 @@ Array [
         <td
           className="text-right"
         >
-          0.375
+          37.5
         </td>
         <td
           className="text-right"

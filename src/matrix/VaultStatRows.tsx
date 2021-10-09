@@ -19,7 +19,9 @@ export const getVaultAverages = (filter: MatrixFilter): number[] =>
   getVaultVals({
     filter,
     reducer: (points: DataPoint[]) =>
-      points.reduce((memo, point) => memo + point.vault, 0) / points.length || 0
+      Math.round(
+        points.reduce((memo, point) => memo + point.vault, 0) / points.length
+      ) || 0
   });
 
 type lessGreater = (a: number, b: number) => boolean;

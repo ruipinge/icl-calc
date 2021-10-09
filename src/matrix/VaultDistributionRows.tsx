@@ -33,7 +33,7 @@ export const getVaultDistribution = ({
 }): number[] =>
   filterFlatRows(filter).map((points) =>
     points.length !== 0
-      ? round(countByVaultRange({ points, range }) / points.length, 3)
+      ? round((100 * countByVaultRange({ points, range })) / points.length, 1)
       : 0
   );
 
