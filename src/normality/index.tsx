@@ -22,61 +22,64 @@ const Graph = ({
   </>
 );
 
-export const Normality = ({
-  ata,
-  clr,
-  acd,
-  aca,
-  wtw,
-  age
-}: {
-  ata: number;
-  clr: number;
-  acd: number;
-  aca: number;
-  wtw: number;
-  age: number;
-}) => (
+interface GraphConfig {
+  title: string;
+  data: HistogramEntry[];
+  arg: string;
+  values: number[];
+}
+
+const GRAPH_CONFIGS: GraphConfig[] = [
+  {
+    title: 'Angle to Angle - AtA (mm)',
+    data: HISTOGRAM_DATA.ata,
+    arg: 'ata',
+    values: VALUES.ATA
+  },
+  {
+    title: 'Crystalline Lens Rise - CLR (μm)',
+    data: HISTOGRAM_DATA.clr,
+    arg: 'clr',
+    values: VALUES.CLR
+  },
+  {
+    title: 'Internal Anterior Chamber Depth - ACD (mm)',
+    data: HISTOGRAM_DATA.acd,
+    arg: 'acd',
+    values: VALUES.ACD
+  },
+  {
+    title: 'Average Anterior Chamber Angle - ACA (º)',
+    data: HISTOGRAM_DATA.aca,
+    arg: 'aca',
+    values: VALUES.ACA
+  },
+  {
+    title: 'White to White - WtW (mm)',
+    data: HISTOGRAM_DATA.wtw,
+    arg: 'wtw',
+    values: VALUES.WTW
+  },
+  {
+    title: 'Age (years)',
+    data: HISTOGRAM_DATA.age,
+    arg: 'age',
+    values: VALUES.AGE
+  }
+];
+
+export const Normality = ({ ...args }) => (
   <>
     <div className="row">
-      <Graph
-        title={'Angle to Angle - AtA (mm)'}
-        histogramSeries={HISTOGRAM_DATA.ata}
-        value={ata}
-        gaugeValues={VALUES.ATA}
-      />
-      <Graph
-        title={'Crystalline Lens Rise - CLR (μm)'}
-        histogramSeries={HISTOGRAM_DATA.clr}
-        value={clr}
-        gaugeValues={VALUES.CLR}
-      />
-      <Graph
-        title={'Internal Anterior Chamber Depth - ACD (mm)'}
-        histogramSeries={HISTOGRAM_DATA.acd}
-        value={acd}
-        gaugeValues={VALUES.ACD}
-      />
-    </div>
-    <div className="row">
-      <Graph
-        title={'Average Anterior Chamber Angle - ACA (º)'}
-        histogramSeries={HISTOGRAM_DATA.aca}
-        value={aca}
-        gaugeValues={VALUES.ACA}
-      />
-      <Graph
-        title={'White to White - WtW (mm)'}
-        histogramSeries={HISTOGRAM_DATA.wtw}
-        value={wtw}
-        gaugeValues={VALUES.WTW}
-      />
-      <Graph
-        title={'Age (years)'}
-        histogramSeries={HISTOGRAM_DATA.age}
-        value={age}
-        gaugeValues={VALUES.AGE}
-      />
+      {GRAPH_CONFIGS.map((config) => (
+        <Graph
+          title={config.title}
+          histogramSeries={config.data}
+          value={args[config.arg]}
+          gaugeValues={config.values}
+          key={config.arg}
+        />
+      ))}
     </div>
   </>
 );
