@@ -1,4 +1,5 @@
 import { Biometry } from './Biometry';
+import { CorneaProfile } from './CorneaProfile';
 import { FormikState } from 'formik';
 import { ICLInputs } from '../types';
 import { ICLPower } from './ICLPower';
@@ -24,7 +25,7 @@ export const Patient = ({
         />
       </div>
       <div className="col-md-3 offset-md-1">
-        <SpectacleRefraction
+        <CorneaProfile
           values={values}
           errors={errors}
           touched={touched}
@@ -32,6 +33,12 @@ export const Patient = ({
         />
       </div>
       <div className="col-md-3 offset-md-1">
+        <SpectacleRefraction
+          values={values}
+          errors={errors}
+          touched={touched}
+          {...otherProps}
+        />
         <ICLPower
           values={values}
           errors={errors}

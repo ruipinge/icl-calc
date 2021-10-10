@@ -6,7 +6,7 @@ export const Biometry = ({
   errors,
   touched
 }: FormikState<Pick<ICLInputs, 'biometry'>>) => (
-  <>
+  <div className="section-form">
     <h4>Biometry</h4>
     <FieldWithUnit
       label="Angle to Angle (AtA)"
@@ -50,19 +50,5 @@ export const Biometry = ({
       error={errors.biometry?.acat}
       touched={touched.biometry?.acat}
     />
-    <FieldWithUnit
-      label="Keratometry - Flat Meridian (Kf)"
-      name="biometry.kf"
-      unit="dpt"
-      error={errors.biometry?.kf}
-      touched={touched.biometry?.kf}
-    />
-    <FieldWithUnit
-      label="Central Corneal Thickness (CCT)"
-      name="biometry.cct"
-      unit="μm"
-      error={errors.biometry?.cct}
-      touched={touched.biometry?.cct}
-    />
-  </>
+  </div>
 );

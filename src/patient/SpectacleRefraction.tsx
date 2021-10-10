@@ -6,7 +6,7 @@ export const SpectacleRefraction = ({
   errors,
   touched
 }: FormikState<Pick<ICLInputs, 'spectacleRefraction'>>) => (
-  <>
+  <div className="section-form">
     <h4>Spectacle Refraction</h4>
     <FieldWithUnit
       label="Sphere"
@@ -36,5 +36,5 @@ export const SpectacleRefraction = ({
       error={errors.spectacleRefraction?.vertex}
       touched={touched.spectacleRefraction?.vertex}
     />
-  </>
+  </div>
 );
