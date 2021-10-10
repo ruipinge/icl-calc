@@ -14,7 +14,7 @@ export const ICLPower = ({
   touched,
   values
 }: FormikState<Pick<ICLInputs, 'spectacleRefraction'>>) => (
-  <>
+  <div>
     <h4>ICL Power</h4>
     <FieldWithUnit
       label="Sphere"
@@ -53,5 +53,5 @@ export const ICLPower = ({
       unit="dpt"
       disabled={true}
     />
-  </>
+  </div>
 );

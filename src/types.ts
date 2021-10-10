@@ -46,7 +46,13 @@ export interface Biometry {
   acd: number;
   acan: number;
   acat: number;
+}
+
+export interface CorneaProfile {
   kf: number;
+  ks: number;
+  axisf: number;
+  axiss: number;
   cct: number;
 }
 
@@ -60,6 +66,7 @@ export interface SpectacleRefraction {
 export interface ICLInputs {
   patient: PatientInfo;
   biometry: Biometry;
+  corneaProfile: CorneaProfile;
   spectacleRefraction: SpectacleRefraction;
 }
 
@@ -75,8 +82,13 @@ export const INITIAL_VALUES: ICLInputs = {
     clr: 0,
     acd: 0,
     acan: 0,
-    acat: 0,
+    acat: 0
+  },
+  corneaProfile: {
     kf: 0,
+    ks: 0,
+    axisf: 0,
+    axiss: 0,
     cct: 0
   },
   spectacleRefraction: {

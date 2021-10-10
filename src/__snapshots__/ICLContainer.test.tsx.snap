@@ -1138,285 +1138,219 @@ exports[`renders Patient for inexistent route 1`] = `
       <div
         class="col-md-4"
       >
-        <h4>
-          Biometry
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.atafield"
-          >
-            Angle to Angle (AtA)
-          </label>
+          <h4>
+            Biometry
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.atafield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.ata"
-                type="number"
-                value="0"
-              />
+              Angle to Angle (AtA)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.ata"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.wtwfield"
-          >
-            White to White (WtW)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.wtwfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.wtw"
-                type="number"
-                value="0"
-              />
+              White to White (WtW)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.wtw"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.clrfield"
-          >
-            Crystaline Lens Rise (CLR)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.clrfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.clr"
-                type="number"
-                value="0"
-              />
+              Crystaline Lens Rise (CLR)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.clr"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acdfield"
-          >
-            Internal Anterior Chamber Depth (ACD)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acdfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acd"
-                type="number"
-                value="0"
-              />
+              Internal Anterior Chamber Depth (ACD)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acd"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acanfield"
-          >
-            Anterior Chamber Angle nasal (ACAn)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acanfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acan"
-                type="number"
-                value="0"
-              />
+              Anterior Chamber Angle nasal (ACAn)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acan"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acatfield"
-          >
-            Anterior Chamber Angle temporal (ACAt)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acatfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acat"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="degrees"
-                >
-                  º
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.kffield"
-          >
-            Keratometry - Flat Meridian (Kf)
-          </label>
-          <div
-            class="col-sm-6"
-          >
+              Anterior Chamber Angle temporal (ACAt)
+            </label>
             <div
-              class="input-group"
+              class="col-sm-6"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.kf"
-                type="number"
-                value="0"
-              />
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acat"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.cctfield"
-          >
-            Central Corneal Thickness (CCT)
-          </label>
-          <div
-            class="col-sm-6"
-          >
-            <div
-              class="input-group"
-            >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.cct"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
-                >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -1425,145 +1359,214 @@ exports[`renders Patient for inexistent route 1`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          Spectacle Refraction
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.spherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Cornea Profile
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.sphere"
-                type="number"
-                value="0"
-              />
+              Keratometry - Flat Meridian (Kf)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.cylindrefield"
-          >
-            Cylindre
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.cylindre"
-                type="number"
-                value="0"
-              />
+              Axis - Flat Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.axisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.axis"
-                type="number"
-                value="0"
-              />
+              Keratometry - Steep Meridian (Ks)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.vertexfield"
-          >
-            Vertex
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.vertex"
-                type="number"
-                value="0"
-              />
+              Axis - Steep Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.cctfield"
+            >
+              Central Corneal Thickness (CCT)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.cct"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row mb-4"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.pcrf"
+            >
+              Previous Corneal Refractive Surgery
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <select
+                  class="form-control"
+                  disabled=""
+                  name="corneaProfile.pcrf"
+                >
+                  <option
+                    selected=""
+                    value="none"
+                  >
+                    None
+                  </option>
+                </select>
               </div>
             </div>
           </div>
@@ -1572,141 +1575,290 @@ exports[`renders Patient for inexistent route 1`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          ICL Power
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSpherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Spectacle Refraction
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.spherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphere"
-                value="-1.34"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.sphere"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.cylindrefield"
+            >
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.cylindre"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.axisfield"
+            >
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.axis"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.vertexfield"
+            >
+              Vertex
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.vertex"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclCylindrefield"
-          >
-            Cylindre
-          </label>
+        <div>
+          <h4>
+            ICL Power
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSpherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclCylindre"
-                value="0"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphere"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclAxisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclCylindrefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclAxis"
-                value="90"
-              />
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclCylindre"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSphericalEquivalentfield"
-          >
-            Spherical Equivalent (SE)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclAxisfield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphericalEquivalent"
-                value="-1.34"
-              />
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclAxis"
+                  value="90"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSphericalEquivalentfield"
+            >
+              Spherical Equivalent (SE)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphericalEquivalent"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -1986,285 +2138,219 @@ exports[`renders Patient form on # route 1`] = `
       <div
         class="col-md-4"
       >
-        <h4>
-          Biometry
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.atafield"
-          >
-            Angle to Angle (AtA)
-          </label>
+          <h4>
+            Biometry
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.atafield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.ata"
-                type="number"
-                value="0"
-              />
+              Angle to Angle (AtA)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.ata"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.wtwfield"
-          >
-            White to White (WtW)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.wtwfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.wtw"
-                type="number"
-                value="0"
-              />
+              White to White (WtW)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.wtw"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.clrfield"
-          >
-            Crystaline Lens Rise (CLR)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.clrfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.clr"
-                type="number"
-                value="0"
-              />
+              Crystaline Lens Rise (CLR)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.clr"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acdfield"
-          >
-            Internal Anterior Chamber Depth (ACD)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acdfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acd"
-                type="number"
-                value="0"
-              />
+              Internal Anterior Chamber Depth (ACD)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acd"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acanfield"
-          >
-            Anterior Chamber Angle nasal (ACAn)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acanfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acan"
-                type="number"
-                value="0"
-              />
+              Anterior Chamber Angle nasal (ACAn)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acan"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acatfield"
-          >
-            Anterior Chamber Angle temporal (ACAt)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acatfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acat"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="degrees"
-                >
-                  º
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.kffield"
-          >
-            Keratometry - Flat Meridian (Kf)
-          </label>
-          <div
-            class="col-sm-6"
-          >
+              Anterior Chamber Angle temporal (ACAt)
+            </label>
             <div
-              class="input-group"
+              class="col-sm-6"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.kf"
-                type="number"
-                value="0"
-              />
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acat"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.cctfield"
-          >
-            Central Corneal Thickness (CCT)
-          </label>
-          <div
-            class="col-sm-6"
-          >
-            <div
-              class="input-group"
-            >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.cct"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
-                >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -2273,145 +2359,214 @@ exports[`renders Patient form on # route 1`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          Spectacle Refraction
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.spherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Cornea Profile
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.sphere"
-                type="number"
-                value="0"
-              />
+              Keratometry - Flat Meridian (Kf)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.cylindrefield"
-          >
-            Cylindre
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.cylindre"
-                type="number"
-                value="0"
-              />
+              Axis - Flat Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.axisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.axis"
-                type="number"
-                value="0"
-              />
+              Keratometry - Steep Meridian (Ks)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.vertexfield"
-          >
-            Vertex
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.vertex"
-                type="number"
-                value="0"
-              />
+              Axis - Steep Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.cctfield"
+            >
+              Central Corneal Thickness (CCT)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.cct"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row mb-4"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.pcrf"
+            >
+              Previous Corneal Refractive Surgery
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <select
+                  class="form-control"
+                  disabled=""
+                  name="corneaProfile.pcrf"
+                >
+                  <option
+                    selected=""
+                    value="none"
+                  >
+                    None
+                  </option>
+                </select>
               </div>
             </div>
           </div>
@@ -2420,141 +2575,290 @@ exports[`renders Patient form on # route 1`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          ICL Power
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSpherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Spectacle Refraction
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.spherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphere"
-                value="-1.34"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.sphere"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.cylindrefield"
+            >
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.cylindre"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.axisfield"
+            >
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.axis"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.vertexfield"
+            >
+              Vertex
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.vertex"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclCylindrefield"
-          >
-            Cylindre
-          </label>
+        <div>
+          <h4>
+            ICL Power
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSpherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclCylindre"
-                value="0"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphere"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclAxisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclCylindrefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclAxis"
-                value="90"
-              />
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclCylindre"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSphericalEquivalentfield"
-          >
-            Spherical Equivalent (SE)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclAxisfield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphericalEquivalent"
-                value="-1.34"
-              />
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclAxis"
+                  value="90"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSphericalEquivalentfield"
+            >
+              Spherical Equivalent (SE)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphericalEquivalent"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -2999,285 +3303,219 @@ exports[`renders without crashing 1`] = `
       <div
         class="col-md-4"
       >
-        <h4>
-          Biometry
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.atafield"
-          >
-            Angle to Angle (AtA)
-          </label>
+          <h4>
+            Biometry
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.atafield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.ata"
-                type="number"
-                value="0"
-              />
+              Angle to Angle (AtA)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.ata"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.wtwfield"
-          >
-            White to White (WtW)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.wtwfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.wtw"
-                type="number"
-                value="0"
-              />
+              White to White (WtW)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.wtw"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.clrfield"
-          >
-            Crystaline Lens Rise (CLR)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.clrfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.clr"
-                type="number"
-                value="0"
-              />
+              Crystaline Lens Rise (CLR)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.clr"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acdfield"
-          >
-            Internal Anterior Chamber Depth (ACD)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acdfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acd"
-                type="number"
-                value="0"
-              />
+              Internal Anterior Chamber Depth (ACD)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acd"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acanfield"
-          >
-            Anterior Chamber Angle nasal (ACAn)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acanfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acan"
-                type="number"
-                value="0"
-              />
+              Anterior Chamber Angle nasal (ACAn)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acan"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acatfield"
-          >
-            Anterior Chamber Angle temporal (ACAt)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acatfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acat"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="degrees"
-                >
-                  º
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.kffield"
-          >
-            Keratometry - Flat Meridian (Kf)
-          </label>
-          <div
-            class="col-sm-6"
-          >
+              Anterior Chamber Angle temporal (ACAt)
+            </label>
             <div
-              class="input-group"
+              class="col-sm-6"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.kf"
-                type="number"
-                value="0"
-              />
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acat"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.cctfield"
-          >
-            Central Corneal Thickness (CCT)
-          </label>
-          <div
-            class="col-sm-6"
-          >
-            <div
-              class="input-group"
-            >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.cct"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
-                >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -3286,145 +3524,214 @@ exports[`renders without crashing 1`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          Spectacle Refraction
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.spherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Cornea Profile
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.sphere"
-                type="number"
-                value="0"
-              />
+              Keratometry - Flat Meridian (Kf)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.cylindrefield"
-          >
-            Cylindre
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.cylindre"
-                type="number"
-                value="0"
-              />
+              Axis - Flat Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.axisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.axis"
-                type="number"
-                value="0"
-              />
+              Keratometry - Steep Meridian (Ks)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.vertexfield"
-          >
-            Vertex
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.vertex"
-                type="number"
-                value="0"
-              />
+              Axis - Steep Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.cctfield"
+            >
+              Central Corneal Thickness (CCT)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.cct"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row mb-4"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.pcrf"
+            >
+              Previous Corneal Refractive Surgery
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <select
+                  class="form-control"
+                  disabled=""
+                  name="corneaProfile.pcrf"
+                >
+                  <option
+                    selected=""
+                    value="none"
+                  >
+                    None
+                  </option>
+                </select>
               </div>
             </div>
           </div>
@@ -3433,141 +3740,290 @@ exports[`renders without crashing 1`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          ICL Power
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSpherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Spectacle Refraction
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.spherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphere"
-                value="-1.34"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.sphere"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.cylindrefield"
+            >
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.cylindre"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.axisfield"
+            >
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.axis"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.vertexfield"
+            >
+              Vertex
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.vertex"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclCylindrefield"
-          >
-            Cylindre
-          </label>
+        <div>
+          <h4>
+            ICL Power
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSpherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclCylindre"
-                value="0"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphere"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclAxisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclCylindrefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclAxis"
-                value="90"
-              />
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclCylindre"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSphericalEquivalentfield"
-          >
-            Spherical Equivalent (SE)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclAxisfield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphericalEquivalent"
-                value="-1.34"
-              />
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclAxis"
+                  value="90"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSphericalEquivalentfield"
+            >
+              Spherical Equivalent (SE)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphericalEquivalent"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -3847,285 +4303,219 @@ exports[`resets form when clicking reset button 1`] = `
       <div
         class="col-md-4"
       >
-        <h4>
-          Biometry
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.atafield"
-          >
-            Angle to Angle (AtA)
-          </label>
+          <h4>
+            Biometry
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.atafield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.ata"
-                type="number"
-                value="0"
-              />
+              Angle to Angle (AtA)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.ata"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.wtwfield"
-          >
-            White to White (WtW)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.wtwfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.wtw"
-                type="number"
-                value="0"
-              />
+              White to White (WtW)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.wtw"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.clrfield"
-          >
-            Crystaline Lens Rise (CLR)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.clrfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.clr"
-                type="number"
-                value="0"
-              />
+              Crystaline Lens Rise (CLR)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.clr"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acdfield"
-          >
-            Internal Anterior Chamber Depth (ACD)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acdfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acd"
-                type="number"
-                value="0"
-              />
+              Internal Anterior Chamber Depth (ACD)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acd"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acanfield"
-          >
-            Anterior Chamber Angle nasal (ACAn)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acanfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acan"
-                type="number"
-                value="0"
-              />
+              Anterior Chamber Angle nasal (ACAn)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acan"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acatfield"
-          >
-            Anterior Chamber Angle temporal (ACAt)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acatfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acat"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="degrees"
-                >
-                  º
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.kffield"
-          >
-            Keratometry - Flat Meridian (Kf)
-          </label>
-          <div
-            class="col-sm-6"
-          >
+              Anterior Chamber Angle temporal (ACAt)
+            </label>
             <div
-              class="input-group"
+              class="col-sm-6"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.kf"
-                type="number"
-                value="0"
-              />
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acat"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.cctfield"
-          >
-            Central Corneal Thickness (CCT)
-          </label>
-          <div
-            class="col-sm-6"
-          >
-            <div
-              class="input-group"
-            >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.cct"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
-                >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -4134,145 +4524,214 @@ exports[`resets form when clicking reset button 1`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          Spectacle Refraction
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.spherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Cornea Profile
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.sphere"
-                type="number"
-                value="0"
-              />
+              Keratometry - Flat Meridian (Kf)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.cylindrefield"
-          >
-            Cylindre
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.cylindre"
-                type="number"
-                value="0"
-              />
+              Axis - Flat Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.axisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.axis"
-                type="number"
-                value="0"
-              />
+              Keratometry - Steep Meridian (Ks)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.vertexfield"
-          >
-            Vertex
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.vertex"
-                type="number"
-                value="0"
-              />
+              Axis - Steep Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.cctfield"
+            >
+              Central Corneal Thickness (CCT)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.cct"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row mb-4"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.pcrf"
+            >
+              Previous Corneal Refractive Surgery
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <select
+                  class="form-control"
+                  disabled=""
+                  name="corneaProfile.pcrf"
+                >
+                  <option
+                    selected=""
+                    value="none"
+                  >
+                    None
+                  </option>
+                </select>
               </div>
             </div>
           </div>
@@ -4281,141 +4740,290 @@ exports[`resets form when clicking reset button 1`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          ICL Power
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSpherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Spectacle Refraction
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.spherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphere"
-                value="-1.34"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.sphere"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.cylindrefield"
+            >
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.cylindre"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.axisfield"
+            >
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.axis"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.vertexfield"
+            >
+              Vertex
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.vertex"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclCylindrefield"
-          >
-            Cylindre
-          </label>
+        <div>
+          <h4>
+            ICL Power
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSpherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclCylindre"
-                value="0"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphere"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclAxisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclCylindrefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclAxis"
-                value="90"
-              />
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclCylindre"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSphericalEquivalentfield"
-          >
-            Spherical Equivalent (SE)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclAxisfield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphericalEquivalent"
-                value="-1.34"
-              />
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclAxis"
+                  value="90"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSphericalEquivalentfield"
+            >
+              Spherical Equivalent (SE)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphericalEquivalent"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -4695,285 +5303,219 @@ exports[`resets form when clicking reset button 2`] = `
       <div
         class="col-md-4"
       >
-        <h4>
-          Biometry
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.atafield"
-          >
-            Angle to Angle (AtA)
-          </label>
+          <h4>
+            Biometry
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.atafield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.ata"
-                type="number"
-                value="0"
-              />
+              Angle to Angle (AtA)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.ata"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.wtwfield"
-          >
-            White to White (WtW)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.wtwfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.wtw"
-                type="number"
-                value="0"
-              />
+              White to White (WtW)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.wtw"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.clrfield"
-          >
-            Crystaline Lens Rise (CLR)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.clrfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.clr"
-                type="number"
-                value="0"
-              />
+              Crystaline Lens Rise (CLR)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.clr"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acdfield"
-          >
-            Internal Anterior Chamber Depth (ACD)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acdfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acd"
-                type="number"
-                value="0"
-              />
+              Internal Anterior Chamber Depth (ACD)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acd"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acanfield"
-          >
-            Anterior Chamber Angle nasal (ACAn)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acanfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acan"
-                type="number"
-                value="0"
-              />
+              Anterior Chamber Angle nasal (ACAn)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acan"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acatfield"
-          >
-            Anterior Chamber Angle temporal (ACAt)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acatfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acat"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="degrees"
-                >
-                  º
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.kffield"
-          >
-            Keratometry - Flat Meridian (Kf)
-          </label>
-          <div
-            class="col-sm-6"
-          >
+              Anterior Chamber Angle temporal (ACAt)
+            </label>
             <div
-              class="input-group"
+              class="col-sm-6"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.kf"
-                type="number"
-                value="0"
-              />
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acat"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.cctfield"
-          >
-            Central Corneal Thickness (CCT)
-          </label>
-          <div
-            class="col-sm-6"
-          >
-            <div
-              class="input-group"
-            >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.cct"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
-                >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -4982,145 +5524,214 @@ exports[`resets form when clicking reset button 2`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          Spectacle Refraction
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.spherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Cornea Profile
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.sphere"
-                type="number"
-                value="0"
-              />
+              Keratometry - Flat Meridian (Kf)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.cylindrefield"
-          >
-            Cylindre
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.cylindre"
-                type="number"
-                value="0"
-              />
+              Axis - Flat Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.axisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.axis"
-                type="number"
-                value="0"
-              />
+              Keratometry - Steep Meridian (Ks)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.vertexfield"
-          >
-            Vertex
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.vertex"
-                type="number"
-                value="0"
-              />
+              Axis - Steep Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.cctfield"
+            >
+              Central Corneal Thickness (CCT)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.cct"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row mb-4"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.pcrf"
+            >
+              Previous Corneal Refractive Surgery
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <select
+                  class="form-control"
+                  disabled=""
+                  name="corneaProfile.pcrf"
+                >
+                  <option
+                    selected=""
+                    value="none"
+                  >
+                    None
+                  </option>
+                </select>
               </div>
             </div>
           </div>
@@ -5129,141 +5740,290 @@ exports[`resets form when clicking reset button 2`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          ICL Power
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSpherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Spectacle Refraction
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.spherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphere"
-                value="-1.34"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.sphere"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.cylindrefield"
+            >
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.cylindre"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.axisfield"
+            >
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.axis"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.vertexfield"
+            >
+              Vertex
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.vertex"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclCylindrefield"
-          >
-            Cylindre
-          </label>
+        <div>
+          <h4>
+            ICL Power
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSpherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclCylindre"
-                value="0"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphere"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclAxisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclCylindrefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclAxis"
-                value="90"
-              />
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclCylindre"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSphericalEquivalentfield"
-          >
-            Spherical Equivalent (SE)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclAxisfield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphericalEquivalent"
-                value="-1.34"
-              />
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclAxis"
+                  value="90"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSphericalEquivalentfield"
+            >
+              Spherical Equivalent (SE)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphericalEquivalent"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -5543,285 +6303,219 @@ exports[`resets form when clicking reset button 3`] = `
       <div
         class="col-md-4"
       >
-        <h4>
-          Biometry
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.atafield"
-          >
-            Angle to Angle (AtA)
-          </label>
+          <h4>
+            Biometry
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.atafield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.ata"
-                type="number"
-                value="0"
-              />
+              Angle to Angle (AtA)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.ata"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.wtwfield"
-          >
-            White to White (WtW)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.wtwfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.wtw"
-                type="number"
-                value="0"
-              />
+              White to White (WtW)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.wtw"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.clrfield"
-          >
-            Crystaline Lens Rise (CLR)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.clrfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.clr"
-                type="number"
-                value="0"
-              />
+              Crystaline Lens Rise (CLR)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.clr"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acdfield"
-          >
-            Internal Anterior Chamber Depth (ACD)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acdfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acd"
-                type="number"
-                value="0"
-              />
+              Internal Anterior Chamber Depth (ACD)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acd"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acanfield"
-          >
-            Anterior Chamber Angle nasal (ACAn)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acanfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acan"
-                type="number"
-                value="0"
-              />
+              Anterior Chamber Angle nasal (ACAn)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acan"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.acatfield"
-          >
-            Anterior Chamber Angle temporal (ACAt)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="biometry.acatfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.acat"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="degrees"
-                >
-                  º
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.kffield"
-          >
-            Keratometry - Flat Meridian (Kf)
-          </label>
-          <div
-            class="col-sm-6"
-          >
+              Anterior Chamber Angle temporal (ACAt)
+            </label>
             <div
-              class="input-group"
+              class="col-sm-6"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.kf"
-                type="number"
-                value="0"
-              />
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="biometry.acat"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="biometry.cctfield"
-          >
-            Central Corneal Thickness (CCT)
-          </label>
-          <div
-            class="col-sm-6"
-          >
-            <div
-              class="input-group"
-            >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="biometry.cct"
-                type="number"
-                value="0"
-              />
-              <div
-                class="input-group-append"
-              >
-                <span
-                  class="input-group-text"
-                  title="micrometres"
-                >
-                  μm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -5830,145 +6524,214 @@ exports[`resets form when clicking reset button 3`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          Spectacle Refraction
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.spherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Cornea Profile
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.sphere"
-                type="number"
-                value="0"
-              />
+              Keratometry - Flat Meridian (Kf)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.cylindrefield"
-          >
-            Cylindre
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.kffield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.cylindre"
-                type="number"
-                value="0"
-              />
+              Axis - Flat Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.kf"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.axisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.axis"
-                type="number"
-                value="0"
-              />
+              Keratometry - Steep Meridian (Ks)
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="spectacleRefraction.vertexfield"
-          >
-            Vertex
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.ksfield"
             >
-              <input
-                autocomplete="off"
-                class="form-control text-right"
-                name="spectacleRefraction.vertex"
-                type="number"
-                value="0"
-              />
+              Axis - Steep Meridian
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="millimetres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.ks"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  mm
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.cctfield"
+            >
+              Central Corneal Thickness (CCT)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="corneaProfile.cct"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="micrometres"
+                  >
+                    μm
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row mb-4"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="corneaProfile.pcrf"
+            >
+              Previous Corneal Refractive Surgery
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <select
+                  class="form-control"
+                  disabled=""
+                  name="corneaProfile.pcrf"
+                >
+                  <option
+                    selected=""
+                    value="none"
+                  >
+                    None
+                  </option>
+                </select>
               </div>
             </div>
           </div>
@@ -5977,141 +6740,290 @@ exports[`resets form when clicking reset button 3`] = `
       <div
         class="col-md-3 offset-md-1"
       >
-        <h4>
-          ICL Power
-        </h4>
         <div
-          class="form-group row"
+          class="section-form"
         >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSpherefield"
-          >
-            Sphere
-          </label>
+          <h4>
+            Spectacle Refraction
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.spherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphere"
-                value="-1.34"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.sphere"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.cylindrefield"
+            >
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.cylindre"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.axisfield"
+            >
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.axis"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="spectacleRefraction.vertexfield"
+            >
+              Vertex
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  autocomplete="off"
+                  class="form-control text-right"
+                  name="spectacleRefraction.vertex"
+                  type="number"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="millimetres"
+                  >
+                    mm
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclCylindrefield"
-          >
-            Cylindre
-          </label>
+        <div>
+          <h4>
+            ICL Power
+          </h4>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSpherefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclCylindre"
-                value="0"
-              />
+              Sphere
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphere"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclAxisfield"
-          >
-            Axis
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclCylindrefield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclAxis"
-                value="90"
-              />
+              Cylindre
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="degrees"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclCylindre"
+                  value="0"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  º
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="form-group row"
-        >
-          <label
-            class="col-sm-6 col-form-label"
-            for="iclSphericalEquivalentfield"
-          >
-            Spherical Equivalent (SE)
-          </label>
           <div
-            class="col-sm-6"
+            class="form-group row"
           >
-            <div
-              class="input-group"
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclAxisfield"
             >
-              <input
-                class="form-control text-right"
-                disabled=""
-                name="iclSphericalEquivalent"
-                value="-1.34"
-              />
+              Axis
+            </label>
+            <div
+              class="col-sm-6"
+            >
               <div
-                class="input-group-append"
+                class="input-group"
               >
-                <span
-                  class="input-group-text"
-                  title="dioptres"
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclAxis"
+                  value="90"
+                />
+                <div
+                  class="input-group-append"
                 >
-                  dpt
-                </span>
+                  <span
+                    class="input-group-text"
+                    title="degrees"
+                  >
+                    º
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="form-group row"
+          >
+            <label
+              class="col-sm-6 col-form-label"
+              for="iclSphericalEquivalentfield"
+            >
+              Spherical Equivalent (SE)
+            </label>
+            <div
+              class="col-sm-6"
+            >
+              <div
+                class="input-group"
+              >
+                <input
+                  class="form-control text-right"
+                  disabled=""
+                  name="iclSphericalEquivalent"
+                  value="-1.34"
+                />
+                <div
+                  class="input-group-append"
+                >
+                  <span
+                    class="input-group-text"
+                    title="dioptres"
+                  >
+                    dpt
+                  </span>
+                </div>
               </div>
             </div>
           </div>
