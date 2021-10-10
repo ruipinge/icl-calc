@@ -1,9 +1,6 @@
 import { LinearGauge, Zone } from './linear-gauge';
 import { useLayoutEffect, useRef } from 'react';
 
-import { number } from '@amcharts/amcharts4/core';
-import { string } from 'yup/lib/locale';
-
 /**
  * https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
  *
@@ -100,7 +97,7 @@ export const Gauge = ({
     return () => {
       x.dispose();
     };
-  }, []);
+  });
 
   return (
     <div style={{ marginLeft: '71px', marginRight: '15px' }} ref={container} />

@@ -27,13 +27,15 @@ export const Normality = ({
   clr,
   acd,
   aca,
-  wtw
+  wtw,
+  age
 }: {
   ata: number;
   clr: number;
   acd: number;
   aca: number;
   wtw: number;
+  age: number;
 }) => (
   <>
     <div className="row">
@@ -69,7 +71,12 @@ export const Normality = ({
         value={wtw}
         gaugeValues={VALUES.WTW}
       />
-      <div className="col-md-4"></div>
+      <Graph
+        title={'Age (years)'}
+        histogramSeries={HISTOGRAM_DATA.age}
+        value={age}
+        gaugeValues={VALUES.AGE}
+      />
     </div>
   </>
 );

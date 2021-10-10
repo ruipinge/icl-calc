@@ -1095,7 +1095,7 @@ exports[`renders Patient for inexistent route 1`] = `
               class="input-group-text"
               title="years"
             >
-              yr.
+              years
             </span>
           </div>
         </div>
@@ -1943,7 +1943,7 @@ exports[`renders Patient form on # route 1`] = `
               class="input-group-text"
               title="years"
             >
-              yr.
+              years
             </span>
           </div>
         </div>
@@ -2956,7 +2956,7 @@ exports[`renders without crashing 1`] = `
               class="input-group-text"
               title="years"
             >
-              yr.
+              years
             </span>
           </div>
         </div>
@@ -3804,7 +3804,7 @@ exports[`resets form when clicking reset button 1`] = `
               class="input-group-text"
               title="years"
             >
-              yr.
+              years
             </span>
           </div>
         </div>
@@ -4652,7 +4652,7 @@ exports[`resets form when clicking reset button 2`] = `
               class="input-group-text"
               title="years"
             >
-              yr.
+              years
             </span>
           </div>
         </div>
@@ -5500,7 +5500,7 @@ exports[`resets form when clicking reset button 3`] = `
               class="input-group-text"
               title="years"
             >
-              yr.
+              years
             </span>
           </div>
         </div>

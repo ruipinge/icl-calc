@@ -1,12 +1,31 @@
-import { calcAge } from './Info';
+import { Formik } from 'formik';
+import { ICLSchema } from '../ICLSchema';
+import { Info } from './Info';
+import { PatientInfo } from '../types';
+import TestRenderer from 'react-test-renderer';
 
-it('calculates age', () => {
-  expect(calcAge({})).toBe(0);
-  expect(calcAge({ error: 'a' })).toBe(0);
-  expect(calcAge({ dateOfBirth: 'a' })).toBe(0);
-  expect(calcAge({ error: 'a', dateOfBirth: 'a' })).toBe(0);
-  expect(calcAge({ error: 'a', dateOfBirth: '2020-01-01' })).toBe(0);
-  expect(
-    calcAge({ error: undefined, dateOfBirth: '2020-01-01' })
-  ).toBeGreaterThan(0);
+it('renders without crashing', () => {
+  // 2020-07-01
+  const spy = jest.spyOn(Date, 'now').mockImplementation(() => 1593561600000);
+
+  const tree = TestRenderer.create(
+    <Formik
+      initialValues={{
+        patient: new PatientInfo({
+          dateOfBirth: '2000-07-01',
+          name: 'Pedro Duarte',
+          eye: 'right'
+        })
+      }}
+      validationSchema={ICLSchema}
+      onSubmit={() => {}}
+    >
+      {({ errors, touched, values, resetForm, ...otherProps }) => (
+        <Info errors={{}} values={values} touched={{}} {...otherProps} />
+      )}
+    </Formik>
+  ).toJSON();
+  expect(tree).toMatchSnapshot();
+
+  spy.mockRestore();
 });

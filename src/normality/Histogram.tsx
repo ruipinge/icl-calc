@@ -64,7 +64,7 @@ export const Histogram = ({
     return () => {
       x.dispose();
     };
-  }, []);
+  });
 
   return <div ref={ref} style={{ width: '100%', height: '300px' }} />;
 };

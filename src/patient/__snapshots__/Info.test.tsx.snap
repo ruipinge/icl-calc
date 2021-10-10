@@ -1,0 +1,115 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders without crashing 1`] = `
+Array [
+  <h4>
+    Information
+  </h4>,
+  <div
+    className="form-row"
+  >
+    <div
+      className="form-group col-md-4"
+    >
+      <label
+        htmlFor="fieldName"
+      >
+        Name
+      </label>
+      <input
+        autoComplete="off"
+        className="form-control"
+        id="fieldName"
+        name="patient.name"
+        onBlur={[Function]}
+        onChange={[Function]}
+        placeholder="enter patient name"
+        value="Pedro Duarte"
+      />
+    </div>
+    <div
+      className="form-group col-md-2 offset-md-1"
+    >
+      <label
+        htmlFor="fieldDateOfBirth"
+      >
+        Date of Birth
+      </label>
+      <input
+        autoComplete="off"
+        className="form-control"
+        id="fieldDateOfBirth"
+        maxLength={10}
+        name="patient.dateOfBirth"
+        onBlur={[Function]}
+        onChange={[Function]}
+        placeholder="yyyy-mm-dd"
+        value="2000-07-01"
+      />
+    </div>
+    <div
+      className="form-group col-md-2"
+    >
+      <label
+        htmlFor="fieldAge"
+      >
+        Age
+      </label>
+      <div
+        className="input-group"
+      >
+        <input
+          className="form-control text-right"
+          disabled={true}
+          id="fieldAge"
+          name="age"
+          value={20}
+        />
+        <div
+          className="input-group-append"
+        >
+          <span
+            className="input-group-text"
+            title="years"
+          >
+            years
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="form-group col-md-2 offset-md-1"
+    >
+      <label
+        htmlFor="fieldEye"
+      >
+        Eye
+      </label>
+      <select
+        className="form-control"
+        id="fieldEye"
+        name="patient.eye"
+        onBlur={[Function]}
+        onChange={[Function]}
+        value="right"
+      >
+        <option
+          value=""
+        >
+          Select...
+        </option>
+        <option
+          value="left"
+        >
+          Left
+        </option>
+        <option
+          value="right"
+        >
+          Right
+        </option>
+      </select>
+    </div>
+  </div>,
+]
+`;

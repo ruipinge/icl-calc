@@ -1,20 +1,7 @@
 import { ErrorMessage, Field, FormikState } from 'formik';
 
 import { ICLInputs } from '../types';
-import { differenceInYears } from 'date-fns';
 import { getClassName } from '../util';
-
-export const calcAge = ({
-  dateOfBirth,
-  error
-}: {
-  dateOfBirth?: string;
-  error?: string;
-}): number =>
-  (dateOfBirth &&
-    !error &&
-    differenceInYears(new Date(), new Date(dateOfBirth))) ||
-  0;
 
 export const Info = ({
   errors,
@@ -61,14 +48,11 @@ export const Info = ({
             className="form-control text-right"
             id="fieldAge"
             disabled={true}
-            value={calcAge({
-              dateOfBirth: values.patient?.dateOfBirth,
-              error: errors.patient?.dateOfBirth
-            })}
+            value={values.patient.age()}
           />
           <div className="input-group-append">
             <span className="input-group-text" title="years">
-              yr.
+              years
             </span>
           </div>
         </div>
