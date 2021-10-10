@@ -89,5 +89,6 @@ it('renders without crashing', async () => {
     tree = create(<Gauge value={4} values={DATASET} />);
   });
 
+  // @ts-ignore
   expect(tree.toJSON()).toMatchSnapshot();
 });

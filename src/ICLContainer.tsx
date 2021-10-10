@@ -25,6 +25,7 @@ const TabContent = ({
         acd={values.biometry.acd}
         aca={(values.biometry.acan + values.biometry.acat) / 2.0}
         wtw={values.biometry.wtw}
+        age={values.patient.age()}
       />
     </Route>
     <Route path="/matrix">

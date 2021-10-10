@@ -53,7 +53,8 @@ export const VALUES = {
   CLR: DATA_POINTS.map((point) => point.clr),
   ACD: DATA_POINTS.map((point) => point.acd),
   ACA: DATA_POINTS.map((point) => point.aca),
-  WTW: DATA_POINTS.map((point) => point.wtw)
+  WTW: DATA_POINTS.map((point) => point.wtw),
+  AGE: DATA_POINTS.map((point) => point.age)
 };
 
 const MAX_COLS = 10;
@@ -95,5 +96,6 @@ export const HISTOGRAM_DATA = {
   clr: getHistogramData(VALUES.CLR),
   acd: getHistogramData(VALUES.ACD),
   aca: getHistogramData(VALUES.ACA),
-  wtw: getHistogramData(VALUES.WTW)
+  wtw: getHistogramData(VALUES.WTW),
+  age: getHistogramData(VALUES.AGE)
 };
