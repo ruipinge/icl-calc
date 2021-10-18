@@ -3029,7 +3029,172 @@ exports[`renders Regression on #regression route 1`] = `
       </li>
     </ul>
     <hr />
-    Regression is coming soon...
+    <div
+      class="row"
+    >
+      <div
+        class="col-md-6"
+      >
+        <h4>
+          Vault Prediction
+        </h4>
+        <table
+          class="table table-bordered table-hover"
+        >
+          <thead>
+            <tr>
+              <th
+                class="col-4"
+                scope="col"
+              >
+                Lens Size
+              </th>
+              <th
+                class="col-4 text-right"
+                scope="col"
+              >
+                Vault (μm)
+              </th>
+              <th
+                class="col-4 text-right"
+                scope="col"
+              >
+                Corneal Endothelium to ICL (mm)
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th
+                class="col-4"
+                scope="col"
+              >
+                12.6 mm
+              </th>
+              <td
+                class="col-4 text-right"
+              >
+                3898.37
+              </td>
+              <td
+                class="col-4 text-right"
+              >
+                -4.12
+              </td>
+            </tr>
+            <tr>
+              <th
+                class="col-4"
+                scope="col"
+              >
+                13.2 mm
+              </th>
+              <td
+                class="col-4 text-right"
+              >
+                4159.36
+              </td>
+              <td
+                class="col-4 text-right"
+              >
+                -4.38
+              </td>
+            </tr>
+            <tr>
+              <th
+                class="col-4"
+                scope="col"
+              >
+                13.7 mm
+              </th>
+              <td
+                class="col-4 text-right"
+              >
+                4489.55
+              </td>
+              <td
+                class="col-4 text-right"
+              >
+                -4.71
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <hr />
+    <div
+      class="row"
+    >
+      <div
+        class="col-md-5"
+      >
+        <h4>
+          Probability of 250 &lt; Vault &lt; 1000 (μm)
+        </h4>
+        <table
+          class="table table-bordered table-hover"
+        >
+          <thead>
+            <tr>
+              <th
+                class="col-4"
+                scope="col"
+              >
+                Lens Size
+              </th>
+              <th
+                class="col-4 text-right"
+                scope="col"
+              >
+                Probability (%)
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th
+                class="col-4"
+                scope="col"
+              >
+                12.6 mm
+              </th>
+              <td
+                class="col-4 text-right"
+              >
+                0.8
+              </td>
+            </tr>
+            <tr>
+              <th
+                class="col-4"
+                scope="col"
+              >
+                13.2 mm
+              </th>
+              <td
+                class="col-4 text-right"
+              >
+                0.7
+              </td>
+            </tr>
+            <tr>
+              <th
+                class="col-4"
+                scope="col"
+              >
+                13.7 mm
+              </th>
+              <td
+                class="col-4 text-right"
+              >
+                1.1
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
   <footer
     class="p-3 p-md-5 mt-5 bg-light text-center text-sm-left"
