@@ -10,29 +10,44 @@ export interface VaultRange {
   max?: number;
 }
 
-type LensSizeId = 'small' | 'medium' | 'large';
-interface LensSize {
+export type LensSizeId = 'small' | 'medium' | 'large';
+export interface LensSize {
   id: LensSizeId;
   label: string;
   value: number;
 }
+
+export const LENS_SIZE_SMALL: LensSize = {
+  label: '12.6 mm',
+  id: 'small',
+  value: 12.6
+};
+export const LENS_SIZE_MEDIUM: LensSize = {
+  label: '13.2 mm',
+  id: 'medium',
+  value: 13.2
+};
+export const LENS_SIZE_LARGE: LensSize = {
+  label: '13.7 mm',
+  id: 'large',
+  value: 13.7
+};
+
 export const LENS_SIZES: LensSize[] = [
-  {
-    label: '12.6 mm',
-    id: 'small',
-    value: 12.6
-  },
-  {
-    label: '13.2 mm',
-    id: 'medium',
-    value: 13.2
-  },
-  {
-    label: '13.7 mm',
-    id: 'large',
-    value: 13.7
-  }
+  LENS_SIZE_SMALL,
+  LENS_SIZE_MEDIUM,
+  LENS_SIZE_LARGE
 ];
+
+type LensSizesType = {
+  [key in LensSizeId]: LensSize;
+};
+
+export const LENS_SIZES_MAP: LensSizesType = {
+  small: LENS_SIZE_SMALL,
+  medium: LENS_SIZE_MEDIUM,
+  large: LENS_SIZE_LARGE
+};
 
 type MyopiaId = 'low' | 'moderate' | 'high';
 interface MyopiaLevel {

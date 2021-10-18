@@ -1,3 +1,172 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders without crashing 1`] = `"Regression is coming soon..."`;
+exports[`renders without crashing 1`] = `
+Array [
+  <div
+    className="row"
+  >
+    <div
+      className="col-md-6"
+    >
+      <h4>
+        Vault Prediction
+      </h4>
+      <table
+        className="table table-bordered table-hover"
+      >
+        <thead>
+          <tr>
+            <th
+              className="col-4"
+              scope="col"
+            >
+              Lens Size
+            </th>
+            <th
+              className="col-4 text-right"
+              scope="col"
+            >
+              Vault (μm)
+            </th>
+            <th
+              className="col-4 text-right"
+              scope="col"
+            >
+              Corneal Endothelium to ICL (mm)
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th
+              className="col-4"
+              scope="col"
+            >
+              12.6 mm
+            </th>
+            <td
+              className="col-4 text-right"
+            >
+              NaN
+            </td>
+            <td
+              className="col-4 text-right"
+            >
+              NaN
+            </td>
+          </tr>
+          <tr>
+            <th
+              className="col-4"
+              scope="col"
+            >
+              13.2 mm
+            </th>
+            <td
+              className="col-4 text-right"
+            >
+              NaN
+            </td>
+            <td
+              className="col-4 text-right"
+            >
+              NaN
+            </td>
+          </tr>
+          <tr>
+            <th
+              className="col-4"
+              scope="col"
+            >
+              13.7 mm
+            </th>
+            <td
+              className="col-4 text-right"
+            >
+              NaN
+            </td>
+            <td
+              className="col-4 text-right"
+            >
+              NaN
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>,
+  <hr />,
+  <div
+    className="row"
+  >
+    <div
+      className="col-md-5"
+    >
+      <h4>
+        Probability of 250 &lt; Vault &lt; 1000 (μm)
+      </h4>
+      <table
+        className="table table-bordered table-hover"
+      >
+        <thead>
+          <tr>
+            <th
+              className="col-4"
+              scope="col"
+            >
+              Lens Size
+            </th>
+            <th
+              className="col-4 text-right"
+              scope="col"
+            >
+              Probability (%)
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th
+              className="col-4"
+              scope="col"
+            >
+              12.6 mm
+            </th>
+            <td
+              className="col-4 text-right"
+            >
+              NaN
+            </td>
+          </tr>
+          <tr>
+            <th
+              className="col-4"
+              scope="col"
+            >
+              13.2 mm
+            </th>
+            <td
+              className="col-4 text-right"
+            >
+              NaN
+            </td>
+          </tr>
+          <tr>
+            <th
+              className="col-4"
+              scope="col"
+            >
+              13.7 mm
+            </th>
+            <td
+              className="col-4 text-right"
+            >
+              NaN
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>,
+]
+`;

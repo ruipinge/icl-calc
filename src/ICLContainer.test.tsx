@@ -74,7 +74,8 @@ it('switches to Regression tab when clicked', async () => {
   });
 
   expect(screen.queryByLabelText('Name')).toBeNull();
-  expect(screen.getByText(/Regression is coming soon/)).toBeVisible();
+  expect(screen.getByText(/Vault Prediction/)).toBeVisible();
+  expect(screen.getByText(/Probability of 250 < Vault < 1000/)).toBeVisible();
 });
 
 it('renders Patient form on # route', () => {

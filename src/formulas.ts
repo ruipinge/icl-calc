@@ -53,7 +53,7 @@ export const calcIclAxis = (axis: number) => {
   return round(axis, 1);
 };
 
-export const calcIclCylindreEquivalent = ({
+export const calcIclSphericalEquivalent = ({
   sphere,
   cylindre
 }: {

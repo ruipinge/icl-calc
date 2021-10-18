@@ -1,8 +1,8 @@
 import {
   calcIclAxis,
   calcIclCylindre,
-  calcIclCylindreEquivalent,
-  calcIclSphere
+  calcIclSphere,
+  calcIclSphericalEquivalent
 } from './formulas';
 
 it('calculates ICL Power Sphere', () => {
@@ -49,15 +49,17 @@ it('calculates ICL Power Axis', () => {
 });
 
 it('calculates ICL Power Cylindre Equivalent', () => {
-  expect(calcIclCylindreEquivalent({ sphere: 0, cylindre: 0 })).toEqual(-1.34);
-  expect(calcIclCylindreEquivalent({ sphere: 10, cylindre: 10 })).toEqual(
+  expect(calcIclSphericalEquivalent({ sphere: 0, cylindre: 0 })).toEqual(-1.34);
+  expect(calcIclSphericalEquivalent({ sphere: 10, cylindre: 10 })).toEqual(
     12.83
   );
-  expect(calcIclCylindreEquivalent({ sphere: -25, cylindre: -8 })).toEqual(
+  expect(calcIclSphericalEquivalent({ sphere: -25, cylindre: -8 })).toEqual(
     -28.73
   );
-  expect(calcIclCylindreEquivalent({ sphere: -25, cylindre: 0 })).toEqual(
+  expect(calcIclSphericalEquivalent({ sphere: -25, cylindre: 0 })).toEqual(
     -24.95
   );
-  expect(calcIclCylindreEquivalent({ sphere: 0, cylindre: -8 })).toEqual(-5.12);
+  expect(calcIclSphericalEquivalent({ sphere: 0, cylindre: -8 })).toEqual(
+    -5.12
+  );
 });

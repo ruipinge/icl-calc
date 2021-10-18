@@ -1,8 +1,8 @@
 import {
   calcIclAxis,
   calcIclCylindre,
-  calcIclCylindreEquivalent,
-  calcIclSphere
+  calcIclSphere,
+  calcIclSphericalEquivalent
 } from '../formulas';
 
 import { FieldWithUnit } from './FieldWithUnit';
@@ -45,7 +45,7 @@ export const ICLPower = ({
     />
     <FieldWithUnit
       label="Spherical Equivalent (SE)"
-      value={calcIclCylindreEquivalent({
+      value={calcIclSphericalEquivalent({
         sphere: values.spectacleRefraction.sphere,
         cylindre: values.spectacleRefraction.cylindre
       })}
