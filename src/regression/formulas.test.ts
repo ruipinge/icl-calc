@@ -7,7 +7,7 @@ import {
 
 import { round } from '../formulas';
 
-const RI: RegressionInfo = {
+export const RI: RegressionInfo = {
   acd: 3.41,
   ata: 11.72,
   clr: -80,
@@ -74,7 +74,7 @@ it('calculates corneal endothelium to ICL for large lens size', () => {
 });
 
 it('calculates probability for small lens size', () => {
-  const compression126 = RI.ata - 12.6;
+  const compression126 = 12.6 - RI.ata;
   const expected =
     1 /
     (1 +
@@ -93,16 +93,19 @@ it('calculates probability for small lens size', () => {
           0.164 * RI.se
       ));
 
-  expect(expected).toEqual(
-    probability({
-      ri: RI,
-      lensSizeId: 'small'
-    })
+  expect(round(expected, 5)).toEqual(
+    round(
+      probability({
+        ri: RI,
+        lensSizeId: 'small'
+      }),
+      5
+    )
   );
 });
 
 it('calculates probability for medium lens size', () => {
-  const compression132 = RI.ata - 13.2;
+  const compression132 = 13.2 - RI.ata;
   const expected =
     1 /
     (1 +
@@ -121,16 +124,19 @@ it('calculates probability for medium lens size', () => {
           0.164 * RI.se
       ));
 
-  expect(expected).toEqual(
-    probability({
-      ri: RI,
-      lensSizeId: 'medium'
-    })
+  expect(round(expected, 5)).toEqual(
+    round(
+      probability({
+        ri: RI,
+        lensSizeId: 'medium'
+      }),
+      5
+    )
   );
 });
 
 it('calculates probability for large lens size', () => {
-  const compression137 = RI.ata - 13.7;
+  const compression137 = 13.7 - RI.ata;
   const expected =
     1 /
     (1 +
@@ -149,10 +155,13 @@ it('calculates probability for large lens size', () => {
           0.164 * RI.se
       ));
 
-  expect(expected).toEqual(
-    probability({
-      ri: RI,
-      lensSizeId: 'large'
-    })
+  expect(round(expected, 5)).toEqual(
+    round(
+      probability({
+        ri: RI,
+        lensSizeId: 'large'
+      }),
+      5
+    )
   );
 });

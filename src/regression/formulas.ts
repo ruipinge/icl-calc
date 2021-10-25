@@ -45,7 +45,7 @@ const compression = ({
 }: {
   ata: number;
   lensSize: number;
-}): number => ata - lensSize;
+}): number => lensSize - ata;
 
 const probExpFactor0 = ({
   ri,

@@ -3162,7 +3162,7 @@ exports[`renders Regression on #regression route 1`] = `
               <td
                 class="col-4 text-right"
               >
-                0.8
+                0
               </td>
             </tr>
             <tr>
@@ -3175,7 +3175,7 @@ exports[`renders Regression on #regression route 1`] = `
               <td
                 class="col-4 text-right"
               >
-                0.7
+                0
               </td>
             </tr>
             <tr>
@@ -3188,7 +3188,7 @@ exports[`renders Regression on #regression route 1`] = `
               <td
                 class="col-4 text-right"
               >
-                1.1
+                0
               </td>
             </tr>
           </tbody>

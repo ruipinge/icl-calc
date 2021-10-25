@@ -47,12 +47,12 @@ Array [
             <td
               className="col-4 text-right"
             >
-              NaN
+              448.2
             </td>
             <td
               className="col-4 text-right"
             >
-              NaN
+              2.74
             </td>
           </tr>
           <tr>
@@ -65,12 +65,12 @@ Array [
             <td
               className="col-4 text-right"
             >
-              NaN
+              709.19
             </td>
             <td
               className="col-4 text-right"
             >
-              NaN
+              2.48
             </td>
           </tr>
           <tr>
@@ -83,12 +83,12 @@ Array [
             <td
               className="col-4 text-right"
             >
-              NaN
+              1039.38
             </td>
             <td
               className="col-4 text-right"
             >
-              NaN
+              2.15
             </td>
           </tr>
         </tbody>
@@ -135,7 +135,7 @@ Array [
             <td
               className="col-4 text-right"
             >
-              NaN
+              83.8
             </td>
           </tr>
           <tr>
@@ -148,7 +148,7 @@ Array [
             <td
               className="col-4 text-right"
             >
-              NaN
+              77.7
             </td>
           </tr>
           <tr>
@@ -161,7 +161,7 @@ Array [
             <td
               className="col-4 text-right"
             >
-              NaN
+              11.2
             </td>
           </tr>
         </tbody>
