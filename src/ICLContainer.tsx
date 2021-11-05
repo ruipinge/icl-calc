@@ -3,6 +3,7 @@ import { ICLInputs, INITIAL_VALUES } from './types';
 import { Route, HashRouter as Router, Switch } from 'react-router-dom';
 
 import { Footer } from './misc/Footer';
+import GA from './misc/GoogleAnalytics';
 import { ICLSchema } from './ICLSchema';
 import { Matrix } from './matrix';
 import { NavBar } from './misc/NavBar';
@@ -68,6 +69,7 @@ export const ICLContainer = () => (
       <>
         <NavBar resetForm={resetForm} />
         <div className="container">
+          {GA.init()}
           <Router hashType="noslash">
             <TabLinks />
             <hr />
