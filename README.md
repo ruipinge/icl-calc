@@ -44,7 +44,8 @@ TODO: Disclaimer: the statistical data used in this appliction is real data, bla
 ## References
 
 [1] [Determining vault size in implantable collamer lenses: preoperative anatomy and lens parameters](https://doi.org/10.1097/j.jcrs.0000000000000146) (also available in [pdf](docs/2020-01-27_ASCRS_ESCRS_article.pdf))
-[2] [Biometric and ICL-related risk factors associated to sub-optimal vaults in eyes implanted with implantable collamer lenses](https://eandv.biomedcentral.com/articles/10.1186/s40662-021-00250-6) [pdf](docs/2021-07-05_eye_and_vision_article.pdf)
+
+[2] [Biometric and ICL-related risk factors associated to sub-optimal vaults in eyes implanted with implantable collamer lenses](https://eandv.biomedcentral.com/articles/10.1186/s40662-021-00250-6) (also available in [pdf](docs/2021-07-05_eye_and_vision_article.pdf))
 
 ## Warranty
 
