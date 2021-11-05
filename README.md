@@ -10,7 +10,7 @@ An Implantable Collamer Lenses (ICL) vault size calculator available as a web ap
 
 ## Instructions
 
-TODO: write some instructions
+TODO: write some instructions: link to pdf (word)
 
 ![alt text](https://ruipinge.github.io/icl-calc/instructions.png)
 
