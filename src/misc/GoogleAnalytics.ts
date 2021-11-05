@@ -5,7 +5,7 @@ const GA = {
     const isGAEnabled = process.env.NODE_ENV === 'production';
 
     if (isGAEnabled) {
-      ReactGA.initialize('G-MMRGFH8VF0');
+      ReactGA.initialize('UA-212134595-1');
       ReactGA.pageview(window.location.pathname + window.location.search);
     }
 
