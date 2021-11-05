@@ -1,30 +1,30 @@
 {
   "files": {
     "main.css": "/icl-calc/static/css/main.f27df4af.chunk.css",
-    "main.js": "/icl-calc/static/js/main.2665ff55.chunk.js",
-    "main.js.map": "/icl-calc/static/js/main.2665ff55.chunk.js.map",
-    "runtime-main.js": "/icl-calc/static/js/runtime-main.3ba722ad.js",
-    "runtime-main.js.map": "/icl-calc/static/js/runtime-main.3ba722ad.js.map",
-    "xlsx.js": "/icl-calc/static/js/xlsx.22bcdd63.chunk.js",
-    "xlsx.js.map": "/icl-calc/static/js/xlsx.22bcdd63.chunk.js.map",
-    "static/js/3.a8611c50.chunk.js": "/icl-calc/static/js/3.a8611c50.chunk.js",
-    "static/js/3.a8611c50.chunk.js.map": "/icl-calc/static/js/3.a8611c50.chunk.js.map",
-    "static/js/4.9847516d.chunk.js": "/icl-calc/static/js/4.9847516d.chunk.js",
-    "static/js/4.9847516d.chunk.js.map": "/icl-calc/static/js/4.9847516d.chunk.js.map",
-    "static/js/5.3e01649a.chunk.js": "/icl-calc/static/js/5.3e01649a.chunk.js",
-    "static/js/5.3e01649a.chunk.js.map": "/icl-calc/static/js/5.3e01649a.chunk.js.map",
-    "static/js/6.8cda857b.chunk.js": "/icl-calc/static/js/6.8cda857b.chunk.js",
-    "static/js/6.8cda857b.chunk.js.map": "/icl-calc/static/js/6.8cda857b.chunk.js.map",
+    "main.js": "/icl-calc/static/js/main.398c6bc8.chunk.js",
+    "main.js.map": "/icl-calc/static/js/main.398c6bc8.chunk.js.map",
+    "runtime-main.js": "/icl-calc/static/js/runtime-main.60fbce01.js",
+    "runtime-main.js.map": "/icl-calc/static/js/runtime-main.60fbce01.js.map",
+    "xlsx.js": "/icl-calc/static/js/xlsx.e5c9d50a.chunk.js",
+    "xlsx.js.map": "/icl-calc/static/js/xlsx.e5c9d50a.chunk.js.map",
+    "static/js/3.c9a11597.chunk.js": "/icl-calc/static/js/3.c9a11597.chunk.js",
+    "static/js/3.c9a11597.chunk.js.map": "/icl-calc/static/js/3.c9a11597.chunk.js.map",
+    "static/js/4.f9463470.chunk.js": "/icl-calc/static/js/4.f9463470.chunk.js",
+    "static/js/4.f9463470.chunk.js.map": "/icl-calc/static/js/4.f9463470.chunk.js.map",
+    "static/js/5.fd41d6e0.chunk.js": "/icl-calc/static/js/5.fd41d6e0.chunk.js",
+    "static/js/5.fd41d6e0.chunk.js.map": "/icl-calc/static/js/5.fd41d6e0.chunk.js.map",
+    "static/js/6.fab4cec9.chunk.js": "/icl-calc/static/js/6.fab4cec9.chunk.js",
+    "static/js/6.fab4cec9.chunk.js.map": "/icl-calc/static/js/6.fab4cec9.chunk.js.map",
     "index.html": "/icl-calc/index.html",
     "static/css/main.f27df4af.chunk.css.map": "/icl-calc/static/css/main.f27df4af.chunk.css.map",
-    "static/js/3.a8611c50.chunk.js.LICENSE.txt": "/icl-calc/static/js/3.a8611c50.chunk.js.LICENSE.txt",
-    "static/js/5.3e01649a.chunk.js.LICENSE.txt": "/icl-calc/static/js/5.3e01649a.chunk.js.LICENSE.txt",
-    "static/js/6.8cda857b.chunk.js.LICENSE.txt": "/icl-calc/static/js/6.8cda857b.chunk.js.LICENSE.txt"
+    "static/js/3.c9a11597.chunk.js.LICENSE.txt": "/icl-calc/static/js/3.c9a11597.chunk.js.LICENSE.txt",
+    "static/js/5.fd41d6e0.chunk.js.LICENSE.txt": "/icl-calc/static/js/5.fd41d6e0.chunk.js.LICENSE.txt",
+    "static/js/6.fab4cec9.chunk.js.LICENSE.txt": "/icl-calc/static/js/6.fab4cec9.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.3ba722ad.js",
-    "static/js/3.a8611c50.chunk.js",
+    "static/js/runtime-main.60fbce01.js",
+    "static/js/3.c9a11597.chunk.js",
     "static/css/main.f27df4af.chunk.css",
-    "static/js/main.2665ff55.chunk.js"
+    "static/js/main.398c6bc8.chunk.js"
   ]
 }
