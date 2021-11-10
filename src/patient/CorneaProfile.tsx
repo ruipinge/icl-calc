@@ -17,7 +17,7 @@ export const CorneaProfile = ({
     />
     <FieldWithUnit
       label="Axis - Flat Meridian"
-      name="corneaProfile.kf"
+      name="corneaProfile.axisf"
       unit="º"
       error={errors.corneaProfile?.axisf}
       touched={touched.corneaProfile?.axisf}
@@ -31,7 +31,7 @@ export const CorneaProfile = ({
     />
     <FieldWithUnit
       label="Axis - Steep Meridian"
-      name="corneaProfile.ks"
+      name="corneaProfile.axiss"
       unit="º"
       error={errors.corneaProfile?.axiss}
       touched={touched.corneaProfile?.axiss}
