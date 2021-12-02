@@ -1,8 +1,8 @@
 import {
-  calcIclAxis,
-  calcIclCylindre,
-  calcIclSphere,
-  calcIclSphericalEquivalent
+  calcICLAxis,
+  calcICLCylindre,
+  calcICLSphere,
+  calcICLSphericalEquivalent
 } from '../formulas';
 
 import { FieldWithUnit } from './FieldWithUnit';
@@ -13,42 +13,33 @@ export const ICLPower = ({
   errors,
   touched,
   values
-}: FormikState<Pick<ICLInputs, 'spectacleRefraction'>>) => (
+}: FormikState<ICLInputs>) => (
   <div>
     <h4>ICL Power</h4>
     <FieldWithUnit
       label="Sphere"
       name="iclSphere"
-      value={calcIclSphere({
-        sphere: values.spectacleRefraction.sphere,
-        cylindre: values.spectacleRefraction.cylindre
-      })}
+      value={calcICLSphere(values)}
       unit="dpt"
       disabled={true}
     />
     <FieldWithUnit
       label="Cylindre"
       name="iclCylindre"
-      value={calcIclCylindre({
-        sphere: values.spectacleRefraction.sphere,
-        cylindre: values.spectacleRefraction.cylindre
-      })}
+      value={calcICLCylindre(values)}
       unit="dpt"
       disabled={true}
     />
     <FieldWithUnit
       label="Axis"
       name="iclAxis"
-      value={calcIclAxis(values.spectacleRefraction.axis)}
+      value={calcICLAxis(values.spectacleRefraction.axis)}
       unit="º"
       disabled={true}
     />
     <FieldWithUnit
       label="Spherical Equivalent (SE)"
-      value={calcIclSphericalEquivalent({
-        sphere: values.spectacleRefraction.sphere,
-        cylindre: values.spectacleRefraction.cylindre
-      })}
+      value={calcICLSphericalEquivalent(values)}
       name="iclSphericalEquivalent"
       unit="dpt"
       disabled={true}

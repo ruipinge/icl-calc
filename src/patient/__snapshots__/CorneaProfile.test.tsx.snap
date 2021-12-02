@@ -12,9 +12,9 @@ exports[`renders without crashing 1`] = `
   >
     <label
       className="col-sm-6 col-form-label"
-      htmlFor="corneaProfile.kffield"
+      htmlFor="corneaProfile.kaffield"
     >
-      Keratometry - Flat Meridian (Kf)
+      Anterior Keratometry Flat (KAntFlt)
     </label>
     <div
       className="col-sm-6"
@@ -25,11 +25,10 @@ exports[`renders without crashing 1`] = `
         <input
           autoComplete="off"
           className="form-control text-right"
-          name="corneaProfile.kf"
+          name="corneaProfile.kaf"
           onBlur={[Function]}
           onChange={[Function]}
           type="number"
-          value={1}
         />
         <div
           className="input-group-append"
@@ -49,9 +48,9 @@ exports[`renders without crashing 1`] = `
   >
     <label
       className="col-sm-6 col-form-label"
-      htmlFor="corneaProfile.axisffield"
+      htmlFor="corneaProfile.axisaffield"
     >
-      Axis - Flat Meridian
+      @
     </label>
     <div
       className="col-sm-6"
@@ -62,11 +61,10 @@ exports[`renders without crashing 1`] = `
         <input
           autoComplete="off"
           className="form-control text-right"
-          name="corneaProfile.axisf"
+          name="corneaProfile.axisaf"
           onBlur={[Function]}
           onChange={[Function]}
           type="number"
-          value={3}
         />
         <div
           className="input-group-append"
@@ -86,9 +84,9 @@ exports[`renders without crashing 1`] = `
   >
     <label
       className="col-sm-6 col-form-label"
-      htmlFor="corneaProfile.ksfield"
+      htmlFor="corneaProfile.kasfield"
     >
-      Keratometry - Steep Meridian (Ks)
+      Anterior Keratometry Steep (KAntStp)
     </label>
     <div
       className="col-sm-6"
@@ -99,11 +97,10 @@ exports[`renders without crashing 1`] = `
         <input
           autoComplete="off"
           className="form-control text-right"
-          name="corneaProfile.ks"
+          name="corneaProfile.kas"
           onBlur={[Function]}
           onChange={[Function]}
           type="number"
-          value={2}
         />
         <div
           className="input-group-append"
@@ -123,9 +120,9 @@ exports[`renders without crashing 1`] = `
   >
     <label
       className="col-sm-6 col-form-label"
-      htmlFor="corneaProfile.axissfield"
+      htmlFor="corneaProfile.axisasfield"
     >
-      Axis - Steep Meridian
+      @
     </label>
     <div
       className="col-sm-6"
@@ -136,11 +133,154 @@ exports[`renders without crashing 1`] = `
         <input
           autoComplete="off"
           className="form-control text-right"
-          name="corneaProfile.axiss"
+          name="corneaProfile.axisas"
           onBlur={[Function]}
           onChange={[Function]}
           type="number"
-          value={4}
+        />
+        <div
+          className="input-group-append"
+        >
+          <span
+            className="input-group-text"
+            title="degrees"
+          >
+            º
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="form-group row"
+  >
+    <label
+      className="col-sm-6 col-form-label"
+      htmlFor="corneaProfile.kpffield"
+    >
+      Posterior Keratometry Flat (KPostFlt)
+    </label>
+    <div
+      className="col-sm-6"
+    >
+      <div
+        className="input-group"
+      >
+        <input
+          autoComplete="off"
+          className="form-control text-right"
+          name="corneaProfile.kpf"
+          onBlur={[Function]}
+          onChange={[Function]}
+          type="number"
+        />
+        <div
+          className="input-group-append"
+        >
+          <span
+            className="input-group-text"
+            title="dioptres"
+          >
+            dpt
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="form-group row"
+  >
+    <label
+      className="col-sm-6 col-form-label"
+      htmlFor="corneaProfile.axispffield"
+    >
+      @
+    </label>
+    <div
+      className="col-sm-6"
+    >
+      <div
+        className="input-group"
+      >
+        <input
+          autoComplete="off"
+          className="form-control text-right"
+          name="corneaProfile.axispf"
+          onBlur={[Function]}
+          onChange={[Function]}
+          type="number"
+        />
+        <div
+          className="input-group-append"
+        >
+          <span
+            className="input-group-text"
+            title="degrees"
+          >
+            º
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="form-group row"
+  >
+    <label
+      className="col-sm-6 col-form-label"
+      htmlFor="corneaProfile.kpsfield"
+    >
+      Posterior Keratometry Steep (KPostStp)
+    </label>
+    <div
+      className="col-sm-6"
+    >
+      <div
+        className="input-group"
+      >
+        <input
+          autoComplete="off"
+          className="form-control text-right"
+          name="corneaProfile.kps"
+          onBlur={[Function]}
+          onChange={[Function]}
+          type="number"
+        />
+        <div
+          className="input-group-append"
+        >
+          <span
+            className="input-group-text"
+            title="dioptres"
+          >
+            dpt
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="form-group row"
+  >
+    <label
+      className="col-sm-6 col-form-label"
+      htmlFor="corneaProfile.axispsfield"
+    >
+      @
+    </label>
+    <div
+      className="col-sm-6"
+    >
+      <div
+        className="input-group"
+      >
+        <input
+          autoComplete="off"
+          className="form-control text-right"
+          name="corneaProfile.axisps"
+          onBlur={[Function]}
+          onChange={[Function]}
+          type="number"
         />
         <div
           className="input-group-append"
@@ -197,7 +337,7 @@ exports[`renders without crashing 1`] = `
   >
     <label
       className="col-sm-6 col-form-label"
-      htmlFor="corneaProfile.pcrf"
+      htmlFor="corneaProfile.previousSurgery"
     >
       Previous Corneal Refractive Surgery
     </label>
@@ -209,14 +349,24 @@ exports[`renders without crashing 1`] = `
       >
         <select
           className="form-control"
-          defaultValue="none"
-          disabled={true}
-          name="corneaProfile.pcrf"
+          name="corneaProfile.previousSurgery"
+          onBlur={[Function]}
+          onChange={[Function]}
         >
           <option
-            value="none"
+            value="None"
           >
             None
+          </option>
+          <option
+            value="Myopia"
+          >
+            Myopia
+          </option>
+          <option
+            value="Hyperopia"
+          >
+            Hyperopia
           </option>
         </select>
       </div>

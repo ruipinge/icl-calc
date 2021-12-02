@@ -1,16 +1,24 @@
 import { differenceInYears } from 'date-fns';
 
+export type Eye = 'left' | 'right';
+
+export enum PreviousSurgery {
+  none = 'None',
+  myopia = 'Myopia',
+  hyperopia = 'Hyperopia'
+}
+
 export interface PatientInfoInterface {
   name: string;
   dateOfBirth: string;
-  eye: 'left' | 'right';
+  eye: Eye;
   age(): number;
 }
 
 export class PatientInfo implements PatientInfoInterface {
   name: string;
   dateOfBirth: string;
-  eye: 'left' | 'right';
+  eye: Eye;
 
   age(): number {
     if (!this.dateOfBirth) {
@@ -31,7 +39,7 @@ export class PatientInfo implements PatientInfoInterface {
   }: {
     name: string;
     dateOfBirth: string;
-    eye: 'left' | 'right';
+    eye: Eye;
   }) {
     this.name = name;
     this.dateOfBirth = dateOfBirth;
@@ -49,11 +57,16 @@ export interface Biometry {
 }
 
 export interface CorneaProfile {
-  kf: number;
-  ks: number;
-  axisf: number;
-  axiss: number;
+  kaf: number;
+  kas: number;
+  kpf: number;
+  kps: number;
+  axisaf: number;
+  axisas: number;
+  axispf: number;
+  axisps: number;
   cct: number;
+  previousSurgery: PreviousSurgery;
 }
 
 export interface SpectacleRefraction {
@@ -85,11 +98,16 @@ export const INITIAL_VALUES: ICLInputs = {
     acat: 0
   },
   corneaProfile: {
-    kf: 0,
-    ks: 0,
-    axisf: 0,
-    axiss: 0,
-    cct: 0
+    kaf: 0,
+    kas: 0,
+    kpf: 0,
+    kps: 0,
+    axisaf: 0,
+    axisas: 0,
+    axispf: 0,
+    axisps: 0,
+    cct: 0,
+    previousSurgery: PreviousSurgery.none
   },
   spectacleRefraction: {
     sphere: 0,
