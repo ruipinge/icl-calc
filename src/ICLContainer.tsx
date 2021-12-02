@@ -11,7 +11,7 @@ import { Normality } from './normality';
 import { Patient } from './patient';
 import { Regression } from './regression';
 import { TabLinks } from './misc/TabLinks';
-import { calcIclSphericalEquivalent } from './formulas';
+import { calcICLSphericalEquivalent } from './formulas';
 
 const TabContent = ({
   errors,
@@ -38,10 +38,7 @@ const TabContent = ({
         acd={values.biometry.acd}
         ata={values.biometry.ata}
         clr={values.biometry.clr}
-        se={calcIclSphericalEquivalent({
-          sphere: values.spectacleRefraction.sphere,
-          cylindre: values.spectacleRefraction.cylindre
-        })}
+        se={calcICLSphericalEquivalent(values)}
         age={values.patient.age()}
       />
     </Route>

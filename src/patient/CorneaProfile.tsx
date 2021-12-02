@@ -1,6 +1,7 @@
+import { Field, FormikState } from 'formik';
+import { ICLInputs, PreviousSurgery } from '../types';
+
 import { FieldWithUnit } from './FieldWithUnit';
-import { FormikState } from 'formik';
-import { ICLInputs } from '../types';
 
 export const CorneaProfile = ({
   errors,
@@ -9,32 +10,60 @@ export const CorneaProfile = ({
   <div className="section-form">
     <h4>Cornea Profile</h4>
     <FieldWithUnit
-      label="Keratometry - Flat Meridian (Kf)"
-      name="corneaProfile.kf"
+      label="Anterior Keratometry Flat (KAntFlt)"
+      name="corneaProfile.kaf"
       unit="dpt"
-      error={errors.corneaProfile?.kf}
-      touched={touched.corneaProfile?.kf}
+      error={errors.corneaProfile?.kaf}
+      touched={touched.corneaProfile?.kaf}
     />
     <FieldWithUnit
-      label="Axis - Flat Meridian"
-      name="corneaProfile.axisf"
+      label="@"
+      name="corneaProfile.axisaf"
       unit="º"
-      error={errors.corneaProfile?.axisf}
-      touched={touched.corneaProfile?.axisf}
+      error={errors.corneaProfile?.axisaf}
+      touched={touched.corneaProfile?.axisaf}
     />
     <FieldWithUnit
-      label="Keratometry - Steep Meridian (Ks)"
-      name="corneaProfile.ks"
+      label="Anterior Keratometry Steep (KAntStp)"
+      name="corneaProfile.kas"
       unit="dpt"
-      error={errors.corneaProfile?.ks}
-      touched={touched.corneaProfile?.ks}
+      error={errors.corneaProfile?.kas}
+      touched={touched.corneaProfile?.kas}
     />
     <FieldWithUnit
-      label="Axis - Steep Meridian"
-      name="corneaProfile.axiss"
+      label="@"
+      name="corneaProfile.axisas"
       unit="º"
-      error={errors.corneaProfile?.axiss}
-      touched={touched.corneaProfile?.axiss}
+      error={errors.corneaProfile?.axisas}
+      touched={touched.corneaProfile?.axisas}
+    />
+    <FieldWithUnit
+      label="Posterior Keratometry Flat (KPostFlt)"
+      name="corneaProfile.kpf"
+      unit="dpt"
+      error={errors.corneaProfile?.kpf}
+      touched={touched.corneaProfile?.kpf}
+    />
+    <FieldWithUnit
+      label="@"
+      name="corneaProfile.axispf"
+      unit="º"
+      error={errors.corneaProfile?.axispf}
+      touched={touched.corneaProfile?.axispf}
+    />
+    <FieldWithUnit
+      label="Posterior Keratometry Steep (KPostStp)"
+      name="corneaProfile.kps"
+      unit="dpt"
+      error={errors.corneaProfile?.kps}
+      touched={touched.corneaProfile?.kps}
+    />
+    <FieldWithUnit
+      label="@"
+      name="corneaProfile.axisps"
+      unit="º"
+      error={errors.corneaProfile?.axisps}
+      touched={touched.corneaProfile?.axisps}
     />
     <FieldWithUnit
       label="Central Corneal Thickness (CCT)"
@@ -44,19 +73,25 @@ export const CorneaProfile = ({
       touched={touched.corneaProfile?.cct}
     />
     <div className={'form-group row mb-4'}>
-      <label htmlFor={'corneaProfile.pcrf'} className="col-sm-6 col-form-label">
+      <label
+        htmlFor={'corneaProfile.previousSurgery'}
+        className="col-sm-6 col-form-label"
+      >
         Previous Corneal Refractive Surgery
       </label>
       <div className="col-sm-6">
         <div className="input-group">
-          <select
-            name="corneaProfile.pcrf"
+          <Field
+            as="select"
+            name="corneaProfile.previousSurgery"
             className="form-control"
-            disabled={true}
-            defaultValue={'none'}
           >
-            <option value={'none'}>None</option>
-          </select>
+            {Object.values(PreviousSurgery).map((val) => (
+              <option value={val} key={val}>
+                {val}
+              </option>
+            ))}
+          </Field>
         </div>
       </div>
     </div>
