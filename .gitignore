@@ -21,3 +21,6 @@ yarn-debug.log*
 yarn-error.log*
 
 src/react-app-env.d.ts
+
+# private working files — never publish (own inner git repo)
+docs/PRIVATE/
