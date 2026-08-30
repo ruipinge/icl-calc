@@ -325,10 +325,50 @@ and was deliberately left in place pending a separate decision.
 - **Sentry backlog is perishable.** Free-tier retention is 90 days. Issue #42
   is scheduled after the migration, but the *reading* of the data should happen
   before Phase 4a removes the integration, or it is lost.
-- **Node version target** for Phase 0 is to be determined empirically: the
-  newest version on which the existing CRA 4 suite runs. CRA 4 uses webpack 4,
-  which fails on Node 17+ under OpenSSL 3 without
-  `--openssl-legacy-provider`. If a build is needed before Phase 3a, that flag
-  is an acceptable temporary measure and is removed by 3a.
+- **Node version target for Phase 0, resolved empirically: Node 16
+  (`.nvmrc` pins `v16`).** Tested the ladder 22 → 20 → 18 → 16 against the
+  existing (untouched) suite:
+  - **Node 22, 20, 18 all install, lint, and test cleanly, but `npm run
+    build` fails identically on all three** with
+    `Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tokenize'
+    is not defined by "exports" in
+    node_modules/postcss-safe-parser/node_modules/postcss/package.json`.
+    The pinned `postcss@8.2.8` nested under `postcss-safe-parser` declares an
+    `exports` map exposing only `"."`, but webpack 4's CSS-minification
+    chain deep-requires `postcss/lib/tokenize` directly. Node's strict
+    `exports`-map enforcement for `require()` hardened somewhere between
+    Node 16 and Node 18 (Node 16 tolerates the deep require; 18+ does not).
+    This is **not** the anticipated `ERR_OSSL_EVP_UNSUPPORTED` md4/OpenSSL-3
+    failure — `NODE_OPTIONS=--openssl-legacy-provider` was tried on Node 22
+    and does not help, since this error is thrown before webpack's hashing
+    code path is ever reached. **Node 22/20/18 are rejected on this basis.**
+  - **Node 16.20.2 passes install, lint, test, and build cleanly, with no
+    flags needed** (Node 16 predates the OpenSSL-3 default, so the
+    anticipated md4 issue never arises either).
+  - **Both failure modes are expected to be resolved together in Phase 3a**,
+    which replaces webpack 4 (and, likely, upgrades/replaces the
+    `postcss-safe-parser`/`postcss` chain) — at that point re-run this ladder
+    and expect a newer Node to become viable.
+  - **Separate finding, orthogonal to the Node version:** this project's
+    `package-lock.json` (`lockfileVersion: 2`) contains only the legacy
+    `dependencies` tree and is missing the `packages` object that modern npm
+    (7–10, confirmed on npm 8.19.4 / 10.7.0 / 10.8.2 / 10.9.8, i.e. across
+    every rung of the ladder) uses to know which packages declare a `bin`.
+    As a result `npm ci` extracts every package correctly but **silently
+    creates no `node_modules/.bin` symlinks at all**, for any package, on
+    any Node version tested — `eslint`, `react-scripts`, `jest`, `prettier`
+    etc. are all present on disk but unreachable via `npm run <script>`.
+    `npm rebuild` does not fix it either. Root-caused by reading
+    `@npmcli/arborist`'s `Builder#addToBuildSet` (in `rebuild.js`): it only
+    queues a node for bin-linking when `node.package.bin` is truthy, and
+    that field is populated from the lockfile's tree data during `npm ci`,
+    which this lockfile never supplies. Worked around locally (for this task
+    only, to actually exercise lint/test/build) by manually symlinking each
+    installed package's declared `bin` entries into `node_modules/.bin` — a
+    purely local, gitignored, reversible fix that touches no tracked file.
+    This will keep recurring for anyone running a plain `npm ci` until a
+    future phase regenerates the lockfile with a modern `npm install` (out
+    of scope here — the Step 2 gate requires the lockfile stay byte-for-byte
+    unchanged in this task).
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.
