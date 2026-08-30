@@ -333,11 +333,23 @@ and was deliberately left in place pending a separate decision.
     `Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/tokenize'
     is not defined by "exports" in
     node_modules/postcss-safe-parser/node_modules/postcss/package.json`.
-    The pinned `postcss@8.2.8` nested under `postcss-safe-parser` declares an
-    `exports` map exposing only `"."`, but webpack 4's CSS-minification
-    chain deep-requires `postcss/lib/tokenize` directly. Node's strict
-    `exports`-map enforcement for `require()` hardened somewhere between
-    Node 16 and Node 18 (Node 16 tolerates the deep require; 18+ does not).
+    The pinned `postcss@8.2.8` nested under `postcss-safe-parser` declares
+    an `exports` map with **two** entries: `"."` (the normal entry point)
+    and a legacy **trailing-slash folder mapping**, `"./": "./"`, which is
+    what used to expose the whole package tree — including
+    `postcss/lib/tokenize` — to deep `require()`s from other packages, such
+    as the one webpack 4's CSS-minification chain (via
+    `postcss-safe-parser`) makes. Node 16 actually printed a deprecation
+    warning for this on every build in this task
+    (`[DEP0148] DeprecationWarning: Use of deprecated folder mapping "./" in
+    the "exports" field module resolution of the package at
+    .../postcss-safe-parser/node_modules/postcss/package.json. Update this
+    package.json to use a subpath pattern like "./*".`) but still honored
+    it. **Node removed support for trailing-slash folder mappings in
+    `exports` around Node 17**, turning what was a warning into the hard
+    `ERR_PACKAGE_PATH_NOT_EXPORTED` failure seen on 18/20/22 — the map isn't
+    missing the subpath, it grants it through a mapping form Node stopped
+    honoring.
     This is **not** the anticipated `ERR_OSSL_EVP_UNSUPPORTED` md4/OpenSSL-3
     failure — `NODE_OPTIONS=--openssl-legacy-provider` was tried on Node 22
     and does not help, since this error is thrown before webpack's hashing
@@ -345,10 +357,17 @@ and was deliberately left in place pending a separate decision.
   - **Node 16.20.2 passes install, lint, test, and build cleanly, with no
     flags needed** (Node 16 predates the OpenSSL-3 default, so the
     anticipated md4 issue never arises either).
-  - **Both failure modes are expected to be resolved together in Phase 3a**,
-    which replaces webpack 4 (and, likely, upgrades/replaces the
-    `postcss-safe-parser`/`postcss` chain) — at that point re-run this ladder
-    and expect a newer Node to become viable.
+  - **Implication for Phase 3a:** the two failure modes are independent and
+    do not both require the webpack 4 removal to fix. The OpenSSL/md4 issue
+    goes away when webpack 4 goes. The `exports` issue is specific to this
+    exact pinned `postcss@8.2.8` (nested under `postcss-safe-parser`) and
+    its legacy folder mapping — **upgrading or replacing
+    `postcss-safe-parser`/`postcss` to a version with a conventional
+    `exports` map (using `"./*"` subpath patterns, as Node's own
+    deprecation message suggests) is a candidate fix on its own**, and may
+    unblock a newer Node before or independent of the webpack 4 replacement.
+    Re-run this ladder after either change and expect a newer Node to
+    become viable.
   - **Separate finding, orthogonal to the Node version:** this project's
     `package-lock.json` (`lockfileVersion: 2`) contains only the legacy
     `dependencies` tree and is missing the `packages` object that modern npm
