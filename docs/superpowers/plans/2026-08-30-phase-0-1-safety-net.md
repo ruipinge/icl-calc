@@ -17,9 +17,9 @@
 - **No application code changes in Phases 0–1.** The only files added under `src/` are `src/golden/**`, which is test-only and imported by nothing the app ships.
 - **No new entries in the app's `package.json` or `package-lock.json`.** Playwright lives in a separate `e2e/` workspace with its own lockfile. If a task appears to require touching the app's dependency tree, stop and escalate.
 - **`src/data.csv` is not to be modified, reformatted, regenerated or moved.**
-- **`src/golden/expected.json` is written exactly once**, by Task 5. Any later task that appears to require changing it has found a regression — invoke the stop rule (spec §7.3), do not edit the file.
+- **`src/golden/expected.json` is generated, never hand-edited.** It is written by Task 5's capture run. Within Phase 1 the harness itself is still being validated, so re-running the *capture* in Tasks 5–7 is legitimate — if `readAll` reads the DOM wrongly, capture and replay must both be corrected and the capture re-run, since the two must read identically. What is forbidden at every point is editing values in the file by hand to make a test pass. The fixture becomes **immutable at Task 8's commit**; from then on any change requires an `oracle/` branch and sign-off per spec §7.3.
 - **Clock is pinned to `2026-08-30T12:00:00Z`** in every capture and every replay.
-- Branch: `modernize/p0-foundations` for Tasks 1–2, `modernize/p1-golden-master` for Tasks 3–8. Both target `modernize`, never `master`.
+- Branch: `modernize-p0-foundations` for Tasks 1–2, `modernize-p1-golden-master` for Tasks 3–8. Both target `modernize`, never `master`.
 - Conventional commits — semantic-release parses them at Phase 5.
 - Work in a git worktree created via `superpowers:using-git-worktrees`.
 
@@ -170,7 +170,7 @@ This step changes no files, so it produces no commit of its own.
 - [ ] **Step 4: Push and open the Phase 0 PR**
 
 ```bash
-git push -u origin modernize/p0-foundations
+git push -u origin modernize-p0-foundations
 gh pr create --base modernize \
   --title "Phase 0: unpin Node and clear the backlog" \
   --body "Closes #43
@@ -218,8 +218,7 @@ The oracle was built with `homepage: http://ruipinge.github.io/icl-calc`, so its
   "scripts": {
     "test": "playwright test",
     "capture": "playwright test --project=capture",
-    "replay": "playwright test --project=replay",
-    "serve:oracle": "http-server ../../icl-calc-oracle -p 4021 --silent"
+    "replay": "playwright test --project=replay"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0",
@@ -1023,7 +1022,7 @@ Note the captured row count, whether the oracle and live URL were byte-identical
 ```bash
 git add docs/superpowers/specs/2026-08-30-icl-calc-modernization-design.md
 git commit -m "docs(spec): reconcile with the implemented golden master"
-git push -u origin modernize/p1-golden-master
+git push -u origin modernize-p1-golden-master
 ```
 
 - [ ] **Step 4: Open the PR**
