@@ -523,18 +523,28 @@ and was deliberately left in place pending a separate decision.
     future phase regenerates the lockfile with a modern `npm install` (out
     of scope here — the Step 2 gate requires the lockfile stay byte-for-byte
     unchanged in this task).
-- **CI still runs Node 14 (final review, Phase 1).** Phase 0 changed
-  `.nvmrc` to `v16`, but `.github/workflows/main.yml` still sets
-  `node-version: '14'` in both the `test` and `deploy` jobs. This is
-  deliberate, not an oversight left over from Phase 0: CI is non-functional
-  regardless of the Node version, because it also pins `actions/checkout@v2`
-  and `actions/setup-node@v2`, both unsupported on current GitHub-hosted
-  runners, and Phase 2a rebuilds the whole workflow from scratch (issue
-  referenced in §7.3's correction above). Bumping just the `node-version`
-  line now would be effort spent on a workflow file that Phase 2a discards
-  anyway. Consequence worth recording: the L1 suite (`src/golden/replay.test.ts`
-  and friends) has been run and validated only on Node 16 in this work, never
-  through the actual CI pipeline, because that pipeline does not currently
-  run.
+- **CI was dead, and is now revived (Phase 2a, part 1).** Phase 0 changed
+  `.nvmrc` to `v16` but left `.github/workflows/main.yml` alone. That
+  workflow had not executed a single step in a long time: every run failed
+  within seconds at "Set up job", because GitHub hard-fails the deprecated
+  `actions/cache@v2`. Lint and tests never ran, on any branch. This confirms
+  `docs/modernization-findings.md`'s prediction that the workflow does not
+  run green today.
+  PR #59 revived it as the first slice of Phase 2a (#45): supported actions,
+  `setup-node@v4`'s built-in npm cache, dead Codecov and CodeClimate steps
+  removed in favour of a coverage summary on the run page, and a
+  `pull_request` trigger. The `test` job runs on **Node 20** — lint and tests
+  are version-insensitive, verified identical on 16/18/20/22 in Phase 0 —
+  while `deploy` still pins **Node 16**, because it builds and the build
+  fails on 18+ with `ERR_PACKAGE_PATH_NOT_EXPORTED`. `deploy` remains
+  gated on `master`.
+  It also required `scripts/link-bins.js`, run after every `npm ci`, to work
+  around the lockfile defect above; that script is deleted in Phase 3a (#47)
+  once the lockfile is regenerated.
+  Two things are still deliberately absent and belong to the rest of #45:
+  the `tsc --noEmit` gate (it would fail immediately on #55) and the
+  `expected.json` branch-name guard described in §7.3.
+  Consequence worth recording: the L1 suite was developed and validated
+  locally on Node 16, and now runs in CI on Node 20.
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.
