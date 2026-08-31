@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "description": "Golden-master capture and replay. Deliberately separate from the app's dependency tree.",
   "scripts": {
+    "setup": "./setup.sh",
     "test": "playwright test",
     "capture": "playwright test --project=capture",
     "replay": "playwright test --project=replay"
