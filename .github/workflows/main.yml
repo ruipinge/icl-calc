@@ -116,6 +116,65 @@ jobs:
           } >&2
           exit 1
 
+  e2e-replay:
+    runs-on: ubuntu-latest
+    needs: ['test']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # L2 needs a real production build of this branch to replay against.
+      # Same Node-16 constraint as the `deploy` job below - see the NOTE in
+      # the `test` job above and Phase 0.
+      - name: Setup Node 16 (build)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci --prefer-offline
+
+      - name: Repair node_modules/.bin symlinks
+        run: node scripts/link-bins.js
+
+      - name: Build
+        run: npm run build
+
+      # Playwright needs Node 18+. Switching versions mid-job (rather than
+      # splitting into two jobs with an artifact hand-off) keeps this
+      # simple and guarantees the build/ replayed against is the one just
+      # produced above.
+      - name: Setup Node 20 (Playwright)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: e2e/package-lock.json
+
+      - name: Install e2e dependencies
+        run: npm ci --prefer-offline
+        working-directory: e2e
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: e2e
+
+      # Subject-only: there is no oracle worktree on a runner, and L2's
+      # replay project doesn't need one - it replays this build's rendered
+      # output against the already-captured src/golden/expected.json. See
+      # the comment in e2e/setup.sh for why the oracle checks stay a loud
+      # failure for the capture/smoke path.
+      - name: e2e setup (subject-only)
+        run: ./setup.sh --subject-only
+        working-directory: e2e
+
+      - name: L2 replay
+        env:
+          SUBJECT_ONLY: '1'
+        run: npm run replay
+        working-directory: e2e
+
   deploy:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
