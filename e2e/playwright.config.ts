@@ -40,6 +40,22 @@ export default defineConfig({
       command: `npx http-server .serve -p ${ORACLE_PORT} --silent`,
       url: `http://127.0.0.1:${ORACLE_PORT}/icl-calc/index.html`,
       reuseExistingServer: true
+    },
+    {
+      // Serves e2e/.serve-subject, a *separate* root from .serve above. The
+      // subject build (build/, produced by `npm run build` under Node 16
+      // from this worktree's unmodified source) was emitted with the same
+      // homepage=http://ruipinge.github.io/icl-calc as the oracle, so its
+      // index.html also references assets by the absolute path /icl-calc/...
+      // Reusing .serve's own `icl-calc` symlink for this build would make
+      // every asset request on this port resolve to the oracle's files
+      // instead of the subject's - a same-path collision, not a fresh
+      // sub-path the brief's icl-calc-subject naming assumed away. A
+      // dedicated root with its own /icl-calc symlink keeps the two ports
+      // isolated while satisfying the build's baked-in absolute paths.
+      command: `npx http-server .serve-subject -p ${SUBJECT_PORT} --silent`,
+      url: `http://127.0.0.1:${SUBJECT_PORT}/icl-calc/index.html`,
+      reuseExistingServer: true
     }
   ]
 });
