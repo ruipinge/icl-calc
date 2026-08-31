@@ -138,7 +138,7 @@ removed from.
 
 ### The deployed app is an oracle — use it before it's gone
 
-The February 2022 build still works correctly in 2026 browsers. That means the
+The December 2021 build still works correctly in 2026 browsers. That means the
 risk in this migration is the toolchain, not the app's logic, and it means the
 live deployment is an **independent reference** the migrated version can be
 diffed against.

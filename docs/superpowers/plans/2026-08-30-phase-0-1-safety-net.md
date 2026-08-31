@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Get the existing test suite green on a modern Node, then capture the deployed February 2022 build's outputs into an immutable golden master that every later migration phase must reproduce exactly.
+**Goal:** Get the existing test suite green on a modern Node, then capture the deployed December 2021 build's outputs into an immutable golden master that every later migration phase must reproduce exactly.
 
 **Architecture:** The deployed build at `gh-pages@789ac2d` is an oracle produced by a toolchain we are about to replace. Playwright drives that frozen build with a pinned clock and records every rendered number into `src/golden/expected.json`. Those same expectations are then replayed two ways: as a fast unit test over the pure functions, and end-to-end against a real build. Nothing in Phases 0–1 changes application code or application dependencies.
 
@@ -257,7 +257,7 @@ Expected: **empty output.** This is the constraint that makes Phase 1 safe.
 ```ts
 import { defineConfig } from '@playwright/test';
 
-// The frozen February 2022 build. Served under /icl-calc/ because that build
+// The frozen December 2021 build. Served under /icl-calc/ because that build
 // was produced with homepage=http://ruipinge.github.io/icl-calc and therefore
 // references its assets by absolute path.
 const ORACLE_PORT = 4021;
@@ -379,10 +379,10 @@ git commit -m "test(golden): isolated playwright workspace and oracle smoke test
       "corneaProfile": { "kaf": 43, "axisaf": 180, "kas": 44, "axisas": 90, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 540, "previousSurgery": "None" },
       "spectacleRefraction": { "sphere": -6, "cylindre": -1, "axis": 180, "vertex": 12 } },
 
-    { "id": "02-posterior-k", "why": "Identical to 01 except posterior K supplied -> calcRadiusPosterior fork A. Differential pair.", "expectAge": 30,
+    { "id": "02-posterior-k", "why": "Identical to 01 except posterior K supplied -> calcRadiusPosterior fork A. Values describe a steep, ectatic posterior cornea (mean 7.2 D, radius ~5.6 mm), deliberately NOT reproducible by fork B's 0.84 ratio — that is the clinical case where measuring posterior K matters. Differential pair with 01.", "expectAge": 30,
       "patient": { "name": "GM-02", "dateOfBirth": "1996-03-15", "eye": "right" },
       "biometry": { "ata": 11.8, "wtw": 11.9, "clr": 250, "acd": 3.2, "acan": 38, "acat": 39 },
-      "corneaProfile": { "kaf": 43, "axisaf": 180, "kas": 44, "axisas": 90, "kpf": 6.1, "axispf": 180, "kps": 6.3, "axisps": 90, "cct": 540, "previousSurgery": "None" },
+      "corneaProfile": { "kaf": 43, "axisaf": 180, "kas": 44, "axisas": 90, "kpf": 7.0, "axispf": 180, "kps": 7.4, "axisps": 90, "cct": 540, "previousSurgery": "None" },
       "spectacleRefraction": { "sphere": -6, "cylindre": -1, "axis": 180, "vertex": 12 } },
 
     { "id": "03-prior-myopia-rx", "why": "Prior myopic refractive surgery, no posterior K -> fork C. Thinner cornea.", "expectAge": 45,
@@ -409,15 +409,15 @@ git commit -m "test(golden): isolated playwright workspace and oracle smoke test
       "corneaProfile": { "kaf": 43.5, "axisaf": 90, "kas": 44.5, "axisas": 180, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 545, "previousSurgery": "None" },
       "spectacleRefraction": { "sphere": -8, "cylindre": -2, "axis": 91, "vertex": 12 } },
 
-    { "id": "07-small-lens-bin", "why": "Low AtA and CLR - drives the Matrix toward the 12.6 mm lens columns.", "expectAge": 22,
+    { "id": "07-small-lens-bin", "why": "Drives the Matrix into the 12.6 mm lens columns (39 matching eyes; 13.7 mm empty). Centre chosen from the actual density of src/data.csv.", "expectAge": 22,
       "patient": { "name": "GM-07", "dateOfBirth": "2004-03-15", "eye": "left" },
-      "biometry": { "ata": 10.9, "wtw": 11, "clr": 50, "acd": 2.85, "acan": 33, "acat": 34 },
+      "biometry": { "ata": 11.9, "wtw": 12, "clr": 100, "acd": 2.85, "acan": 33, "acat": 34 },
       "corneaProfile": { "kaf": 44.5, "axisaf": 170, "kas": 45.75, "axisas": 80, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 555, "previousSurgery": "None" },
       "spectacleRefraction": { "sphere": -4.5, "cylindre": -0.5, "axis": 170, "vertex": 12 } },
 
-    { "id": "08-large-lens-bin", "why": "High AtA and CLR, high myopia - drives the Matrix toward the 13.7 mm lens and High myopia columns.", "expectAge": 55,
+    { "id": "08-large-lens-bin", "why": "Drives the Matrix into the 13.7 mm lens columns (28 matching eyes; 12.6 mm empty). Centre chosen from the actual density of src/data.csv.", "expectAge": 55,
       "patient": { "name": "GM-08", "dateOfBirth": "1971-03-15", "eye": "right" },
-      "biometry": { "ata": 12.9, "wtw": 13, "clr": 700, "acd": 3.6, "acan": 43, "acat": 44 },
+      "biometry": { "ata": 12.7, "wtw": 12.8, "clr": 200, "acd": 3.6, "acan": 43, "acat": 44 },
       "corneaProfile": { "kaf": 41.5, "axisaf": 5, "kas": 42.25, "axisas": 95, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 525, "previousSurgery": "None" },
       "spectacleRefraction": { "sphere": -12, "cylindre": -3, "axis": 5, "vertex": 12 } },
 
@@ -1032,7 +1032,7 @@ gh pr create --base modernize \
   --title "Phase 1: golden master captured from the deployed oracle" \
   --body "Closes #44
 
-Captures the February 2022 deployed build's outputs for 10 branch-driven input
+Captures the December 2021 deployed build's outputs for 10 branch-driven input
 rows and locks them as an immutable fixture.
 
 ## Gate evidence
