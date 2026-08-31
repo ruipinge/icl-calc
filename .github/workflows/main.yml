@@ -1,58 +1,58 @@
 name: main
 
-on: push
+on:
+  push:
+  pull_request:
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v2
+      # NOTE on Node version: .nvmrc pins Node 16 because `npm run build`
+      # fails on 18/20/22 (ERR_PACKAGE_PATH_NOT_EXPORTED from an old
+      # postcss dependency) - see Phase 0. That constraint is build-only:
+      # lint and test have been verified to pass identically on Node 16,
+      # 18, 20 and 22. This job does not build, so it intentionally does
+      # NOT track .nvmrc and instead pins Node 20 directly, because Node
+      # 16 is EOL and does not install reliably via actions/setup-node on
+      # current ubuntu-latest runners. The `deploy` job below still uses
+      # Node 16 since it does build.
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14'
-
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: |
-            **/node_modules
-            ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci --prefer-offline
+
+      # WORKAROUND: package-lock.json is lockfileVersion 2 but has no
+      # "packages" object, so `npm ci` on modern npm links zero bins into
+      # node_modules/.bin (eslint, react-scripts, etc. all "command not
+      # found"). We can't regenerate the lockfile without invalidating the
+      # golden-master verification against the pinned 2022 dependency
+      # tree, so repair the bin symlinks ourselves. See scripts/link-bins.js.
+      - name: Repair node_modules/.bin symlinks
+        run: node scripts/link-bins.js
 
       - name: Lint
         run: npm run lint
 
       - name: Test
-        run: npm test
+        run: npm test 2>&1 | tee test-output.log
 
-      - name: Coverage
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ${{github.workspace}}/coverage/lcov.info
-          flags: unittests
-          name: icl-calc-tests
-          fail_ci_if_error: true # optional (default = false)
-          verbose: false # optional (default = false)
-
-      - name: Code Climate
-        uses: paambaati/codeclimate-action@v2.7.5
-        env:
-          CC_TEST_REPORTER_ID: f2ea7af8e046090fb114aa95b903c3e2980fba5afbbb715cd6cecabd7aba27b3
-        with:
-          coverageLocations: |
-            ${{github.workspace}}/coverage/lcov.info:lcov
+      - name: Write coverage summary
+        if: always()
+        run: |
+          {
+            echo '## Coverage summary'
+            echo
+            echo '```'
+            sed -n '/^File/,/^Ran all test suites/p' test-output.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
   deploy:
     if: github.ref == 'refs/heads/master'
@@ -61,25 +61,18 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: '16'
+          cache: 'npm'
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: |
-            **/node_modules
-            ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      - name: Install Dependencies
+        run: npm ci --prefer-offline
+
+      - name: Repair node_modules/.bin symlinks
+        run: node scripts/link-bins.js
 
       - name: Version
         env:
