@@ -1,8 +1,19 @@
 # ICL Calculator — modernization findings
 
 Survey of the repo as it stands, written 29 August 2026 before any code was
-touched. Nothing here has been actioned. It exists so the migration session
-doesn't have to rediscover it.
+touched. It exists so the migration session doesn't have to rediscover it.
+
+> **Status (updated during Phase 2a, issue #45):** this is a pre-work survey
+> and later phases still read it as one, but it is no longer true that
+> "nothing here has been actioned." Since it was written: **Phase 0**
+> unpinned Node from EOL 14 and cleared the dependabot backlog; **Phase 1**
+> captured the deployed app as a golden master (`src/golden/`, with L1 unit
+> and L2 Playwright replay layers); **Phase 2a** revived CI on
+> `checkout@v4`/`setup-node@v4`, added `tsc --noEmit` and an L2 replay job,
+> and added the CI guard on `src/golden/expected.json` that section 7.3 of
+> the design spec calls for. Track ongoing work against epic #53. The rest
+> of this document is kept as-written, as the historical survey it is — see
+> the Node row below for the one correction needed to the table itself.
 
 Companion document, covering the move onto treeye.science and the decisions
 around it: `treeye/docs/icl-calc-migration.md` in the Treeye repo.
@@ -26,7 +37,7 @@ around it: `treeye/docs/icl-calc-migration.md` in the Treeye repo.
 | UI | Bootstrap 4.6 · Formik 2 · Yup · Sass |
 | Charts | amCharts 4 |
 | Services | Sentry 6 · `react-ga` 3 |
-| Node | pinned to **v14** in `.nvmrc` and both CI jobs |
+| Node | ~~pinned to v14 in `.nvmrc` and both CI jobs~~ — as of Phase 0, `.nvmrc` pins **v16** (the newest version the build still passes under; see finding 4 below, kept as the historical record of the problem this fixed). The `deploy` job and the `e2e-replay` job's build step (Phase 2a) use Node 16 accordingly; the `test`, `golden-master-guard` jobs and `e2e-replay`'s Playwright step run Node 20, which does not need to build |
 | Release | `semantic-release` on `master`, then `peaceiris/actions-gh-pages` publishing `./build` to the `gh-pages` branch |
 
 **Computation is entirely client-side**, against `src/data.csv` inlined at build
