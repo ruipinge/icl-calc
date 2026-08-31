@@ -933,53 +933,54 @@ git commit -m "test(golden): L1 replay - pure functions reproduce the oracle"
 
 This is the check that L1 structurally cannot make: it proves that today's source, built today, still produces the 2022 numbers through a real browser.
 
+**As actually implemented** (this section originally documented the
+superseded `.serve/icl-calc-subject` layout, which collided: reusing
+`.serve`'s own `icl-calc` symlink for the subject build made every asset
+request on the subject's port resolve to the *oracle's* files instead of the
+subject's, since both builds share `homepage=http://ruipinge.github.io/icl-calc`
+and therefore both reference their assets by the same absolute `/icl-calc/...`
+path. The fix was a second, dedicated root - `e2e/.serve-subject` - with its
+own `icl-calc` symlink, so the two ports stay isolated. Corrected below to
+match what is actually in the repo; see `e2e/setup.sh` for the one committed,
+runnable recipe.)
+
 - [ ] **Step 1: Build the current source**
 
 ```bash
 npm run build
-mkdir -p e2e/.serve && ln -sfn ../../build e2e/.serve/icl-calc-subject
 ```
 
 Add the `--openssl-legacy-provider` prefix if Task 1 Step 5 established it is needed.
 
-- [ ] **Step 2: Add the subject server to the config**
+- [ ] **Step 2: Create the two serve roots**
 
-In `e2e/playwright.config.ts`, add a second entry to `webServer`:
-
-```ts
-    {
-      command: `npx http-server .serve -p ${SUBJECT_PORT} --silent`,
-      url: `http://127.0.0.1:${SUBJECT_PORT}/icl-calc-subject/index.html`,
-      reuseExistingServer: true
-    }
+```bash
+npm --prefix e2e run setup
 ```
 
-and change the `replay` project's `baseURL` to
-`http://127.0.0.1:${SUBJECT_PORT}/icl-calc-subject/`.
+Runs `e2e/setup.sh`, which creates `e2e/.serve/icl-calc` (a symlink to the
+oracle worktree, `../../../icl-calc-oracle` from `e2e/.serve`) and
+`e2e/.serve-subject/icl-calc` (a symlink to this repo's own `build/`,
+`../../build` from `e2e/.serve-subject`), and fails loudly if the oracle
+worktree or `build/` is missing. Both roots are gitignored
+(`e2e/.gitignore`) and must be recreated after a fresh checkout - `setup.sh`
+is the recipe, not manual `ln -sfn`.
 
-- [ ] **Step 3: Write the replay spec**
+`e2e/playwright.config.ts` already defines both `webServer` entries (one per
+port, one per root) and the `replay` project's `baseURL` pointing at
+`http://127.0.0.1:${SUBJECT_PORT}/icl-calc/` - no config edit needed for a
+normal run.
 
-`e2e/replay.spec.ts`:
+- [ ] **Step 3: The replay spec**
 
-```ts
-import { expect, test } from '@playwright/test';
-import { fillRow, openApp, readAll } from './lib/app';
-import expected from '../src/golden/expected.json';
-import inputs from '../src/golden/inputs.json';
-
-test('the build under test reproduces the oracle exactly', async ({ page }) => {
-  test.setTimeout(180_000);
-  await openApp(page);
-
-  for (const row of inputs.rows) {
-    await fillRow(page, row);
-    const actual = await readAll(page);
-    expect(actual, `golden master row ${row.id}`).toEqual(
-      (expected as any).rows[row.id]
-    );
-  }
-});
-```
+`e2e/replay.spec.ts` (as implemented) asserts, before replaying any row, that
+`src/golden/inputs.json`'s rows still match the sha256 `expected.json` was
+captured from (see `rowsSha256` in `src/golden/types.ts` - the digest covers
+only input values, not each row's `why` prose) and that there are exactly 10
+rows (`expect(inputs.rows).toHaveLength(10)`, a vacuous-pass guard: an empty
+`rows` array would otherwise make the loop below pass trivially). Only then
+does it drive the browser through every row and compare the captured DOM
+state to `expected.json`.
 
 - [ ] **Step 4: Run it**
 

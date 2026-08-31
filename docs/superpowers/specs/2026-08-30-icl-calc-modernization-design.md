@@ -120,6 +120,16 @@ explicit mismatch rather than silent drift. All dates of birth are mid-March so
 the birthday has already passed on 30 August; the ages stay correct even if the
 pinned instant moves by weeks.
 
+**Fixture-authoring rule:** `page.clock.install()` ticks forward from the
+pinned origin in real time as the capture/replay runs, it does not stay frozen
+at the exact instant it was installed at. A fixture row's `dateOfBirth` must
+therefore not fall within a day of the pinned clock, or a birthday crossing
+mid-run makes the capture nondeterministic - `age` (and everything derived
+from it) could differ depending on exactly how long the run took. This is
+currently safe only by accident: every row's `dateOfBirth` is 15 March against
+a clock pinned to 30 August, comfortably clear of the boundary. Any new row
+must keep the same clearance.
+
 ### 4.4 Capture surface
 
 | Tab | Captured | Why |
@@ -196,9 +206,19 @@ fills the 13.7 mm lens columns.
 | 09 | schema floor | 22 · 2004-03-15 | 10.50 | 10.60 | −100 | 2.70 | 30/31 | 30.00@0 | 30.00@90 | – | 300 | None | −25.00 | −8.00 | 0 | 8 |
 | 10 | schema ceiling | 55 · 1971-03-15 | 13.50 | 13.60 | 900 | 6.00 | 45/46 | 55.00@0 | 55.00@90 | – | 700 | None | 0 | 0 | 180 | 15 |
 
-Branch coverage: `calcRadiusPosterior` fork A (02), fork B (01, 05–10), fork C
-(03, 04); `calcICLAxis` at and over the 90° hinge (05, 06); Matrix small and
-large lens bins (07, 08) and the empty-cell path (09); schema extremes (09, 10).
+Branch coverage: `calcRadiusPosterior` fork A (02), fork B (01, 03–10);
+`calcICLAxis` at and over the 90° hinge (05, 06); Matrix small and large lens
+bins (07, 08) and the empty-cell path (09); schema extremes (09, 10).
+
+**Correction (final review, Phase 1):** rows 03 and 04 were originally
+documented as exercising a distinct "fork C" of `calcRadiusPosterior`. Reading
+`src/formulas.ts` shows no such fork: the `previousSurgery === none` branch
+and the `previousSurgery` Myopia/Hyperopia branch return the byte-identical
+expression, so no captured value can tell them apart. Rows 03/04 exercise
+fork B's arithmetic while carrying the `previousSurgery` flag, which currently
+changes no output - known behaviour, not a defect this fixture asserts
+against (see `src/golden/inputs.json`'s `why` fields for 03/04, corrected to
+match).
 
 Posterior K is entered as **positive** values (~7.0–7.4 D), matching what
 `calcRadiusPosterior` expects. See issue #41 — the fields are unvalidated and a
@@ -240,6 +260,41 @@ freely, `expected.json` may not move by a digit.
 `hashType="noslash"` does not exist in react-router 6/7. Today's URLs are
 `…/#matrix`; after 3c they become `…/#/matrix`, silently breaking any shared or
 bookmarked link. Hence the redirect shim and its test.
+
+### 6.2 Blind spots the golden master does not cover (final review, Phase 1)
+
+Both gates - L1 and L2 - are blind to a class of regression that changes no
+computed number:
+
+- **Environment-variable renames.** `REACT_APP_VERSION` (`src/misc/Footer.tsx`),
+  `PUBLIC_URL` (`src/misc/NavBar.tsx`) and `NODE_ENV` (`src/index.tsx`,
+  `src/misc/GoogleAnalytics.ts`) are read by name, as strings, nowhere near
+  `expected.json`'s capture surface (§4.4 captures ICL Power, Matrix,
+  Regression and Normality values - never the footer text or nav links). A
+  botched rename in Phase 3a (`REACT_APP_*` → `VITE_*`, `PUBLIC_URL` →
+  `BASE_URL`, `NODE_ENV` → `import.meta.env.PROD`) ships a literal
+  `vundefined` in the footer, or a broken asset base path, with every L1 and
+  L2 assertion green.
+- **Hash-router URLs.** No test in this repo asserts on `window.location` or
+  the URL bar. Phase 3c's `hashType="noslash"` removal (§6.1) changes
+  `…/#matrix` to `…/#/matrix`; nothing in the golden master would notice,
+  because `fillRow`/`readAll` never read the URL, only form and table
+  contents.
+
+Neither is worth a golden-master test on its own - a snapshot of the footer
+string or the URL bar would be one more brittle assertion for a narrow class
+of bug. They are, instead, **required manual checklist items for the phases
+that can cause them**, so that "the golden master is green" is never read as
+"3a is safe" or "3c is safe" on its own:
+
+- **Phase 3a checklist:** after the env-var rename, load the built app and
+  visually confirm the footer version string and every asset/link built from
+  `PUBLIC_URL`/`BASE_URL` render real values, not `undefined` or a broken
+  path.
+- **Phase 3c checklist:** after the router migration, confirm a bookmarked
+  `#matrix`-style URL still resolves to the Matrix tab (the redirect shim's
+  own test, §6.1, covers the shim mechanically; this is the manual
+  confirmation that a real old-style bookmark still works end to end).
 
 ---
 
@@ -290,8 +345,18 @@ fields moved and by how much; then classify.
   justification per changed value, and explicit sign-off before `expected.json`
   is touched.
 
-CI enforces the branch-name condition mechanically, so the fixture cannot drift
-by accident.
+**Correction (final review, Phase 1):** the sentence above overstated what
+exists today. There is no CI job that enforces the branch-name condition -
+`.github/workflows/main.yml` contains nothing that reads `expected.json` or
+checks for an `oracle/` branch prefix. Enforcing it mechanically is Phase 2a's
+responsibility (issue #45). Until that lands, the fixture is protected by
+convention (this document, the README embedded in `expected.json`, and PR
+review) plus the in-suite digest assertions in `src/golden/replay.test.ts` and
+`e2e/replay.spec.ts` - and those assertions check that the fixture *inputs*
+(`src/golden/inputs.json`'s rows) match what `expected.json` was captured
+from, not that `expected.json` itself is unmodified. A hand-edited value in
+`expected.json` that still matches the recorded digest would pass every gate
+in this repo today.
 
 ### 7.4 Definition of done, per phase
 
@@ -377,12 +442,11 @@ and was deliberately left in place pending a separate decision.
     snapshot test that renders against renamed fields and asserts nothing —
     it will fail Phase 2a's own `tsc --noEmit` gate on day one; and **#56**,
     `LinearGauge.dispose()` mutating a live `NodeList` while iterating it.
-  - **The manual live-site verification (spec's brief Step 5) is still
-    outstanding** — it requires a human to open
-    <https://ruipinge.github.io/icl-calc/>, enter rows `01-baseline` and
-    `08-large-lens-bin` by hand, and compare the four ICL Power values
-    against `expected.json`. Not performed by this task; belongs to the PR
-    reviewer.
+  - **The manual live-site verification (spec's brief Step 5) is DONE.** A
+    human opened <https://ruipinge.github.io/icl-calc/>, entered rows
+    `01-baseline` and `08-large-lens-bin` by hand, and confirmed the four ICL
+    Power values match `expected.json` for both. (Final review, Phase 1:
+    updated from "outstanding" now that this has actually been performed.)
 - **The `2026-07-08/index.html` page on `gh-pages`.** Served publicly at
   `https://ruipinge.github.io/icl-calc/2026-07-08/`. `peaceiris/actions-gh-pages`
   replaces branch contents on deploy unless `keep_files: true` is set, so the
@@ -459,5 +523,18 @@ and was deliberately left in place pending a separate decision.
     future phase regenerates the lockfile with a modern `npm install` (out
     of scope here — the Step 2 gate requires the lockfile stay byte-for-byte
     unchanged in this task).
+- **CI still runs Node 14 (final review, Phase 1).** Phase 0 changed
+  `.nvmrc` to `v16`, but `.github/workflows/main.yml` still sets
+  `node-version: '14'` in both the `test` and `deploy` jobs. This is
+  deliberate, not an oversight left over from Phase 0: CI is non-functional
+  regardless of the Node version, because it also pins `actions/checkout@v2`
+  and `actions/setup-node@v2`, both unsupported on current GitHub-hosted
+  runners, and Phase 2a rebuilds the whole workflow from scratch (issue
+  referenced in §7.3's correction above). Bumping just the `node-version`
+  line now would be effort spent on a workflow file that Phase 2a discards
+  anyway. Consequence worth recording: the L1 suite (`src/golden/replay.test.ts`
+  and friends) has been run and validated only on Node 16 in this work, never
+  through the actual CI pipeline, because that pipeline does not currently
+  run.
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.
