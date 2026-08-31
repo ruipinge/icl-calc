@@ -1,18 +1,44 @@
 import { Capture, fillRow, openApp, readAll } from './lib/app';
+import { expect, test } from '@playwright/test';
+import { readFileSync, writeFileSync } from 'fs';
 
 import type { GoldenInputs } from '../src/golden/types';
+import { createHash } from 'crypto';
 import inputsJson from '../src/golden/inputs.json';
 import { resolve } from 'path';
-import { test } from '@playwright/test';
-import { writeFileSync } from 'fs';
 
 const inputs = (inputsJson as unknown) as GoldenInputs;
 
+const INPUTS = resolve(__dirname, '../src/golden/inputs.json');
 const OUT = resolve(__dirname, '../src/golden/expected.json');
+
+// What is actually served is whatever e2e/.serve/icl-calc points at. The
+// provenance recorded below is only trustworthy if the served build is checked
+// against it, so both facts are asserted in the page before anything is
+// captured. Deliberately here and not in the shared openApp: Task 7's replay
+// subject is a local `npm run build` that need not define REACT_APP_VERSION
+// and will carry different content hashes.
+const ORACLE_VERSION = '1.7.0';
+const ORACLE_MAIN_CHUNK = '/icl-calc/static/js/main.86697131.chunk.js';
+
+/** sha256 of the inputs file *as bytes*, so any edit at all changes it. */
+const sha256OfFile = (path: string) =>
+  createHash('sha256').update(readFileSync(path)).digest('hex');
 
 test('capture the oracle', async ({ page }) => {
   test.setTimeout(180_000);
   await openApp(page);
+
+  // Coarse identity: the version the build reports about itself, rendered as
+  // visible link text by src/misc/Footer.tsx.
+  await expect(
+    page.getByRole('link', { name: `v${ORACLE_VERSION}` })
+  ).toBeVisible();
+  // Exact identity: a CRA content hash. Any rebuild, of any commit, moves it -
+  // which the version string alone would not catch.
+  await expect(page.locator(`script[src="${ORACLE_MAIN_CHUNK}"]`)).toHaveCount(
+    1
+  );
 
   const rows: Record<string, Capture> = {};
   for (const row of inputs.rows) {
@@ -25,13 +51,23 @@ test('capture the oracle', async ({ page }) => {
     JSON.stringify(
       {
         README:
-          'CAPTURED FROM THE DEPLOYED ORACLE. DO NOT REGENERATE. ' +
-          'If a value here must change, see spec section 7.3 (the stop rule): ' +
-          'it requires an oracle/ branch and explicit sign-off.',
+          'CAPTURED FROM THE DEPLOYED ORACLE by e2e/capture.spec.ts. This file ' +
+          'is generated: hand-editing a value in it is forbidden at every ' +
+          'point, no exceptions. Re-running the capture is legitimate up to ' +
+          'and including Task 8 - the plan requires it if the harness is found ' +
+          'to read the DOM wrongly. From Task 8 commit onward the fixture is ' +
+          'immutable: if a value here must change, see spec section 7.3 (the ' +
+          'stop rule), which requires an oracle/ branch and explicit sign-off. ' +
+          'capturedFrom.inputsSha256 is the sha256 of src/golden/inputs.json ' +
+          'as it stood when this file was generated; if it no longer matches, ' +
+          'the inputs were edited without a re-capture and any replay failure ' +
+          'is fixture drift, not an application defect.',
         capturedFrom: {
           sha: '789ac2de9b5886878763a8c06f1a4f71db173270',
           url: 'https://ruipinge.github.io/icl-calc/',
-          version: '1.7.0'
+          version: ORACLE_VERSION,
+          mainChunk: ORACLE_MAIN_CHUNK,
+          inputsSha256: sha256OfFile(INPUTS)
         },
         clock: inputs.clock,
         rows

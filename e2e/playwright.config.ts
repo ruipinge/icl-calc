@@ -1,8 +1,10 @@
 import { defineConfig } from '@playwright/test';
 
-// The frozen February 2022 build. Served under /icl-calc/ because that build
-// was produced with homepage=http://ruipinge.github.io/icl-calc and therefore
-// references its assets by absolute path.
+// The frozen December 2021 build: app commit 2436da4, authored 2021-12-02
+// 00:33 UTC, deployed by gh-pages commit dc98e3a at 00:45 UTC. Served under
+// /icl-calc/ because that build was produced with
+// homepage=http://ruipinge.github.io/icl-calc and therefore references its
+// assets by absolute path.
 const ORACLE_PORT = 4021;
 // A fresh build of the branch under test, produced by `npm run build`.
 const SUBJECT_PORT = 4022;

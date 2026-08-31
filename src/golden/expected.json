@@ -1,9 +1,11 @@
 {
-  "README": "CAPTURED FROM THE DEPLOYED ORACLE. DO NOT REGENERATE. If a value here must change, see spec section 7.3 (the stop rule): it requires an oracle/ branch and explicit sign-off.",
+  "README": "CAPTURED FROM THE DEPLOYED ORACLE by e2e/capture.spec.ts. This file is generated: hand-editing a value in it is forbidden at every point, no exceptions. Re-running the capture is legitimate up to and including Task 8 - the plan requires it if the harness is found to read the DOM wrongly. From Task 8 commit onward the fixture is immutable: if a value here must change, see spec section 7.3 (the stop rule), which requires an oracle/ branch and explicit sign-off. capturedFrom.inputsSha256 is the sha256 of src/golden/inputs.json as it stood when this file was generated; if it no longer matches, the inputs were edited without a re-capture and any replay failure is fixture drift, not an application defect.",
   "capturedFrom": {
     "sha": "789ac2de9b5886878763a8c06f1a4f71db173270",
     "url": "https://ruipinge.github.io/icl-calc/",
-    "version": "1.7.0"
+    "version": "1.7.0",
+    "mainChunk": "/icl-calc/static/js/main.86697131.chunk.js",
+    "inputsSha256": "59a0ac8b1f73fff00dec1a0db4b42745d7c998e41c95af4816a4ca2de516885b"
   },
   "clock": "2026-08-30T12:00:00Z",
   "rows": {
