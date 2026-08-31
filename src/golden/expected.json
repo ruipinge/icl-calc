@@ -1,0 +1,2035 @@
+{
+  "README": "CAPTURED FROM THE DEPLOYED ORACLE by e2e/capture.spec.ts. This file is generated: hand-editing a value in it is forbidden at every point, no exceptions. Re-running the capture is legitimate up to and including Task 8 - the plan requires it if the harness is found to read the DOM wrongly. From Task 8 commit onward the fixture is immutable: if a value here must change, see spec section 7.3 (the stop rule), which requires an oracle/ branch and explicit sign-off. capturedFrom.rowsSha256 is the sha256 of the rows array in src/golden/inputs.json (each row's `why` excluded, everything else included) as it stood when this file was generated; if it no longer matches, an input value was edited without a re-capture and any replay failure is fixture drift, not an application defect. Editing only a `why` string never changes this digest. capturedFrom.playwrightVersion and .chromiumVersion record what read the DOM: expected.json's gauge values are Chromium-serialised CSS strings, and a different Chromium build can render a handful of pixels differently across a future npm install, which would present as an application regression under the stop rule if the browser that produced them were not on record.",
+  "capturedFrom": {
+    "sha": "789ac2de9b5886878763a8c06f1a4f71db173270",
+    "url": "https://ruipinge.github.io/icl-calc/",
+    "version": "1.7.0",
+    "mainChunk": "/icl-calc/static/js/main.86697131.chunk.js",
+    "rowsSha256": "8fb18740e60bf71ac17215462445bba4fc70d97ea1981c57f1c061031ac6b1c9",
+    "playwrightVersion": "1.62.1",
+    "chromiumVersion": "151.0.7922.34"
+  },
+  "clock": "2026-08-30T12:00:00Z",
+  "rows": {
+    "01-baseline": {
+      "age": "30",
+      "patient": {
+        "iclSphere": "-7.92",
+        "iclCylindre": "1.04",
+        "iclAxis": "90",
+        "iclSphericalEquivalent": "-7.4"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "0",
+            "8",
+            "3",
+            "0",
+            "4",
+            "2",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "0",
+            "359",
+            "437",
+            "0",
+            "553",
+            "920",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "0",
+            "80",
+            "230",
+            "0",
+            "140",
+            "550",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "0",
+            "670",
+            "630",
+            "0",
+            "1140",
+            "1290",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "37.5",
+            "33.3",
+            "0",
+            "50",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "37.5",
+            "33.3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "25",
+            "33.3",
+            "0",
+            "25",
+            "50",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "25",
+            "50",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 11.8 mm.",
+          "Crystaline Lens Rise (CLR): 0.25 mm.",
+          "Number of matching Eyes: 17/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "392.93",
+            "2.59"
+          ],
+          [
+            "13.2 mm",
+            "653.92",
+            "2.33"
+          ],
+          [
+            "13.7 mm",
+            "984.11",
+            "2"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "73.3"
+          ],
+          [
+            "13.2 mm",
+            "70.2"
+          ],
+          [
+            "13.7 mm",
+            "9.6"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          "position: absolute; left: calc(38.0282% - 2px); top: 12px;",
+          "position: absolute; left: calc(54.9618% - 2px); top: 12px;",
+          "position: absolute; left: calc(28.9474% - 2px); top: 12px;",
+          "position: absolute; left: calc(31.3953% - 2px); top: 12px;",
+          "position: absolute; left: calc(65.625% - 2px); top: 12px;",
+          "position: absolute; left: calc(35.1351% - 2px); top: 12px;"
+        ]
+      }
+    },
+    "02-posterior-k": {
+      "age": "30",
+      "patient": {
+        "iclSphere": "-7.88",
+        "iclCylindre": "1.03",
+        "iclAxis": "90",
+        "iclSphericalEquivalent": "-7.37"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "0",
+            "8",
+            "3",
+            "0",
+            "4",
+            "2",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "0",
+            "359",
+            "437",
+            "0",
+            "553",
+            "920",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "0",
+            "80",
+            "230",
+            "0",
+            "140",
+            "550",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "0",
+            "670",
+            "630",
+            "0",
+            "1140",
+            "1290",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "37.5",
+            "33.3",
+            "0",
+            "50",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "37.5",
+            "33.3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "25",
+            "33.3",
+            "0",
+            "25",
+            "50",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "25",
+            "50",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 11.8 mm.",
+          "Crystaline Lens Rise (CLR): 0.25 mm.",
+          "Number of matching Eyes: 17/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "392.31",
+            "2.59"
+          ],
+          [
+            "13.2 mm",
+            "653.3",
+            "2.33"
+          ],
+          [
+            "13.7 mm",
+            "983.49",
+            "2"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "73.2"
+          ],
+          [
+            "13.2 mm",
+            "70.2"
+          ],
+          [
+            "13.7 mm",
+            "9.7"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          "position: absolute; left: calc(38.0282% - 2px); top: 12px;",
+          "position: absolute; left: calc(54.9618% - 2px); top: 12px;",
+          "position: absolute; left: calc(28.9474% - 2px); top: 12px;",
+          "position: absolute; left: calc(31.3953% - 2px); top: 12px;",
+          "position: absolute; left: calc(65.625% - 2px); top: 12px;",
+          "position: absolute; left: calc(35.1351% - 2px); top: 12px;"
+        ]
+      }
+    },
+    "03-prior-myopia-rx": {
+      "age": "45",
+      "patient": {
+        "iclSphere": "-2.39",
+        "iclCylindre": "0.59",
+        "iclAxis": "85",
+        "iclSphericalEquivalent": "-2.1"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "0",
+            "0",
+            "3",
+            "3",
+            "14",
+            "12",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "0",
+            "0",
+            "323",
+            "550",
+            "595",
+            "788",
+            "1370",
+            "0",
+            "0"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "0",
+            "0",
+            "270",
+            "530",
+            "180",
+            "510",
+            "1370",
+            "0",
+            "0"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "0",
+            "0",
+            "350",
+            "570",
+            "920",
+            "1310",
+            "1370",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "14.3",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "0",
+            "100",
+            "0",
+            "21.4",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "0",
+            "0",
+            "100",
+            "28.6",
+            "41.7",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "35.7",
+            "41.7",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "16.7",
+            "100",
+            "0",
+            "0"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 12.1 mm.",
+          "Crystaline Lens Rise (CLR): 0.18 mm.",
+          "Number of matching Eyes: 33/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "152.22",
+            "2.98"
+          ],
+          [
+            "13.2 mm",
+            "413.21",
+            "2.72"
+          ],
+          [
+            "13.7 mm",
+            "743.4",
+            "2.39"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "44.4"
+          ],
+          [
+            "13.2 mm",
+            "55.2"
+          ],
+          [
+            "13.7 mm",
+            "59.2"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          "position: absolute; left: calc(48.5915% - 2px); top: 12px;",
+          "position: absolute; left: calc(49.6183% - 2px); top: 12px;",
+          "position: absolute; left: calc(38.8158% - 2px); top: 12px;",
+          "position: absolute; left: calc(34.7176% - 2px); top: 12px;",
+          "position: absolute; left: calc(75% - 2px); top: 12px;",
+          "position: absolute; left: calc(75.6757% - 2px); top: 12px;"
+        ]
+      }
+    },
+    "04-prior-hyperopia-rx": {
+      "age": "45",
+      "patient": {
+        "iclSphere": "-3.4",
+        "iclCylindre": "0.9",
+        "iclAxis": "100",
+        "iclSphericalEquivalent": "-2.95"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "0",
+            "0",
+            "3",
+            "3",
+            "14",
+            "12",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "0",
+            "0",
+            "323",
+            "550",
+            "595",
+            "788",
+            "1370",
+            "0",
+            "0"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "0",
+            "0",
+            "270",
+            "530",
+            "180",
+            "510",
+            "1370",
+            "0",
+            "0"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "0",
+            "0",
+            "350",
+            "570",
+            "920",
+            "1310",
+            "1370",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "14.3",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "0",
+            "100",
+            "0",
+            "21.4",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "0",
+            "0",
+            "100",
+            "28.6",
+            "41.7",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "35.7",
+            "41.7",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "16.7",
+            "100",
+            "0",
+            "0"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 12.1 mm.",
+          "Crystaline Lens Rise (CLR): 0.18 mm.",
+          "Number of matching Eyes: 33/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "169.56",
+            "2.96"
+          ],
+          [
+            "13.2 mm",
+            "430.55",
+            "2.7"
+          ],
+          [
+            "13.7 mm",
+            "760.74",
+            "2.37"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "48.7"
+          ],
+          [
+            "13.2 mm",
+            "59.3"
+          ],
+          [
+            "13.7 mm",
+            "58.6"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          "position: absolute; left: calc(48.5915% - 2px); top: 12px;",
+          "position: absolute; left: calc(49.6183% - 2px); top: 12px;",
+          "position: absolute; left: calc(38.8158% - 2px); top: 12px;",
+          "position: absolute; left: calc(34.7176% - 2px); top: 12px;",
+          "position: absolute; left: calc(75% - 2px); top: 12px;",
+          "position: absolute; left: calc(75.6757% - 2px); top: 12px;"
+        ]
+      }
+    },
+    "05-axis-hinge-at": {
+      "age": "38",
+      "patient": {
+        "iclSphere": "-10.95",
+        "iclCylindre": "1.96",
+        "iclAxis": "180",
+        "iclSphericalEquivalent": "-9.98"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "0",
+            "5",
+            "4",
+            "0",
+            "5",
+            "5",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "0",
+            "386",
+            "613",
+            "0",
+            "634",
+            "1072",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "0",
+            "90",
+            "350",
+            "0",
+            "190",
+            "800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "0",
+            "670",
+            "940",
+            "0",
+            "1140",
+            "1310",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "40",
+            "0",
+            "0",
+            "20",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "20",
+            "50",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "40",
+            "0",
+            "0",
+            "40",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "0",
+            "0",
+            "50",
+            "0",
+            "20",
+            "20",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "20",
+            "80",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 11.95 mm.",
+          "Crystaline Lens Rise (CLR): 0.3 mm.",
+          "Number of matching Eyes: 19/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "345.35",
+            "2.68"
+          ],
+          [
+            "13.2 mm",
+            "606.34",
+            "2.42"
+          ],
+          [
+            "13.7 mm",
+            "936.53",
+            "2.09"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "73.4"
+          ],
+          [
+            "13.2 mm",
+            "75.6"
+          ],
+          [
+            "13.7 mm",
+            "18.2"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          "position: absolute; left: calc(43.3099% - 2px); top: 12px;",
+          "position: absolute; left: calc(58.7786% - 2px); top: 12px;",
+          "position: absolute; left: calc(32.2368% - 2px); top: 12px;",
+          "position: absolute; left: calc(29.7342% - 2px); top: 12px;",
+          "position: absolute; left: calc(70.3125% - 2px); top: 12px;",
+          "position: absolute; left: calc(56.7568% - 2px); top: 12px;"
+        ]
+      }
+    },
+    "06-axis-hinge-over": {
+      "age": "38",
+      "patient": {
+        "iclSphere": "-10.95",
+        "iclCylindre": "1.96",
+        "iclAxis": "1",
+        "iclSphericalEquivalent": "-9.98"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "0",
+            "5",
+            "4",
+            "0",
+            "5",
+            "5",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "0",
+            "386",
+            "613",
+            "0",
+            "634",
+            "1072",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "0",
+            "90",
+            "350",
+            "0",
+            "190",
+            "800",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "0",
+            "670",
+            "940",
+            "0",
+            "1140",
+            "1310",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "40",
+            "0",
+            "0",
+            "20",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "20",
+            "50",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "40",
+            "0",
+            "0",
+            "40",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "0",
+            "0",
+            "50",
+            "0",
+            "20",
+            "20",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "20",
+            "80",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 11.95 mm.",
+          "Crystaline Lens Rise (CLR): 0.3 mm.",
+          "Number of matching Eyes: 19/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "345.35",
+            "2.68"
+          ],
+          [
+            "13.2 mm",
+            "606.34",
+            "2.42"
+          ],
+          [
+            "13.7 mm",
+            "936.53",
+            "2.09"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "73.4"
+          ],
+          [
+            "13.2 mm",
+            "75.6"
+          ],
+          [
+            "13.7 mm",
+            "18.2"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          "position: absolute; left: calc(43.3099% - 2px); top: 12px;",
+          "position: absolute; left: calc(58.7786% - 2px); top: 12px;",
+          "position: absolute; left: calc(32.2368% - 2px); top: 12px;",
+          "position: absolute; left: calc(29.7342% - 2px); top: 12px;",
+          "position: absolute; left: calc(70.3125% - 2px); top: 12px;",
+          "position: absolute; left: calc(56.7568% - 2px); top: 12px;"
+        ]
+      }
+    },
+    "07-small-lens-bin": {
+      "age": "22",
+      "patient": {
+        "iclSphere": "-5.73",
+        "iclCylindre": "0.54",
+        "iclAxis": "80",
+        "iclSphericalEquivalent": "-5.46"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "1",
+            "8",
+            "5",
+            "1",
+            "18",
+            "6",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "860",
+            "486",
+            "760",
+            "630",
+            "649",
+            "1177",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "860",
+            "290",
+            "520",
+            "630",
+            "190",
+            "820",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "860",
+            "700",
+            "1000",
+            "630",
+            "1210",
+            "1600",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "11.1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "50",
+            "0",
+            "0",
+            "11.1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "50",
+            "40",
+            "100",
+            "44.4",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "100",
+            "0",
+            "40",
+            "0",
+            "27.8",
+            "16.7",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "20",
+            "0",
+            "5.6",
+            "83.3",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 11.9 mm.",
+          "Crystaline Lens Rise (CLR): 0.1 mm.",
+          "Number of matching Eyes: 39/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "418.68",
+            "2.21"
+          ],
+          [
+            "13.2 mm",
+            "679.67",
+            "1.95"
+          ],
+          [
+            "13.7 mm",
+            "1009.86",
+            "1.62"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "82"
+          ],
+          [
+            "13.2 mm",
+            "75.9"
+          ],
+          [
+            "13.7 mm",
+            "10.4"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          "position: absolute; left: calc(41.5493% - 2px); top: 12px;",
+          "position: absolute; left: calc(43.5115% - 2px); top: 12px;",
+          "position: absolute; left: calc(5.92105% - 2px); top: 12px;",
+          "position: absolute; left: calc(23.0897% - 2px); top: 12px;",
+          "position: absolute; left: calc(68.75% - 2px); top: 12px;",
+          "position: absolute; left: calc(13.5135% - 2px); top: 12px;"
+        ]
+      }
+    },
+    "08-large-lens-bin": {
+      "age": "55",
+      "patient": {
+        "iclSphere": "-15.54",
+        "iclCylindre": "2.63",
+        "iclAxis": "95",
+        "iclSphericalEquivalent": "-14.25"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "0",
+            "0",
+            "0",
+            "0",
+            "8",
+            "6",
+            "1",
+            "6",
+            "7"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "456",
+            "582",
+            "660",
+            "685",
+            "911"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "210",
+            "410",
+            "660",
+            "330",
+            "270"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "650",
+            "790",
+            "660",
+            "860",
+            "1280"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "12.5",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "50",
+            "33.3",
+            "0",
+            "16.7",
+            "14.3"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "37.5",
+            "50",
+            "100",
+            "33.3",
+            "14.3"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "16.7",
+            "0",
+            "50",
+            "14.3"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "57.1"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 12.7 mm.",
+          "Crystaline Lens Rise (CLR): 0.2 mm.",
+          "Number of matching Eyes: 28/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "171.89",
+            "3.21"
+          ],
+          [
+            "13.2 mm",
+            "432.88",
+            "2.95"
+          ],
+          [
+            "13.7 mm",
+            "763.07",
+            "2.62"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "82.4"
+          ],
+          [
+            "13.2 mm",
+            "87.7"
+          ],
+          [
+            "13.7 mm",
+            "83.5"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          "position: absolute; left: calc(69.7183% - 2px); top: 12px;",
+          "position: absolute; left: calc(51.145% - 2px); top: 12px;",
+          "position: absolute; left: calc(55.2632% - 2px); top: 12px;",
+          "position: absolute; left: calc(39.701% - 2px); top: 12px;",
+          "position: absolute; left: calc(93.75% - 2px); top: 12px;",
+          null
+        ]
+      }
+    },
+    "09-schema-floor": {
+      "age": "22",
+      "patient": {
+        "iclSphere": "-27.82",
+        "iclCylindre": "5.4",
+        "iclAxis": "90",
+        "iclSphericalEquivalent": "-25.21"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 10.5 mm.",
+          "Crystaline Lens Rise (CLR): -0.1 mm.",
+          "Number of matching Eyes: 0/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "1297.82",
+            "1.18"
+          ],
+          [
+            "13.2 mm",
+            "1558.81",
+            "0.92"
+          ],
+          [
+            "13.7 mm",
+            "1889",
+            "0.59"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "1.2"
+          ],
+          [
+            "13.2 mm",
+            "0.1"
+          ],
+          [
+            "13.7 mm",
+            "0"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          null,
+          "position: absolute; left: calc(28.2443% - 2px); top: 12px;",
+          null,
+          "position: absolute; left: calc(18.1063% - 2px); top: 12px;",
+          "position: absolute; left: calc(25% - 2px); top: 12px;",
+          "position: absolute; left: calc(13.5135% - 2px); top: 12px;"
+        ]
+      }
+    },
+    "10-schema-ceiling": {
+      "age": "55",
+      "patient": {
+        "iclSphere": "0",
+        "iclCylindre": "0",
+        "iclAxis": "90",
+        "iclSphericalEquivalent": "0"
+      },
+      "matrix": {
+        "rows": [
+          [
+            "Lens Size",
+            "12.6 mm",
+            "13.2 mm",
+            "13.7 mm"
+          ],
+          [
+            "Myopia",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High",
+            "Low",
+            "Moderate",
+            "High"
+          ],
+          [
+            "Number of Eyes",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "Average Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Minimum Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "Maximum Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            ""
+          ],
+          [
+            "% Vault < 250 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 250 < Vault < 500 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 500 < Vault < 750 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 750 < Vault < 1000 (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "% 1000 < Vault (μm)",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "footer": [
+          "Angle to Angle (AtA): 13.5 mm.",
+          "Crystaline Lens Rise (CLR): 0.9 mm.",
+          "Number of matching Eyes: 0/542."
+        ]
+      },
+      "regression": {
+        "prediction": [
+          [
+            "Lens Size",
+            "Vault (μm)",
+            "Corneal Endothelium to ICL (mm)"
+          ],
+          [
+            "12.6 mm",
+            "-607.62",
+            "6.39"
+          ],
+          [
+            "13.2 mm",
+            "-346.64",
+            "6.13"
+          ],
+          [
+            "13.7 mm",
+            "-16.45",
+            "5.8"
+          ]
+        ],
+        "probability": [
+          [
+            "Lens Size",
+            "Probability (%)"
+          ],
+          [
+            "12.6 mm",
+            "0.5"
+          ],
+          [
+            "13.2 mm",
+            "0.8"
+          ],
+          [
+            "13.7 mm",
+            "2.3"
+          ]
+        ]
+      },
+      "normality": {
+        "pointers": [
+          "position: absolute; left: calc(97.8873% - 2px); top: 12px;",
+          null,
+          null,
+          "position: absolute; left: calc(43.0233% - 2px); top: 12px;",
+          null,
+          null
+        ]
+      }
+    }
+  }
+}

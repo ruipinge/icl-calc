@@ -1,0 +1,485 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`golden master L1 derives the same histogram bins from the CSV 1`] = `
+Object {
+  "aca": Array [
+    Object {
+      "count": 5,
+      "from": 19.6,
+      "to": 25.62,
+    },
+    Object {
+      "count": 48,
+      "from": 25.62,
+      "to": 31.64,
+    },
+    Object {
+      "count": 114,
+      "from": 31.64,
+      "to": 37.66,
+    },
+    Object {
+      "count": 175,
+      "from": 37.66,
+      "to": 43.68,
+    },
+    Object {
+      "count": 121,
+      "from": 43.68,
+      "to": 49.7,
+    },
+    Object {
+      "count": 53,
+      "from": 49.7,
+      "to": 55.72,
+    },
+    Object {
+      "count": 22,
+      "from": 55.72,
+      "to": 61.74,
+    },
+    Object {
+      "count": 3,
+      "from": 61.74,
+      "to": 67.75999999999999,
+    },
+    Object {
+      "count": 0,
+      "from": 67.75999999999999,
+      "to": 73.78,
+    },
+    Object {
+      "count": 1,
+      "from": 73.78,
+      "to": 79.8,
+    },
+  ],
+  "acd": Array [
+    Object {
+      "count": 34,
+      "from": 2.76,
+      "to": 2.912,
+    },
+    Object {
+      "count": 72,
+      "from": 2.912,
+      "to": 3.064,
+    },
+    Object {
+      "count": 106,
+      "from": 3.064,
+      "to": 3.216,
+    },
+    Object {
+      "count": 115,
+      "from": 3.216,
+      "to": 3.368,
+    },
+    Object {
+      "count": 110,
+      "from": 3.368,
+      "to": 3.52,
+    },
+    Object {
+      "count": 56,
+      "from": 3.52,
+      "to": 3.672,
+    },
+    Object {
+      "count": 25,
+      "from": 3.672,
+      "to": 3.824,
+    },
+    Object {
+      "count": 21,
+      "from": 3.824,
+      "to": 3.976,
+    },
+    Object {
+      "count": 2,
+      "from": 3.976,
+      "to": 4.128,
+    },
+    Object {
+      "count": 1,
+      "from": 4.128,
+      "to": 4.28,
+    },
+  ],
+  "age": Array [
+    Object {
+      "count": 9,
+      "from": 17,
+      "to": 20.7,
+    },
+    Object {
+      "count": 79,
+      "from": 20.7,
+      "to": 24.4,
+    },
+    Object {
+      "count": 131,
+      "from": 24.4,
+      "to": 28.1,
+    },
+    Object {
+      "count": 75,
+      "from": 28.1,
+      "to": 31.8,
+    },
+    Object {
+      "count": 91,
+      "from": 31.8,
+      "to": 35.5,
+    },
+    Object {
+      "count": 56,
+      "from": 35.5,
+      "to": 39.2,
+    },
+    Object {
+      "count": 31,
+      "from": 39.2,
+      "to": 42.900000000000006,
+    },
+    Object {
+      "count": 49,
+      "from": 42.900000000000006,
+      "to": 46.6,
+    },
+    Object {
+      "count": 19,
+      "from": 46.6,
+      "to": 50.300000000000004,
+    },
+    Object {
+      "count": 2,
+      "from": 50.300000000000004,
+      "to": 54,
+    },
+  ],
+  "ata": Array [
+    Object {
+      "count": 1,
+      "from": 10.72,
+      "to": 11.004000000000001,
+    },
+    Object {
+      "count": 14,
+      "from": 11.004000000000001,
+      "to": 11.288,
+    },
+    Object {
+      "count": 31,
+      "from": 11.288,
+      "to": 11.572000000000001,
+    },
+    Object {
+      "count": 80,
+      "from": 11.572000000000001,
+      "to": 11.856,
+    },
+    Object {
+      "count": 125,
+      "from": 11.856,
+      "to": 12.14,
+    },
+    Object {
+      "count": 124,
+      "from": 12.14,
+      "to": 12.424,
+    },
+    Object {
+      "count": 86,
+      "from": 12.424,
+      "to": 12.708,
+    },
+    Object {
+      "count": 68,
+      "from": 12.708,
+      "to": 12.992,
+    },
+    Object {
+      "count": 10,
+      "from": 12.992,
+      "to": 13.276,
+    },
+    Object {
+      "count": 3,
+      "from": 13.276,
+      "to": 13.56,
+    },
+  ],
+  "clr": Array [
+    Object {
+      "count": 11,
+      "from": -470,
+      "to": -339,
+    },
+    Object {
+      "count": 23,
+      "from": -339,
+      "to": -208,
+    },
+    Object {
+      "count": 79,
+      "from": -208,
+      "to": -77,
+    },
+    Object {
+      "count": 126,
+      "from": -77,
+      "to": 54,
+    },
+    Object {
+      "count": 118,
+      "from": 54,
+      "to": 185,
+    },
+    Object {
+      "count": 109,
+      "from": 185,
+      "to": 316,
+    },
+    Object {
+      "count": 56,
+      "from": 316,
+      "to": 447,
+    },
+    Object {
+      "count": 15,
+      "from": 447,
+      "to": 578,
+    },
+    Object {
+      "count": 2,
+      "from": 578,
+      "to": 709,
+    },
+    Object {
+      "count": 3,
+      "from": 709,
+      "to": 840,
+    },
+  ],
+  "wtw": Array [
+    Object {
+      "count": 1,
+      "from": 9.8,
+      "to": 10.120000000000001,
+    },
+    Object {
+      "count": 0,
+      "from": 10.120000000000001,
+      "to": 10.440000000000001,
+    },
+    Object {
+      "count": 2,
+      "from": 10.440000000000001,
+      "to": 10.76,
+    },
+    Object {
+      "count": 13,
+      "from": 10.76,
+      "to": 11.08,
+    },
+    Object {
+      "count": 88,
+      "from": 11.08,
+      "to": 11.4,
+    },
+    Object {
+      "count": 125,
+      "from": 11.4,
+      "to": 11.72,
+    },
+    Object {
+      "count": 141,
+      "from": 11.72,
+      "to": 12.040000000000001,
+    },
+    Object {
+      "count": 108,
+      "from": 12.040000000000001,
+      "to": 12.36,
+    },
+    Object {
+      "count": 51,
+      "from": 12.36,
+      "to": 12.68,
+    },
+    Object {
+      "count": 13,
+      "from": 12.68,
+      "to": 13,
+    },
+  ],
+}
+`;
+
+exports[`golden master L1 locks the Normality percentile bands over the real dataset 1`] = `
+Object {
+  "aca": Array [
+    Object {
+      "color": "",
+      "max": 28,
+      "min": 19.6,
+    },
+    Object {
+      "color": "",
+      "max": 36.65,
+      "min": 28,
+    },
+    Object {
+      "color": "",
+      "max": 46.45,
+      "min": 36.65,
+    },
+    Object {
+      "color": "",
+      "max": 57.92125000000001,
+      "min": 46.45,
+    },
+    Object {
+      "color": "",
+      "max": 79.8,
+      "min": 57.92125000000001,
+    },
+  ],
+  "acd": Array [
+    Object {
+      "color": "",
+      "max": 2.8305,
+      "min": 2.76,
+    },
+    Object {
+      "color": "",
+      "max": 3.12,
+      "min": 2.8305,
+    },
+    Object {
+      "color": "",
+      "max": 3.4575,
+      "min": 3.12,
+    },
+    Object {
+      "color": "",
+      "max": 3.89,
+      "min": 3.4575,
+    },
+    Object {
+      "color": "",
+      "max": 4.28,
+      "min": 3.89,
+    },
+  ],
+  "age": Array [
+    Object {
+      "color": "",
+      "max": 21,
+      "min": 17,
+    },
+    Object {
+      "color": "",
+      "max": 26,
+      "min": 21,
+    },
+    Object {
+      "color": "",
+      "max": 37,
+      "min": 26,
+    },
+    Object {
+      "color": "",
+      "max": 48,
+      "min": 37,
+    },
+    Object {
+      "color": "",
+      "max": 54,
+      "min": 48,
+    },
+  ],
+  "ata": Array [
+    Object {
+      "color": "",
+      "max": 11.27525,
+      "min": 10.72,
+    },
+    Object {
+      "color": "",
+      "max": 11.8925,
+      "min": 11.27525,
+    },
+    Object {
+      "color": "",
+      "max": 12.49,
+      "min": 11.8925,
+    },
+    Object {
+      "color": "",
+      "max": 12.98475,
+      "min": 12.49,
+    },
+    Object {
+      "color": "",
+      "max": 13.56,
+      "min": 12.98475,
+    },
+  ],
+  "clr": Array [
+    Object {
+      "color": "",
+      "max": -290,
+      "min": -470,
+    },
+    Object {
+      "color": "",
+      "max": 0,
+      "min": -290,
+    },
+    Object {
+      "color": "",
+      "max": 240,
+      "min": 0,
+    },
+    Object {
+      "color": "",
+      "max": 470,
+      "min": 240,
+    },
+    Object {
+      "color": "",
+      "max": 840,
+      "min": 470,
+    },
+  ],
+  "wtw": Array [
+    Object {
+      "color": "",
+      "max": 11,
+      "min": 9.8,
+    },
+    Object {
+      "color": "",
+      "max": 11.5,
+      "min": 11,
+    },
+    Object {
+      "color": "",
+      "max": 12.1,
+      "min": 11.5,
+    },
+    Object {
+      "color": "",
+      "max": 12.6,
+      "min": 12.1,
+    },
+    Object {
+      "color": "",
+      "max": 13,
+      "min": 12.6,
+    },
+  ],
+}
+`;

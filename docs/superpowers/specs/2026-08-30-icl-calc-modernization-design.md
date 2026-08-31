@@ -23,7 +23,7 @@ before each step is allowed to proceed.
 
 ## 2. The core idea
 
-The February 2022 build still deployed at <https://ruipinge.github.io/icl-calc/>
+The December 2021 build still deployed at <https://ruipinge.github.io/icl-calc/>
 is correct. It is therefore an **independent oracle**: a reference implementation
 that was not produced by the toolchain we are about to replace.
 
@@ -90,12 +90,17 @@ test. A unit-only golden master would verify the code against itself.
 ### 4.2 Files
 
 ```
-tests/golden/inputs.json      hand-authored, reviewed, 10 rows
-tests/golden/expected.json    machine-captured from the oracle — IMMUTABLE
-tests/golden/capture.spec.ts  Playwright: oracle -> expected.json (run once)
-tests/golden/replay.spec.ts   Playwright L2: built branch must equal expected
-tests/golden/replay.test.ts   Unit L1: pure functions must equal expected
+src/golden/inputs.json        hand-authored, reviewed, 10 rows
+src/golden/expected.json      machine-captured from the oracle — IMMUTABLE
+src/golden/replay.test.ts     Unit L1: pure functions must equal expected
+e2e/capture.spec.ts           Playwright: oracle -> expected.json (run once)
+e2e/replay.spec.ts            Playwright L2: built branch must equal expected
 ```
+
+The fixtures and the L1 test live under `src/`, not `tests/`: `tsconfig.json`
+has `include: ["src"]`, and CRA's Jest only discovers tests under `src/` — a
+file outside it is simply invisible to `npm test`. The Playwright specs live
+in `e2e/`, deliberately outside `src/` so Jest does not try to collect them.
 
 `expected.json` is generated once and then never regenerated. CI fails any pull
 request whose diff touches it unless the branch name begins with `oracle/`.
@@ -115,6 +120,16 @@ explicit mismatch rather than silent drift. All dates of birth are mid-March so
 the birthday has already passed on 30 August; the ages stay correct even if the
 pinned instant moves by weeks.
 
+**Fixture-authoring rule:** `page.clock.install()` ticks forward from the
+pinned origin in real time as the capture/replay runs, it does not stay frozen
+at the exact instant it was installed at. A fixture row's `dateOfBirth` must
+therefore not fall within a day of the pinned clock, or a birthday crossing
+mid-run makes the capture nondeterministic - `age` (and everything derived
+from it) could differ depending on exactly how long the run took. This is
+currently safe only by accident: every row's `dateOfBirth` is 15 March against
+a clock pinned to 30 August, comfortably clear of the boundary. Any new row
+must keep the same clearance.
+
 ### 4.4 Capture surface
 
 | Tab | Captured | Why |
@@ -124,10 +139,23 @@ pinned instant moves by weeks.
 | Regression | vault prediction, cornea-to-endothelium, probability × 3 lens sizes | 9 values, clock-sensitive |
 | Normality | gauge pointer offsets and zone boundaries | `quantile()` / `buildZones()` over CSV-derived arrays |
 
-The amCharts histogram is **excluded from L2**: it renders to `<canvas>`, is not
-text-diffable, and is replaced in Phase 4b. Instead the data behind it —
+The amCharts histogram is **excluded from L2**: it is not text-diffable in any
+useful way, and is replaced in Phase 4b. Instead the data behind it —
 `HISTOGRAM_DATA`, 6 series × 10 bins straight from `data.csv` — is locked at L1.
 The chart library may change; the numbers it draws may not.
+
+amCharts 4 renders to inline **`<svg>`**, not `<canvas>` as previously assumed
+here. That detail matters for the gauge pointers captured on the same tab: a
+naive selector for "the gauge's SVG" would also match the histogram's SVG, so
+the gauge-pointer locator is scoped to the gauge container's inline
+`margin-left` style rather than to the SVG element itself.
+
+A gauge pointer is **absent from the DOM entirely**, not merely hidden, when
+its value falls outside the zone's `[min, max]` range —
+`LinearGauge.renderPointer` only emits the pointer element when
+`min <= value <= max`. So a captured pointer value of `null` is a legitimate,
+expected reading for a row whose value is off the gauge, not a sign the
+capture broke.
 
 ### 4.5 Known hazards recorded, not fixed
 
@@ -150,24 +178,49 @@ rendering path. Rows 09 and 10 are schema boundaries, not clinical values: they
 exist to pin that `Yup` accepts them and the arithmetic yields neither `NaN` nor
 `Infinity`.
 
+Row 02's posterior-K values are **7.0/7.4 D**, not the 6.1/6.3 D originally
+drafted: 6.1/6.3 is a *normal* posterior cornea, exactly what fork B's 0.84
+ratio reproduces from the anterior K — so the originally drafted pair captured
+byte-identical output for rows 01 and 02 and fork A went completely
+unprotected. 7.0/7.4 D is a steep, ectatic posterior cornea, the clinical case
+where measuring posterior K actually changes the result; the pair now differs
+on three of its four ICL Power outputs.
+
+Rows 07 and 08's AtA/WtW/CLR were re-centred from their original draft values,
+which matched **zero** eyes in `data.csv` and so exercised nothing in the
+Matrix table. The new centres were chosen from the actual density of
+`data.csv`: row 07 (ata 11.9, wtw 12.0, clr 100) matches 39 eyes and fills the
+12.6 mm lens columns; row 08 (ata 12.7, wtw 12.8, clr 200) matches 28 eyes and
+fills the 13.7 mm lens columns.
+
 | # | Row | Age / DOB | AtA | WtW | CLR | ACD | ACAn/t | KAntFlt@ | KAntStp@ | KPost F/S | CCT | Surgery | Sph | Cyl | Axis | Vtx |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 01 | baseline | 30 · 1996-03-15 | 11.80 | 11.90 | 250 | 3.20 | 38/39 | 43.00@180 | 44.00@90 | – | 540 | None | −6.00 | −1.00 | 180 | 12 |
-| 02 | posterior K | 30 · 1996-03-15 | 11.80 | 11.90 | 250 | 3.20 | 38/39 | 43.00@180 | 44.00@90 | 6.10@180 / 6.30@90 | 540 | None | −6.00 | −1.00 | 180 | 12 |
+| 02 | posterior K | 30 · 1996-03-15 | 11.80 | 11.90 | 250 | 3.20 | 38/39 | 43.00@180 | 44.00@90 | 7.00@180 / 7.40@90 | 540 | None | −6.00 | −1.00 | 180 | 12 |
 | 03 | prior myopia Rx | 45 · 1981-03-15 | 12.10 | 12.20 | 180 | 3.35 | 40/41 | 39.50@175 | 40.50@85 | – | 490 | Myopia | −1.50 | −0.50 | 175 | 12 |
 | 04 | prior hyperopia Rx | 45 · 1981-03-15 | 12.10 | 12.20 | 180 | 3.35 | 40/41 | 47.00@10 | 48.00@100 | – | 520 | Hyperopia | −2.00 | −0.75 | 10 | 12 |
 | 05 | axis hinge, at | 38 · 1988-03-15 | 11.95 | 12.05 | 300 | 3.25 | 37/38 | 43.50@90 | 44.50@180 | – | 545 | None | −8.00 | −2.00 | 90 | 12 |
 | 06 | axis hinge, over | 38 · 1988-03-15 | 11.95 | 12.05 | 300 | 3.25 | 37/38 | 43.50@90 | 44.50@180 | – | 545 | None | −8.00 | −2.00 | 91 | 12 |
-| 07 | small-lens bin | 22 · 2004-03-15 | 10.90 | 11.00 | 50 | 2.85 | 33/34 | 44.50@170 | 45.75@80 | – | 555 | None | −4.50 | −0.50 | 170 | 12 |
-| 08 | large-lens bin | 55 · 1971-03-15 | 12.90 | 13.00 | 700 | 3.60 | 43/44 | 41.50@5 | 42.25@95 | – | 525 | None | −12.00 | −3.00 | 5 | 12 |
+| 07 | small-lens bin | 22 · 2004-03-15 | 11.90 | 12.00 | 100 | 2.85 | 33/34 | 44.50@170 | 45.75@80 | – | 555 | None | −4.50 | −0.50 | 170 | 12 |
+| 08 | large-lens bin | 55 · 1971-03-15 | 12.70 | 12.80 | 200 | 3.60 | 43/44 | 41.50@5 | 42.25@95 | – | 525 | None | −12.00 | −3.00 | 5 | 12 |
 | 09 | schema floor | 22 · 2004-03-15 | 10.50 | 10.60 | −100 | 2.70 | 30/31 | 30.00@0 | 30.00@90 | – | 300 | None | −25.00 | −8.00 | 0 | 8 |
 | 10 | schema ceiling | 55 · 1971-03-15 | 13.50 | 13.60 | 900 | 6.00 | 45/46 | 55.00@0 | 55.00@90 | – | 700 | None | 0 | 0 | 180 | 15 |
 
-Branch coverage: `calcRadiusPosterior` fork A (02), fork B (01, 05–10), fork C
-(03, 04); `calcICLAxis` at and over the 90° hinge (05, 06); Matrix small and
-large lens bins (07, 08) and the empty-cell path (09); schema extremes (09, 10).
+Branch coverage: `calcRadiusPosterior` fork A (02), fork B (01, 03–10);
+`calcICLAxis` at and over the 90° hinge (05, 06); Matrix small and large lens
+bins (07, 08) and the empty-cell path (09); schema extremes (09, 10).
 
-Posterior K is entered as **positive** values (~6.1–6.3 D), matching what
+**Correction (final review, Phase 1):** rows 03 and 04 were originally
+documented as exercising a distinct "fork C" of `calcRadiusPosterior`. Reading
+`src/formulas.ts` shows no such fork: the `previousSurgery === none` branch
+and the `previousSurgery` Myopia/Hyperopia branch return the byte-identical
+expression, so no captured value can tell them apart. Rows 03/04 exercise
+fork B's arithmetic while carrying the `previousSurgery` flag, which currently
+changes no output - known behaviour, not a defect this fixture asserts
+against (see `src/golden/inputs.json`'s `why` fields for 03/04, corrected to
+match).
+
+Posterior K is entered as **positive** values (~7.0–7.4 D), matching what
 `calcRadiusPosterior` expects. See issue #41 — the fields are unvalidated and a
 negative entry silently corrupts the result. The fixture captures current
 intended behaviour, not an endorsement of the input handling.
@@ -207,6 +260,41 @@ freely, `expected.json` may not move by a digit.
 `hashType="noslash"` does not exist in react-router 6/7. Today's URLs are
 `…/#matrix`; after 3c they become `…/#/matrix`, silently breaking any shared or
 bookmarked link. Hence the redirect shim and its test.
+
+### 6.2 Blind spots the golden master does not cover (final review, Phase 1)
+
+Both gates - L1 and L2 - are blind to a class of regression that changes no
+computed number:
+
+- **Environment-variable renames.** `REACT_APP_VERSION` (`src/misc/Footer.tsx`),
+  `PUBLIC_URL` (`src/misc/NavBar.tsx`) and `NODE_ENV` (`src/index.tsx`,
+  `src/misc/GoogleAnalytics.ts`) are read by name, as strings, nowhere near
+  `expected.json`'s capture surface (§4.4 captures ICL Power, Matrix,
+  Regression and Normality values - never the footer text or nav links). A
+  botched rename in Phase 3a (`REACT_APP_*` → `VITE_*`, `PUBLIC_URL` →
+  `BASE_URL`, `NODE_ENV` → `import.meta.env.PROD`) ships a literal
+  `vundefined` in the footer, or a broken asset base path, with every L1 and
+  L2 assertion green.
+- **Hash-router URLs.** No test in this repo asserts on `window.location` or
+  the URL bar. Phase 3c's `hashType="noslash"` removal (§6.1) changes
+  `…/#matrix` to `…/#/matrix`; nothing in the golden master would notice,
+  because `fillRow`/`readAll` never read the URL, only form and table
+  contents.
+
+Neither is worth a golden-master test on its own - a snapshot of the footer
+string or the URL bar would be one more brittle assertion for a narrow class
+of bug. They are, instead, **required manual checklist items for the phases
+that can cause them**, so that "the golden master is green" is never read as
+"3a is safe" or "3c is safe" on its own:
+
+- **Phase 3a checklist:** after the env-var rename, load the built app and
+  visually confirm the footer version string and every asset/link built from
+  `PUBLIC_URL`/`BASE_URL` render real values, not `undefined` or a broken
+  path.
+- **Phase 3c checklist:** after the router migration, confirm a bookmarked
+  `#matrix`-style URL still resolves to the Matrix tab (the redirect shim's
+  own test, §6.1, covers the shim mechanically; this is the manual
+  confirmation that a real old-style bookmark still works end to end).
 
 ---
 
@@ -257,8 +345,18 @@ fields moved and by how much; then classify.
   justification per changed value, and explicit sign-off before `expected.json`
   is touched.
 
-CI enforces the branch-name condition mechanically, so the fixture cannot drift
-by accident.
+**Correction (final review, Phase 1):** the sentence above overstated what
+exists today. There is no CI job that enforces the branch-name condition -
+`.github/workflows/main.yml` contains nothing that reads `expected.json` or
+checks for an `oracle/` branch prefix. Enforcing it mechanically is Phase 2a's
+responsibility (issue #45). Until that lands, the fixture is protected by
+convention (this document, the README embedded in `expected.json`, and PR
+review) plus the in-suite digest assertions in `src/golden/replay.test.ts` and
+`e2e/replay.spec.ts` - and those assertions check that the fixture *inputs*
+(`src/golden/inputs.json`'s rows) match what `expected.json` was captured
+from, not that `expected.json` itself is unmodified. A hand-edited value in
+`expected.json` that still matches the recorded digest would pass every gate
+in this repo today.
 
 ### 7.4 Definition of done, per phase
 
@@ -313,6 +411,42 @@ and was deliberately left in place pending a separate decision.
 
 ## 10. Open items
 
+- **Phase 1 result, recorded after implementation.** All 10 fixture rows were
+  captured from the oracle; the frozen oracle worktree was cross-checked
+  byte-for-byte against the live URL (spec §3.1/§4.1) and found identical.
+  L1 (`npm test -- --testPathPattern=src/golden`) is 233 scalar comparisons —
+  23 per row (5 ICL Power fields, 9 regression-table values, 9 matrix eye
+  counts) across 10 rows, plus 3 global assertions (CSV row count, pinned
+  clock, inputs digest) — plus a snapshot locking all 180 numbers behind
+  `HISTOGRAM_DATA` (6 series × 10 bins × 3 fields: count/from/to). L2
+  (`npm --prefix e2e run replay`) replays the full DOM for all 10 rows against
+  a real `npm run build` of the branch. Both are green against unmodified
+  HEAD. `git diff 2436da4 HEAD -- src/ ':!src/golden'` is empty — the
+  application source is byte-identical to the oracle's commit — which is what
+  makes the L2 pass mean something: it is a real build of the oracle's own
+  code, not a build of code that happens to compute the same numbers by
+  coincidence.
+  - The phase branches are named with a hyphen (`modernize-p0-foundations`,
+    `modernize-p1-golden-master`), not the slash form `modernize/p0-...`
+    written earlier in this document: git cannot create a ref under
+    `refs/heads/modernize/x` while a branch literally named `modernize`
+    already exists (a ref cannot be both a file and a directory in git's
+    ref namespace).
+  - `e2e/` is an isolated Playwright workspace with its own `package.json`
+    and lockfile, pinned to Node 20 (`e2e/.nvmrc`), deliberately separate
+    from the app: the app's `package-lock.json` must stay the frozen 2021
+    tree, and the app itself only builds on Node 16 (see the Node-ladder
+    finding below), so Playwright's own modern dependency needs cannot share
+    that tree.
+  - Two issues were filed during this work: **#55**, a `CorneaProfile`
+    snapshot test that renders against renamed fields and asserts nothing —
+    it will fail Phase 2a's own `tsc --noEmit` gate on day one; and **#56**,
+    `LinearGauge.dispose()` mutating a live `NodeList` while iterating it.
+  - **The manual live-site verification (spec's brief Step 5) is DONE.** A
+    human opened <https://ruipinge.github.io/icl-calc/>, entered rows
+    `01-baseline` and `08-large-lens-bin` by hand, and confirmed the four ICL
+    Power values match `expected.json` for both. (Final review, Phase 1:
+    updated from "outstanding" now that this has actually been performed.)
 - **The `2026-07-08/index.html` page on `gh-pages`.** Served publicly at
   `https://ruipinge.github.io/icl-calc/2026-07-08/`. `peaceiris/actions-gh-pages`
   replaces branch contents on deploy unless `keep_files: true` is set, so the
@@ -389,5 +523,28 @@ and was deliberately left in place pending a separate decision.
     future phase regenerates the lockfile with a modern `npm install` (out
     of scope here — the Step 2 gate requires the lockfile stay byte-for-byte
     unchanged in this task).
+- **CI was dead, and is now revived (Phase 2a, part 1).** Phase 0 changed
+  `.nvmrc` to `v16` but left `.github/workflows/main.yml` alone. That
+  workflow had not executed a single step in a long time: every run failed
+  within seconds at "Set up job", because GitHub hard-fails the deprecated
+  `actions/cache@v2`. Lint and tests never ran, on any branch. This confirms
+  `docs/modernization-findings.md`'s prediction that the workflow does not
+  run green today.
+  PR #59 revived it as the first slice of Phase 2a (#45): supported actions,
+  `setup-node@v4`'s built-in npm cache, dead Codecov and CodeClimate steps
+  removed in favour of a coverage summary on the run page, and a
+  `pull_request` trigger. The `test` job runs on **Node 20** — lint and tests
+  are version-insensitive, verified identical on 16/18/20/22 in Phase 0 —
+  while `deploy` still pins **Node 16**, because it builds and the build
+  fails on 18+ with `ERR_PACKAGE_PATH_NOT_EXPORTED`. `deploy` remains
+  gated on `master`.
+  It also required `scripts/link-bins.js`, run after every `npm ci`, to work
+  around the lockfile defect above; that script is deleted in Phase 3a (#47)
+  once the lockfile is regenerated.
+  Two things are still deliberately absent and belong to the rest of #45:
+  the `tsc --noEmit` gate (it would fail immediately on #55) and the
+  `expected.json` branch-name guard described in §7.3.
+  Consequence worth recording: the L1 suite was developed and validated
+  locally on Node 16, and now runs in CI on Node 20.
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.
