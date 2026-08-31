@@ -1,5 +1,11 @@
-import { DATA_POINTS, HISTOGRAM_DATA } from '../db';
-import { GoldenInputs, PINNED_CLOCK_ISO, rowToIclInputs } from './types';
+import { DATA_POINTS, HISTOGRAM_DATA, VALUES } from '../db';
+import {
+  GoldenInputs,
+  PINNED_CLOCK_ISO,
+  rowToIclInputs,
+  rowsSha256
+} from './types';
+import { LENS_SIZES, VaultRange } from '../matrix/data';
 import {
   calcICLAxis,
   calcICLCylindre,
@@ -12,14 +18,17 @@ import {
   probability,
   vaultPrediction
 } from '../regression/formulas';
+import {
+  getVaultAverages,
+  getVaultMaxs,
+  getVaultMins
+} from '../matrix/VaultStatRows';
 
-import { LENS_SIZES } from '../matrix/data';
-import { createHash } from 'crypto';
+import { buildZones } from '../normality/Gauge';
 import expectedJson from './expected.json';
 import { getNumEyes } from '../matrix';
+import { getVaultDistribution } from '../matrix/VaultDistributionRows';
 import inputsJson from './inputs.json';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
 
 const inputs = inputsJson as GoldenInputs;
 const expected = expectedJson as any;
@@ -46,27 +55,27 @@ describe('golden master L1', () => {
   });
 
   // Belongs here, not only in Task 7's browser replay: this needs no
-  // browser, no server and no build, and fails in milliseconds. If
-  // inputs.json is edited without re-running the oracle capture, every row
+  // browser, no server and no build, and fails in milliseconds. If a row's
+  // input values are edited without re-running the oracle capture, every row
   // assertion below would compare fresh inputs against a stale oracle and
   // fail in a way that looks like an application regression. This assertion
   // catches that first, with a message that says plainly what happened - not
-  // just that two hashes differ.
+  // just that two hashes differ. The digest is over `rows` only, with each
+  // row's `why` excluded (see rowsSha256): editing prose must not force a
+  // re-capture, only editing a value that can change a result should.
   it('was captured from the current src/golden/inputs.json', () => {
-    const actualDigest = createHash('sha256')
-      .update(readFileSync(resolve(__dirname, 'inputs.json')))
-      .digest('hex');
-    const recordedDigest = expected.capturedFrom.inputsSha256;
+    const actualDigest = rowsSha256(inputs.rows);
+    const recordedDigest = expected.capturedFrom.rowsSha256;
     const diagnosis =
       actualDigest === recordedDigest
-        ? 'inputs.json matches the sha256 recorded at capture time'
-        : 'src/golden/inputs.json has changed since expected.json was ' +
+        ? 'inputs.json rows match the sha256 recorded at capture time'
+        : 'src/golden/inputs.json rows have changed since expected.json was ' +
           'captured (sha256 mismatch). This is stale-fixture drift, not an ' +
           'application defect: re-run the oracle capture (e2e/capture.spec.ts) ' +
           'to regenerate expected.json against the current inputs.json before ' +
           'trusting any other result in this file.';
     expect(diagnosis).toBe(
-      'inputs.json matches the sha256 recorded at capture time'
+      'inputs.json rows match the sha256 recorded at capture time'
     );
   });
 
@@ -129,4 +138,84 @@ describe('golden master L1', () => {
       expect(counts.map(String)).toEqual(rendered);
     }
   );
+
+  // VAULT_SIZE_RANGES (src/matrix/VaultDistributionRows.tsx) is not exported,
+  // so its five boundaries are duplicated here against the exported
+  // VaultRange type. Keep in sync by hand if that file's own ranges ever
+  // change - getVaultAverages/getVaultMins/getVaultMaxs need no such
+  // duplication (their MatrixFilter comes straight from each fixture row),
+  // but getVaultDistribution takes a range per row and there is no exported
+  // source for those five ranges to import instead.
+  const VAULT_SIZE_RANGES: VaultRange[] = [
+    { max: 250 },
+    { min: 250, max: 500 },
+    { min: 500, max: 750 },
+    { min: 750, max: 1000 },
+    { min: 1000 }
+  ];
+  const VAULT_DISTRIBUTION_LABELS = [
+    '% Vault < 250 (μm)',
+    '% 250 < Vault < 500 (μm)',
+    '% 500 < Vault < 750 (μm)',
+    '% 750 < Vault < 1000 (μm)',
+    '% 1000 < Vault (μm)'
+  ];
+
+  it.each(inputs.rows.map((r) => [r.id, r] as const))(
+    'row %s reproduces the oracle matrix vault rows',
+    (id, row) => {
+      const filter = { ata: row.biometry.ata, clr: row.biometry.clr };
+      const rendered = (label: string) =>
+        expected.rows[id].matrix.rows
+          .find((r: string[]) => r[0] === label)!
+          .slice(1);
+
+      expect(getVaultAverages(filter).map(String)).toEqual(
+        rendered('Average Vault (μm)')
+      );
+      expect(getVaultMins(filter).map(String)).toEqual(
+        rendered('Minimum Vault (μm)')
+      );
+      expect(getVaultMaxs(filter).map(String)).toEqual(
+        rendered('Maximum Vault (μm)')
+      );
+
+      VAULT_SIZE_RANGES.forEach((range, index) => {
+        const computed = getVaultDistribution({ filter, range }).map(String);
+        expect(computed).toEqual(rendered(VAULT_DISTRIBUTION_LABELS[index]));
+      });
+    }
+  );
+
+  // Nothing else in this suite locks the Normality tab's clinical content -
+  // the coloured band a measurement falls into. L2 captures only the
+  // pointer's rendered `style` string, and valuePercent = (value - min) /
+  // (max - min) * 100 in src/normality/linear-gauge/index.ts means every
+  // intermediate quantile cancels out of that number; only the dataset's
+  // overall min/max would ever show up there. This snapshot is what actually
+  // pins the 2.5/25/75/97.5 percentile boundaries computed by buildZones over
+  // the real 542-eye dataset, for all six gauge variables.
+  //
+  // Zone colours come back '' under jsdom - Gauge.tsx reads Bootstrap CSS
+  // custom properties via getComputedStyle(document.body) at module scope,
+  // which jsdom never populates - so only the min/max boundaries are the
+  // point here; colours are not asserted.
+  //
+  // quantile() (used by buildZones) sorts its argument array IN PLACE, which
+  // mutates the shared VALUES.* arrays from src/db.ts. That is safe only
+  // because HISTOGRAM_DATA above is computed once, at db.ts module load,
+  // before this test (or any test) runs - see "Known hazards recorded, not
+  // fixed" in the design spec. The histogram snapshot test above was run
+  // alongside this one and still passes unchanged, proving that ordering
+  // holds.
+  it('locks the Normality percentile bands over the real dataset', () => {
+    expect({
+      ata: buildZones({ values: VALUES.ATA }),
+      clr: buildZones({ values: VALUES.CLR }),
+      acd: buildZones({ values: VALUES.ACD }),
+      aca: buildZones({ values: VALUES.ACA }),
+      wtw: buildZones({ values: VALUES.WTW }),
+      age: buildZones({ values: VALUES.AGE })
+    }).toMatchSnapshot();
+  });
 });

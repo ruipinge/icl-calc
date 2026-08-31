@@ -13,13 +13,13 @@
       "corneaProfile": { "kaf": 43, "axisaf": 180, "kas": 44, "axisas": 90, "kpf": 7.0, "axispf": 180, "kps": 7.4, "axisps": 90, "cct": 540, "previousSurgery": "None" },
       "spectacleRefraction": { "sphere": -6, "cylindre": -1, "axis": 180, "vertex": 12 } },
 
-    { "id": "03-prior-myopia-rx", "why": "Prior myopic refractive surgery, no posterior K -> fork C. Thinner cornea.", "expectAge": 45,
+    { "id": "03-prior-myopia-rx", "why": "Prior myopic refractive surgery, no posterior K. calcRadiusPosterior's previousSurgery-Myopia branch returns the same expression as fork B (no posterior K, no prior surgery) - there is no calculation that a fork C label would distinguish. This row exercises fork B's arithmetic while carrying the previousSurgery flag, which currently changes no output. Known behaviour (see src/formulas.ts), not a defect this fixture is asserting against. Thinner cornea.", "expectAge": 45,
       "patient": { "name": "GM-03", "dateOfBirth": "1981-03-15", "eye": "left" },
       "biometry": { "ata": 12.1, "wtw": 12.2, "clr": 180, "acd": 3.35, "acan": 40, "acat": 41 },
       "corneaProfile": { "kaf": 39.5, "axisaf": 175, "kas": 40.5, "axisas": 85, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 490, "previousSurgery": "Myopia" },
       "spectacleRefraction": { "sphere": -1.5, "cylindre": -0.5, "axis": 175, "vertex": 12 } },
 
-    { "id": "04-prior-hyperopia-rx", "why": "Prior hyperopic refractive surgery -> fork C, steep cornea. calcICLAxis <=90 path.", "expectAge": 45,
+    { "id": "04-prior-hyperopia-rx", "why": "Prior hyperopic refractive surgery, no posterior K. calcRadiusPosterior's previousSurgery-Hyperopia branch returns the same expression as fork B, same as row 03 - no calculation distinguishes a 'fork C'. Exercises fork B's arithmetic while carrying the previousSurgery flag, which currently changes no output. Known behaviour, not a defect. Steep cornea. calcICLAxis <=90 path.", "expectAge": 45,
       "patient": { "name": "GM-04", "dateOfBirth": "1981-03-15", "eye": "right" },
       "biometry": { "ata": 12.1, "wtw": 12.2, "clr": 180, "acd": 3.35, "acan": 40, "acat": 41 },
       "corneaProfile": { "kaf": 47, "axisaf": 10, "kas": 48, "axisas": 100, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 520, "previousSurgery": "Hyperopia" },
@@ -55,7 +55,7 @@
       "corneaProfile": { "kaf": 30, "axisaf": 0, "kas": 30, "axisas": 90, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 300, "previousSurgery": "None" },
       "spectacleRefraction": { "sphere": -25, "cylindre": -8, "axis": 0, "vertex": 8 } },
 
-    { "id": "10-schema-ceiling", "why": "Yup schema maximums, zero refraction. Not a clinical case.", "expectAge": 55,
+    { "id": "10-schema-ceiling", "why": "Yup schema maximums for ACD/CCT/KA/sphere/cylinder/vertex, zero refraction. clr/ata/wtw are deliberately NOT at their schema ceilings (900 vs 1000; 13.5/13.6 vs 20) - the true ceiling values are clinically absurd (a 20mm AtA/WtW, a 1mm CLR) and were judged not worth reaching for at this row. Not a clinical case.", "expectAge": 55,
       "patient": { "name": "GM-10", "dateOfBirth": "1971-03-15", "eye": "right" },
       "biometry": { "ata": 13.5, "wtw": 13.6, "clr": 900, "acd": 6, "acan": 45, "acat": 46 },
       "corneaProfile": { "kaf": 55, "axisaf": 0, "kas": 55, "axisas": 90, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 700, "previousSurgery": "None" },
