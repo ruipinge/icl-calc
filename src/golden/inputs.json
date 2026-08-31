@@ -1,0 +1,64 @@
+{
+  "clock": "2026-08-30T12:00:00Z",
+  "rows": [
+    { "id": "01-baseline", "why": "Typical myope. calcRadiusPosterior fork B (no posterior K, no prior surgery). calcICLAxis >90 path.", "expectAge": 30,
+      "patient": { "name": "GM-01", "dateOfBirth": "1996-03-15", "eye": "right" },
+      "biometry": { "ata": 11.8, "wtw": 11.9, "clr": 250, "acd": 3.2, "acan": 38, "acat": 39 },
+      "corneaProfile": { "kaf": 43, "axisaf": 180, "kas": 44, "axisas": 90, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 540, "previousSurgery": "None" },
+      "spectacleRefraction": { "sphere": -6, "cylindre": -1, "axis": 180, "vertex": 12 } },
+
+    { "id": "02-posterior-k", "why": "Identical to 01 except posterior K supplied -> calcRadiusPosterior fork A. Differential pair.", "expectAge": 30,
+      "patient": { "name": "GM-02", "dateOfBirth": "1996-03-15", "eye": "right" },
+      "biometry": { "ata": 11.8, "wtw": 11.9, "clr": 250, "acd": 3.2, "acan": 38, "acat": 39 },
+      "corneaProfile": { "kaf": 43, "axisaf": 180, "kas": 44, "axisas": 90, "kpf": 6.1, "axispf": 180, "kps": 6.3, "axisps": 90, "cct": 540, "previousSurgery": "None" },
+      "spectacleRefraction": { "sphere": -6, "cylindre": -1, "axis": 180, "vertex": 12 } },
+
+    { "id": "03-prior-myopia-rx", "why": "Prior myopic refractive surgery, no posterior K -> fork C. Thinner cornea.", "expectAge": 45,
+      "patient": { "name": "GM-03", "dateOfBirth": "1981-03-15", "eye": "left" },
+      "biometry": { "ata": 12.1, "wtw": 12.2, "clr": 180, "acd": 3.35, "acan": 40, "acat": 41 },
+      "corneaProfile": { "kaf": 39.5, "axisaf": 175, "kas": 40.5, "axisas": 85, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 490, "previousSurgery": "Myopia" },
+      "spectacleRefraction": { "sphere": -1.5, "cylindre": -0.5, "axis": 175, "vertex": 12 } },
+
+    { "id": "04-prior-hyperopia-rx", "why": "Prior hyperopic refractive surgery -> fork C, steep cornea. calcICLAxis <=90 path.", "expectAge": 45,
+      "patient": { "name": "GM-04", "dateOfBirth": "1981-03-15", "eye": "right" },
+      "biometry": { "ata": 12.1, "wtw": 12.2, "clr": 180, "acd": 3.35, "acan": 40, "acat": 41 },
+      "corneaProfile": { "kaf": 47, "axisaf": 10, "kas": 48, "axisas": 100, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 520, "previousSurgery": "Hyperopia" },
+      "spectacleRefraction": { "sphere": -2, "cylindre": -0.75, "axis": 10, "vertex": 12 } },
+
+    { "id": "05-axis-hinge-at", "why": "Refraction axis exactly 90 - the inclusive side of the calcICLAxis hinge.", "expectAge": 38,
+      "patient": { "name": "GM-05", "dateOfBirth": "1988-03-15", "eye": "right" },
+      "biometry": { "ata": 11.95, "wtw": 12.05, "clr": 300, "acd": 3.25, "acan": 37, "acat": 38 },
+      "corneaProfile": { "kaf": 43.5, "axisaf": 90, "kas": 44.5, "axisas": 180, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 545, "previousSurgery": "None" },
+      "spectacleRefraction": { "sphere": -8, "cylindre": -2, "axis": 90, "vertex": 12 } },
+
+    { "id": "06-axis-hinge-over", "why": "Identical to 05 except axis 91 - the other side of the hinge. Differential pair.", "expectAge": 38,
+      "patient": { "name": "GM-06", "dateOfBirth": "1988-03-15", "eye": "right" },
+      "biometry": { "ata": 11.95, "wtw": 12.05, "clr": 300, "acd": 3.25, "acan": 37, "acat": 38 },
+      "corneaProfile": { "kaf": 43.5, "axisaf": 90, "kas": 44.5, "axisas": 180, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 545, "previousSurgery": "None" },
+      "spectacleRefraction": { "sphere": -8, "cylindre": -2, "axis": 91, "vertex": 12 } },
+
+    { "id": "07-small-lens-bin", "why": "Low AtA and CLR - drives the Matrix toward the 12.6 mm lens columns.", "expectAge": 22,
+      "patient": { "name": "GM-07", "dateOfBirth": "2004-03-15", "eye": "left" },
+      "biometry": { "ata": 10.9, "wtw": 11, "clr": 50, "acd": 2.85, "acan": 33, "acat": 34 },
+      "corneaProfile": { "kaf": 44.5, "axisaf": 170, "kas": 45.75, "axisas": 80, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 555, "previousSurgery": "None" },
+      "spectacleRefraction": { "sphere": -4.5, "cylindre": -0.5, "axis": 170, "vertex": 12 } },
+
+    { "id": "08-large-lens-bin", "why": "High AtA and CLR, high myopia - drives the Matrix toward the 13.7 mm lens and High myopia columns.", "expectAge": 55,
+      "patient": { "name": "GM-08", "dateOfBirth": "1971-03-15", "eye": "right" },
+      "biometry": { "ata": 12.9, "wtw": 13, "clr": 700, "acd": 3.6, "acan": 43, "acat": 44 },
+      "corneaProfile": { "kaf": 41.5, "axisaf": 5, "kas": 42.25, "axisas": 95, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 525, "previousSurgery": "None" },
+      "spectacleRefraction": { "sphere": -12, "cylindre": -3, "axis": 5, "vertex": 12 } },
+
+    { "id": "09-schema-floor", "why": "Yup schema minimums. Negative CLR is expected to match zero eyes, locking the Matrix empty-cell path. Not a clinical case.", "expectAge": 22,
+      "patient": { "name": "GM-09", "dateOfBirth": "2004-03-15", "eye": "left" },
+      "biometry": { "ata": 10.5, "wtw": 10.6, "clr": -100, "acd": 2.7, "acan": 30, "acat": 31 },
+      "corneaProfile": { "kaf": 30, "axisaf": 0, "kas": 30, "axisas": 90, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 300, "previousSurgery": "None" },
+      "spectacleRefraction": { "sphere": -25, "cylindre": -8, "axis": 0, "vertex": 8 } },
+
+    { "id": "10-schema-ceiling", "why": "Yup schema maximums, zero refraction. Not a clinical case.", "expectAge": 55,
+      "patient": { "name": "GM-10", "dateOfBirth": "1971-03-15", "eye": "right" },
+      "biometry": { "ata": 13.5, "wtw": 13.6, "clr": 900, "acd": 6, "acan": 45, "acat": 46 },
+      "corneaProfile": { "kaf": 55, "axisaf": 0, "kas": 55, "axisas": 90, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 700, "previousSurgery": "None" },
+      "spectacleRefraction": { "sphere": 0, "cylindre": 0, "axis": 180, "vertex": 15 } }
+  ]
+}
