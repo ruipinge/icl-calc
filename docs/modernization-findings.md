@@ -20,7 +20,7 @@ around it: `treeye/docs/icl-calc-migration.md` in the Treeye repo.
 | Live | <https://ruipinge.github.io/icl-calc/> — returns 200, still works in current browsers |
 | Published as | <https://treeye.science/tools/icl-calc> — 302 to the above, already live |
 | Repo | `ruipinge/icl-calc`, public, MIT, default branch `master` |
-| Version | 1.7.0; last real feature work **February 2022** |
+| Version | 1.7.0; last real feature work **2 December 2021** (`6f92f8e`) |
 | Build | `react-scripts` 4.0.2 (Create React App) |
 | Runtime | React 17 · TypeScript 4.1 · `react-router-dom` 5 |
 | UI | Bootstrap 4.6 · Formik 2 · Yup · Sass |
