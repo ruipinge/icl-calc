@@ -90,6 +90,15 @@ git commit -m "test(golden): assert the fixture digest is sensitive to inputs an
 
 **The highest-risk task in the phase.** It replaces the mechanism by which `data.csv` reaches the calculator.
 
+> ⚠️ **The unit suite will not run between this task and Task 3, and that is expected.**
+>
+> This task switches source to `import.meta.env`, which is a **syntax error** under Create React App's CommonJS Babel transform — so Jest cannot even parse the files, and that includes L1 (`src/golden/replay.test.ts`). The reverse is equally true: `raw.macro` is a Babel macro that Vitest cannot process. The source cannot satisfy both toolchains simultaneously, so the two tasks are genuinely coupled and there is no ordering that avoids the gap.
+>
+> Consequences, to be respected rather than worked around:
+> - **This task's gate is `npm run build` plus the L2 replay**, not `npm test`. That is still the meaningful gate for a build-tool change — L2 exercises the real built artefact through a browser, which is exactly the layer at risk here.
+> - **Do not "fix" the failing Jest run.** Do not add Babel plugins, do not shim `import.meta`, do not skip tests. Task 3 restores the suite by moving it to Vitest.
+> - **Tasks 2 and 3 must land together** before this branch is reviewed or opened as a PR. Neither is a sensible stopping point alone.
+
 **Files:**
 - Create: `vite.config.ts`, `index.html` (repo root)
 - Modify: `src/db.ts`, `src/misc/Footer.tsx`, `src/misc/NavBar.tsx`, `src/index.tsx`, `src/misc/GoogleAnalytics.ts`, `src/react-app-env.d.ts`, `package.json`
