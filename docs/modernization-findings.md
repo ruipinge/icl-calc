@@ -37,7 +37,7 @@ around it: `treeye/docs/icl-calc-migration.md` in the Treeye repo.
 | UI | Bootstrap 4.6 · Formik 2 · Yup · Sass |
 | Charts | amCharts 4 |
 | Services | Sentry 6 · `react-ga` 3 |
-| Node | ~~pinned to v14 in `.nvmrc` and both CI jobs~~ — as of Phase 0, `.nvmrc` pins **v16** (the newest version the build still passes under; see finding 4 below, kept as the historical record of the problem this fixed). The `deploy` job and the `e2e-replay` job's build step (Phase 2a) use Node 16 accordingly; the `test`, `golden-master-guard` jobs and `e2e-replay`'s Playwright step run Node 20, which does not need to build |
+| Node | ~~pinned to v14 in `.nvmrc` and both CI jobs~~ — as of Phase 0, `.nvmrc` pins **v16** (the newest version the build still passes under; see finding 4 below, kept as the historical record of the problem this fixed). The `deploy` job and the `e2e-replay` job's build step (Phase 2a) use Node 16 accordingly; the `test` job and `e2e-replay`'s Playwright step run Node 20, which does not need to build. `golden-master-guard` (Phase 2a) runs neither — it has no `setup-node` step at all, only `actions/checkout` plus `git`/bash |
 | Release | `semantic-release` on `master`, then `peaceiris/actions-gh-pages` publishing `./build` to the `gh-pages` branch |
 
 **Computation is entirely client-side**, against `src/data.csv` inlined at build

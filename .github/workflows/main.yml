@@ -90,6 +90,9 @@ jobs:
             exit 0
           fi
 
+          # Case-sensitive on purpose: 'Oracle/x' or 'ORACLE/x' falls through to
+          # the failure branch below, not this one. That's the fail-safe
+          # direction - don't "fix" it into a case-insensitive match.
           case "$HEAD_REF" in
             oracle/*)
               echo "src/golden/expected.json changed, and branch '$HEAD_REF' is an approved oracle/ branch. OK."
@@ -176,9 +179,25 @@ jobs:
         working-directory: e2e
 
   deploy:
-    if: github.ref == 'refs/heads/master'
+    # golden-master-guard is pull_request-only (see its own `if:` above), so
+    # on this job's actual trigger - a push to master - it never runs and
+    # its `needs` result is 'skipped', not 'success'. GitHub's default
+    # "run only if every needed job succeeded" rule treats a skipped
+    # dependency the same as a failed one, which would make this job skip
+    # forever if golden-master-guard were added to `needs` unguarded - a
+    # silent, permanent outage of the release path. `always()` overrides
+    # that default so the explicit checks below run instead: block on a
+    # real failure of any gate (test, e2e-replay, or - on the rare path
+    # where golden-master-guard did run - a failed guard), but do not
+    # block on golden-master-guard's expected 'skipped' result here.
+    if: |
+      always() &&
+      github.ref == 'refs/heads/master' &&
+      needs.test.result == 'success' &&
+      needs.e2e-replay.result == 'success' &&
+      (needs.golden-master-guard.result == 'success' || needs.golden-master-guard.result == 'skipped')
     runs-on: ubuntu-latest
-    needs: ['test']
+    needs: ['test', 'e2e-replay', 'golden-master-guard']
 
     steps:
       - name: Checkout
