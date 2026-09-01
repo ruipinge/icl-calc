@@ -1,6 +1,7 @@
 import { CorneaProfile } from './CorneaProfile';
 import { Formik } from 'formik';
 import { ICLSchema } from '../ICLSchema';
+import { PreviousSurgery } from '../types';
 import TestRenderer from 'react-test-renderer';
 
 it('renders without crashing', () => {
@@ -8,11 +9,16 @@ it('renders without crashing', () => {
     <Formik
       initialValues={{
         corneaProfile: {
-          kf: 1,
-          ks: 2,
-          axisf: 3,
-          axiss: 4,
-          cct: 5
+          kaf: 42.0,
+          kas: 43.5,
+          axisaf: 90,
+          axisas: 180,
+          kpf: 6.2,
+          kps: 6.5,
+          axispf: 90,
+          axisps: 180,
+          cct: 540,
+          previousSurgery: PreviousSurgery.none
         }
       }}
       validationSchema={ICLSchema}
