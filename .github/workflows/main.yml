@@ -185,13 +185,25 @@ jobs:
     # "run only if every needed job succeeded" rule treats a skipped
     # dependency the same as a failed one, which would make this job skip
     # forever if golden-master-guard were added to `needs` unguarded - a
-    # silent, permanent outage of the release path. `always()` overrides
-    # that default so the explicit checks below run instead: block on a
-    # real failure of any gate (test, e2e-replay, or - on the rare path
-    # where golden-master-guard did run - a failed guard), but do not
-    # block on golden-master-guard's expected 'skipped' result here.
+    # silent, permanent outage of the release path.
+    #
+    # !cancelled() (not always()) is what fixes that without introducing a
+    # worse problem. A plain `if:` gets an implicit success() check, which
+    # also gives it implicit cancellation protection: cancel the run and
+    # success() goes false, so the job auto-skips. always() discards that
+    # protection along with the default-skip behaviour, which would let
+    # this job - semantic-release plus the gh-pages publish, the actual
+    # release of a clinical tool - run to completion even after an
+    # operator hits Cancel workflow. !cancelled() only overrides the
+    # "skip if any dependency didn't succeed" default; it still evaluates
+    # false the moment the run is cancelled, so Cancel workflow remains an
+    # effective stop button here. The explicit needs.*.result checks below
+    # do the rest: block on a real failure of any gate (test, e2e-replay,
+    # or - on the rare path where golden-master-guard did run - a failed
+    # guard), but do not block on golden-master-guard's expected 'skipped'
+    # result on this trigger.
     if: |
-      always() &&
+      !cancelled() &&
       github.ref == 'refs/heads/master' &&
       needs.test.result == 'success' &&
       needs.e2e-replay.result == 'success' &&
