@@ -61,6 +61,16 @@ describe('rowsSha256', () => {
     expect(rowsSha256(rows)).not.toBe(baselineDigest);
   });
 
+  // patient.dateOfBirth is not cosmetic: it drives PatientInfo.age(), which
+  // feeds the regression coefficients and the age gauge. A dateOfBirth edit
+  // that leaves expectAge untouched would still change rendered output, so
+  // the digest must catch it even though expectAge alone did not move.
+  it('changes when patient.dateOfBirth changes', () => {
+    const rows = cloneRows();
+    rows[0].patient.dateOfBirth = '1970-03-15';
+    expect(rowsSha256(rows)).not.toBe(baselineDigest);
+  });
+
   // The digest is deliberately blind to `why`: it is prose for humans, never
   // read by rowToIclInputs, so fixing a typo in a comment must not force a
   // re-capture of the oracle. This is the guard the row 09 `why` edit in this
