@@ -65,7 +65,19 @@ This is now free — the narrowed digest excludes `why`. **Confirm that:** after
 
 The credential cannot be rotated — the owner no longer has CodeClimate access. Record in the spec that this is **accepted risk, deliberately**, with the reasoning: the token's only capability is posting coverage for this repo to a service no longer in use; it grants no source access, no repository write and no other secret; the integration is deleted; and the only way to purge it is rewriting history on a public repo, which would invalidate every commit SHA — including `2436da4` and `789ac2d`, on which the oracle's entire provenance chain depends. Note it as closed, not outstanding.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Record how the version bump will work, and what it will be**
+
+The spec covers how releases fire but never says what version this migration ships as. Analysis, to record in the spec:
+
+`semantic-release` runs in the `deploy` job, master-only, now gated behind `test`, `e2e-replay` and `!cancelled()`. It reads conventional commits since the last release tag, writes the version into `package.json`, commits it back with `[skip ci]`, and cuts a GitHub release. `private: true` means nothing publishes to npm. So the bump is automatic in mechanism but human-gated in practice — it fires only on a merge to `master`, which by design happens once, at Phase 5.
+
+As things stand the migration would ship as **1.8.0**: the only release-triggering commit is `feat(ci): add the typecheck, fixture-guard and L2 replay gates`, and nothing declares a breaking change. Note that commit was mistyped — the default analyser bumps minor for any `feat` regardless of scope, so CI-only work queued a minor bump. Not worth rewriting merged history; record that tooling commits should use `ci:` or `chore(ci):` from here so the version tracks user-facing change.
+
+**Record the intent to ship 2.0.0**, declared at Phase 3c (#49) where the genuine break lives: hash URLs move from `#matrix` to `#/matrix`, breaking every bookmarked deep link even with the redirect shim in place. Note that the declaring commit needs `BREAKING CHANGE:` in its footer or `!` after the type, that this is the single mechanism that produces a major, and that for a clinical tool a major version is a signal to re-verify — runtime, build tool, chart library and telemetry all change across this programme.
+
+Mark it as **provisional and reversible until Phase 5**, pending the owner's confirmation.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/golden/types.test.ts src/golden/inputs.json docs/superpowers/specs/2026-08-30-icl-calc-modernization-design.md
