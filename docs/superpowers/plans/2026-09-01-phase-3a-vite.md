@@ -193,9 +193,11 @@ Adjust to the actual asset layout — the point is to confirm the CSV content is
 - [ ] **Step 8: THE GATE — replay the golden master against the Vite build**
 
 ```bash
-npm --prefix e2e run setup -- --subject-only
-npm --prefix e2e run replay
+SUBJECT_ONLY=1 npm --prefix e2e run setup
+SUBJECT_ONLY=1 npm --prefix e2e run replay
 ```
+
+`SUBJECT_ONLY=1` is needed on **both** commands, not just `setup` — without it on the replay, Playwright tries to start the oracle server too and the run hangs until it times out. CI sets it as a step-level `env:` for the same reason (`.github/workflows/main.yml`).
 
 Expected: **2 passed**, `the build under test reproduces the oracle exactly`.
 
@@ -347,7 +349,7 @@ Remove **both** "Repair node_modules/.bin symlinks" steps from `.github/workflow
 ```bash
 npm test
 npm run build
-npm --prefix e2e run setup -- --subject-only && npm --prefix e2e run replay
+SUBJECT_ONLY=1 npm --prefix e2e run setup && SUBJECT_ONLY=1 npm --prefix e2e run replay
 ```
 
 Both must be green, with `expected.json` untouched.
