@@ -46,7 +46,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "dev": "vite",
+    "build": "vite build",
     "test": "REACT_APP_VERSION=0.0.t react-scripts test --coverage",
     "eject": "react-scripts eject",
     "clean": "rm -rf ./node_modules ./coverage ./npm-debug.log ./build",
@@ -137,5 +138,9 @@
       "@semantic-release/npm",
       "@semantic-release/git"
     ]
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^4.5.14"
   }
 }
