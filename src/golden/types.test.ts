@@ -50,7 +50,8 @@ describe('rowsSha256', () => {
 
   it('changes when a spectacleRefraction value changes', () => {
     const rows = cloneRows();
-    rows[0].spectacleRefraction.sphere = rows[0].spectacleRefraction.sphere + 0.1;
+    rows[0].spectacleRefraction.sphere =
+      rows[0].spectacleRefraction.sphere + 0.1;
     expect(rowsSha256(rows)).not.toBe(baselineDigest);
   });
 

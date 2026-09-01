@@ -7,7 +7,9 @@ export const Footer = () => (
       <ul className="bd-footer-links pl-0 mb-3">
         <li className="d-inline-block">
           <a
-            href={`https://github.com/ruipinge/icl-calc/releases/tag/v${import.meta.env.VITE_APP_VERSION}`}
+            href={`https://github.com/ruipinge/icl-calc/releases/tag/v${
+              import.meta.env.VITE_APP_VERSION
+            }`}
           >
             {`v${import.meta.env.VITE_APP_VERSION}`}
           </a>
