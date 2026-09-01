@@ -296,6 +296,65 @@ that can cause them**, so that "the golden master is green" is never read as
   own test, §6.1, covers the shim mechanically; this is the manual
   confirmation that a real old-style bookmark still works end to end).
 
+### 6.3 Versioning (recorded Phase 3a, Task 1; version target confirmed by owner)
+
+`semantic-release` runs in the `deploy` job of `.github/workflows/main.yml`,
+master-only, gated behind `test`, `e2e-replay` and `!cancelled()` (§6, §7.1).
+On a qualifying push it reads the conventional-commit history since the last
+release tag, computes the next semver, writes it into `package.json`, commits
+that back with `[skip ci]`, and cuts a GitHub release. `package.json` carries
+`"private": true`, so nothing is ever published to npm — only the version
+bump and the GitHub release happen. The bump is therefore automatic in
+mechanism but human-gated in practice: per §7.1 nothing lands on `master`
+until Phase 5's single merge, so it fires exactly once, on that merge.
+
+**As things stand, that merge would ship 1.8.0.** The only release-triggering
+commit on `modernize` so far is `feat(ci): add the typecheck, fixture-guard
+and L2 replay gates` (`0bdc935`, PR #62) — the default semantic-release
+analyser bumps `minor` for any `feat` regardless of scope, so CI-only tooling
+work queued a minor bump it should not have. That commit is merged and not
+worth rewriting history over; from here, tooling commits should use `ci:` or
+`chore(ci):` so the version continues to track user-facing change, not build
+plumbing.
+
+**Agreed target: 2.0.0, decided deliberately, not provisional.** The owner
+has confirmed this. The declaration point is Phase 3c (issue #49), where the
+genuine breaking change lives: `hashType="noslash"` does not exist in
+react-router 6/7 (§6.1), so hash URLs move from `#matrix` to `#/matrix`. Even
+with the redirect shim in place, this breaks every bookmarked or shared deep
+link that predates it. But the version target is not decided on that break
+alone — it is decided on the shape of the whole programme: build tool
+(CRA → Vite), runtime (React 17 → 19), chart library (amCharts → hand-rolled
+SVG) and telemetry (Sentry/GA removed) all change across Phases 3–4b. For a
+clinical tool, a major version bump is the correct signal for that: it tells
+the owner, and anyone auditing a deploy, to re-verify rather than assume
+continuity with 1.x behaviour.
+
+**Mechanically, the commit that lands the router migration needs
+`BREAKING CHANGE:` in its footer, or `!` after the type** — that is the only
+mechanism in this pipeline capable of producing a major bump.
+
+**This must survive squash-merging.** Per §7.2, each phase branch is
+squash-merged into `modernize`, and semantic-release reads commit history on
+`master` after the final `modernize` → master merge (§7.2 step 7) — the
+squash commit message is what it actually sees, not the individual commits
+authored on the Phase 3c branch. Writing `BREAKING CHANGE:`/`!` on a commit
+partway through the Phase 3c branch and losing it when that branch is
+squashed into one `modernize` commit would silently revert the target to
+1.8.0. The footer must be present in **the Phase 3c squash commit message
+itself** — this is the one place it is easy to write correctly on a branch
+and lose at merge time, so it needs a deliberate check during Phase 3c's
+squash-merge step, not an assumption that it carried over.
+
+**Phase 5 must verify the computed version before releasing, not after.**
+Before merging `modernize` → `master`, run `npx semantic-release --dry-run`
+against the merge commit and confirm it reports **2.0.0**. If it reports
+1.8.0 instead, the breaking-change declaration was lost somewhere between
+Phase 3c and the final merge, and the fix (amend the merge commit's message,
+or the relevant squash commit, before the real run) is cheap at that point
+and awkward once the real `deploy` job has already cut the tag, written the
+GitHub release and republished `gh-pages`.
+
 ---
 
 ## 7. Process
@@ -380,6 +439,7 @@ review · squash-merged · worktree removed · issue closed.
 | Bootstrap 4 / Treeye design system | Out of scope | One concern at a time; toolchain must be stable and verified first |
 | Posterior-K bug | Issue #41, after Phase 5 | Pre-existing, not a migration regression; fixing it needs clinical input on sign convention |
 | Sentry error backlog | Issue #42 | See §10 — the reading is time-limited even though the fixing is not |
+| `CC_TEST_REPORTER_ID` history exposure | Accepted risk, closed — not rotated | Committed in plaintext in the workflow before Phase 2a removed the CodeClimate step (`33a8dc5`); still present in git history (e.g. `b48d6e3`). It cannot be rotated: the owner no longer has CodeClimate access. Accepted because the token's only capability is posting coverage for this repo to a service no longer in use — it grants no source access, no repository write and no other secret. The integration it authenticates to is already deleted. The only way to purge it from history is rewriting history on a public repo, which would invalidate every commit SHA — including `2436da4` and `789ac2d`, the two SHAs the oracle's entire provenance chain depends on (§3.1). Rewriting history to erase a dead credential to a decommissioned service is strictly worse than leaving it. Closed, not outstanding. |
 
 ### 8.1 Branches deleted during design
 
