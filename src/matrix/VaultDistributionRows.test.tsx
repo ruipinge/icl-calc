@@ -1,3 +1,4 @@
+import TestRenderer, { act } from 'react-test-renderer';
 import {
   VaultDistributionRows,
   countByVaultRange,
@@ -5,7 +6,6 @@ import {
   getVaultDistribution
 } from './VaultDistributionRows';
 
-import TestRenderer, { act } from 'react-test-renderer';
 import { FILTER as filter } from './data.test';
 
 it('renders without crashing', () => {

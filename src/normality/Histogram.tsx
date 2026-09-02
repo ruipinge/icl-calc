@@ -14,7 +14,7 @@ export const Histogram = ({
   data: HistogramEntry[];
   title: string;
 }) => {
-  const chart = useRef<am4charts.XYChart>();
+  const chart = useRef<am4charts.XYChart>(undefined);
   const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {

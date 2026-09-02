@@ -1,3 +1,4 @@
+import TestRenderer, { act } from 'react-test-renderer';
 import {
   VaultStatRows,
   getVaultAverages,
@@ -5,7 +6,6 @@ import {
   getVaultMins
 } from './VaultStatRows';
 
-import TestRenderer, { act } from 'react-test-renderer';
 import { FILTER as filter } from './data.test';
 
 it('renders without crashing', () => {

@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { BrowserRouter } from 'react-router-dom';
 import { ICLContainer } from './ICLContainer';
+import type { JSX } from 'react';
 
 /**
  * Renders the provided JSX element wrapped in the provided route.
