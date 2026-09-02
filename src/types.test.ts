@@ -32,3 +32,9 @@ it('calculates patient age correctly', () => {
 
   spy.mockRestore();
 });
+
+// TEMPORARY - proving the CI `test` gate fails closed (Phase 3a task-6
+// review, Critical 1). Remove this block once the red run is confirmed.
+it('TEMPORARY: proves the test gate fails when a test fails', () => {
+  expect(true).toBe(false);
+});
