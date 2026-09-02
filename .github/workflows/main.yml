@@ -31,15 +31,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci --prefer-offline
 
-      # WORKAROUND: package-lock.json is lockfileVersion 2 but has no
-      # "packages" object, so `npm ci` on modern npm links zero bins into
-      # node_modules/.bin (eslint, react-scripts, etc. all "command not
-      # found"). We can't regenerate the lockfile without invalidating the
-      # golden-master verification against the pinned 2022 dependency
-      # tree, so repair the bin symlinks ourselves. See scripts/link-bins.js.
-      - name: Repair node_modules/.bin symlinks
-        run: node scripts/link-bins.js
-
       - name: Lint
         run: npm run lint
 
@@ -141,9 +132,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci --prefer-offline
 
-      - name: Repair node_modules/.bin symlinks
-        run: node scripts/link-bins.js
-
       - name: Build
         run: npm run build
 
@@ -225,9 +213,6 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci --prefer-offline
-
-      - name: Repair node_modules/.bin symlinks
-        run: node scripts/link-bins.js
 
       - name: Version
         env:
