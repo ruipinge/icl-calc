@@ -29,40 +29,63 @@ const DEFAULT_CONSENT = {
   analytics_storage: 'denied'
 } as const;
 
+let initialized = false;
+
+// Both init() and pageview() below feed into this. init() is called from
+// ICLContainer's own mount effect and pageview() from RouteTracker's -
+// RouteTracker is a *descendant* of the component that calls init(), and
+// React fires mount effects child-first, so RouteTracker's effect can run
+// before init()'s. Routing every entry point through this one idempotent
+// function - rather than assuming init() always runs first - guarantees
+// the consent-default command is always the first thing queued in
+// dataLayer, no matter which effect happens to fire first.
+function ensureInitialized(): boolean {
+  if (initialized) {
+    return true;
+  }
+
+  if (!MEASUREMENT_ID) {
+    return false;
+  }
+
+  // Consent must be queued before initialize(): the "config" command GA4
+  // sends on init reads whatever consent state already sits in dataLayer
+  // at that point, not one set afterwards.
+  ReactGA.gtag('consent', 'default', DEFAULT_CONSENT);
+
+  ReactGA.initialize(MEASUREMENT_ID, {
+    gtagOptions: {
+      // GA4's automatic pageview-on-init would double-count against the
+      // explicit per-tab pageview `pageview()` below sends - this is a
+      // hash-router SPA, so a tab switch is never a real page load and
+      // needs to be reported explicitly instead.
+      send_page_view: false
+    }
+  });
+
+  initialized = true;
+  return true;
+}
+
 const GA = {
   /**
    * Initialises GA4 with consent denied by default. Safe to call
-   * unconditionally - it is a no-op whenever VITE_GA_MEASUREMENT_ID is
-   * not set.
+   * unconditionally and more than once - it is a no-op whenever
+   * VITE_GA_MEASUREMENT_ID is not set, and only initialises GA4 once.
    */
   init: (): void => {
-    if (!MEASUREMENT_ID) {
-      return;
-    }
-
-    // Consent must be queued before initialize(): the "config" command
-    // GA4 sends on init reads whatever consent state already sits in
-    // dataLayer at that point, not one set afterwards.
-    ReactGA.gtag('consent', 'default', DEFAULT_CONSENT);
-
-    ReactGA.initialize(MEASUREMENT_ID, {
-      gtagOptions: {
-        // GA4's automatic pageview-on-init would double-count against
-        // the explicit per-tab pageview `pageview()` below sends - this
-        // is a hash-router SPA, so a tab switch is never a real page
-        // load and needs to be reported explicitly instead.
-        send_page_view: false
-      }
-    });
+    ensureInitialized();
   },
 
   /**
-   * Sends one GA4 pageview for `path`. No-ops whenever GA4 was never
-   * initialised (see `init` above) - callers don't need to check that
-   * themselves.
+   * Sends one GA4 pageview for `path`. No-ops whenever
+   * VITE_GA_MEASUREMENT_ID is not set. Safe to call before `init()` has
+   * run - it initialises GA4 itself (with consent still denied first) if
+   * nothing has yet, so a pageview can never be queued ahead of the
+   * consent-default command.
    */
   pageview: (path: string): void => {
-    if (!MEASUREMENT_ID) {
+    if (!ensureInitialized()) {
       return;
     }
 
