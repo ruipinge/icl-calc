@@ -770,5 +770,95 @@ and was deliberately left in place pending a separate decision.
     pre-2021 floor.** This bullet exists so the decision and its
     consequences are recorded and owner-visible, not discovered later as
     an unexplained regression.
+- **Phase 3b result, recorded after implementation (issue #48).** React
+  17 → **19.2.8**; `react-dom` and `@types/react`/`@types/react-dom`
+  matched; `react-test-renderer` and `@types/react-test-renderer` removed
+  from the dependency tree entirely, and every one of the eight legacy
+  `react-test-renderer` suites converted to `@testing-library/react`'s
+  `render(...)`/`asFragment()`. `src/golden/expected.json` and
+  `src/data.csv` stayed byte-identical throughout — still last-touched at
+  `8568202` — and the L2 replay reproduced the December 2021 oracle exactly
+  at every gate in the phase, including the final one on Node 22. 158
+  tests passed / 3 skipped throughout, matching the Phase 3a baseline.
+  `src/index.tsx` moved `ReactDOM.render` to `createRoot`; it is excluded
+  from coverage (`vite.config.ts`), so this was verified by serving the
+  real production build and loading it in a real Chromium instance rather
+  than by a green suite — full Patient form rendered, nav between
+  Patient/Matrix worked, zero console errors.
+  - **A third test was found asserting nothing.**
+    `src/normality/Gauge.test.tsx` snapshotted an empty `<div>` — 17
+    lines — because `react-test-renderer` never populates host refs;
+    `Gauge.tsx`'s `useLayoutEffect` checks `container.current === null`
+    and returns early when it isn't populated, so `LinearGauge` was never
+    constructed and the gauge's actual DOM-building logic had never been
+    exercised by this test. Under `@testing-library/react`'s real DOM, the
+    ref attaches to a real node and the component renders the actual
+    widget — 72 lines: the pointer `<svg>`/`<polygon>`, five division tick
+    marks, twelve subdivision ticks, and the colored zone segments,
+    cross-checked against `buildZones()`'s own already-unit-tested output
+    in the same file. This is the third instance of this exact failure
+    shape in the programme, after `CorneaProfile` (snapshotting a blank
+    form for four years, found in Phase 2a) and `normality/index.test.tsx`
+    (permanently `it.skip`-ped). **All three passed their suites.** None
+    was found by running the tests — each was found by changing the
+    toolchain underneath the suite and checking the result against an
+    independent reference (the golden master, or in Gauge's case,
+    `buildZones()`'s own assertions).
+  - **A new blind spot this phase introduced.** `asFragment()` does not
+    serialise event listeners, where `TestRenderer.toJSON()` recorded
+    `onChange={[Function]}` on every form field. Confirmed by diffing the
+    pre-migration snapshots directly: `patient.name`, `patient.dateOfBirth`
+    and `patient.eye` each carried `onChange={[Function]}` in the old
+    `Info.test.tsx.snap`; `corneaProfile.previousSurgery` carried it in the
+    old `CorneaProfile.test.tsx.snap`. None of the four appears in the
+    current, DOM-based snapshots. For `patient.name`, `patient.eye` and
+    `corneaProfile.previousSurgery` — fields the golden master never reads
+    back (§4.4's capture surface is ICL Power, Matrix, Regression and
+    Normality values) — those snapshots were the *only* check in the
+    entire suite that a change handler was wired to the field at all, and
+    after this phase they no longer are. `patient.dateOfBirth` is the
+    exception: it *is* still covered indirectly, because a broken handler
+    there would zero the calculated age and move the regression values L2
+    reads. `corneaProfile.previousSurgery` is additionally uncovered for a
+    second, independent reason recorded in #41: `calcRadiusPosterior`'s
+    previousSurgery-Myopia and previousSurgery-Hyperopia branches
+    (`src/formulas.ts`) return the identical expression fork B does (no
+    posterior K, no prior surgery), so today the field changes no
+    calculator output regardless of whether its handler fires — `git
+    show f89eafc^:src/golden/inputs.json` rows 03/04 record this as known
+    behaviour, not a defect. Not fixed here; recorded so a future phase
+    doesn't rediscover it as an unexplained gap.
+  - **`--legacy-peer-deps` came back into the CI workflow**, deliberately,
+    for the same reason Task 1 needed it locally: `@sentry/react@6.19.7`
+    (`react: ^15 || ^16 || ^17 || ^18`) and `react-ga@3.3.1`
+    (`react: ^15.6.2 || ^16.0 || ^17 || ^18`, confirmed against the
+    registry) both stop at React 18, so a bare `npm ci` fails on a clean
+    runner exactly as it does locally. Phase 3a removed the flag
+    deliberately because it suppresses the peer signals a React major
+    depends on — its absence between Phase 3a and this phase is precisely
+    why these two conflicts surfaced as loud `ERESOLVE` errors instead of
+    installing silently. Added with a comment naming both packages, in the
+    `test`, `e2e-replay` (app-level install only — `e2e/`'s own
+    `npm ci` has no React dependency and needs no flag) and `deploy` jobs.
+    **#50 removes both packages, at which point the flag comes out again.**
+    Until then, note that **#49 (router 5 → 7) lands while the flag is
+    active**, so a real peer problem introduced by that upgrade will not
+    announce itself the way these two did.
+  - **ESLint stack held, unmodernised.** `eslint-plugin-react-hooks@^4.2`
+    and `eslint-config-react-app@^6` (with a deprecated `babel-eslint`
+    underneath) all predate React 19. `npm run lint` still exits 0 against
+    the fully-migrated React 19 codebase — the same two pre-existing
+    `jsx-ast-utils` "MetaProperty could not be resolved" notices from
+    Phase 3a (sourced from `import.meta.env` in `src/index.tsx`) are the
+    only output, and they are not errors. Left exactly as-is; the staleness
+    is real and is #63's problem, not this phase's.
+  - **Gates, all re-run on Node 22 immediately before the PR**: `npm test`
+    158 passed / 3 skipped; `npx tsc --noEmit` clean; `npm run lint` exit
+    0; `npm run build` exit 0; `SUBJECT_ONLY=1` L2 setup + replay, 2
+    passed, including "the build under test reproduces the oracle
+    exactly." `src/golden/expected.json` and `src/data.csv` unchanged.
+  - **Deliberately out of scope.** `react-router-dom` stays on `^5.2.0`
+    (#49). The ESLint stack (#63). The event-handler coverage gap above
+    (no issue filed yet by this phase — recorded here so it isn't lost).
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.
