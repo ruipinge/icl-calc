@@ -10,7 +10,12 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Vite defaults to dist/. The deploy job publishes ./build and
     // e2e/setup.sh symlinks ../../build; keeping the name avoids churn.
-    outDir: 'build'
+    outDir: 'build',
+    // Vite 4 defaults this to false. The oracle deployed .map files to
+    // the public gh-pages path and Sentry (src/index.tsx) fetches them
+    // for production error stack traces (issue #42 tracks reading that
+    // backlog) - leaving this off silently drops a live capability.
+    sourcemap: true
   },
   define: {
     // The Footer snapshot pins v0.0.t. Sourcing the real version in test

@@ -16,8 +16,9 @@ const OUT = resolve(__dirname, '../src/golden/expected.json');
 // provenance recorded below is only trustworthy if the served build is checked
 // against it, so both facts are asserted in the page before anything is
 // captured. Deliberately here and not in the shared openApp: Task 7's replay
-// subject is a local `npm run build` that need not define REACT_APP_VERSION
-// and will carry different content hashes.
+// subject is a local `npm run build` that carries a different
+// import.meta.env.VITE_APP_VERSION (from vite.config.ts's `define`, sourced
+// from package.json at build time) and different content hashes.
 const ORACLE_VERSION = '1.7.0';
 const ORACLE_MAIN_CHUNK = '/icl-calc/static/js/main.86697131.chunk.js';
 

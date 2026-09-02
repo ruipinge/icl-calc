@@ -720,5 +720,34 @@ and was deliberately left in place pending a separate decision.
     exit 0; `npm run build` exit 0; `SUBJECT_ONLY=1` L2 setup + replay, 2
     passed, including "the build under test reproduces the oracle exactly."
     `src/golden/expected.json` and `src/data.csv` unchanged.
+  - **The browser support floor moved, silently, and the decision to accept
+    that is still pending with the owner (final review, Task 6).**
+    `vite.config.ts` sets no `build.target`, so Vite 4 falls back to its
+    default, `'modules'` — esbuild's shorthand for `chrome87, edge88,
+    firefox78, safari14` (all from late 2020/early 2021), each targeted
+    unconditionally, not resolved from `package.json`'s `browserslist`
+    block. The oracle instead shipped `react-scripts`' classic build: ES5
+    output plus a `<script nomodule>` fallback bundle, covering browsers
+    far older than 2020, degrading gracefully rather than failing outright.
+    The **effect** is the difference in kind: the oracle's ES5 path ran
+    (slower, unoptimized) on a pre-2020 browser, while a browser below
+    Vite's `'modules'` cutoff gets a blank page — `<script type="module">`
+    is simply skipped, with no fallback bundle to fall through to.
+    Separately, **autoprefixer is no longer in the dependency tree** —
+    `react-scripts` bundled it via its PostCSS config; Vite doesn't add one
+    unless the project does. A reviewer counted `-webkit-` occurrences in
+    the built CSS: 570 in the oracle's `build/`, 38 in Phase 3a's — the
+    remaining 38 are prefixes authored directly in source, not
+    autoprefixer output. **`package.json`'s `browserslist` block
+    (`"production"`/`"development"`, just above `"prettier"`) is now dead
+    — nothing in the Vite/esbuild/PostCSS toolchain reads it.** It cannot
+    be annotated in place (`package.json` is parsed as strict JSON, no
+    comments permitted); this paragraph is that annotation. **Explicitly
+    out of scope for Phase 3a: adding `@vitejs/plugin-legacy` or setting
+    `build.target` to restore the old floor.** Whether this tool must keep
+    supporting pre-2021 browsers is a product decision for the owner, raised
+    with them separately (outside this document) after this review; this
+    bullet exists so the change is recorded and owner-visible rather than
+    discovered later as an unexplained regression.
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.

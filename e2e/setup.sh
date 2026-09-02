@@ -11,7 +11,8 @@ set -euo pipefail
 #                                  SIBLING of this repo; never written to by
 #                                  this script or anything else here)
 #   e2e/.serve-subject/icl-calc -> this repo's own build/ (produced by
-#                                  `npm run build` under Node 16)
+#                                  `npm run build` under the Node version
+#                                  pinned in the repo root's .nvmrc)
 #
 # Two separate roots, not one: reusing .serve's own `icl-calc` symlink for
 # the subject build would make every asset request on the subject's port
@@ -77,7 +78,7 @@ fi
 if [ ! -d "$BUILD_DIR" ]; then
   echo "e2e/setup.sh: FATAL - $BUILD_DIR not found." >&2
   echo "  e2e/replay.spec.ts (L2) replays against a real production build of" >&2
-  echo "  this branch. Run 'npm run build' (Node 16) from the repo root" >&2
+  echo "  this branch. Run 'npm run build' (Node version pinned in .nvmrc) from the repo root" >&2
   echo "  first, then re-run setup.sh." >&2
   exit 1
 fi

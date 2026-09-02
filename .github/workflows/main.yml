@@ -36,6 +36,13 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Test
+        # Without an explicit shell:, GitHub Actions runs this under
+        # `bash -e {0}` (no pipefail), so the step's exit status is
+        # tee's (always 0) rather than npm test's - a failing test suite
+        # would go green. `shell: bash` switches Actions' default
+        # invocation to `bash --noprofile --norc -eo pipefail {0}`,
+        # which makes the step fail when npm test does.
+        shell: bash
         run: npm test 2>&1 | tee test-output.log
 
       - name: Write coverage summary
@@ -45,7 +52,16 @@ jobs:
             echo '## Coverage summary'
             echo
             echo '```'
-            sed -n '/^File/,/^Ran all test suites/p' test-output.log
+            # The end pattern '^Ran all test suites' is a Jest string that
+            # Vitest never prints, so this range is open-ended in practice:
+            # it runs from the coverage table header to EOF. That is
+            # deliberate, not an accidental leftover from the Jest->Vitest
+            # migration - Vitest prints the coverage table last, after all
+            # test results, so "everything from '^File' to EOF" is exactly
+            # the coverage table on every run. Left unpaired (rather than
+            # invented a Vitest terminator) because there is nothing after
+            # it in test-output.log to accidentally slurp in.
+            sed -n '/^File/,$p' test-output.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -66,7 +82,15 @@ jobs:
       # this workflow read expected.json or checked for an oracle/ branch
       # prefix (see the "Correction" note appended to spec 7.3, issue #45).
       # This is that job.
-      - name: Enforce the expected.json stop rule (design spec 7.3)
+      #
+      # Guarded paths: src/golden/expected.json (the golden-master
+      # snapshot itself) and src/data.csv (the 542-row clinical dataset
+      # those values are computed from). A silent edit to the CSV is at
+      # least as dangerous as one to expected.json - it moves the inputs
+      # instead of the outputs - and until this guard existed it was
+      # unprotected by anything except assertions inside the `test` job,
+      # which Critical 1 showed could not fail.
+      - name: Enforce the expected.json / data.csv stop rule (design spec 7.3)
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
@@ -75,10 +99,10 @@ jobs:
           set -euo pipefail
 
           MERGE_BASE="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
-          CHANGED="$(git diff --name-only "$MERGE_BASE" "$HEAD_SHA" -- src/golden/expected.json)"
+          CHANGED="$(git diff --name-only "$MERGE_BASE" "$HEAD_SHA" -- src/golden/expected.json src/data.csv)"
 
           if [ -z "$CHANGED" ]; then
-            echo "src/golden/expected.json is unchanged against the merge base ($MERGE_BASE). OK."
+            echo "src/golden/expected.json and src/data.csv are unchanged against the merge base ($MERGE_BASE). OK."
             exit 0
           fi
 
@@ -87,22 +111,26 @@ jobs:
           # direction - don't "fix" it into a case-insensitive match.
           case "$HEAD_REF" in
             oracle/*)
-              echo "src/golden/expected.json changed, and branch '$HEAD_REF' is an approved oracle/ branch. OK."
+              echo "Guarded file(s) changed on an approved oracle/ branch ('$HEAD_REF'). OK. Changed:"
+              echo "$CHANGED"
               echo "This still requires the written per-value justification and explicit sign-off spec 7.3 calls for - confirm that happened in review."
               exit 0
               ;;
           esac
 
           {
-            echo "::error::src/golden/expected.json was modified on branch '$HEAD_REF', which is not an oracle/ branch."
+            echo "::error::Guarded golden-master file(s) were modified on branch '$HEAD_REF', which is not an oracle/ branch. Changed:"
+            echo "$CHANGED"
             echo
             echo "Design spec section 7.3 (the stop rule):"
             echo '  "If a value in expected.json moves, work stops. No fixing forward, no'
             echo '   regenerating the fixture, no assuming it is rounding."'
+            echo "The same rule covers src/data.csv: it is the input the golden master is"
+            echo "computed from, so an undeclared edit there is the same class of risk."
             echo
             echo "A deliberate correction to the golden master requires a dedicated oracle/*"
             echo "branch, a written justification per changed value, and explicit sign-off"
-            echo "before expected.json is touched (spec 7.3, 'Deliberate correction')."
+            echo "before expected.json or data.csv is touched (spec 7.3, 'Deliberate correction')."
             echo
             echo "If this diff is a real regression: revert it, don't edit the fixture."
             echo "If it is a deliberate, reviewed correction to the recorded oracle values:"

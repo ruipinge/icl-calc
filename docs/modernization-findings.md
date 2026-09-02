@@ -91,8 +91,18 @@ changes silently. `src/data.csv` begins with a UTF-8 BOM; check it survives.
 
 ### 3. Other CRA-isms that need translating
 
-> **Actioned, Phase 3a (issue #47).** All five translated exactly as listed
-> below. One near-miss on the way: the `%PUBLIC_URL%/` → `/` substitution in
+> **Actioned, Phase 3a (issue #47).** Four of five translated exactly as
+> listed below. The fifth — `REACT_APP_VERSION` — was superseded by a
+> different mechanism instead: `vite.config.ts`'s `define` block injects
+> `import.meta.env.VITE_APP_VERSION` from `package.json`'s `version` field
+> directly (pinned to `0.0.t` under `mode === 'test'` so the Footer snapshot
+> doesn't churn on every release). `.env` was never rewired to feed it —
+> Vite's `envPrefix` is `VITE_`, so `.env`'s `REACT_APP_VERSION` and
+> `REACT_APP_NAME` were never exposed to the app at all, on any commit
+> since the Vite switch — and `.env` was deleted as dead config (see
+> Phase 3a task-6 report; task 6 also corrected this section, which
+> previously said `.env` was "safe to keep and rename"). One near-miss on
+> the way: the `%PUBLIC_URL%/` → `/` substitution in
 > `index.html` missed `<meta name="msapplication-config" content>`, because
 > Vite only rewrites root-absolute URLs in attributes it treats as asset
 > references, not `meta[content]` — this is the design spec's §6.2
@@ -103,14 +113,15 @@ changes silently. `src/data.csv` begins with a UTF-8 BOM; check it survives.
 
 | Where | What | Vite equivalent |
 |---|---|---|
-| `src/misc/Footer.tsx:10,12` | `process.env.REACT_APP_VERSION` | `import.meta.env.VITE_*`; rename in `.env` and in the `test` script |
+| `src/misc/Footer.tsx:10,12` | `process.env.REACT_APP_VERSION` | `import.meta.env.VITE_APP_VERSION`, supplied by `define` in `vite.config.ts` from `pkg.version` (not by `.env`, which was deleted — see task-6 report) |
 | `src/misc/NavBar.tsx:4` | `process.env.PUBLIC_URL` | `import.meta.env.BASE_URL` |
 | `src/index.tsx:10`, `src/misc/GoogleAnalytics.ts:5` | `process.env.NODE_ENV` | `import.meta.env.PROD` |
 | `public/index.html:5-7` | `%PUBLIC_URL%` | move `index.html` to the project root; use `/` or `%BASE_URL%` |
-| `package.json` `test` script | `REACT_APP_VERSION=0.0.t react-scripts test` | Vitest, with the renamed variable |
+| `package.json` `test` script | `REACT_APP_VERSION=0.0.t react-scripts test` | Vitest; the pinned `0.0.t` test-mode value now lives in `vite.config.ts`'s `define`, not an env prefix |
 
-`.env` is committed and holds only `REACT_APP_VERSION` and `REACT_APP_NAME` —
-no secrets, safe to keep and rename.
+`.env` held only `REACT_APP_VERSION` and `REACT_APP_NAME`, neither of which
+Vite ever exposed (its `envPrefix` is `VITE_`) — it was dead from the moment
+this migration landed. Deleted rather than renamed; nothing read it.
 
 ### 4. Node 14 is three years past end of life
 
