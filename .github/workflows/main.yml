@@ -26,14 +26,8 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      # --legacy-peer-deps: the CRA-era "@types/node": "^12.20.4" dependency
-      # conflicts with Vite's peerOptional @types/node ">=14" even with
-      # react-scripts gone - the same friction Tasks 2-4 already hit and
-      # resolved the same way (see task-4's commit message). Re-pointing
-      # @types/node at a newer version to avoid this flag is out of scope
-      # here - the dependencies/devDependencies cleanup is #50.
       - name: Install Dependencies
-        run: npm ci --prefer-offline --legacy-peer-deps
+        run: npm ci --prefer-offline
 
       - name: Lint
         run: npm run lint
@@ -138,9 +132,8 @@ jobs:
             package-lock.json
             e2e/package-lock.json
 
-      # --legacy-peer-deps: see the same step in the `test` job above.
       - name: Install Dependencies
-        run: npm ci --prefer-offline --legacy-peer-deps
+        run: npm ci --prefer-offline
 
       - name: Build
         run: npm run build
@@ -212,9 +205,8 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      # --legacy-peer-deps: see the same step in the `test` job above.
       - name: Install Dependencies
-        run: npm ci --prefer-offline --legacy-peer-deps
+        run: npm ci --prefer-offline
 
       - name: Version
         env:
