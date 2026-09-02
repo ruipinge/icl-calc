@@ -3,17 +3,20 @@
 Survey of the repo as it stands, written 29 August 2026 before any code was
 touched. It exists so the migration session doesn't have to rediscover it.
 
-> **Status (updated during Phase 2a, issue #45):** this is a pre-work survey
-> and later phases still read it as one, but it is no longer true that
-> "nothing here has been actioned." Since it was written: **Phase 0**
-> unpinned Node from EOL 14 and cleared the dependabot backlog; **Phase 1**
-> captured the deployed app as a golden master (`src/golden/`, with L1 unit
-> and L2 Playwright replay layers); **Phase 2a** revived CI on
-> `checkout@v4`/`setup-node@v4`, added `tsc --noEmit` and an L2 replay job,
-> and added the CI guard on `src/golden/expected.json` that section 7.3 of
-> the design spec calls for. Track ongoing work against epic #53. The rest
-> of this document is kept as-written, as the historical survey it is — see
-> the Node row below for the one correction needed to the table itself.
+> **Status (updated during Phase 2a, issue #45; updated again during Phase
+> 3a, issue #47):** this is a pre-work survey and later phases still read it
+> as one, but it is no longer true that "nothing here has been actioned."
+> Since it was written: **Phase 0** unpinned Node from EOL 14 and cleared
+> the dependabot backlog; **Phase 1** captured the deployed app as a golden
+> master (`src/golden/`, with L1 unit and L2 Playwright replay layers);
+> **Phase 2a** revived CI on `checkout@v4`/`setup-node@v4`, added `tsc
+> --noEmit` and an L2 replay job, and added the CI guard on
+> `src/golden/expected.json` that section 7.3 of the design spec calls for;
+> **Phase 3a** replaced `react-scripts` with Vite, Jest with Vitest, and
+> TypeScript 4 with 5 — **findings 2, 3 and 4 below are now actioned**, each
+> marked in place. Track ongoing work against epic #53. The rest of this
+> document is kept as-written, as the historical survey it is — see the Node
+> row below for the one correction needed to the table itself.
 
 Companion document, covering the move onto treeye.science and the decisions
 around it: `treeye/docs/icl-calc-migration.md` in the Treeye repo.
@@ -37,7 +40,7 @@ around it: `treeye/docs/icl-calc-migration.md` in the Treeye repo.
 | UI | Bootstrap 4.6 · Formik 2 · Yup · Sass |
 | Charts | amCharts 4 |
 | Services | Sentry 6 · `react-ga` 3 |
-| Node | ~~pinned to v14 in `.nvmrc` and both CI jobs~~ — as of Phase 0, `.nvmrc` pins **v16** (the newest version the build still passes under; see finding 4 below, kept as the historical record of the problem this fixed). The `deploy` job and the `e2e-replay` job's build step (Phase 2a) use Node 16 accordingly; the `test` job and `e2e-replay`'s Playwright step run Node 20, which does not need to build. `golden-master-guard` (Phase 2a) runs neither — it has no `setup-node` step at all, only `actions/checkout` plus `git`/bash |
+| Node | ~~pinned to v14 in `.nvmrc` and both CI jobs~~ ~~as of Phase 0, `.nvmrc` pins v16 (the newest version the build still passes under)~~ — as of **Phase 3a**, `.nvmrc` pins **v22** and all three CI jobs (`test`, `e2e-replay`, `deploy`) share it via `node-version-file: '.nvmrc'`. The v16 ceiling was CRA's webpack 4 build chain (`ERR_PACKAGE_PATH_NOT_EXPORTED` on 18+); Phase 3a removed that chain, so the ceiling is gone — see finding 4 below, kept as the historical record of the problem this fixed |
 | Release | `semantic-release` on `master`, then `peaceiris/actions-gh-pages` publishing `./build` to the `gh-pages` branch |
 
 **Computation is entirely client-side**, against `src/data.csv` inlined at build
@@ -55,6 +58,17 @@ framework. `react-scripts` 4.0.2 is four years old. **This is a build-tool
 migration, not a version bump**, and it is the bulk of the work.
 
 ### 2. `raw.macro` will not survive the move — and it sits on the data path
+
+> **Actioned, Phase 3a (issue #47).** `src/db.ts` now imports the CSV via
+> Vite's `?raw` import, exactly as suggested below. Verified, not assumed: a
+> reviewer extracted the CSV literal from the built bundle and found it
+> byte-for-byte identical to `src/data.csv` (BOM, 542 rows, no CRLF, trailing
+> newline), and the L2 replay's Matrix footer (`N/542` eyes matched, all ten
+> fixture rows) independently pins the row count. `src/data.csv` and
+> `src/golden/expected.json` are byte-identical from before this phase to
+> after it. Full account in
+> `docs/superpowers/specs/2026-08-30-icl-calc-modernization-design.md` §10,
+> "Phase 3a result."
 
 `src/db.ts:1-3`:
 
@@ -77,6 +91,16 @@ changes silently. `src/data.csv` begins with a UTF-8 BOM; check it survives.
 
 ### 3. Other CRA-isms that need translating
 
+> **Actioned, Phase 3a (issue #47).** All five translated exactly as listed
+> below. One near-miss on the way: the `%PUBLIC_URL%/` → `/` substitution in
+> `index.html` missed `<meta name="msapplication-config" content>`, because
+> Vite only rewrites root-absolute URLs in attributes it treats as asset
+> references, not `meta[content]` — this is the design spec's §6.2
+> "blind spot" (env-var renames invisible to the golden master) firing for
+> real, not staying theoretical. Caught by the manual checklist §6.2 already
+> required, not by CI; fixed before merge. See the design spec §6.2 and §10
+> ("Phase 3a result") for the full account.
+
 | Where | What | Vite equivalent |
 |---|---|---|
 | `src/misc/Footer.tsx:10,12` | `process.env.REACT_APP_VERSION` | `import.meta.env.VITE_*`; rename in `.env` and in the `test` script |
@@ -89,6 +113,11 @@ changes silently. `src/data.csv` begins with a UTF-8 BOM; check it survives.
 no secrets, safe to keep and rename.
 
 ### 4. Node 14 is three years past end of life
+
+> **Actioned. Phase 0 unpinned Node 14 → 16 (the CRA webpack 4 build chain's
+> ceiling at the time, see the Node row above); Phase 3a (issue #47) removed
+> that chain and unpinned further, Node 16 → 22 — `.nvmrc` and all three CI
+> jobs now share `node-version-file: '.nvmrc'` pointing at v22.**
 
 EOL April 2023, pinned in `.nvmrc` and in both CI jobs. Nothing builds on a
 current toolchain until this moves.

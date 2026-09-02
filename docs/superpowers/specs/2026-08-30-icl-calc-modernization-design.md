@@ -263,6 +263,23 @@ bookmarked link. Hence the redirect shim and its test.
 
 ### 6.2 Blind spots the golden master does not cover (final review, Phase 1)
 
+**This is no longer a theoretical gap. Phase 3a hit it once — see §10's Phase
+3a result for the full account.** `index.html`'s `<meta name="msapplication-config"
+content="/browserconfig.xml">` shipped without its `/icl-calc/` base prefix,
+because the mechanical `%PUBLIC_URL%/` → `/` substitution used to port
+`public/index.html` to the Vite-root `index.html` covers root-absolute
+attribute values by pattern, and Vite's own dev/build asset-URL rewriting
+only touches attributes it treats as asset references (`link[href]`,
+`script[src]`) — `meta[content]` is neither. Both golden-master gates were
+green throughout: `readAll()` captures ICL Power, Matrix, Regression and
+Normality values, never page `<head>` metadata, exactly as predicted below.
+The defect was caught only by the Phase 3a checklist item this section
+already called for — a human diffing every built `<head>` tag against the
+oracle's — not by CI. Say this plainly: the blind spot is real, it produces
+exactly the class of silent failure this document warned about, and the
+only thing that closed it was doing the manual check the spec already
+mandated. Fixed in `4a64607` before Task 2 was accepted.
+
 Both gates - L1 and L2 - are blind to a class of regression that changes no
 computed number:
 
@@ -606,5 +623,102 @@ and was deliberately left in place pending a separate decision.
   `expected.json` branch-name guard described in §7.3.
   Consequence worth recording: the L1 suite was developed and validated
   locally on Node 16, and now runs in CI on Node 20.
+- **Phase 3a result, recorded after implementation (issue #47).** CRA →
+  Vite, Jest → Vitest, TypeScript 4.1 → 5, lockfile regenerated from
+  scratch. `src/golden/expected.json` and `src/data.csv` are byte-identical
+  from the phase's first commit to its last — both still show last-touched
+  at `8568202` (Phase 1's capture), never re-diffed by any Phase 3a commit.
+  158 tests passed / 3 skipped throughout, on Jest and then on Vitest
+  (`vitest@^1.6.1`, held below `2.x` deliberately: Vitest 2+ bundles
+  `vite@^5` as a hard dependency, which would have put two Vite majors in
+  one tree while this phase's whole point was isolating the build-tool
+  variable — not a Node-compatibility constraint, see the `.nvmrc` bullet
+  below).
+  - **The CSV survived provably, not just by inspection.** `raw.macro`
+    (finding 2, `docs/modernization-findings.md`) is gone;
+    `src/db.ts` now does `import CSV from './data.csv?raw'`. A reviewer
+    extracted the CSV literal from the built bundle
+    (`build/assets/index-*.js`) and found it byte-for-byte identical to
+    `src/data.csv`: same UTF-8 BOM (emitted by esbuild as the six-character
+    escape `﻿`, decoding at runtime to the same U+FEFF the CRA/webpack
+    build produced), 543 newlines splitting into 544 parts (1 header + 542
+    data rows + 1 trailing empty part), no CRLF. The Matrix footer's
+    `Number of matching Eyes: N/542` line, present in all ten L2 fixture
+    rows, pins the row count independently — a truncated or re-encoded CSV
+    could not have passed L2 without that count moving. The bundle
+    inspection is corroborating; the L2 replay (below) is the decisive
+    proof, since it exercises all 542 rows through the rendered app.
+  - **The CRA-isms (finding 3) are translated.**
+    `process.env.REACT_APP_VERSION` → `import.meta.env.VITE_APP_VERSION`
+    (`src/misc/Footer.tsx`), `process.env.PUBLIC_URL` →
+    `import.meta.env.BASE_URL` (`src/misc/NavBar.tsx`),
+    `process.env.NODE_ENV === 'production'` → `import.meta.env.PROD`
+    (`src/index.tsx`, `src/misc/GoogleAnalytics.ts`), `public/index.html`
+    moved to the project root with `%PUBLIC_URL%/` → `/`.
+  - **The `PUBLIC_URL`/`REACT_APP_VERSION` blind spot (§6.2) bit once, in
+    this phase, and was caught by the manual checklist, not by either
+    gate.** Full account in §6.2's updated text; short version: the
+    `%PUBLIC_URL%/` → `/` substitution missed
+    `<meta name="msapplication-config" content>` because Vite rewrites
+    root-absolute URLs only in attributes it treats as asset references,
+    and `meta[content]` is not one — the tag shipped pointing at
+    `/browserconfig.xml` instead of `/icl-calc/browserconfig.xml`, a 404 in
+    production. `readAll()` never reads page metadata, so both L1 and L2
+    stayed green throughout. A human diffing every built `<head>` tag
+    against the oracle's caught it; fixed in `4a64607`. This is the
+    programme's first live confirmation that the blind spot recorded here
+    is real, not hypothetical.
+  - **`.nvmrc` now reads `v22`**, walked up from `v16` across the three
+    commits `db97898` (Vitest requires Node ≥18, so `test` moved off 16),
+    `2241387` (corrected `.nvmrc` to `v20` and the rationale for the
+    Vitest pin), and `1b82f17`/`6c3bbfd` (all three CI jobs unified on
+    `node-version-file: '.nvmrc'`, walked to 22, the newest LTS, after
+    confirming every gate green on it). The old Node 16 ceiling was CRA's
+    webpack 4 build chain hitting `ERR_PACKAGE_PATH_NOT_EXPORTED` on 18+
+    (§10's "Node version target for Phase 0" bullet); that chain no longer
+    exists.
+  - **`scripts/link-bins.js` is deleted** (`c1923bc`), as this document
+    already anticipated in the "CI was dead" bullet above. The regenerated
+    lockfile is `lockfileVersion: 3` with a populated top-level `packages`
+    object (confirmed: `require('./package-lock.json').packages` is
+    truthy), which is the field `npm ci` needs to know which installed
+    packages declare a `bin` and symlink them into `node_modules/.bin`
+    — the 2021-era `lockfileVersion: 2` lockfile never carried it. All
+    three "Repair node_modules/.bin symlinks" CI steps (`test`,
+    `e2e-replay`, `deploy`) were removed along with the script; `npm ci`
+    alone now populates `.bin` correctly (confirmed: 45 entries, no
+    dangling symlinks).
+  - **Exactly one snapshot changed in rendered content**: NavBar's
+    `href="/"` → `href="/icl-calc/"`, appearing once in
+    `NavBar.test.tsx.snap` and nine more times (one per rendered route/state)
+    in `ICLContainer.test.tsx.snap`, because `import.meta.env.BASE_URL` is
+    always populated (`/icl-calc/`) where CRA's `PUBLIC_URL` was empty
+    under test. Every other changed `.snap` file differs only in its
+    one-line Jest/Vitest tool-signature header comment. Production
+    behaviour is equivalent — the oracle itself serves `/icl-calc/`.
+  - **Runtime dependency versions moved within their already-declared
+    semver ranges** when the lockfile was regenerated: `react` 17.0.1 →
+    17.0.2, `react-router-dom` 5.2.0 → 5.3.4, `formik` 2.2.6 → 2.4.9,
+    `date-fns` 2.19.0 → 2.30.0, `@amcharts/amcharts4` 4.10.17 → 4.10.40.
+    `src/formulas.ts` (the calculation engine) imports only from
+    `./types`, whose sole external import is a display-only date-formatting
+    call — the numeric core is isolated from all five packages. `@types/node`
+    moved `^12.20.4` → `^22` (a types-only devDependency; the fix round in
+    Task 5 chose this over `--legacy-peer-deps` specifically so Phase 3b's
+    React 19 peer-dependency signals aren't suppressed by a blanket flag
+    left behind here).
+  - **Lint coverage narrowed, deliberately, and is tracked separately.**
+    Dropping `eslintConfig.extends: ["react-app/jest"]` (it no longer
+    applies once `react-scripts` is gone) also dropped that config's
+    `jest/*` and `testing-library/*` rule overrides for `**/*.{spec,test}.*`
+    — confirmed zero active rules from either plugin post-change, against a
+    non-trivial set beforehand. Not restored here: re-enabling risked
+    surfacing new failures across ~20 test files as unrelated churn.
+    Tracked as [#63](https://github.com/ruipinge/icl-calc/issues/63).
+  - **Gates, all re-run on Node 22 immediately before Task 6's PR**: `npm
+    test` 158 passed / 3 skipped; `npx tsc --noEmit` clean; `npm run lint`
+    exit 0; `npm run build` exit 0; `SUBJECT_ONLY=1` L2 setup + replay, 2
+    passed, including "the build under test reproduces the oracle exactly."
+    `src/golden/expected.json` and `src/data.csv` unchanged.
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.
