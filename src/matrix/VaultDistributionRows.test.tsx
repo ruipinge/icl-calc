@@ -1,4 +1,3 @@
-import TestRenderer, { act } from 'react-test-renderer';
 import {
   VaultDistributionRows,
   countByVaultRange,
@@ -7,13 +6,17 @@ import {
 } from './VaultDistributionRows';
 
 import { FILTER as filter } from './data.test';
+import { render } from '@testing-library/react';
 
 it('renders without crashing', () => {
-  let renderer: TestRenderer.ReactTestRenderer;
-  act(() => {
-    renderer = TestRenderer.create(<VaultDistributionRows ata={0} clr={0} />);
-  });
-  expect(renderer!.toJSON()).toMatchSnapshot();
+  const { asFragment } = render(
+    <table>
+      <tbody>
+        <VaultDistributionRows ata={0} clr={0} />
+      </tbody>
+    </table>
+  );
+  expect(asFragment()).toMatchSnapshot();
 });
 
 it('calculates vault size distribution with max', () => {

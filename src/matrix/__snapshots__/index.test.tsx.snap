@@ -1,9 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`renders without crashing 1`] = `
-Array [
+<DocumentFragment>
   <table
-    className="table table-bordered table-hover"
+    class="table table-bordered table-hover"
   >
     <thead>
       <tr>
@@ -13,22 +13,22 @@ Array [
           Lens Size
         </th>
         <th
-          className="text-right"
-          colSpan={3}
+          class="text-right"
+          colspan="3"
           scope="col"
         >
           12.6 mm
         </th>
         <th
-          className="text-right"
-          colSpan={3}
+          class="text-right"
+          colspan="3"
           scope="col"
         >
           13.2 mm
         </th>
         <th
-          className="text-right"
-          colSpan={3}
+          class="text-right"
+          colspan="3"
           scope="col"
         >
           13.7 mm
@@ -41,63 +41,63 @@ Array [
           Myopia
         </th>
         <th
-          className="text-right"
+          class="text-right"
           scope="col"
           title="Spherical Equivalent (SE) less than -6 dpt"
         >
           Low
         </th>
         <th
-          className="text-right"
+          class="text-right"
           scope="col"
           title="Spherical Equivalent (SE) between -6 dpt and -12 dpt"
         >
           Moderate
         </th>
         <th
-          className="text-right"
+          class="text-right"
           scope="col"
           title="Spherical Equivalent (SE) greater than -12 dpt"
         >
           High
         </th>
         <th
-          className="text-right"
+          class="text-right"
           scope="col"
           title="Spherical Equivalent (SE) less than -6 dpt"
         >
           Low
         </th>
         <th
-          className="text-right"
+          class="text-right"
           scope="col"
           title="Spherical Equivalent (SE) between -6 dpt and -12 dpt"
         >
           Moderate
         </th>
         <th
-          className="text-right"
+          class="text-right"
           scope="col"
           title="Spherical Equivalent (SE) greater than -12 dpt"
         >
           High
         </th>
         <th
-          className="text-right"
+          class="text-right"
           scope="col"
           title="Spherical Equivalent (SE) less than -6 dpt"
         >
           Low
         </th>
         <th
-          className="text-right"
+          class="text-right"
           scope="col"
           title="Spherical Equivalent (SE) between -6 dpt and -12 dpt"
         >
           Moderate
         </th>
         <th
-          className="text-right"
+          class="text-right"
           scope="col"
           title="Spherical Equivalent (SE) greater than -12 dpt"
         >
@@ -114,56 +114,56 @@ Array [
           Number of Eyes
         </th>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           5
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           6
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           8
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           6
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
       </tr>
       <tr
-        className="table-bordered"
+        class="table-bordered"
       >
         <td
-          colSpan={10}
+          colspan="10"
         />
       </tr>
       <tr>
@@ -174,47 +174,47 @@ Array [
           Average Vault (μm)
         </th>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           618
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           585
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           915
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           680
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
@@ -227,47 +227,47 @@ Array [
           Minimum Vault (μm)
         </th>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           350
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           300
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           570
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           430
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
@@ -280,56 +280,56 @@ Array [
           Maximum Vault (μm)
         </th>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           1100
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           1020
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           1290
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           880
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
       </tr>
       <tr
-        className="table-bordered"
+        class="table-bordered"
       >
         <td
-          colSpan={10}
+          colspan="10"
         />
       </tr>
       <tr>
@@ -340,47 +340,47 @@ Array [
           % Vault &lt; 250 (μm)
         </th>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
@@ -393,47 +393,47 @@ Array [
           % 250 &lt; Vault &lt; 500 (μm)
         </th>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           40
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           33.3
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           16.7
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
@@ -446,47 +446,47 @@ Array [
           % 500 &lt; Vault &lt; 750 (μm)
         </th>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           40
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           33.3
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           37.5
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           33.3
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
@@ -499,47 +499,47 @@ Array [
           % 750 &lt; Vault &lt; 1000 (μm)
         </th>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           16.7
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           25
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           50
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
@@ -552,85 +552,80 @@ Array [
           % 1000 &lt; Vault (μm)
         </th>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           20
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           16.7
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           37.5
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
         <td
-          className="text-right"
+          class="text-right"
         >
           0
         </td>
       </tr>
     </tbody>
-  </table>,
+  </table>
   <ul
-    className="list-inline"
+    class="list-inline"
   >
     <li
-      className="list-inline-item"
+      class="list-inline-item"
     >
       <strong>
         Angle to Angle (AtA): 
       </strong>
-      11.7
-       mm.
+      11.7 mm.
     </li>
     <li
-      className="list-inline-item"
+      class="list-inline-item"
     >
       <strong>
         Crystaline Lens Rise (CLR): 
       </strong>
-      0
-       mm.
+      0 mm.
     </li>
     <li
-      className="list-inline-item"
+      class="list-inline-item"
     >
       <strong>
         Number of matching Eyes: 
       </strong>
-      25
-      /
-      542
-      .
+      25/542.
     </li>
-  </ul>,
-]
+  </ul>
+</DocumentFragment>
 `;

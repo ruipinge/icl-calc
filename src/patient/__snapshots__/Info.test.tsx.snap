@@ -1,75 +1,71 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`renders without crashing 1`] = `
-Array [
+<DocumentFragment>
   <h4>
     Information
-  </h4>,
+  </h4>
   <div
-    className="form-row"
+    class="form-row"
   >
     <div
-      className="form-group col-md-4"
+      class="form-group col-md-4"
     >
       <label
-        htmlFor="fieldName"
+        for="fieldName"
       >
         Name
       </label>
       <input
-        autoComplete="off"
-        className="form-control"
+        autocomplete="off"
+        class="form-control"
         id="fieldName"
         name="patient.name"
-        onBlur={[Function]}
-        onChange={[Function]}
         placeholder="enter patient name"
         value="Pedro Duarte"
       />
     </div>
     <div
-      className="form-group col-md-2 offset-md-1"
+      class="form-group col-md-2 offset-md-1"
     >
       <label
-        htmlFor="fieldDateOfBirth"
+        for="fieldDateOfBirth"
       >
         Date of Birth
       </label>
       <input
-        autoComplete="off"
-        className="form-control"
+        autocomplete="off"
+        class="form-control"
         id="fieldDateOfBirth"
-        maxLength={10}
+        maxlength="10"
         name="patient.dateOfBirth"
-        onBlur={[Function]}
-        onChange={[Function]}
         placeholder="yyyy-mm-dd"
         value="2000-07-01"
       />
     </div>
     <div
-      className="form-group col-md-2"
+      class="form-group col-md-2"
     >
       <label
-        htmlFor="fieldAge"
+        for="fieldAge"
       >
         Age
       </label>
       <div
-        className="input-group"
+        class="input-group"
       >
         <input
-          className="form-control text-right"
-          disabled={true}
+          class="form-control text-right"
+          disabled=""
           id="fieldAge"
           name="age"
-          value={20}
+          value="20"
         />
         <div
-          className="input-group-append"
+          class="input-group-append"
         >
           <span
-            className="input-group-text"
+            class="input-group-text"
             title="years"
           >
             years
@@ -78,20 +74,17 @@ Array [
       </div>
     </div>
     <div
-      className="form-group col-md-2 offset-md-1"
+      class="form-group col-md-2 offset-md-1"
     >
       <label
-        htmlFor="fieldEye"
+        for="fieldEye"
       >
         Eye
       </label>
       <select
-        className="form-control"
+        class="form-control"
         id="fieldEye"
         name="patient.eye"
-        onBlur={[Function]}
-        onChange={[Function]}
-        value="right"
       >
         <option
           value=""
@@ -110,6 +103,6 @@ Array [
         </option>
       </select>
     </div>
-  </div>,
-]
+  </div>
+</DocumentFragment>
 `;

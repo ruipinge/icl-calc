@@ -1,11 +1,8 @@
-import TestRenderer, { act } from 'react-test-renderer';
 import { RI } from './formulas.test';
 import { Regression } from '.';
+import { render } from '@testing-library/react';
 
 it('renders without crashing', () => {
-  let renderer: TestRenderer.ReactTestRenderer;
-  act(() => {
-    renderer = TestRenderer.create(<Regression {...RI} />);
-  });
-  expect(renderer!.toJSON()).toMatchSnapshot();
+  const { asFragment } = render(<Regression {...RI} />);
+  expect(asFragment()).toMatchSnapshot();
 });

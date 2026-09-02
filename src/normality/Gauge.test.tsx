@@ -1,5 +1,5 @@
 import { Gauge, buildZones, quantile } from './Gauge';
-import { create, act as testAct } from 'react-test-renderer';
+import { render } from '@testing-library/react';
 
 const DATASET = [
   1,
@@ -83,12 +83,7 @@ it('builds zones correctly', () => {
   ]);
 });
 
-it('renders without crashing', async () => {
-  let tree;
-  await testAct(async () => {
-    tree = create(<Gauge value={4} values={DATASET} />);
-  });
-
-  // @ts-ignore
-  expect(tree.toJSON()).toMatchSnapshot();
+it('renders without crashing', () => {
+  const { asFragment } = render(<Gauge value={4} values={DATASET} />);
+  expect(asFragment()).toMatchSnapshot();
 });
