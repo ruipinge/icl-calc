@@ -11,15 +11,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # NOTE on Node version: .nvmrc pins Node 16 because `npm run build`
-      # fails on 18/20/22 (ERR_PACKAGE_PATH_NOT_EXPORTED from an old
-      # postcss dependency) - see Phase 0. That constraint is build-only:
-      # lint and test have been verified to pass identically on Node 16,
-      # 18, 20 and 22. This job does not build, so it intentionally does
-      # NOT track .nvmrc and instead pins Node 20 directly, because Node
-      # 16 is EOL and does not install reliably via actions/setup-node on
-      # current ubuntu-latest runners. The `deploy` job below still uses
-      # Node 16 since it does build.
+      # NOTE on Node version: this job's Node 20 pin is load-bearing, not
+      # incidental, as of Phase 3a task 3. `npm test` runs Vitest, which
+      # declares engines.node "^18.0.0 || >=20.0.0" and crashes immediately
+      # on Node 16 (`crypto$2.getRandomValues is not a function`) rather
+      # than failing gracefully - see the Phase 3a plan and task-3 fix
+      # report. Lint and typecheck have no such floor and would run on 16
+      # too, but there is no reason to split them out just to chase a
+      # version this job doesn't otherwise need. This is unrelated to the
+      # separate, older Node-16 build constraint below (`npm run build`
+      # under CRA/webpack threw ERR_PACKAGE_PATH_NOT_EXPORTED above Node
+      # 16 - see Phase 0): this job does not build, so that constraint
+      # never reached it either way.
       - uses: actions/setup-node@v4
         with:
           node-version: '20'

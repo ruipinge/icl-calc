@@ -6,7 +6,7 @@
 
 **Architecture:** React 17 and `react-router-dom` 5 are **deliberately held constant** — this phase changes the build tool and nothing else, so that if a value moves the cause is unambiguous. The golden master captured in Phase 1 is the gate: a build-tool swap that changes a rendered number is a failure, not a surprise.
 
-**Tech Stack:** Vite 5+ · Vitest · TypeScript 5 · React 17 (unchanged) · react-router-dom 5 (unchanged)
+**Tech Stack:** Vite `^4` (build) · Vitest `1.x` (tests) · TypeScript 5 · React 17 (unchanged) · react-router-dom 5 (unchanged). The Vite/Vitest split-version pin is deliberate, not stale — see Task 3 Step 1.
 
 **Spec:** `docs/superpowers/specs/2026-08-30-icl-calc-modernization-design.md`
 
@@ -238,6 +238,23 @@ git commit -m "build(vite): replace Create React App's build with Vite"
 ```bash
 npm i -D vitest @vitest/coverage-v8 jsdom
 ```
+
+**Pin Vitest to `1.x`, deliberately.** `npm i -D vitest` with no version resolves to whatever is
+current (Vitest 4.x, as of task 3's execution), and that must not be accepted: Vitest 2+ depends
+on `vite@^5` as a **hard**, bundled dependency for test transforms, regardless of the top-level
+Vite version this project's build uses. Since Task 2 pinned the build to Vite `^4` (see Global
+Constraints and the Task 2 section), letting the test runner drag in Vite 5 would mean two Vite
+majors present in one dependency tree during a phase whose entire point is isolating exactly one
+variable (the build tool) per change. Vitest `1.x` is the last major built on Vite 4, so
+`npm i -D vitest@^1 @vitest/coverage-v8@^1 jsdom` (or pin the installed versions in `package.json`
+afterward) keeps that isolation.
+
+This is **not** a Node-version workaround — an earlier version of this note wrongly attributed the
+pin to Node 16 support. It doesn't help there: Vitest 1.x declares
+`engines.node: "^18.0.0 || >=20.0.0"` and crashes on Node 16 regardless
+(`TypeError: crypto$2.getRandomValues is not a function`), which is exactly why `.nvmrc` was
+bumped to `v20` in task 3 rather than left at the old CRA-era `v16` — see the task-3 fix report.
+Run `npm test` on Node ≥18 for this task and after.
 
 - [ ] **Step 2: Add the `test` block to `vite.config.ts`**
 

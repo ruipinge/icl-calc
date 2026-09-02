@@ -23,6 +23,10 @@ export default defineConfig(({ mode }) => ({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
+    // CRA's Jest preset set resetMocks: true; this config does not, and
+    // Vitest defaults to false too. Currently inert - both spyOn usages
+    // are single-test files with an explicit mockRestore() - but don't
+    // assume Jest-style auto-reset between tests if that changes.
     // Vitest's pretty-format drops Jest 26's 'Object {' / 'Array [' prefixes
     // by default; restore them so migrating runner does not churn every
     // plain-object/array snapshot in the suite.
