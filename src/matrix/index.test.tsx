@@ -1,11 +1,14 @@
 import { Matrix, getNumEyes } from '.';
 
-import TestRenderer from 'react-test-renderer';
+import TestRenderer, { act } from 'react-test-renderer';
 import { FILTER as filter } from './data.test';
 
 it('renders without crashing', () => {
-  const tree = TestRenderer.create(<Matrix ata={11.7} clr={0} />).toJSON();
-  expect(tree).toMatchSnapshot();
+  let renderer: TestRenderer.ReactTestRenderer;
+  act(() => {
+    renderer = TestRenderer.create(<Matrix ata={11.7} clr={0} />);
+  });
+  expect(renderer!.toJSON()).toMatchSnapshot();
 });
 
 it('calculates number of eyes', () => {

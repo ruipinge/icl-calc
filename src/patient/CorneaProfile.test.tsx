@@ -2,10 +2,12 @@ import { CorneaProfile } from './CorneaProfile';
 import { Formik } from 'formik';
 import { ICLSchema } from '../ICLSchema';
 import { PreviousSurgery } from '../types';
-import TestRenderer from 'react-test-renderer';
+import TestRenderer, { act } from 'react-test-renderer';
 
 it('renders without crashing', () => {
-  const tree = TestRenderer.create(
+  let renderer: TestRenderer.ReactTestRenderer;
+  act(() => {
+    renderer = TestRenderer.create(
     <Formik
       initialValues={{
         corneaProfile: {
@@ -33,6 +35,7 @@ it('renders without crashing', () => {
         />
       )}
     </Formik>
-  ).toJSON();
-  expect(tree).toMatchSnapshot();
+    );
+  });
+  expect(renderer!.toJSON()).toMatchSnapshot();
 });

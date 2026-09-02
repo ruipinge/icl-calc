@@ -2,13 +2,15 @@ import { Formik } from 'formik';
 import { ICLSchema } from '../ICLSchema';
 import { Info } from './Info';
 import { PatientInfo } from '../types';
-import TestRenderer from 'react-test-renderer';
+import TestRenderer, { act } from 'react-test-renderer';
 
 it('renders without crashing', () => {
   // 2020-07-01
   const spy = vi.spyOn(Date, 'now').mockImplementation(() => 1593561600000);
 
-  const tree = TestRenderer.create(
+  let renderer: TestRenderer.ReactTestRenderer;
+  act(() => {
+    renderer = TestRenderer.create(
     <Formik
       initialValues={{
         patient: new PatientInfo({
@@ -24,8 +26,9 @@ it('renders without crashing', () => {
         <Info errors={{}} values={values} touched={{}} {...otherProps} />
       )}
     </Formik>
-  ).toJSON();
-  expect(tree).toMatchSnapshot();
+    );
+  });
+  expect(renderer!.toJSON()).toMatchSnapshot();
 
   spy.mockRestore();
 });

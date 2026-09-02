@@ -5,12 +5,15 @@ import {
   getVaultMins
 } from './VaultStatRows';
 
-import TestRenderer from 'react-test-renderer';
+import TestRenderer, { act } from 'react-test-renderer';
 import { FILTER as filter } from './data.test';
 
 it('renders without crashing', () => {
-  const tree = TestRenderer.create(<VaultStatRows ata={0} clr={0} />).toJSON();
-  expect(tree).toMatchSnapshot();
+  let renderer: TestRenderer.ReactTestRenderer;
+  act(() => {
+    renderer = TestRenderer.create(<VaultStatRows ata={0} clr={0} />);
+  });
+  expect(renderer!.toJSON()).toMatchSnapshot();
 });
 
 it('calculates vault size averages', () => {

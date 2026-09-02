@@ -2,6 +2,11 @@
 
 exports[`renders without crashing 1`] = `
 <div
+  ref={
+    Object {
+      "current": null,
+    }
+  }
   style={
     Object {
       "marginLeft": "71px",

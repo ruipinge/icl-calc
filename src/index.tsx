@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react';
 import App from './App';
 import { Integrations } from '@sentry/tracing';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 if (import.meta.env.PROD) {
   Sentry.init({
@@ -20,4 +20,7 @@ if (import.meta.env.PROD) {
   });
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const container = document.getElementById('root');
+if (container) {
+  createRoot(container).render(<App />);
+}
