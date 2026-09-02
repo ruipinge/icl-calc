@@ -15,7 +15,15 @@ export default defineConfig(({ mode }) => ({
     // the public gh-pages path and Sentry (src/index.tsx) fetches them
     // for production error stack traces (issue #42 tracks reading that
     // backlog) - leaving this off silently drops a live capability.
-    sourcemap: true
+    sourcemap: true,
+    // Pinned explicitly, matching Vite 4's own default ('modules'), so a
+    // future Vite 5/6 upgrade cannot move this floor silently - it would
+    // need to touch this line, which someone then has to review. The owner
+    // decided (final review, Phase 3a Task 6) to accept an ESM-only floor
+    // at these four versions; see docs/superpowers/specs/
+    // 2026-08-30-icl-calc-modernization-design.md for the consequences
+    // (autoprefixer is gone, below-floor renders blank, no CI gate for it).
+    target: ['chrome87', 'edge88', 'firefox78', 'safari14']
   },
   define: {
     // The Footer snapshot pins v0.0.t. Sourcing the real version in test

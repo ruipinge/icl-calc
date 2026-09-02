@@ -720,34 +720,55 @@ and was deliberately left in place pending a separate decision.
     exit 0; `npm run build` exit 0; `SUBJECT_ONLY=1` L2 setup + replay, 2
     passed, including "the build under test reproduces the oracle exactly."
     `src/golden/expected.json` and `src/data.csv` unchanged.
-  - **The browser support floor moved, silently, and the decision to accept
-    that is still pending with the owner (final review, Task 6).**
-    `vite.config.ts` sets no `build.target`, so Vite 4 falls back to its
-    default, `'modules'` — esbuild's shorthand for `chrome87, edge88,
-    firefox78, safari14` (all from late 2020/early 2021), each targeted
-    unconditionally, not resolved from `package.json`'s `browserslist`
-    block. The oracle instead shipped `react-scripts`' classic build: ES5
-    output plus a `<script nomodule>` fallback bundle, covering browsers
-    far older than 2020, degrading gracefully rather than failing outright.
-    The **effect** is the difference in kind: the oracle's ES5 path ran
-    (slower, unoptimized) on a pre-2020 browser, while a browser below
-    Vite's `'modules'` cutoff gets a blank page — `<script type="module">`
-    is simply skipped, with no fallback bundle to fall through to.
+  - **The browser support floor moved, and the owner has decided to accept
+    it (final review, Phase 3a Task 6): ESM-only at `chrome87`, `edge88`,
+    `firefox78`, `safari14` (all late 2020/early 2021).** This was already
+    Vite 4's implicit default (`build.target: 'modules'`, esbuild's
+    shorthand for the same four versions) when `vite.config.ts` set no
+    `build.target` at all. It is now **pinned explicitly** —
+    `target: ['chrome87', 'edge88', 'firefox78', 'safari14']` in
+    `vite.config.ts`'s `build` block — specifically so a future Vite 5 or
+    6 upgrade cannot move this floor silently; any change to it is now a
+    visible diff line someone has to justify, not an implicit default that
+    shifts underneath the project. Confirmed the pin is a no-op for the
+    current toolchain: built before and after adding it and diffed
+    `build/` recursively (`diff -rq`) — every asset, including hashes, is
+    byte-identical.
+    The oracle instead shipped `react-scripts`' classic build: ES5 output
+    plus a `<script nomodule>` fallback bundle, covering browsers far older
+    than 2020, degrading gracefully rather than failing outright. The
+    **effect** is the difference in kind: the oracle's ES5 path ran
+    (slower, unoptimized) on a pre-2020 browser, while a browser below the
+    pinned floor gets a blank page — `<script type="module">` is simply
+    skipped, with no fallback bundle to fall through to. This is the
+    accepted, permanent behaviour below the floor, not a transitional gap.
     Separately, **autoprefixer is no longer in the dependency tree** —
     `react-scripts` bundled it via its PostCSS config; Vite doesn't add one
     unless the project does. A reviewer counted `-webkit-` occurrences in
     the built CSS: 570 in the oracle's `build/`, 38 in Phase 3a's — the
-    remaining 38 are prefixes authored directly in source, not
-    autoprefixer output. **`package.json`'s `browserslist` block
-    (`"production"`/`"development"`, just above `"prettier"`) is now dead
-    — nothing in the Vite/esbuild/PostCSS toolchain reads it.** It cannot
-    be annotated in place (`package.json` is parsed as strict JSON, no
-    comments permitted); this paragraph is that annotation. **Explicitly
-    out of scope for Phase 3a: adding `@vitejs/plugin-legacy` or setting
-    `build.target` to restore the old floor.** Whether this tool must keep
-    supporting pre-2021 browsers is a product decision for the owner, raised
-    with them separately (outside this document) after this review; this
-    bullet exists so the change is recorded and owner-visible rather than
-    discovered later as an unexplained regression.
+    remaining 38 are prefixes authored directly in source, not autoprefixer
+    output. In practice this means any CSS feature needing a `-webkit-` (or
+    other vendor) prefix to work on the pinned floor's oldest browsers must
+    now be prefixed by hand in source, or accepted as broken there — nothing
+    in the build adds it automatically.
+    **`package.json`'s dead `browserslist` block (`"production"`/
+    `"development"`, formerly just above `"prettier"`) has been deleted**,
+    not left in place — confirmed nothing else in the repo reads it
+    (`grep -rn browserslist`, excluding `node_modules` and the lockfile,
+    now matches only this paragraph). It predated Vite and autoprefixer's
+    removal; nothing in the Vite/esbuild/PostCSS toolchain ever read it.
+    **Neither CI gate can detect a regression against this floor.** L1
+    (`npm test`) runs in jsdom, not a real browser. L2 (Playwright) drives
+    a current Chromium, which is always far above the pinned floor
+    regardless of what `target` says — Playwright has no mechanism here to
+    exercise `chrome87`/`edge88`/`firefox78`/`safari14` specifically, so a
+    change that silently raised the floor further (e.g. a later
+    `build.target` bump) would still pass both gates. Anyone relying on the
+    floor holding must check `vite.config.ts`'s `target` directly, not
+    infer it from green CI. **Explicitly out of scope for Phase 3a: adding
+    `@vitejs/plugin-legacy` or widening `build.target` to restore the old,
+    pre-2021 floor.** This bullet exists so the decision and its
+    consequences are recorded and owner-visible, not discovered later as
+    an unexplained regression.
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.
