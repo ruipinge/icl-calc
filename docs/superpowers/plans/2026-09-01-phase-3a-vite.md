@@ -320,6 +320,22 @@ git commit -m "test(vitest): replace Jest with Vitest"
 npm uninstall react-scripts raw.macro @types/jest
 ```
 
+- [ ] **Step 1b: Keep ESLint working — removing react-scripts breaks it**
+
+`package.json`'s `eslintConfig.extends` is `["react-app", "react-app/jest"]`, and **`eslint-config-react-app` is not a direct dependency** — it arrives transitively through `react-scripts`. Uninstalling react-scripts therefore breaks `npm run lint` outright with *"Failed to load config react-app to extend from"*, and Lint is a CI gate that runs before everything else.
+
+Confirm the breakage first (`npm run lint` should fail after Step 1), then fix it the low-risk way:
+
+```bash
+npm i -D eslint-config-react-app
+```
+
+and drop `"react-app/jest"` from `extends` — it configures Jest globals, which no longer apply now that the suite runs on Vitest.
+
+**Keep `plugins: ["prettier"]` and the existing `rules` block exactly as they are.** The `sort-imports` rule in particular is enforced across the whole codebase; relaxing or reordering it would produce a wave of unrelated lint churn in the middle of a migration whose entire value is that changes are attributable.
+
+Pinning the CRA-flavoured config as an explicit dependency preserves current lint behaviour precisely. Replacing it with a modern ESLint setup is worthwhile but is **separate work** — doing it here would mix a lint-rule migration into a build-tool migration.
+
 - [ ] **Step 2: TypeScript 4.1 → 5**
 
 ```bash
