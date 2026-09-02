@@ -11,25 +11,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # NOTE on Node version: this job's Node 20 pin is load-bearing, not
-      # incidental, as of Phase 3a task 3. `npm test` runs Vitest, which
-      # declares engines.node "^18.0.0 || >=20.0.0" and crashes immediately
-      # on Node 16 (`crypto$2.getRandomValues is not a function`) rather
-      # than failing gracefully - see the Phase 3a plan and task-3 fix
-      # report. Lint and typecheck have no such floor and would run on 16
-      # too, but there is no reason to split them out just to chase a
-      # version this job doesn't otherwise need. This is unrelated to the
-      # separate, older Node-16 build constraint below (`npm run build`
-      # under CRA/webpack threw ERR_PACKAGE_PATH_NOT_EXPORTED above Node
-      # 16 - see Phase 0): this job does not build, so that constraint
-      # never reached it either way.
+      # NOTE on Node version: CRA/webpack 4 is gone as of Phase 3a task 4, so
+      # the old Node-16-only build constraint (ERR_PACKAGE_PATH_NOT_EXPORTED
+      # above Node 16 - see Phase 0) no longer exists, and every job in this
+      # workflow now runs on the single version pinned in .nvmrc. That
+      # version floor is set by Vitest, which declares engines.node
+      # "^18.0.0 || >=20.0.0" and crashes immediately on Node 16
+      # (`crypto$2.getRandomValues is not a function`) rather than failing
+      # gracefully - see the Phase 3a plan and task-3 fix report. Node 22 was
+      # walked and verified (lint, typecheck, test, build, L2 replay all
+      # green) before being adopted - see the task-5 report.
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
+      # --legacy-peer-deps: the CRA-era "@types/node": "^12.20.4" dependency
+      # conflicts with Vite's peerOptional @types/node ">=14" even with
+      # react-scripts gone - the same friction Tasks 2-4 already hit and
+      # resolved the same way (see task-4's commit message). Re-pointing
+      # @types/node at a newer version to avoid this flag is out of scope
+      # here - the dependencies/devDependencies cleanup is #50.
       - name: Install Dependencies
-        run: npm ci --prefer-offline
+        run: npm ci --prefer-offline --legacy-peer-deps
 
       - name: Lint
         run: npm run lint
@@ -120,31 +124,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # L2 needs a real production build of this branch to replay against.
-      # Same Node-16 constraint as the `deploy` job below - see the NOTE in
-      # the `test` job above and Phase 0.
-      - name: Setup Node 16 (build)
-        uses: actions/setup-node@v4
+      # L2 needs a real production build of this branch to replay against,
+      # and Playwright needs Node 18+. Both now run on the single version
+      # pinned in .nvmrc - see the NOTE in the `test` job above. The old
+      # split (Node 16 to build, then Node 20 for Playwright) existed only
+      # because CRA's build required 16 while Playwright required 18+; that
+      # build constraint is gone as of Phase 3a task 4.
+      - uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version-file: '.nvmrc'
           cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            e2e/package-lock.json
 
+      # --legacy-peer-deps: see the same step in the `test` job above.
       - name: Install Dependencies
-        run: npm ci --prefer-offline
+        run: npm ci --prefer-offline --legacy-peer-deps
 
       - name: Build
         run: npm run build
-
-      # Playwright needs Node 18+. Switching versions mid-job (rather than
-      # splitting into two jobs with an artifact hand-off) keeps this
-      # simple and guarantees the build/ replayed against is the one just
-      # produced above.
-      - name: Setup Node 20 (Playwright)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: e2e/package-lock.json
 
       - name: Install e2e dependencies
         run: npm ci --prefer-offline
@@ -206,13 +205,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # See the NOTE in the `test` job above - every job now runs on the
+      # single version pinned in .nvmrc.
       - uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
+      # --legacy-peer-deps: see the same step in the `test` job above.
       - name: Install Dependencies
-        run: npm ci --prefer-offline
+        run: npm ci --prefer-offline --legacy-peer-deps
 
       - name: Version
         env:
