@@ -18,7 +18,10 @@ TODO: write some instructions
 
 1. Install [Node.js](https://nodejs.org/en/download/current/)
 2. Clone git repository: `git clone git@github.com:ruipinge/icl-calc.git && cd icl-calc`
-3. Install npm dependencies: `npm ci`
+3. Install npm dependencies: `npm ci --legacy-peer-deps` (required because
+   `@sentry/react@6.19.7` and `react-ga@3.3.1` both declare peer ranges that
+   stop at React 18, so a bare `npm ci` fails with `ERESOLVE` on React 19; a
+   plain `npm ci` will work again once #50 removes both packages)
 4. Run the local server: `npm start`
 
 Run tests: `npm test` (Vitest; `vitest run --coverage` under the hood, so it already runs once with a coverage report and exits — no `--watchAll=false` flag needed. That was a Jest/CRA flag and Vitest rejects unknown flags. For watch mode, run `npx vitest` directly instead.)

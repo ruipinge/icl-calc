@@ -785,6 +785,16 @@ and was deliberately left in place pending a separate decision.
   real production build and loading it in a real Chromium instance rather
   than by a green suite — full Patient form rendered, nav between
   Patient/Matrix worked, zero console errors.
+  `createRoot`'s `if (container)` guard, added with the migration, had
+  turned a missing/renamed `#root` from the old `ReactDOM.render`'s thrown
+  `Target container is not a DOM element` (captured by `Sentry.init` above
+  it) into a silent blank page with zero telemetry. Restored the loud
+  failure with an explicit `else { throw new Error(...) }`. This matters
+  more now that the owner has decided to keep Sentry rather than remove it
+  (#50 re-scoped from removal to modernisation) — production error
+  reporting is a capability being invested in, not retired. Verified by
+  hand (this file is coverage-excluded and no gate reaches it): built,
+  served, confirmed the app still mounts normally.
   - **A third test was found asserting nothing.**
     `src/normality/Gauge.test.tsx` snapshotted an empty `<div>` — 17
     lines — because `react-test-renderer` never populates host refs;
@@ -804,6 +814,45 @@ and was deliberately left in place pending a separate decision.
     toolchain underneath the suite and checking the result against an
     independent reference (the golden master, or in Gauge's case,
     `buildZones()`'s own assertions).
+  - **`src/normality/linear-gauge/index.ts`'s coverage exclusion removed.**
+    `vite.config.ts` had excluded it from the start, but the Gauge
+    conversion above constructs a real `LinearGauge` for the first time in
+    the project's history — the exclusion was now hiding coverage this
+    phase earned, not coverage that was still structurally unreachable.
+    Removed from `coverage.exclude`. Effect: the file itself goes from
+    unmeasured to **100% statements / 100% branches / 100% functions /
+    100% lines**; the repo-wide total moves from 99.75% stmts / 90.39%
+    branch / 98.87% funcs to **99.78% stmts / 91.26% branch / 99% funcs**
+    (both figures include the `patient.eye` and `previousSurgery`
+    assertions added in this pass).
+  - **`src/normality/Histogram.tsx:17`'s zero-argument `useRef()` was
+    fixed, not "None" as this phase's own pre-scan table said.** The
+    migration-surface table in
+    `docs/superpowers/plans/2026-09-02-phase-3b-react19.md` claimed the
+    only zero-argument `useRef()` in the codebase was `Gauge.tsx`, already
+    passing `null`. It missed `Histogram.tsx` because that file is
+    coverage-excluded and the scan wasn't exhaustive over excluded files;
+    `useRef<am4charts.XYChart>()` was a type error under `@types/react@19`
+    and was caught instead by `tsc`, in the fix round (`f7dba09`) that
+    followed the initial migration commit — changed to
+    `useRef<am4charts.XYChart>(undefined)` to preserve the prior
+    `MutableRefObject<T | undefined>` semantics. Table corrected. Along
+    with the Gauge conversion above, `Histogram.tsx` is one of only two
+    production files this phase touched outside the `react-test-renderer`
+    → `@testing-library/react` suite conversions themselves.
+  - **`src/normality/__snapshots__/index.test.tsx.snap` is a fossil, left
+    alone.** It snapshots `"Normality Graphs are coming soon..."` for
+    `src/normality/index.test.tsx`'s permanently `it.skip`-ped test, whose
+    own `asFragment()` assertion is commented out — so nothing currently
+    exercises this snapshot at all, and it does not participate in any
+    gate. Left as-is deliberately: if a future phase un-skips the test
+    without regenerating the snapshot first, the mismatch (real
+    `Normality` markup vs. this placeholder string) will look exactly like
+    a regression introduced by whatever change prompted the un-skip, when
+    it is really just this stale fixture catching up. Its comment ("While
+    using amcharts 4 that isn't supported by jest") is also stale — the
+    runner has been Vitest since Phase 3a — corrected in place to name
+    Vitest, without touching the skip itself.
   - **A new blind spot this phase introduced.** `asFragment()` does not
     serialise event listeners, where `TestRenderer.toJSON()` recorded
     `onChange={[Function]}` on every form field. Confirmed by diffing the
@@ -826,8 +875,34 @@ and was deliberately left in place pending a separate decision.
     posterior K, no prior surgery), so today the field changes no
     calculator output regardless of whether its handler fires — `git
     show f89eafc^:src/golden/inputs.json` rows 03/04 record this as known
-    behaviour, not a defect. Not fixed here; recorded so a future phase
-    doesn't rediscover it as an unexplained gap.
+    behaviour, not a defect.
+    **The loss is not handlers alone — two `<select>` values also went
+    structurally invisible.** React sets a `<select>`'s selection as a DOM
+    *property*, not a markup attribute, so `asFragment()` cannot serialise
+    it either. `Info.test.tsx.snap:88-93` previously serialised
+    `value="right"` on `<select name="patient.eye">`; the current snapshot
+    has no `value` and no `selected` on any `<option>`.
+    `CorneaProfile.test.tsx.snap:341-344` previously serialised
+    `value="None"` on `corneaProfile.previousSurgery`; likewise gone. For
+    `patient.eye` this meant **nothing at any layer verified the Eye
+    dropdown works or shows the correct eye**: it feeds no formula (so
+    `expected.json` never captures it), and while L2 drives it
+    (`e2e/lib/app.ts:80-82`), `readAll` never reads it back — in a
+    surgical-planning tool, left versus right had been left uncovered.
+    **Fixed in this pass:** `src/patient/Info.test.tsx` now asserts
+    `getByLabelText('Eye')` holds `'right'` (the value `initialValues`
+    sets), and `src/patient/CorneaProfile.test.tsx` now asserts the
+    `corneaProfile.previousSurgery` select (queried by
+    `container.querySelector('select[name="..."]')`, since its `<label
+    htmlFor>` has no matching `id` on the Formik `Field` to resolve via
+    `getByLabelText`) holds `'None'`. Both assertions were proven capable
+    of failing — temporarily changed to an incorrect expected value, ran
+    red, reverted, ran green — before being left in place. This closes the
+    `patient.eye` gap; the handler-loss gap for `patient.name` and
+    `corneaProfile.previousSurgery`, and `corneaProfile.previousSurgery`'s
+    independent no-op-branch gap (#41), remain open. Not fixed here beyond
+    the two value assertions above; recorded so a future phase doesn't
+    rediscover the rest as an unexplained gap.
   - **`--legacy-peer-deps` came back into the CI workflow**, deliberately,
     for the same reason Task 1 needed it locally: `@sentry/react@6.19.7`
     (`react: ^15 || ^16 || ^17 || ^18`) and `react-ga@3.3.1`

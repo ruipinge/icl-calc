@@ -53,8 +53,14 @@ export default defineConfig(({ mode }) => ({
         'src/**/*.d.ts',
         'src/index.tsx',
         'src/normality/Histogram.tsx',
-        'src/normality/index.tsx',
-        'src/normality/linear-gauge/index.ts'
+        'src/normality/index.tsx'
+        // src/normality/linear-gauge/index.ts is intentionally NOT excluded:
+        // Phase 3b's Gauge.tsx conversion to @testing-library/react
+        // constructs a real LinearGauge for the first time in the
+        // project's history (see docs/superpowers/specs/
+        // 2026-08-30-icl-calc-modernization-design.md, Phase 3b record),
+        // so this file now has genuine, earned coverage that the old
+        // exclusion would have hidden.
       ]
     }
   }

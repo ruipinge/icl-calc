@@ -1,7 +1,7 @@
 import { Normality } from '.';
 import { render } from '@testing-library/react';
 
-// While using amcharts 4 that isn't supported by jest
+// While using amcharts 4 that isn't supported by Vitest's jsdom environment
 it.skip('renders without crashing', () => {
   // const { asFragment } =
   render(

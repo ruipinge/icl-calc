@@ -23,4 +23,12 @@ if (import.meta.env.PROD) {
 const container = document.getElementById('root');
 if (container) {
   createRoot(container).render(<App />);
+} else {
+  // The old ReactDOM.render(<App />, document.getElementById('root'))
+  // threw "Target container is not a DOM element" when #root was missing
+  // or renamed, and Sentry.init above captured it. Preserve that loud
+  // failure explicitly - createRoot's `if (container)` guard would
+  // otherwise silently swallow the same condition into a blank page with
+  // zero telemetry.
+  throw new Error('Failed to mount: no DOM element with id "root" was found.');
 }
