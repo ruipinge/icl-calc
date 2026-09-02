@@ -23,6 +23,8 @@ TODO: write some instructions
 
 Run tests: `npm test` (or `npm test -- --watchAll=false` to build coverage report from scratch)
 
+`prettier` is pinned to an exact version (not a range) in `package.json` — a looser range let it drift on the last lockfile regeneration and reformat files this repo never touched, so bump it deliberately, not implicitly.
+
 ## Tech
 
 - [JavaScript](https://www.javascript.com/), [TypeScript](https://www.typescriptlang.org/)
