@@ -44,7 +44,7 @@ it('resets form when clicking reset button', async () => {
 });
 
 // While using amcharts 4 that isn't supported by jest
-xit('switches to Biometric Normality tab when clicked', async () => {
+it.skip('switches to Biometric Normality tab when clicked', async () => {
   renderWithRouter(<ICLContainer />);
 
   await waitFor(() => {
@@ -84,7 +84,7 @@ it('renders Patient form on # route', () => {
 });
 
 // While using amcharts 4 that isn't supported by jest
-xit('renders Biometric Normality on #normality route', () => {
+it.skip('renders Biometric Normality on #normality route', () => {
   const { asFragment } = renderWithRouter(<ICLContainer />, '#normality');
   expect(asFragment()).toMatchSnapshot();
 });

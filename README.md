@@ -21,7 +21,9 @@ TODO: write some instructions
 3. Install npm dependencies: `npm ci`
 4. Run the local server: `npm start`
 
-Run tests: `npm test` (or `npm test -- --watchAll=false` to build coverage report from scratch)
+Run tests: `npm test` (Vitest; `vitest run --coverage` under the hood, so it already runs once with a coverage report and exits — no `--watchAll=false` flag needed. That was a Jest/CRA flag and Vitest rejects unknown flags. For watch mode, run `npx vitest` directly instead.)
+
+`prettier` is pinned to an exact version (not a range) in `package.json` — a looser range let it drift on the last lockfile regeneration and reformat files this repo never touched, so bump it deliberately, not implicitly.
 
 ## Tech
 

@@ -263,6 +263,23 @@ bookmarked link. Hence the redirect shim and its test.
 
 ### 6.2 Blind spots the golden master does not cover (final review, Phase 1)
 
+**This is no longer a theoretical gap. Phase 3a hit it once — see §10's Phase
+3a result for the full account.** `index.html`'s `<meta name="msapplication-config"
+content="/browserconfig.xml">` shipped without its `/icl-calc/` base prefix,
+because the mechanical `%PUBLIC_URL%/` → `/` substitution used to port
+`public/index.html` to the Vite-root `index.html` covers root-absolute
+attribute values by pattern, and Vite's own dev/build asset-URL rewriting
+only touches attributes it treats as asset references (`link[href]`,
+`script[src]`) — `meta[content]` is neither. Both golden-master gates were
+green throughout: `readAll()` captures ICL Power, Matrix, Regression and
+Normality values, never page `<head>` metadata, exactly as predicted below.
+The defect was caught only by the Phase 3a checklist item this section
+already called for — a human diffing every built `<head>` tag against the
+oracle's — not by CI. Say this plainly: the blind spot is real, it produces
+exactly the class of silent failure this document warned about, and the
+only thing that closed it was doing the manual check the spec already
+mandated. Fixed in `4a64607` before Task 2 was accepted.
+
 Both gates - L1 and L2 - are blind to a class of regression that changes no
 computed number:
 
@@ -295,6 +312,65 @@ that can cause them**, so that "the golden master is green" is never read as
   `#matrix`-style URL still resolves to the Matrix tab (the redirect shim's
   own test, §6.1, covers the shim mechanically; this is the manual
   confirmation that a real old-style bookmark still works end to end).
+
+### 6.3 Versioning (recorded Phase 3a, Task 1; version target confirmed by owner)
+
+`semantic-release` runs in the `deploy` job of `.github/workflows/main.yml`,
+master-only, gated behind `test`, `e2e-replay` and `!cancelled()` (§6, §7.1).
+On a qualifying push it reads the conventional-commit history since the last
+release tag, computes the next semver, writes it into `package.json`, commits
+that back with `[skip ci]`, and cuts a GitHub release. `package.json` carries
+`"private": true`, so nothing is ever published to npm — only the version
+bump and the GitHub release happen. The bump is therefore automatic in
+mechanism but human-gated in practice: per §7.1 nothing lands on `master`
+until Phase 5's single merge, so it fires exactly once, on that merge.
+
+**As things stand, that merge would ship 1.8.0.** The only release-triggering
+commit on `modernize` so far is `feat(ci): add the typecheck, fixture-guard
+and L2 replay gates` (`0bdc935`, PR #62) — the default semantic-release
+analyser bumps `minor` for any `feat` regardless of scope, so CI-only tooling
+work queued a minor bump it should not have. That commit is merged and not
+worth rewriting history over; from here, tooling commits should use `ci:` or
+`chore(ci):` so the version continues to track user-facing change, not build
+plumbing.
+
+**Agreed target: 2.0.0, decided deliberately, not provisional.** The owner
+has confirmed this. The declaration point is Phase 3c (issue #49), where the
+genuine breaking change lives: `hashType="noslash"` does not exist in
+react-router 6/7 (§6.1), so hash URLs move from `#matrix` to `#/matrix`. Even
+with the redirect shim in place, this breaks every bookmarked or shared deep
+link that predates it. But the version target is not decided on that break
+alone — it is decided on the shape of the whole programme: build tool
+(CRA → Vite), runtime (React 17 → 19), chart library (amCharts → hand-rolled
+SVG) and telemetry (Sentry/GA removed) all change across Phases 3–4b. For a
+clinical tool, a major version bump is the correct signal for that: it tells
+the owner, and anyone auditing a deploy, to re-verify rather than assume
+continuity with 1.x behaviour.
+
+**Mechanically, the commit that lands the router migration needs
+`BREAKING CHANGE:` in its footer, or `!` after the type** — that is the only
+mechanism in this pipeline capable of producing a major bump.
+
+**This must survive squash-merging.** Per §7.2, each phase branch is
+squash-merged into `modernize`, and semantic-release reads commit history on
+`master` after the final `modernize` → master merge (§7.2 step 7) — the
+squash commit message is what it actually sees, not the individual commits
+authored on the Phase 3c branch. Writing `BREAKING CHANGE:`/`!` on a commit
+partway through the Phase 3c branch and losing it when that branch is
+squashed into one `modernize` commit would silently revert the target to
+1.8.0. The footer must be present in **the Phase 3c squash commit message
+itself** — this is the one place it is easy to write correctly on a branch
+and lose at merge time, so it needs a deliberate check during Phase 3c's
+squash-merge step, not an assumption that it carried over.
+
+**Phase 5 must verify the computed version before releasing, not after.**
+Before merging `modernize` → `master`, run `npx semantic-release --dry-run`
+against the merge commit and confirm it reports **2.0.0**. If it reports
+1.8.0 instead, the breaking-change declaration was lost somewhere between
+Phase 3c and the final merge, and the fix (amend the merge commit's message,
+or the relevant squash commit, before the real run) is cheap at that point
+and awkward once the real `deploy` job has already cut the tag, written the
+GitHub release and republished `gh-pages`.
 
 ---
 
@@ -380,6 +456,7 @@ review · squash-merged · worktree removed · issue closed.
 | Bootstrap 4 / Treeye design system | Out of scope | One concern at a time; toolchain must be stable and verified first |
 | Posterior-K bug | Issue #41, after Phase 5 | Pre-existing, not a migration regression; fixing it needs clinical input on sign convention |
 | Sentry error backlog | Issue #42 | See §10 — the reading is time-limited even though the fixing is not |
+| `CC_TEST_REPORTER_ID` history exposure | Accepted risk, closed — not rotated | Committed in plaintext in the workflow before Phase 2a removed the CodeClimate step (`33a8dc5`); still present in git history (e.g. `b48d6e3`). It cannot be rotated: the owner no longer has CodeClimate access. Accepted because the token's only capability is posting coverage for this repo to a service no longer in use — it grants no source access, no repository write and no other secret. The integration it authenticates to is already deleted. The only way to purge it from history is rewriting history on a public repo, which would invalidate every commit SHA — including `2436da4` and `789ac2d`, the two SHAs the oracle's entire provenance chain depends on (§3.1). Rewriting history to erase a dead credential to a decommissioned service is strictly worse than leaving it. Closed, not outstanding. |
 
 ### 8.1 Branches deleted during design
 
@@ -546,5 +623,152 @@ and was deliberately left in place pending a separate decision.
   `expected.json` branch-name guard described in §7.3.
   Consequence worth recording: the L1 suite was developed and validated
   locally on Node 16, and now runs in CI on Node 20.
+- **Phase 3a result, recorded after implementation (issue #47).** CRA →
+  Vite, Jest → Vitest, TypeScript 4.1 → 5, lockfile regenerated from
+  scratch. `src/golden/expected.json` and `src/data.csv` are byte-identical
+  from the phase's first commit to its last — both still show last-touched
+  at `8568202` (Phase 1's capture), never re-diffed by any Phase 3a commit.
+  158 tests passed / 3 skipped throughout, on Jest and then on Vitest
+  (`vitest@^1.6.1`, held below `2.x` deliberately: Vitest 2+ bundles
+  `vite@^5` as a hard dependency, which would have put two Vite majors in
+  one tree while this phase's whole point was isolating the build-tool
+  variable — not a Node-compatibility constraint, see the `.nvmrc` bullet
+  below).
+  - **The CSV survived provably, not just by inspection.** `raw.macro`
+    (finding 2, `docs/modernization-findings.md`) is gone;
+    `src/db.ts` now does `import CSV from './data.csv?raw'`. A reviewer
+    extracted the CSV literal from the built bundle
+    (`build/assets/index-*.js`) and found it byte-for-byte identical to
+    `src/data.csv`: same UTF-8 BOM (emitted by esbuild as the six-character
+    escape `﻿`, decoding at runtime to the same U+FEFF the CRA/webpack
+    build produced), 543 newlines splitting into 544 parts (1 header + 542
+    data rows + 1 trailing empty part), no CRLF. The Matrix footer's
+    `Number of matching Eyes: N/542` line, present in all ten L2 fixture
+    rows, pins the row count independently — a truncated or re-encoded CSV
+    could not have passed L2 without that count moving. The bundle
+    inspection is corroborating; the L2 replay (below) is the decisive
+    proof, since it exercises all 542 rows through the rendered app.
+  - **The CRA-isms (finding 3) are translated.**
+    `process.env.REACT_APP_VERSION` → `import.meta.env.VITE_APP_VERSION`
+    (`src/misc/Footer.tsx`), `process.env.PUBLIC_URL` →
+    `import.meta.env.BASE_URL` (`src/misc/NavBar.tsx`),
+    `process.env.NODE_ENV === 'production'` → `import.meta.env.PROD`
+    (`src/index.tsx`, `src/misc/GoogleAnalytics.ts`), `public/index.html`
+    moved to the project root with `%PUBLIC_URL%/` → `/`.
+  - **The `PUBLIC_URL`/`REACT_APP_VERSION` blind spot (§6.2) bit once, in
+    this phase, and was caught by the manual checklist, not by either
+    gate.** Full account in §6.2's updated text; short version: the
+    `%PUBLIC_URL%/` → `/` substitution missed
+    `<meta name="msapplication-config" content>` because Vite rewrites
+    root-absolute URLs only in attributes it treats as asset references,
+    and `meta[content]` is not one — the tag shipped pointing at
+    `/browserconfig.xml` instead of `/icl-calc/browserconfig.xml`, a 404 in
+    production. `readAll()` never reads page metadata, so both L1 and L2
+    stayed green throughout. A human diffing every built `<head>` tag
+    against the oracle's caught it; fixed in `4a64607`. This is the
+    programme's first live confirmation that the blind spot recorded here
+    is real, not hypothetical.
+  - **`.nvmrc` now reads `v22`**, walked up from `v16` across the three
+    commits `db97898` (Vitest requires Node ≥18, so `test` moved off 16),
+    `2241387` (corrected `.nvmrc` to `v20` and the rationale for the
+    Vitest pin), and `1b82f17`/`6c3bbfd` (all three CI jobs unified on
+    `node-version-file: '.nvmrc'`, walked to 22, the newest LTS, after
+    confirming every gate green on it). The old Node 16 ceiling was CRA's
+    webpack 4 build chain hitting `ERR_PACKAGE_PATH_NOT_EXPORTED` on 18+
+    (§10's "Node version target for Phase 0" bullet); that chain no longer
+    exists.
+  - **`scripts/link-bins.js` is deleted** (`c1923bc`), as this document
+    already anticipated in the "CI was dead" bullet above. The regenerated
+    lockfile is `lockfileVersion: 3` with a populated top-level `packages`
+    object (confirmed: `require('./package-lock.json').packages` is
+    truthy), which is the field `npm ci` needs to know which installed
+    packages declare a `bin` and symlink them into `node_modules/.bin`
+    — the 2021-era `lockfileVersion: 2` lockfile never carried it. All
+    three "Repair node_modules/.bin symlinks" CI steps (`test`,
+    `e2e-replay`, `deploy`) were removed along with the script; `npm ci`
+    alone now populates `.bin` correctly (confirmed: 45 entries, no
+    dangling symlinks).
+  - **Exactly one snapshot changed in rendered content**: NavBar's
+    `href="/"` → `href="/icl-calc/"`, appearing once in
+    `NavBar.test.tsx.snap` and nine more times (one per rendered route/state)
+    in `ICLContainer.test.tsx.snap`, because `import.meta.env.BASE_URL` is
+    always populated (`/icl-calc/`) where CRA's `PUBLIC_URL` was empty
+    under test. Every other changed `.snap` file differs only in its
+    one-line Jest/Vitest tool-signature header comment. Production
+    behaviour is equivalent — the oracle itself serves `/icl-calc/`.
+  - **Runtime dependency versions moved within their already-declared
+    semver ranges** when the lockfile was regenerated: `react` 17.0.1 →
+    17.0.2, `react-router-dom` 5.2.0 → 5.3.4, `formik` 2.2.6 → 2.4.9,
+    `date-fns` 2.19.0 → 2.30.0, `@amcharts/amcharts4` 4.10.17 → 4.10.40.
+    `src/formulas.ts` (the calculation engine) imports only from
+    `./types`, whose sole external import is a display-only date-formatting
+    call — the numeric core is isolated from all five packages. `@types/node`
+    moved `^12.20.4` → `^22` (a types-only devDependency; the fix round in
+    Task 5 chose this over `--legacy-peer-deps` specifically so Phase 3b's
+    React 19 peer-dependency signals aren't suppressed by a blanket flag
+    left behind here).
+  - **Lint coverage narrowed, deliberately, and is tracked separately.**
+    Dropping `eslintConfig.extends: ["react-app/jest"]` (it no longer
+    applies once `react-scripts` is gone) also dropped that config's
+    `jest/*` and `testing-library/*` rule overrides for `**/*.{spec,test}.*`
+    — confirmed zero active rules from either plugin post-change, against a
+    non-trivial set beforehand. Not restored here: re-enabling risked
+    surfacing new failures across ~20 test files as unrelated churn.
+    Tracked as [#63](https://github.com/ruipinge/icl-calc/issues/63).
+  - **Gates, all re-run on Node 22 immediately before Task 6's PR**: `npm
+    test` 158 passed / 3 skipped; `npx tsc --noEmit` clean; `npm run lint`
+    exit 0; `npm run build` exit 0; `SUBJECT_ONLY=1` L2 setup + replay, 2
+    passed, including "the build under test reproduces the oracle exactly."
+    `src/golden/expected.json` and `src/data.csv` unchanged.
+  - **The browser support floor moved, and the owner has decided to accept
+    it (final review, Phase 3a Task 6): ESM-only at `chrome87`, `edge88`,
+    `firefox78`, `safari14` (all late 2020/early 2021).** This was already
+    Vite 4's implicit default (`build.target: 'modules'`, esbuild's
+    shorthand for the same four versions) when `vite.config.ts` set no
+    `build.target` at all. It is now **pinned explicitly** —
+    `target: ['chrome87', 'edge88', 'firefox78', 'safari14']` in
+    `vite.config.ts`'s `build` block — specifically so a future Vite 5 or
+    6 upgrade cannot move this floor silently; any change to it is now a
+    visible diff line someone has to justify, not an implicit default that
+    shifts underneath the project. Confirmed the pin is a no-op for the
+    current toolchain: built before and after adding it and diffed
+    `build/` recursively (`diff -rq`) — every asset, including hashes, is
+    byte-identical.
+    The oracle instead shipped `react-scripts`' classic build: ES5 output
+    plus a `<script nomodule>` fallback bundle, covering browsers far older
+    than 2020, degrading gracefully rather than failing outright. The
+    **effect** is the difference in kind: the oracle's ES5 path ran
+    (slower, unoptimized) on a pre-2020 browser, while a browser below the
+    pinned floor gets a blank page — `<script type="module">` is simply
+    skipped, with no fallback bundle to fall through to. This is the
+    accepted, permanent behaviour below the floor, not a transitional gap.
+    Separately, **autoprefixer is no longer in the dependency tree** —
+    `react-scripts` bundled it via its PostCSS config; Vite doesn't add one
+    unless the project does. A reviewer counted `-webkit-` occurrences in
+    the built CSS: 570 in the oracle's `build/`, 38 in Phase 3a's — the
+    remaining 38 are prefixes authored directly in source, not autoprefixer
+    output. In practice this means any CSS feature needing a `-webkit-` (or
+    other vendor) prefix to work on the pinned floor's oldest browsers must
+    now be prefixed by hand in source, or accepted as broken there — nothing
+    in the build adds it automatically.
+    **`package.json`'s dead `browserslist` block (`"production"`/
+    `"development"`, formerly just above `"prettier"`) has been deleted**,
+    not left in place — confirmed nothing else in the repo reads it
+    (`grep -rn browserslist`, excluding `node_modules` and the lockfile,
+    now matches only this paragraph). It predated Vite and autoprefixer's
+    removal; nothing in the Vite/esbuild/PostCSS toolchain ever read it.
+    **Neither CI gate can detect a regression against this floor.** L1
+    (`npm test`) runs in jsdom, not a real browser. L2 (Playwright) drives
+    a current Chromium, which is always far above the pinned floor
+    regardless of what `target` says — Playwright has no mechanism here to
+    exercise `chrome87`/`edge88`/`firefox78`/`safari14` specifically, so a
+    change that silently raised the floor further (e.g. a later
+    `build.target` bump) would still pass both gates. Anyone relying on the
+    floor holding must check `vite.config.ts`'s `target` directly, not
+    infer it from green CI. **Explicitly out of scope for Phase 3a: adding
+    `@vitejs/plugin-legacy` or widening `build.target` to restore the old,
+    pre-2021 floor.** This bullet exists so the decision and its
+    consequences are recorded and owner-visible, not discovered later as
+    an unexplained regression.
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.

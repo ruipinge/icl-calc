@@ -34,10 +34,12 @@ const inputs = inputsJson as GoldenInputs;
 const expected = expectedJson as any;
 
 beforeEach(() => {
-  jest.useFakeTimers('modern');
-  jest.setSystemTime(new Date(PINNED_CLOCK_ISO));
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(PINNED_CLOCK_ISO));
 });
-afterEach(() => jest.useRealTimers());
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 describe('golden master L1', () => {
   it('reads all 542 rows from data.csv', () => {

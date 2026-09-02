@@ -29,8 +29,9 @@ const ORACLE_WEB_SERVER = {
 
 const SUBJECT_WEB_SERVER = {
   // Serves e2e/.serve-subject, a *separate* root from .serve above. The
-  // subject build (build/, produced by `npm run build` under Node 16
-  // from this worktree's unmodified source) was emitted with the same
+  // subject build (build/, produced by `npm run build` under the Node
+  // version pinned in the repo root's .nvmrc, from this worktree's
+  // unmodified source) was emitted with the same
   // homepage=http://ruipinge.github.io/icl-calc as the oracle, so its
   // index.html also references assets by the absolute path /icl-calc/...
   // Reusing .serve's own `icl-calc` symlink for this build would make

@@ -2,7 +2,7 @@ import ReactGA from 'react-ga';
 
 const GA = {
   init: () => {
-    const isGAEnabled = process.env.NODE_ENV === 'production';
+    const isGAEnabled = import.meta.env.PROD;
 
     if (isGAEnabled) {
       ReactGA.initialize('UA-212134595-1');

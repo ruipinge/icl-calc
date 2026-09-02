@@ -17,11 +17,9 @@
     "@semantic-release/git": "^9.0.0",
     "@sentry/react": "^6.2.2",
     "@sentry/tracing": "^6.2.2",
-    "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
-    "@types/jest": "^26.0.20",
-    "@types/node": "^12.20.4",
+    "@types/node": "^22",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/react-router-dom": "^5.1.7",
@@ -30,25 +28,22 @@
     "date-fns": "^2.19.0",
     "eslint-plugin-prettier": "^3.3.1",
     "formik": "^2.2.6",
-    "prettier": "^2.2.1",
-    "raw.macro": "^0.4.2",
+    "prettier": "2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-ga": "^3.3.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.2",
     "react-test-renderer": "^17.0.1",
     "sass": "^1.32.8",
     "semantic-release": "^17.4.2",
-    "typescript": "^4.1.5",
     "web-vitals": "^1.1.0",
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "REACT_APP_VERSION=0.0.t react-scripts test --coverage",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run --coverage",
     "clean": "rm -rf ./node_modules ./coverage ./npm-debug.log ./build",
     "format": "prettier --write './src/**.{js,jsx,ts,tsx}'",
     "lint": "eslint src/",
@@ -56,8 +51,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ],
     "plugins": [
       "prettier"
@@ -81,40 +75,6 @@
       ]
     }
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!<rootDir>/node_modules/",
-      "!src/**/*.d.ts"
-    ],
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/build/",
-      "<rootDir>/node_modules/",
-      "<rootDir>/src/index.tsx",
-      "<rootDir>/src/normality/Histogram.tsx",
-      "<rootDir>/src/normality/index.tsx",
-      "<rootDir>/src/normality/linear-gauge/index.ts"
-    ],
-    "coverageReporters": [
-      "lcov",
-      "text"
-    ],
-    "transformIgnorePatterns": [
-      "node_modules[/\\\\](?!@amcharts[/\\\\]amcharts4)"
-    ]
-  },
   "prettier": {
     "semi": true,
     "trailingComma": "none",
@@ -137,5 +97,26 @@
       "@semantic-release/npm",
       "@semantic-release/git"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@typescript-eslint/eslint-plugin": "^4.5.0",
+    "@typescript-eslint/parser": "^4.5.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/coverage-v8": "^1.6.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.11.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-testing-library": "^3.9.2",
+    "jsdom": "^24.1.3",
+    "typescript": "^5.9.3",
+    "vite": "^4.5.14",
+    "vitest": "^1.6.1"
   }
 }

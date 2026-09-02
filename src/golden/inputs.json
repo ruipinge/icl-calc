@@ -49,7 +49,7 @@
       "corneaProfile": { "kaf": 41.5, "axisaf": 5, "kas": 42.25, "axisas": 95, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 525, "previousSurgery": "None" },
       "spectacleRefraction": { "sphere": -12, "cylindre": -3, "axis": 5, "vertex": 12 } },
 
-    { "id": "09-schema-floor", "why": "Yup schema minimums. Negative CLR is expected to match zero eyes, locking the Matrix empty-cell path. Not a clinical case.", "expectAge": 22,
+    { "id": "09-schema-floor", "why": "Yup schema minimums for ACD/CCT/KA/axisaf/sphere/cylindre/axis/vertex. ata/wtw/clr/acan/acat/axisas are deliberately NOT at their schema floors (10.5/10.6 vs 0; -100 vs -1000; 30/31 vs 0; 90 vs 0) - the true floor values are clinically absurd (a 0mm AtA/WtW, a 0 degree anterior chamber angle) and were judged not worth reaching for at this row. Negative CLR is still expected to match zero eyes, locking the Matrix empty-cell path. Not a clinical case.", "expectAge": 22,
       "patient": { "name": "GM-09", "dateOfBirth": "2004-03-15", "eye": "left" },
       "biometry": { "ata": 10.5, "wtw": 10.6, "clr": -100, "acd": 2.7, "acan": 30, "acat": 31 },
       "corneaProfile": { "kaf": 30, "axisaf": 0, "kas": 30, "axisas": 90, "kpf": 0, "axispf": 0, "kps": 0, "axisps": 0, "cct": 300, "previousSurgery": "None" },
