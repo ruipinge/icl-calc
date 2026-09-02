@@ -2,7 +2,7 @@ import { PatientInfo } from './types';
 
 it('calculates patient age correctly', () => {
   // 2020-07-01
-  const spy = jest.spyOn(Date, 'now').mockImplementation(() => 1593561600000);
+  const spy = vi.spyOn(Date, 'now').mockImplementation(() => 1593561600000);
 
   const patient = new PatientInfo({
     name: '',

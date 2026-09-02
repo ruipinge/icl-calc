@@ -6,7 +6,7 @@ import TestRenderer from 'react-test-renderer';
 
 it('renders without crashing', () => {
   // 2020-07-01
-  const spy = jest.spyOn(Date, 'now').mockImplementation(() => 1593561600000);
+  const spy = vi.spyOn(Date, 'now').mockImplementation(() => 1593561600000);
 
   const tree = TestRenderer.create(
     <Formik

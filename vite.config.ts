@@ -18,5 +18,27 @@ export default defineConfig(({ mode }) => ({
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(
       mode === 'test' ? '0.0.t' : pkg.version
     )
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/setupTests.ts',
+    // Vitest's pretty-format drops Jest 26's 'Object {' / 'Array [' prefixes
+    // by default; restore them so migrating runner does not churn every
+    // plain-object/array snapshot in the suite.
+    snapshotFormat: { printBasicPrototype: true },
+    include: ['src/**/*.{test,spec}.{js,jsx,ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      include: ['src/**/*.{js,jsx,ts,tsx}'],
+      exclude: [
+        'src/**/*.d.ts',
+        'src/index.tsx',
+        'src/normality/Histogram.tsx',
+        'src/normality/index.tsx',
+        'src/normality/linear-gauge/index.ts'
+      ]
+    }
   }
 }));

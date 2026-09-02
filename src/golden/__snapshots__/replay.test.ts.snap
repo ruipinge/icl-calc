@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`golden master L1 derives the same histogram bins from the CSV 1`] = `
+exports[`golden master L1 > derives the same histogram bins from the CSV 1`] = `
 Object {
   "aca": Array [
     Object {
@@ -317,7 +317,7 @@ Object {
 }
 `;
 
-exports[`golden master L1 locks the Normality percentile bands over the real dataset 1`] = `
+exports[`golden master L1 > locks the Normality percentile bands over the real dataset 1`] = `
 Object {
   "aca": Array [
     Object {

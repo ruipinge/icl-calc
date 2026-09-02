@@ -27,12 +27,12 @@ describe('golden master fixture inputs', () => {
   it.each(inputs.rows.map((r) => [r.id, r] as const))(
     'row %s resolves to its expected age at the pinned clock',
     (_id, row) => {
-      jest.useFakeTimers('modern');
-      jest.setSystemTime(new Date(PINNED_CLOCK_ISO));
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date(PINNED_CLOCK_ISO));
       try {
         expect(rowToIclInputs(row).patient.age()).toBe(row.expectAge);
       } finally {
-        jest.useRealTimers();
+        vi.useRealTimers();
       }
     }
   );

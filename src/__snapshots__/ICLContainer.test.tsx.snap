@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`renders Biometric Normality on #normality route 1`] = `
 <DocumentFragment>
@@ -10,7 +10,7 @@ exports[`renders Biometric Normality on #normality route 1`] = `
     >
       <a
         class="navbar-brand"
-        href="/"
+        href="/icl-calc/"
       >
         ICL Size Calc
       </a>
@@ -175,7 +175,7 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
     >
       <a
         class="navbar-brand"
-        href="/"
+        href="/icl-calc/"
       >
         ICL Size Calc
       </a>
@@ -964,7 +964,7 @@ exports[`renders Patient for inexistent route 1`] = `
     >
       <a
         class="navbar-brand"
-        href="/"
+        href="/icl-calc/"
       >
         ICL Size Calc
       </a>
@@ -2111,7 +2111,7 @@ exports[`renders Patient form on # route 1`] = `
     >
       <a
         class="navbar-brand"
-        href="/"
+        href="/icl-calc/"
       >
         ICL Size Calc
       </a>
@@ -3259,7 +3259,7 @@ exports[`renders Regression on #regression route 1`] = `
     >
       <a
         class="navbar-brand"
-        href="/"
+        href="/icl-calc/"
       >
         ICL Size Calc
       </a>
@@ -3589,7 +3589,7 @@ exports[`renders without crashing 1`] = `
     >
       <a
         class="navbar-brand"
-        href="/"
+        href="/icl-calc/"
       >
         ICL Size Calc
       </a>
@@ -4737,7 +4737,7 @@ exports[`resets form when clicking reset button 1`] = `
     >
       <a
         class="navbar-brand"
-        href="/"
+        href="/icl-calc/"
       >
         ICL Size Calc
       </a>
@@ -5885,7 +5885,7 @@ exports[`resets form when clicking reset button 2`] = `
     >
       <a
         class="navbar-brand"
-        href="/"
+        href="/icl-calc/"
       >
         ICL Size Calc
       </a>
@@ -7033,7 +7033,7 @@ exports[`resets form when clicking reset button 3`] = `
     >
       <a
         class="navbar-brand"
-        href="/"
+        href="/icl-calc/"
       >
         ICL Size Calc
       </a>
