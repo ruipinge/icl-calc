@@ -1,12 +1,72 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`renders without crashing 1`] = `
-<div
-  style={
-    Object {
-      "marginLeft": "71px",
-      "marginRight": "15px",
-    }
-  }
-/>
+<DocumentFragment>
+  <div
+    style="margin-left: 71px; margin-right: 15px;"
+  >
+    <div
+      style="border-top: 1px solid rgb(0, 0, 0); display: flex; position: relative; height: 30px;"
+    >
+      <svg
+        height="18"
+        style="position: absolute; left: calc(50% - 2px); top: 12px;"
+        width="5"
+      >
+        <polygon
+          fill="#ff0000"
+          points="2.5,0 0,18 5,18"
+        />
+      </svg>
+      <div
+        style="position: absolute; top: 0px; left: 10%; height: 8px; border-left: 1px solid rgb(0, 0, 0);"
+      />
+      <div
+        style="position: absolute; top: 0px; left: 30%; height: 8px; border-left: 1px solid rgb(0, 0, 0);"
+      />
+      <div
+        style="position: absolute; top: 0px; left: 50%; height: 8px; border-left: 1px solid rgb(0, 0, 0);"
+      />
+      <div
+        style="position: absolute; top: 0px; left: 70%; height: 8px; border-left: 1px solid rgb(0, 0, 0);"
+      />
+      <div
+        style="position: absolute; top: 0px; left: 90%; height: 8px; border-left: 1px solid rgb(0, 0, 0);"
+      />
+      <div
+        style="position: absolute; top: 0px; height: 18px; border-left: 1px solid rgb(0, 0, 0); left: 0%;"
+      />
+      <div
+        style="position: absolute; top: 0px; height: 18px; border-left: 1px solid rgb(0, 0, 0); left: 20%;"
+      />
+      <div
+        style="position: absolute; top: 0px; height: 18px; border-left: 1px solid rgb(0, 0, 0); left: 40%;"
+      />
+      <div
+        style="position: absolute; top: 0px; height: 18px; border-left: 1px solid rgb(0, 0, 0); left: 60%;"
+      />
+      <div
+        style="position: absolute; top: 0px; height: 18px; border-left: 1px solid rgb(0, 0, 0); left: 80%;"
+      />
+      <div
+        style="position: absolute; top: 0px; height: 18px; border-left: 1px solid rgb(0, 0, 0); right: 0%;"
+      />
+      <div
+        style="height: 12px; flex: 0.675 1 0%;"
+      />
+      <div
+        style="height: 12px; flex: 2.325 1 0%;"
+      />
+      <div
+        style="height: 12px; flex: 2.25 1 0%;"
+      />
+      <div
+        style="height: 12px; flex: 0.75 1 0%;"
+      />
+      <div
+        style="height: 12px; flex: 0 1 0%;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
 `;

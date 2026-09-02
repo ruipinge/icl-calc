@@ -2,10 +2,10 @@ import { CorneaProfile } from './CorneaProfile';
 import { Formik } from 'formik';
 import { ICLSchema } from '../ICLSchema';
 import { PreviousSurgery } from '../types';
-import TestRenderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 
 it('renders without crashing', () => {
-  const tree = TestRenderer.create(
+  const { asFragment, container } = render(
     <Formik
       initialValues={{
         corneaProfile: {
@@ -33,6 +33,14 @@ it('renders without crashing', () => {
         />
       )}
     </Formik>
-  ).toJSON();
-  expect(tree).toMatchSnapshot();
+  );
+  expect(asFragment()).toMatchSnapshot();
+
+  // asFragment() serialises markup only; React sets a <select>'s selection
+  // as a DOM property, so this value is otherwise unverified at every layer.
+  // The <label> here has no matching id on the <select> (Formik `Field`
+  // doesn't set one), so getByLabelText can't resolve it — query by name.
+  expect(
+    container.querySelector('select[name="corneaProfile.previousSurgery"]')
+  ).toHaveValue('None');
 });

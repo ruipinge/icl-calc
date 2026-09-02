@@ -2,13 +2,13 @@ import { Formik } from 'formik';
 import { ICLSchema } from '../ICLSchema';
 import { Info } from './Info';
 import { PatientInfo } from '../types';
-import TestRenderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 
 it('renders without crashing', () => {
   // 2020-07-01
   const spy = vi.spyOn(Date, 'now').mockImplementation(() => 1593561600000);
 
-  const tree = TestRenderer.create(
+  const { asFragment, getByLabelText } = render(
     <Formik
       initialValues={{
         patient: new PatientInfo({
@@ -24,8 +24,13 @@ it('renders without crashing', () => {
         <Info errors={{}} values={values} touched={{}} {...otherProps} />
       )}
     </Formik>
-  ).toJSON();
-  expect(tree).toMatchSnapshot();
+  );
+  expect(asFragment()).toMatchSnapshot();
+
+  // asFragment() serialises markup only; React sets a <select>'s selection
+  // as a DOM property, so left/right correctness is otherwise unverified
+  // at every layer (see docs/modernization-findings.md). Assert it directly.
+  expect(getByLabelText('Eye')).toHaveValue('right');
 
   spy.mockRestore();
 });

@@ -770,5 +770,170 @@ and was deliberately left in place pending a separate decision.
     pre-2021 floor.** This bullet exists so the decision and its
     consequences are recorded and owner-visible, not discovered later as
     an unexplained regression.
+- **Phase 3b result, recorded after implementation (issue #48).** React
+  17 → **19.2.8**; `react-dom` and `@types/react`/`@types/react-dom`
+  matched; `react-test-renderer` and `@types/react-test-renderer` removed
+  from the dependency tree entirely, and every one of the eight legacy
+  `react-test-renderer` suites converted to `@testing-library/react`'s
+  `render(...)`/`asFragment()`. `src/golden/expected.json` and
+  `src/data.csv` stayed byte-identical throughout — still last-touched at
+  `8568202` — and the L2 replay reproduced the December 2021 oracle exactly
+  at every gate in the phase, including the final one on Node 22. 158
+  tests passed / 3 skipped throughout, matching the Phase 3a baseline.
+  `src/index.tsx` moved `ReactDOM.render` to `createRoot`; it is excluded
+  from coverage (`vite.config.ts`), so this was verified by serving the
+  real production build and loading it in a real Chromium instance rather
+  than by a green suite — full Patient form rendered, nav between
+  Patient/Matrix worked, zero console errors.
+  `createRoot`'s `if (container)` guard, added with the migration, had
+  turned a missing/renamed `#root` from the old `ReactDOM.render`'s thrown
+  `Target container is not a DOM element` (captured by `Sentry.init` above
+  it) into a silent blank page with zero telemetry. Restored the loud
+  failure with an explicit `else { throw new Error(...) }`. This matters
+  more now that the owner has decided to keep Sentry rather than remove it
+  (#50 re-scoped from removal to modernisation) — production error
+  reporting is a capability being invested in, not retired. Verified by
+  hand (this file is coverage-excluded and no gate reaches it): built,
+  served, confirmed the app still mounts normally.
+  - **A third test was found asserting nothing.**
+    `src/normality/Gauge.test.tsx` snapshotted an empty `<div>` — 17
+    lines — because `react-test-renderer` never populates host refs;
+    `Gauge.tsx`'s `useLayoutEffect` checks `container.current === null`
+    and returns early when it isn't populated, so `LinearGauge` was never
+    constructed and the gauge's actual DOM-building logic had never been
+    exercised by this test. Under `@testing-library/react`'s real DOM, the
+    ref attaches to a real node and the component renders the actual
+    widget — 72 lines: the pointer `<svg>`/`<polygon>`, five division tick
+    marks, twelve subdivision ticks, and the colored zone segments,
+    cross-checked against `buildZones()`'s own already-unit-tested output
+    in the same file. This is the third instance of this exact failure
+    shape in the programme, after `CorneaProfile` (snapshotting a blank
+    form for four years, found in Phase 2a) and `normality/index.test.tsx`
+    (permanently `it.skip`-ped). **All three passed their suites.** None
+    was found by running the tests — each was found by changing the
+    toolchain underneath the suite and checking the result against an
+    independent reference (the golden master, or in Gauge's case,
+    `buildZones()`'s own assertions).
+  - **`src/normality/linear-gauge/index.ts`'s coverage exclusion removed.**
+    `vite.config.ts` had excluded it from the start, but the Gauge
+    conversion above constructs a real `LinearGauge` for the first time in
+    the project's history — the exclusion was now hiding coverage this
+    phase earned, not coverage that was still structurally unreachable.
+    Removed from `coverage.exclude`. Effect: the file itself goes from
+    unmeasured to **100% statements / 100% branches / 100% functions /
+    100% lines**; the repo-wide total moves from 99.75% stmts / 90.39%
+    branch / 98.87% funcs to **99.78% stmts / 91.26% branch / 99% funcs**
+    (both figures include the `patient.eye` and `previousSurgery`
+    assertions added in this pass).
+  - **`src/normality/Histogram.tsx:17`'s zero-argument `useRef()` was
+    fixed, not "None" as this phase's own pre-scan table said.** The
+    migration-surface table in
+    `docs/superpowers/plans/2026-09-02-phase-3b-react19.md` claimed the
+    only zero-argument `useRef()` in the codebase was `Gauge.tsx`, already
+    passing `null`. It missed `Histogram.tsx` because that file is
+    coverage-excluded and the scan wasn't exhaustive over excluded files;
+    `useRef<am4charts.XYChart>()` was a type error under `@types/react@19`
+    and was caught instead by `tsc`, in the fix round (`f7dba09`) that
+    followed the initial migration commit — changed to
+    `useRef<am4charts.XYChart>(undefined)` to preserve the prior
+    `MutableRefObject<T | undefined>` semantics. Table corrected. Along
+    with the Gauge conversion above, `Histogram.tsx` is one of only two
+    production files this phase touched outside the `react-test-renderer`
+    → `@testing-library/react` suite conversions themselves.
+  - **`src/normality/__snapshots__/index.test.tsx.snap` is a fossil, left
+    alone.** It snapshots `"Normality Graphs are coming soon..."` for
+    `src/normality/index.test.tsx`'s permanently `it.skip`-ped test, whose
+    own `asFragment()` assertion is commented out — so nothing currently
+    exercises this snapshot at all, and it does not participate in any
+    gate. Left as-is deliberately: if a future phase un-skips the test
+    without regenerating the snapshot first, the mismatch (real
+    `Normality` markup vs. this placeholder string) will look exactly like
+    a regression introduced by whatever change prompted the un-skip, when
+    it is really just this stale fixture catching up. Its comment ("While
+    using amcharts 4 that isn't supported by jest") is also stale — the
+    runner has been Vitest since Phase 3a — corrected in place to name
+    Vitest, without touching the skip itself.
+  - **A new blind spot this phase introduced.** `asFragment()` does not
+    serialise event listeners, where `TestRenderer.toJSON()` recorded
+    `onChange={[Function]}` on every form field. Confirmed by diffing the
+    pre-migration snapshots directly: `patient.name`, `patient.dateOfBirth`
+    and `patient.eye` each carried `onChange={[Function]}` in the old
+    `Info.test.tsx.snap`; `corneaProfile.previousSurgery` carried it in the
+    old `CorneaProfile.test.tsx.snap`. None of the four appears in the
+    current, DOM-based snapshots. For `patient.name`, `patient.eye` and
+    `corneaProfile.previousSurgery` — fields the golden master never reads
+    back (§4.4's capture surface is ICL Power, Matrix, Regression and
+    Normality values) — those snapshots were the *only* check in the
+    entire suite that a change handler was wired to the field at all, and
+    after this phase they no longer are. `patient.dateOfBirth` is the
+    exception: it *is* still covered indirectly, because a broken handler
+    there would zero the calculated age and move the regression values L2
+    reads. `corneaProfile.previousSurgery` is additionally uncovered for a
+    second, independent reason recorded in #41: `calcRadiusPosterior`'s
+    previousSurgery-Myopia and previousSurgery-Hyperopia branches
+    (`src/formulas.ts`) return the identical expression fork B does (no
+    posterior K, no prior surgery), so today the field changes no
+    calculator output regardless of whether its handler fires — `git
+    show f89eafc^:src/golden/inputs.json` rows 03/04 record this as known
+    behaviour, not a defect.
+    **The loss is not handlers alone — two `<select>` values also went
+    structurally invisible.** React sets a `<select>`'s selection as a DOM
+    *property*, not a markup attribute, so `asFragment()` cannot serialise
+    it either. `Info.test.tsx.snap:88-93` previously serialised
+    `value="right"` on `<select name="patient.eye">`; the current snapshot
+    has no `value` and no `selected` on any `<option>`.
+    `CorneaProfile.test.tsx.snap:341-344` previously serialised
+    `value="None"` on `corneaProfile.previousSurgery`; likewise gone. For
+    `patient.eye` this meant **nothing at any layer verified the Eye
+    dropdown works or shows the correct eye**: it feeds no formula (so
+    `expected.json` never captures it), and while L2 drives it
+    (`e2e/lib/app.ts:80-82`), `readAll` never reads it back — in a
+    surgical-planning tool, left versus right had been left uncovered.
+    **Fixed in this pass:** `src/patient/Info.test.tsx` now asserts
+    `getByLabelText('Eye')` holds `'right'` (the value `initialValues`
+    sets), and `src/patient/CorneaProfile.test.tsx` now asserts the
+    `corneaProfile.previousSurgery` select (queried by
+    `container.querySelector('select[name="..."]')`, since its `<label
+    htmlFor>` has no matching `id` on the Formik `Field` to resolve via
+    `getByLabelText`) holds `'None'`. Both assertions were proven capable
+    of failing — temporarily changed to an incorrect expected value, ran
+    red, reverted, ran green — before being left in place. This closes the
+    `patient.eye` gap; the handler-loss gap for `patient.name` and
+    `corneaProfile.previousSurgery`, and `corneaProfile.previousSurgery`'s
+    independent no-op-branch gap (#41), remain open. Not fixed here beyond
+    the two value assertions above; recorded so a future phase doesn't
+    rediscover the rest as an unexplained gap.
+  - **`--legacy-peer-deps` came back into the CI workflow**, deliberately,
+    for the same reason Task 1 needed it locally: `@sentry/react@6.19.7`
+    (`react: ^15 || ^16 || ^17 || ^18`) and `react-ga@3.3.1`
+    (`react: ^15.6.2 || ^16.0 || ^17 || ^18`, confirmed against the
+    registry) both stop at React 18, so a bare `npm ci` fails on a clean
+    runner exactly as it does locally. Phase 3a removed the flag
+    deliberately because it suppresses the peer signals a React major
+    depends on — its absence between Phase 3a and this phase is precisely
+    why these two conflicts surfaced as loud `ERESOLVE` errors instead of
+    installing silently. Added with a comment naming both packages, in the
+    `test`, `e2e-replay` (app-level install only — `e2e/`'s own
+    `npm ci` has no React dependency and needs no flag) and `deploy` jobs.
+    **#50 removes both packages, at which point the flag comes out again.**
+    Until then, note that **#49 (router 5 → 7) lands while the flag is
+    active**, so a real peer problem introduced by that upgrade will not
+    announce itself the way these two did.
+  - **ESLint stack held, unmodernised.** `eslint-plugin-react-hooks@^4.2`
+    and `eslint-config-react-app@^6` (with a deprecated `babel-eslint`
+    underneath) all predate React 19. `npm run lint` still exits 0 against
+    the fully-migrated React 19 codebase — the same two pre-existing
+    `jsx-ast-utils` "MetaProperty could not be resolved" notices from
+    Phase 3a (sourced from `import.meta.env` in `src/index.tsx`) are the
+    only output, and they are not errors. Left exactly as-is; the staleness
+    is real and is #63's problem, not this phase's.
+  - **Gates, all re-run on Node 22 immediately before the PR**: `npm test`
+    158 passed / 3 skipped; `npx tsc --noEmit` clean; `npm run lint` exit
+    0; `npm run build` exit 0; `SUBJECT_ONLY=1` L2 setup + replay, 2
+    passed, including "the build under test reproduces the oracle
+    exactly." `src/golden/expected.json` and `src/data.csv` unchanged.
+  - **Deliberately out of scope.** `react-router-dom` stays on `^5.2.0`
+    (#49). The ESLint stack (#63). The event-handler coverage gap above
+    (no issue filed yet by this phase — recorded here so it isn't lost).
 - **Written confirmation that the row-level dataset may be published publicly**
   remains outstanding. Blocks nothing here; tracked in the Treeye roadmap.
