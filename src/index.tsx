@@ -62,7 +62,10 @@ const SAFE_CONTEXT_KEYS = new Set([
   'flags'
 ]);
 
-function stripSensitiveFields(event: Sentry.Event, hint: Sentry.EventHint): void {
+function stripSensitiveFields(
+  event: Sentry.Event,
+  hint: Sentry.EventHint
+): void {
   delete event.request?.data;
   delete event.extra;
   delete event.message;
