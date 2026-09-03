@@ -26,23 +26,15 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      # --legacy-peer-deps: exactly two installed packages have peer ranges
-      # that stop at React 18: @sentry/react@6.19.7
-      # ("react: ^15 || ^16 || ^17 || ^18") and react-ga@3.3.1
-      # ("react: ^15.6.2 || ^16.0 || ^17 || ^18", verified against the
-      # registry). Without this flag, `npm ci` fails on those two peer
-      # conflicts rather than installing. react-router-dom (still on 5,
-      # #49) is not a third conflict - 5.3.4's peer is "react: >=15",
-      # satisfied by React 19. Phase 3a removed this flag deliberately,
-      # because it suppresses exactly the peer signals a React major
-      # depends on - its absence here is precisely why these two conflicts
-      # surfaced as loud errors instead of installing silently. #50 removes
-      # both @sentry/react and react-ga, at which point this flag comes
-      # back out. Until then, note that #49 (router 5 -> 7) lands while
-      # this flag is active, so a real peer problem introduced by that
-      # upgrade will not announce itself here.
+      # No --legacy-peer-deps: #50 upgraded @sentry/react to v10 and
+      # replaced react-ga with react-ga4, the two packages that used to cap
+      # peer ranges at React 18 and forced this flag on since Phase 3b.
+      # With it gone, npm's peer resolution is back on for every install
+      # in this workflow - which is the point ahead of #49 (router 5 -> 7):
+      # a real peer conflict introduced by that upgrade will now fail loud
+      # here instead of installing silently.
       - name: Install Dependencies
-        run: npm ci --prefer-offline --legacy-peer-deps
+        run: npm ci --prefer-offline
 
       - name: Lint
         run: npm run lint
@@ -175,11 +167,10 @@ jobs:
             package-lock.json
             e2e/package-lock.json
 
-      # --legacy-peer-deps: see the comment on the `test` job's install step
-      # above. Same two packages (@sentry/react@6.19.7, react-ga@3.3.1),
-      # same #50 removal, same #49 caveat.
+      # No --legacy-peer-deps: see the comment on the `test` job's install
+      # step above.
       - name: Install Dependencies
-        run: npm ci --prefer-offline --legacy-peer-deps
+        run: npm ci --prefer-offline
 
       - name: Build
         run: npm run build
@@ -251,11 +242,10 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      # --legacy-peer-deps: see the comment on the `test` job's install step
-      # above. Same two packages (@sentry/react@6.19.7, react-ga@3.3.1),
-      # same #50 removal, same #49 caveat.
+      # No --legacy-peer-deps: see the comment on the `test` job's install
+      # step above.
       - name: Install Dependencies
-        run: npm ci --prefer-offline --legacy-peer-deps
+        run: npm ci --prefer-offline
 
       - name: Version
         env:

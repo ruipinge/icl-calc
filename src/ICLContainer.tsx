@@ -92,6 +92,15 @@ const FormContent = ({
   // Runs once on mount rather than as a side effect during render - see
   // src/misc/GoogleAnalytics.ts for why this is a no-op unless
   // VITE_GA_MEASUREMENT_ID is configured.
+  //
+  // NOTE: FormContent is passed to Formik below as `{FormContent}` and
+  // invoked directly - `children(formikbag)` - not through JSX, so it
+  // never gets its own Fiber; this effect actually attaches to Formik's
+  // own hook list. That's harmless only because Formik renders this
+  // child unconditionally today. If that ever changes - wrapping this as
+  // `{(props) => <FormContent {...props} />}`, or a Formik major that
+  // renders children differently - this effect's mount/unmount timing
+  // changes with it, silently.
   useEffect(() => {
     GA.init();
   }, []);
