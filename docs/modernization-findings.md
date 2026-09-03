@@ -300,6 +300,27 @@ Commit at each step so a regression can be bisected.
   reporting, no CDN fonts. treeye.science ships
   `Content-Security-Policy: default-src 'self'` and makes zero third-party
   requests; anything added here has to survive that.
+  > **Superseded in Phase 4a (issue #50).** Two corrections to the text
+  > above, which is kept as-written per this document's convention.
+  >
+  > First, the constraint itself was consciously traded, not found wrong:
+  > the owner decided to keep and improve Sentry and Google Analytics
+  > rather than remove them, so this repo now has two runtime dependencies
+  > that phone home. Both are scrubbed and documented — see finding 6
+  > above and design spec §9. The *spirit* of the constraint survives
+  > intact and is the harder requirement: **no patient measurement leaves
+  > the browser**, per the first bullet, which is still true and is
+  > verified on the wire rather than assumed.
+  >
+  > Second, the CSP sentence does not mean what it appears to mean.
+  > `treeye.science/tools/icl-calc` is a 302 to
+  > `ruipinge.github.io/icl-calc/`, and that CSP header sits on the
+  > redirect response, which creates no document. The app's document is
+  > served by GitHub Pages, which sends no CSP at all, so no CSP has ever
+  > been in force over this app. The constraint reads as a live
+  > restriction and is not one today; it becomes real only under the
+  > vendored-artifact topology below, where treeye.science would serve the
+  > build directly. Issue #68 tracks that.
 - **`src/data.csv` is not to be modified, reformatted, regenerated or moved.**
   542 rows of real per-eye clinical biometry — age, ICL size and SE, ACD, CCT,
   ATA, CLR, ACA, vault, WTW, keratometry — from patients operated on at
