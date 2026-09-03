@@ -6,11 +6,12 @@ import App from './App';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-// Every event-level field capable of carrying arbitrary application data
-// is stripped here - not just the ones populated today - because "empty
-// today" and "structurally incapable of carrying patient data" are
-// different guarantees, and only the second one survives a future change
-// to this file without anyone revisiting this review.
+// The fields listed below are stripped here - not just the ones populated
+// today - because "empty today" and "structurally incapable of carrying
+// patient data" are different guarantees, and only the second one
+// survives a future change to this file without anyone revisiting this
+// review. This does not cover every possible carrier - see "Known
+// residual" further down for what is deliberately left alone and why.
 //
 // `request.data`, `extra`, `message`, `logentry`, `tags` and `user` are
 // all places arbitrary state ends up if something ever calls
@@ -46,6 +47,27 @@ import { createRoot } from 'react-dom/client';
 // Nothing calls Sentry.addAttachment today, so this is currently a
 // no-op - but strip it anyway so a future attachment can't bypass every
 // other scrub in this function.
+//
+// Known residual - carriers this function does NOT strip, on purpose:
+// - `event.exception.values[].value` and `.stacktrace` - an error
+//   message or its frames can interpolate whatever was in scope when it
+//   was thrown.
+// - `event.spans[].data` - `browserTracingIntegration()` copies request
+//   URLs and query strings into span attributes (`http.query`,
+//   `url.full`).
+// - non-`console` breadcrumbs (`fetch`/`xhr`/`navigation`), which carry
+//   URLs.
+// None of these carries patient data today: this app has zero throw
+// sites and zero console.* calls, and the only outbound value besides
+// Sentry's own instrumentation is GA4's `location.pathname` (no query
+// string). But nothing in this function would catch it if that changed.
+// Standing consequence: never put a patient value in a thrown error
+// message, or in a GA4 event parameter - a GA4 parameter would also be
+// copied verbatim into a Sentry transaction span by
+// browserTracingIntegration, bypassing every scrub below. Span
+// scrubbing is deliberately not added here: this app makes no outbound
+// request carrying patient data, and stripping spans would gut Sentry's
+// usefulness for no current gain.
 const SAFE_CONTEXT_KEYS = new Set([
   // Everything `Contexts` declares (context.d.ts) except `state`, which
   // is the one field designed to hold a React component's state. Any key
@@ -115,8 +137,10 @@ if (import.meta.env.PROD) {
     // This sent 100% of transactions since 2021 with no sign that volume
     // was ever needed. Performance monitoring only needs a representative
     // sample to spot regressions, so 0.1 keeps that signal while cutting
-    // both the request volume and the amount of ambient page/session
-    // context shipped off this page by 90%.
+    // transaction volume - and the ambient page context each transaction
+    // carries - by 90%. Note this samples transactions only: errors are
+    // unsampled, and browserSessionIntegration() (a v10 default) still
+    // sends a session envelope on 100% of page loads.
     tracesSampleRate: 0.1,
 
     // `sendDefaultPii: false` is already this SDK's effective default,
