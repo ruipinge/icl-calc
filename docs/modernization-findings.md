@@ -155,9 +155,9 @@ cheap.
 > Universal Analytics (`UA-212134595-1`, confirmed dead as described below)
 > is replaced by GA4 via `react-ga4`, measurement ID read from
 > `VITE_GA_MEASUREMENT_ID` with nothing initialised when it is absent (never
-> hardcoded — the owner supplies it once the GA4 property exists), consent
-> denied by default under Google's Consent Mode v2. **The GA4 dashboard
-> shows zero traffic until #67 ships a consent banner** — deliberate, not an
+> hardcoded — the owner supplies it; see "Which id" below), consent denied
+> by default under Google's Consent Mode v2. **The GA4 dashboard shows zero
+> traffic until #67 ships a consent banner** — deliberate, not an
 > oversight. Tab navigation is *implemented* for the first time: the old
 > code called `GA.init()` as a side effect inside JSX, firing one pageview
 > at mount, so this hash-router SPA's four tabs had never been tracked at
@@ -165,7 +165,27 @@ cheap.
 > `useLocation`. It reports nothing until two things happen — the owner
 > sets the `VITE_GA_MEASUREMENT_ID` repo variable (Settings → Secrets and
 > variables → Actions → Variables, consumed by the deploy job's build
-> step) and #67 grants `analytics_storage`. Be
+> step) and #67 grants `analytics_storage`.
+>
+> **Which id (owner's decision, September 2026):** a *new web data stream*
+> inside the GA4 property that already exists, not a new property. History,
+> users and cross-site reporting stay in one property, while icl-calc's
+> traffic stays identifiable rather than blending into another site's
+> numbers — it is the `ruipinge.github.io` hostname in reports. The stream
+> itself starts empty; what is preserved is the property around it. There
+> was never anything to resume: the deployed build carries no Google tag at
+> all (checked 2026-09-03 — the live HTML's only `gtag` matches are
+> `Symbol.toStringTag` in the webpack runtime), and its `react-ga` calls
+> target a UA property dead since 1 July 2023.
+>
+> **No consent banner exists on any of the owner's sites today**, so #67 is
+> greenfield rather than a mechanism to match. Consequence worth stating:
+> until it ships, icl-calc is deliberately *stricter* than the rest of the
+> owner's estate — cookieless pings only, no `_ga` cookie, no
+> returning-user identification — so its numbers are not comparable with
+> the other stream's. That is the intended trade, not a misconfiguration.
+>
+> Be
 > precise about "consent denied": it is not "nothing is sent" — GA4 still
 > issues Google's documented cookieless ping (`gcs=G100`) to `/g/collect`
 > carrying only anonymous session metadata and `location.pathname`, verified
