@@ -2,11 +2,15 @@ import ReactGA from 'react-ga4';
 
 // GA4 property id, injected at build time via the environment - never
 // hardcoded here. The old Universal Analytics integration hardcoded
-// 'UA-212134595-1' directly in this file, which is also why it kept firing
-// from every dev machine and CI run for years after UA itself stopped
-// processing data (1 July 2023). `init()` below no-ops entirely when this
-// is unset, so dev builds, test runs, and any build the owner hasn't
-// configured with a real GA4 property never talk to Google at all.
+// 'UA-212134595-1' directly in this file, but that code was always gated
+// on a production-mode check as well (`NODE_ENV === 'production'`, later
+// `import.meta.env.PROD`) - it never fired from a dev machine.
+// `ensureInitialized()` below keeps that same mode guard alongside the id
+// check, so GA4 loads only in a production build *and* only when a
+// measurement id is configured. The mode guard still matters even with the
+// id no longer hardcoded: Vite loads `.env.local` in dev and test mode
+// too, so a developer who follows `.env.example` and fills in a real id
+// there would otherwise get live GA4 hits from `npm run dev`.
 const MEASUREMENT_ID: string | undefined = import.meta.env
   .VITE_GA_MEASUREMENT_ID;
 
@@ -44,7 +48,7 @@ function ensureInitialized(): boolean {
     return true;
   }
 
-  if (!MEASUREMENT_ID) {
+  if (!import.meta.env.PROD || !MEASUREMENT_ID) {
     return false;
   }
 
@@ -70,19 +74,20 @@ function ensureInitialized(): boolean {
 const GA = {
   /**
    * Initialises GA4 with consent denied by default. Safe to call
-   * unconditionally and more than once - it is a no-op whenever
-   * VITE_GA_MEASUREMENT_ID is not set, and only initialises GA4 once.
+   * unconditionally and more than once - it is a no-op outside a
+   * production build, and a no-op whenever VITE_GA_MEASUREMENT_ID is not
+   * set, and only initialises GA4 once.
    */
   init: (): void => {
     ensureInitialized();
   },
 
   /**
-   * Sends one GA4 pageview for `path`. No-ops whenever
-   * VITE_GA_MEASUREMENT_ID is not set. Safe to call before `init()` has
-   * run - it initialises GA4 itself (with consent still denied first) if
-   * nothing has yet, so a pageview can never be queued ahead of the
-   * consent-default command.
+   * Sends one GA4 pageview for `path`. No-ops outside a production build
+   * and no-ops whenever VITE_GA_MEASUREMENT_ID is not set. Safe to call
+   * before `init()` has run - it initialises GA4 itself (with consent
+   * still denied first) if nothing has yet, so a pageview can never be
+   * queued ahead of the consent-default command.
    */
   pageview: (path: string): void => {
     if (!ensureInitialized()) {
