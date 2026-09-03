@@ -158,10 +158,14 @@ cheap.
 > hardcoded — the owner supplies it once the GA4 property exists), consent
 > denied by default under Google's Consent Mode v2. **The GA4 dashboard
 > shows zero traffic until #67 ships a consent banner** — deliberate, not an
-> oversight. Tab navigation is tracked for the first time: the old code
-> called `GA.init()` as a side effect inside JSX, firing one pageview at
-> mount, so this hash-router SPA's four tabs had never been tracked at all;
-> a `RouteTracker` now sends one `page_view` per tab via `useLocation`. Be
+> oversight. Tab navigation is *implemented* for the first time: the old
+> code called `GA.init()` as a side effect inside JSX, firing one pageview
+> at mount, so this hash-router SPA's four tabs had never been tracked at
+> all; a `RouteTracker` now sends one `page_view` per tab via
+> `useLocation`. It reports nothing until two things happen — the owner
+> sets the `VITE_GA_MEASUREMENT_ID` repo variable (Settings → Secrets and
+> variables → Actions → Variables, consumed by the deploy job's build
+> step) and #67 grants `analytics_storage`. Be
 > precise about "consent denied": it is not "nothing is sent" — GA4 still
 > issues Google's documented cookieless ping (`gcs=G100`) to `/g/collect`
 > carrying only anonymous session metadata and `location.pathname`, verified
@@ -181,13 +185,33 @@ cheap.
 > could reach Sentry — zero sentinel occurrences anywhere in the payload,
 > only CSS selectors of which field was touched, never its value.
 >
+> The two are not symmetric on consent, deliberately. GA4 is consent-denied
+> by default; Sentry has no consent gate at all — it initialises
+> unconditionally in production, and `browserSessionIntegration()` (a v10
+> default absent from the old v6 config) sends a session envelope on every
+> page load, unsampled by `tracesSampleRate`. Sentry sets no cookies and
+> error reporting has a legitimate-interest basis that analytics does not,
+> so the asymmetry is defensible — but state it plainly: **#67's consent
+> banner is scoped to analytics only. Sentry is not gated on it.**
+>
 > Both were ruled out below partly because "both would have to be declared
 > in a CSP that currently permits no third-party requests at all" — the
 > design spec's §9 hard constraint against any phone-home dependency. That
 > constraint was consciously traded, not found wrong (spec §9); **issue #68
 > tracks the resulting CSP conflict** with `treeye.science`'s
-> `default-src 'self'`, unresolved as of this writing. Both integrations are
-> blocked under that CSP until #68 lands. Full account:
+> `default-src 'self'`, unresolved as of this writing. Today the app is
+> served from GitHub Pages, which sends no CSP, so both integrations
+> transmit from the live deployment as soon as this ships — treeye.science's
+> CSP rides on the 302 redirect and never reaches the document that
+> actually loads. Checked 2026-09-03:
+> `https://treeye.science/tools/icl-calc` returns HTTP 302 to
+> `https://ruipinge.github.io/icl-calc/`, with
+> `content-security-policy: default-src 'self'` attached to that 51-byte
+> redirect response; `https://ruipinge.github.io/icl-calc/` returns 200
+> with no `content-security-policy` header at all. #68 covers the future
+> topology where treeye.science serves the build directly instead of
+> redirecting to it — under that topology both would have to be
+> allow-listed. Full account:
 > `docs/superpowers/plans/2026-09-02-phase-4a-telemetry.md` and the Phase 4a
 > PR (`Closes #50`).
 
