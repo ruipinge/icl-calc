@@ -478,8 +478,34 @@ and was deliberately left in place pending a separate decision.
 ## 9. Hard constraints
 
 - All computation stays client-side. No patient measurement leaves the browser.
-- No new runtime dependency that phones home. The target must survive
-  `Content-Security-Policy: default-src 'self'`.
+- ~~No new runtime dependency that phones home. The target must survive
+  `Content-Security-Policy: default-src 'self'`.~~
+
+  > **Traded, Phase 4a (issue #50).** This constraint was not found wrong —
+  > it was consciously traded. The phase's original brief was *remove*
+  > Sentry and analytics; the owner decided to keep and modernise them
+  > instead. Both now phone home: Sentry (`@sentry/react` 6.2.2 → 10.73,
+  > `tracesSampleRate` cut from `1.0` to `0.1`, `sendDefaultPii: false`,
+  > and a `beforeSend`/`beforeSendTransaction` scrub stripping every field
+  > a patient could have typed — verified on the wire by intercepting the
+  > outgoing envelope after filling all 21 form fields with sentinel
+  > values and triggering a real error: zero sentinel occurrences) and GA4
+  > (`react-ga4`, measurement ID from `VITE_GA_MEASUREMENT_ID` with
+  > nothing initialised when absent, Consent Mode v2 denied by default,
+  > replacing Universal Analytics which had recorded nothing since 1 July
+  > 2023). Analytics collect nothing until #67 ships the consent banner —
+  > deliberate, not an oversight — and even under denied consent GA4 still
+  > issues Google's documented cookieless ping to `/g/collect` (no
+  > cookies, no patient data, only anonymous session metadata and
+  > `location.pathname`).
+  >
+  > Neither survives `treeye.science`'s
+  > `Content-Security-Policy: default-src 'self'` as things stand — that
+  > was this constraint's whole justification, and the justification still
+  > holds. **Issue #68 tracks that CSP conflict** and is where it gets
+  > resolved before either integration can run under that policy. Full
+  > account: `docs/superpowers/plans/2026-09-02-phase-4a-telemetry.md` and
+  > the Phase 4a PR (`Closes #50`).
 - `src/data.csv` is not to be modified, reformatted, regenerated or moved.
 - The repo stays public and MIT.
 - The GitHub Pages deployment target and configuration are not to be changed.
@@ -536,6 +562,9 @@ and was deliberately left in place pending a separate decision.
 - **Sentry backlog is perishable.** Free-tier retention is 90 days. Issue #42
   is scheduled after the migration, but the *reading* of the data should happen
   before Phase 4a removes the integration, or it is lost.
+  **Correction, Phase 4a: the integration was not removed** — see §9 — so this
+  is no longer time-limited by the migration itself. The 90-day retention
+  clock is still real and independent of this phase; #42 remains open.
 - **Node version target for Phase 0, resolved empirically: Node 16
   (`.nvmrc` pins `v16`).** Tested the ladder 22 → 20 → 18 → 16 against the
   existing (untouched) suite:

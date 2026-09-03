@@ -148,6 +148,49 @@ cheap.
 
 ### 6. The analytics have recorded nothing since July 2023
 
+> **Actioned, Phase 4a (issue #50) — differently from the recommendation
+> below.** The recommendation was to delete both integrations. The owner
+> decided otherwise: keep and modernise them instead.
+>
+> Universal Analytics (`UA-212134595-1`, confirmed dead as described below)
+> is replaced by GA4 via `react-ga4`, measurement ID read from
+> `VITE_GA_MEASUREMENT_ID` with nothing initialised when it is absent (never
+> hardcoded — the owner supplies it once the GA4 property exists), consent
+> denied by default under Google's Consent Mode v2. **The GA4 dashboard
+> shows zero traffic until #67 ships a consent banner** — deliberate, not an
+> oversight. Tab navigation is tracked for the first time: the old code
+> called `GA.init()` as a side effect inside JSX, firing one pageview at
+> mount, so this hash-router SPA's four tabs had never been tracked at all;
+> a `RouteTracker` now sends one `page_view` per tab via `useLocation`. Be
+> precise about "consent denied": it is not "nothing is sent" — GA4 still
+> issues Google's documented cookieless ping (`gcs=G100`) to `/g/collect`
+> carrying only anonymous session metadata and `location.pathname`, verified
+> empirically (zero cookies before and after navigating all four tabs, one
+> ping observed per session regardless of tab count).
+>
+> Sentry (`src/index.tsx:11`) was upgraded rather than deleted — `6.2.2` →
+> `10.73` — and scrubbed: `tracesSampleRate` cut from `1.0` (100% of
+> transactions since 2021) to `0.1`, `sendDefaultPii: false`, a
+> `beforeSend`/`beforeSendTransaction` hook stripping `request.data`,
+> `extra`, `contexts.state` (allow-listed to SDK-populated keys only),
+> `tags`, `user`, `message` and `hint.attachments`, and console breadcrumbs
+> dropped as a fail-safe against a future `console.log(formValues)`.
+> **Verified on the wire, not in the config:** 21 form fields filled with
+> unique sentinel values via real keystrokes, DOM-confirmed present, a real
+> uncaught error triggered, the outgoing envelope intercepted before it
+> could reach Sentry — zero sentinel occurrences anywhere in the payload,
+> only CSS selectors of which field was touched, never its value.
+>
+> Both were ruled out below partly because "both would have to be declared
+> in a CSP that currently permits no third-party requests at all" — the
+> design spec's §9 hard constraint against any phone-home dependency. That
+> constraint was consciously traded, not found wrong (spec §9); **issue #68
+> tracks the resulting CSP conflict** with `treeye.science`'s
+> `default-src 'self'`, unresolved as of this writing. Both integrations are
+> blocked under that CSP until #68 lands. Full account:
+> `docs/superpowers/plans/2026-09-02-phase-4a-telemetry.md` and the Phase 4a
+> PR (`Closes #50`).
+
 `src/misc/GoogleAnalytics.ts:8` initialises `UA-212134595-1`, a **Universal
 Analytics** property. UA stopped processing data on 1 July 2023. Don't port it —
 delete it. Sentry (`src/index.tsx:11`) goes with it: both would have to be
