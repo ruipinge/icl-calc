@@ -1,6 +1,6 @@
 import { Formik, FormikProps, FormikState } from 'formik';
 import { ICLInputs, INITIAL_VALUES } from './types';
-import { Route, HashRouter as Router, Switch } from 'react-router-dom';
+import { Route, HashRouter as Router, Routes } from 'react-router-dom';
 
 import { Footer } from './misc/Footer';
 import { ICLSchema } from './ICLSchema';
@@ -17,40 +17,59 @@ const TabContent = ({
   touched,
   values,
   ...otherProps
-}: FormikState<ICLInputs>) => (
-  <Switch>
-    <Route path="/normality">
-      <Normality
-        ata={values.biometry.ata}
-        clr={values.biometry.clr}
-        acd={values.biometry.acd}
-        aca={(values.biometry.acan + values.biometry.acat) / 2.0}
-        wtw={values.biometry.wtw}
-        age={values.patient.age()}
+}: FormikState<ICLInputs>) => {
+  const patientTab = (
+    <Patient
+      values={values}
+      errors={errors}
+      touched={touched}
+      {...otherProps}
+    />
+  );
+
+  return (
+    <Routes>
+      <Route
+        path="/normality"
+        element={
+          <Normality
+            ata={values.biometry.ata}
+            clr={values.biometry.clr}
+            acd={values.biometry.acd}
+            aca={(values.biometry.acan + values.biometry.acat) / 2.0}
+            wtw={values.biometry.wtw}
+            age={values.patient.age()}
+          />
+        }
       />
-    </Route>
-    <Route path="/matrix">
-      <Matrix ata={values.biometry.ata} clr={values.biometry.clr} />
-    </Route>
-    <Route path="/regression">
-      <Regression
-        acd={values.biometry.acd}
-        ata={values.biometry.ata}
-        clr={values.biometry.clr}
-        se={calcICLSphericalEquivalent(values)}
-        age={values.patient.age()}
+      <Route
+        path="/matrix"
+        element={<Matrix ata={values.biometry.ata} clr={values.biometry.clr} />}
       />
-    </Route>
-    <Route path="/">
-      <Patient
-        values={values}
-        errors={errors}
-        touched={touched}
-        {...otherProps}
+      <Route
+        path="/regression"
+        element={
+          <Regression
+            acd={values.biometry.acd}
+            ata={values.biometry.ata}
+            clr={values.biometry.clr}
+            se={calcICLSphericalEquivalent(values)}
+            age={values.patient.age()}
+          />
+        }
       />
-    </Route>
-  </Switch>
-);
+      {/*
+        v5's <Switch> picked the first match and a bare path="/" matched
+        everything, so an unknown hash fell through to Patient. v7's <Routes>
+        ranks matches and path="/" matches only exactly, so the catch-all
+        below is what preserves that behaviour - without it an unknown hash
+        renders nothing at all. Both entries point at the same element.
+      */}
+      <Route path="/" element={patientTab} />
+      <Route path="*" element={patientTab} />
+    </Routes>
+  );
+};
 
 // Formik invokes its `children` render prop directly from its own render
 // - `children(formikbag)` - not as a distinct React element, so this
@@ -70,7 +89,16 @@ const FormContent = ({
     <>
       <NavBar resetForm={resetForm} />
       <div className="container">
-        <Router hashType="noslash">
+        {/*
+          Hash routing, not BrowserRouter: this deploys to GitHub Pages, which
+          serves no SPA fallback, so a real path would 404 on reload. v7 dropped
+          the hashType="noslash" prop this used to carry, so links now render as
+          #/matrix rather than #matrix. Old bookmarks still resolve - v7's
+          createHashHistory prefixes a missing leading slash - and normalise on
+          the next click. See src/ICLContainer.test.tsx for the tests that hold
+          that guarantee.
+        */}
+        <Router>
           <TabLinks />
           <hr />
           <TabContent

@@ -12,6 +12,7 @@ exports[`renders without crashing 1`] = `
       <a
         aria-current="page"
         class="nav-link active"
+        data-discover="true"
         href="#/"
       >
         Patient
@@ -22,6 +23,7 @@ exports[`renders without crashing 1`] = `
     >
       <a
         class="nav-link"
+        data-discover="true"
         href="#/normality"
       >
         Biometric Normality
@@ -32,6 +34,7 @@ exports[`renders without crashing 1`] = `
     >
       <a
         class="nav-link"
+        data-discover="true"
         href="#/matrix"
       >
         Floating Matrix
@@ -42,6 +45,7 @@ exports[`renders without crashing 1`] = `
     >
       <a
         class="nav-link"
+        data-discover="true"
         href="#/regression"
       >
         Regression

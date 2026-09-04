@@ -203,7 +203,8 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
       >
         <a
           class="nav-link"
-          href="#"
+          data-discover="true"
+          href="#/"
         >
           Patient
         </a>
@@ -213,7 +214,8 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
       >
         <a
           class="nav-link"
-          href="#normality"
+          data-discover="true"
+          href="#/normality"
         >
           Biometric Normality
         </a>
@@ -224,7 +226,8 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
         <a
           aria-current="page"
           class="nav-link active"
-          href="#matrix"
+          data-discover="true"
+          href="#/matrix"
         >
           Floating Matrix
         </a>
@@ -234,7 +237,8 @@ exports[`renders Floating Matrix on #matrix route 1`] = `
       >
         <a
           class="nav-link"
-          href="#regression"
+          data-discover="true"
+          href="#/regression"
         >
           Regression
         </a>
@@ -992,7 +996,8 @@ exports[`renders Patient for inexistent route 1`] = `
       >
         <a
           class="nav-link"
-          href="#"
+          data-discover="true"
+          href="#/"
         >
           Patient
         </a>
@@ -1002,7 +1007,8 @@ exports[`renders Patient for inexistent route 1`] = `
       >
         <a
           class="nav-link"
-          href="#normality"
+          data-discover="true"
+          href="#/normality"
         >
           Biometric Normality
         </a>
@@ -1012,7 +1018,8 @@ exports[`renders Patient for inexistent route 1`] = `
       >
         <a
           class="nav-link"
-          href="#matrix"
+          data-discover="true"
+          href="#/matrix"
         >
           Floating Matrix
         </a>
@@ -1022,7 +1029,8 @@ exports[`renders Patient for inexistent route 1`] = `
       >
         <a
           class="nav-link"
-          href="#regression"
+          data-discover="true"
+          href="#/regression"
         >
           Regression
         </a>
@@ -2140,7 +2148,8 @@ exports[`renders Patient form on # route 1`] = `
         <a
           aria-current="page"
           class="nav-link active"
-          href="#"
+          data-discover="true"
+          href="#/"
         >
           Patient
         </a>
@@ -2150,7 +2159,8 @@ exports[`renders Patient form on # route 1`] = `
       >
         <a
           class="nav-link"
-          href="#normality"
+          data-discover="true"
+          href="#/normality"
         >
           Biometric Normality
         </a>
@@ -2160,7 +2170,8 @@ exports[`renders Patient form on # route 1`] = `
       >
         <a
           class="nav-link"
-          href="#matrix"
+          data-discover="true"
+          href="#/matrix"
         >
           Floating Matrix
         </a>
@@ -2170,7 +2181,8 @@ exports[`renders Patient form on # route 1`] = `
       >
         <a
           class="nav-link"
-          href="#regression"
+          data-discover="true"
+          href="#/regression"
         >
           Regression
         </a>
@@ -3287,7 +3299,8 @@ exports[`renders Regression on #regression route 1`] = `
       >
         <a
           class="nav-link"
-          href="#"
+          data-discover="true"
+          href="#/"
         >
           Patient
         </a>
@@ -3297,7 +3310,8 @@ exports[`renders Regression on #regression route 1`] = `
       >
         <a
           class="nav-link"
-          href="#normality"
+          data-discover="true"
+          href="#/normality"
         >
           Biometric Normality
         </a>
@@ -3307,7 +3321,8 @@ exports[`renders Regression on #regression route 1`] = `
       >
         <a
           class="nav-link"
-          href="#matrix"
+          data-discover="true"
+          href="#/matrix"
         >
           Floating Matrix
         </a>
@@ -3318,7 +3333,8 @@ exports[`renders Regression on #regression route 1`] = `
         <a
           aria-current="page"
           class="nav-link active"
-          href="#regression"
+          data-discover="true"
+          href="#/regression"
         >
           Regression
         </a>
@@ -3618,7 +3634,8 @@ exports[`renders without crashing 1`] = `
         <a
           aria-current="page"
           class="nav-link active"
-          href="#"
+          data-discover="true"
+          href="#/"
         >
           Patient
         </a>
@@ -3628,7 +3645,8 @@ exports[`renders without crashing 1`] = `
       >
         <a
           class="nav-link"
-          href="#normality"
+          data-discover="true"
+          href="#/normality"
         >
           Biometric Normality
         </a>
@@ -3638,7 +3656,8 @@ exports[`renders without crashing 1`] = `
       >
         <a
           class="nav-link"
-          href="#matrix"
+          data-discover="true"
+          href="#/matrix"
         >
           Floating Matrix
         </a>
@@ -3648,7 +3667,8 @@ exports[`renders without crashing 1`] = `
       >
         <a
           class="nav-link"
-          href="#regression"
+          data-discover="true"
+          href="#/regression"
         >
           Regression
         </a>
@@ -4766,7 +4786,8 @@ exports[`resets form when clicking reset button 1`] = `
         <a
           aria-current="page"
           class="nav-link active"
-          href="#"
+          data-discover="true"
+          href="#/"
         >
           Patient
         </a>
@@ -4776,7 +4797,8 @@ exports[`resets form when clicking reset button 1`] = `
       >
         <a
           class="nav-link"
-          href="#normality"
+          data-discover="true"
+          href="#/normality"
         >
           Biometric Normality
         </a>
@@ -4786,7 +4808,8 @@ exports[`resets form when clicking reset button 1`] = `
       >
         <a
           class="nav-link"
-          href="#matrix"
+          data-discover="true"
+          href="#/matrix"
         >
           Floating Matrix
         </a>
@@ -4796,7 +4819,8 @@ exports[`resets form when clicking reset button 1`] = `
       >
         <a
           class="nav-link"
-          href="#regression"
+          data-discover="true"
+          href="#/regression"
         >
           Regression
         </a>
@@ -5914,7 +5938,8 @@ exports[`resets form when clicking reset button 2`] = `
         <a
           aria-current="page"
           class="nav-link active"
-          href="#"
+          data-discover="true"
+          href="#/"
         >
           Patient
         </a>
@@ -5924,7 +5949,8 @@ exports[`resets form when clicking reset button 2`] = `
       >
         <a
           class="nav-link"
-          href="#normality"
+          data-discover="true"
+          href="#/normality"
         >
           Biometric Normality
         </a>
@@ -5934,7 +5960,8 @@ exports[`resets form when clicking reset button 2`] = `
       >
         <a
           class="nav-link"
-          href="#matrix"
+          data-discover="true"
+          href="#/matrix"
         >
           Floating Matrix
         </a>
@@ -5944,7 +5971,8 @@ exports[`resets form when clicking reset button 2`] = `
       >
         <a
           class="nav-link"
-          href="#regression"
+          data-discover="true"
+          href="#/regression"
         >
           Regression
         </a>
@@ -7062,7 +7090,8 @@ exports[`resets form when clicking reset button 3`] = `
         <a
           aria-current="page"
           class="nav-link active"
-          href="#"
+          data-discover="true"
+          href="#/"
         >
           Patient
         </a>
@@ -7072,7 +7101,8 @@ exports[`resets form when clicking reset button 3`] = `
       >
         <a
           class="nav-link"
-          href="#normality"
+          data-discover="true"
+          href="#/normality"
         >
           Biometric Normality
         </a>
@@ -7082,7 +7112,8 @@ exports[`resets form when clicking reset button 3`] = `
       >
         <a
           class="nav-link"
-          href="#matrix"
+          data-discover="true"
+          href="#/matrix"
         >
           Floating Matrix
         </a>
@@ -7092,7 +7123,8 @@ exports[`resets form when clicking reset button 3`] = `
       >
         <a
           class="nav-link"
-          href="#regression"
+          data-discover="true"
+          href="#/regression"
         >
           Regression
         </a>
