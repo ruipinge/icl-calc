@@ -1,9 +1,8 @@
-import { Formik, FormikState } from 'formik';
+import { Formik, FormikProps, FormikState } from 'formik';
 import { ICLInputs, INITIAL_VALUES } from './types';
 import { Route, HashRouter as Router, Switch } from 'react-router-dom';
 
 import { Footer } from './misc/Footer';
-import GA from './misc/GoogleAnalytics';
 import { ICLSchema } from './ICLSchema';
 import { Matrix } from './matrix';
 import { NavBar } from './misc/NavBar';
@@ -53,6 +52,40 @@ const TabContent = ({
   </Switch>
 );
 
+// Formik invokes its `children` render prop directly from its own render
+// - `children(formikbag)` - not as a distinct React element, so this
+// never gets its own Fiber and an inline arrow here would not be a
+// component as far as the rules of hooks are concerned. It holds no
+// hooks today, so that is moot; it stays a named component because it
+// reads better than a 40-line arrow inline, and because anything added
+// here later would need to know the above.
+const FormContent = ({
+  errors,
+  touched,
+  values,
+  resetForm,
+  ...otherProps
+}: FormikProps<ICLInputs>) => {
+  return (
+    <>
+      <NavBar resetForm={resetForm} />
+      <div className="container">
+        <Router hashType="noslash">
+          <TabLinks />
+          <hr />
+          <TabContent
+            values={values}
+            errors={errors}
+            touched={touched}
+            {...otherProps}
+          />
+        </Router>
+      </div>
+      <Footer />
+    </>
+  );
+};
+
 export const ICLContainer = () => (
   <Formik
     initialValues={INITIAL_VALUES}
@@ -62,24 +95,6 @@ export const ICLContainer = () => (
       () => {}
     }
   >
-    {({ errors, touched, values, resetForm, ...otherProps }) => (
-      <>
-        <NavBar resetForm={resetForm} />
-        <div className="container">
-          {GA.init()}
-          <Router hashType="noslash">
-            <TabLinks />
-            <hr />
-            <TabContent
-              values={values}
-              errors={errors}
-              touched={touched}
-              {...otherProps}
-            />
-          </Router>
-        </div>
-        <Footer />
-      </>
-    )}
+    {FormContent}
   </Formik>
 );

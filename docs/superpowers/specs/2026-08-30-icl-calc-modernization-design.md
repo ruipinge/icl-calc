@@ -241,7 +241,7 @@ Each phase is one GitHub issue, one worktree, one branch, one pull request into
 | 3a | CRA → Vite | Vite + Vitest, TS 4.1→5. React 17 and router 5 deliberately unchanged. `raw.macro`→`?raw` (BOM verified), `index.html` to root, `REACT_APP_*`→`VITE_*`, `PUBLIC_URL`→`BASE_URL`, `NODE_ENV`→`import.meta.env.PROD`, `transformIgnorePatterns` dropped | `expected.json` unchanged to the digit |
 | 3b | React 17 → 19 | `createRoot`; `@testing-library/react` 11→16; all 8 `react-test-renderer` suites rewritten; every `.snap` regenerated | `expected.json` unchanged **while snapshots churn wholesale** |
 | 3c | Router 5 → 7 | `Switch`→`Routes`, `element` props, plus a legacy-hash redirect shim | `expected.json` unchanged; a test proving `#matrix` resolves to `#/matrix` |
-| 4a | Drop dead services | Remove Sentry, `react-ga`, `GoogleAnalytics.ts`, `web-vitals`; fix the `dependencies`/`devDependencies` split | `expected.json` unchanged; zero third-party network requests |
+| 4a | Telemetry | **As implemented:** Sentry `6.2.2`→`10.73` kept and scrubbed; `react-ga`, `GoogleAnalytics.ts` and `web-vitals` removed; `dependencies`/`devDependencies` split fixed. (Originally "remove Sentry too"; see §9.) | `expected.json` unchanged; the only third-party network requests are Sentry's |
 | 4b | Replace amCharts | Hand-rolled SVG histogram over the L1-locked `HISTOGRAM_DATA`; `@amcharts/amcharts4` removed | `expected.json` unchanged |
 | 5 | Ship | Final PR `modernize` → master; semantic-release fires; gh-pages republishes | L2 replayed against the **new live URL** post-deploy; oracle retired only then |
 
@@ -478,8 +478,56 @@ and was deliberately left in place pending a separate decision.
 ## 9. Hard constraints
 
 - All computation stays client-side. No patient measurement leaves the browser.
-- No new runtime dependency that phones home. The target must survive
-  `Content-Security-Policy: default-src 'self'`.
+- ~~No new runtime dependency that phones home. The target must survive
+  `Content-Security-Policy: default-src 'self'`.~~
+
+  > **Traded, Phase 4a (issue #50).** This constraint was not found wrong —
+  > it was consciously traded. The phase's original brief was *remove*
+  > Sentry and analytics; the owner decided to keep and modernise them
+  > instead. Both now phone home: Sentry (`@sentry/react` 6.2.2 → 10.73,
+  > `tracesSampleRate` cut from `1.0` to `0.1`, `sendDefaultPii: false`,
+  > and a `beforeSend`/`beforeSendTransaction` scrub stripping every field
+  > a patient could have typed — verified on the wire by intercepting the
+  > outgoing envelope after filling all 21 form fields with sentinel
+  > values and triggering a real error: zero sentinel occurrences).
+  >
+  > **Analytics were deleted, not modernised.** GA4 was built first and
+  > then removed on the owner's decision (4 September 2026): GA4's
+  > complexity, the consent-banner and cookie burden it forces on a
+  > clinical tool under GDPR, and the plan to move this app to
+  > `treeye.science` on Cloudflare, whose analytics are cookieless and
+  > need no banner. The app now ships no analytics of any kind — the dead
+  > `UA-212134595-1` integration included — and no measurement id in any
+  > environment or CI variable. **Issue #67 (cookie consent) is closed as
+  > no longer needed**; nothing in this app sets a cookie.
+  >
+  > **Sentry has no consent gate**, and with analytics gone there is
+  > nothing left to be asymmetric with. It initialises unconditionally in
+  > production (`src/index.tsx`), and `browserSessionIntegration()` (a v10
+  > default that did not exist in the old v6 config) sends a session
+  > envelope on every page load, unsampled by `tracesSampleRate`. That is
+  > a deliberate position: Sentry sets no cookies and stores nothing on
+  > the device, and error reporting on a clinical calculator has a
+  > legitimate-interest basis that analytics does not. It is also why no
+  > consent banner is needed anywhere in this app.
+  >
+  > Today the app is served from GitHub Pages, which sends no CSP, so
+  > Sentry transmits from the live deployment as soon as this ships —
+  > treeye.science's CSP rides on a 302 redirect and never reaches the
+  > document that actually loads. Checked 2026-09-03:
+  > `https://treeye.science/tools/icl-calc` returns HTTP 302 to
+  > `https://ruipinge.github.io/icl-calc/`, with
+  > `content-security-policy: default-src 'self'` attached to that 51-byte
+  > redirect response; `https://ruipinge.github.io/icl-calc/` returns 200
+  > with no `content-security-policy` header at all. That was this
+  > constraint's whole justification for the *future* topology where
+  > treeye.science serves the build directly instead of redirecting to
+  > it, and the justification still holds for that topology. **Issue #68
+  > tracks that CSP conflict** and is where it gets resolved before Sentry
+  > can run under that policy — its allow-list now covers Sentry alone,
+  > not Sentry plus two Google origins. Full account:
+  > `docs/superpowers/plans/2026-09-02-phase-4a-telemetry.md` and
+  > the Phase 4a PR (`Closes #50`).
 - `src/data.csv` is not to be modified, reformatted, regenerated or moved.
 - The repo stays public and MIT.
 - The GitHub Pages deployment target and configuration are not to be changed.
@@ -536,6 +584,9 @@ and was deliberately left in place pending a separate decision.
 - **Sentry backlog is perishable.** Free-tier retention is 90 days. Issue #42
   is scheduled after the migration, but the *reading* of the data should happen
   before Phase 4a removes the integration, or it is lost.
+  **Correction, Phase 4a: the integration was not removed** — see §9 — so this
+  is no longer time-limited by the migration itself. The 90-day retention
+  clock is still real and independent of this phase; #42 remains open.
 - **Node version target for Phase 0, resolved empirically: Node 16
   (`.nvmrc` pins `v16`).** Tested the ladder 22 → 20 → 18 → 16 against the
   existing (untouched) suite:

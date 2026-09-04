@@ -148,6 +148,86 @@ cheap.
 
 ### 6. The analytics have recorded nothing since July 2023
 
+> **Actioned, Phase 4a (issue #50) — partly as recommended below.** The
+> recommendation was to delete both integrations. The owner's decision,
+> after one reversal, landed in between: **analytics deleted outright,
+> Sentry kept and modernised.**
+>
+> Analytics is gone from this app entirely — no `react-ga`, no `react-ga4`,
+> no `src/misc/GoogleAnalytics.ts`, no `RouteTracker`, no measurement id in
+> any environment or CI variable, and nothing in the built bundle that
+> contacts Google (verified: zero matches for `google-analytics`,
+> `googletagmanager` or `gtag` across `build/assets/*.js`). The old
+> Universal Analytics property `UA-212134595-1` had recorded nothing since
+> 1 July 2023, so nothing was lost by removing it.
+>
+> **Why not GA4, given it was built and working?** It was, briefly — the
+> intermediate state is in this branch's history. The owner reversed it
+> (4 September 2026) on three grounds: GA4's own complexity, the
+> consent-banner and cookie burden it forces onto a clinical tool operating
+> under GDPR, and the plan to move this app to `treeye.science` on
+> Cloudflare hosting, whose built-in analytics are cookieless and need no
+> consent banner at all. Removing GA4 rather than deferring it is what
+> makes the whole consent workstream disappear instead of being carried:
+> **issue #67 (cookie consent) is closed as no longer needed**, and #68's
+> CSP allow-list now has to cover Sentry alone rather than Sentry plus two
+> Google origins.
+>
+> **Consequence, stated plainly:** this app collects no usage analytics at
+> all between now and the Cloudflare move. That is a real gap, chosen
+> deliberately over a cookie banner. Note also that Cloudflare Web
+> Analytics tracks History API navigation, and this is a `HashRouter` SPA
+> whose tab switches fire `hashchange` rather than `pushState` — so
+> per-tab tracking may still need attention after the move, and it is worth
+> checking then rather than assuming. Related: moving off GitHub Pages
+> removes the *reason* for a hash router in the first place, which #49
+> should weigh.
+>
+> Sentry (`src/index.tsx:11`) was upgraded rather than deleted — `6.2.2` →
+> `10.73` — and scrubbed: `tracesSampleRate` cut from `1.0` (100% of
+> transactions since 2021) to `0.1`, `sendDefaultPii: false`, a
+> `beforeSend`/`beforeSendTransaction` hook stripping `request.data`,
+> `extra`, `contexts.state` (allow-listed to SDK-populated keys only),
+> `tags`, `user`, `message` and `hint.attachments`, and console breadcrumbs
+> dropped as a fail-safe against a future `console.log(formValues)`.
+> **Verified on the wire, not in the config:** 21 form fields filled with
+> unique sentinel values via real keystrokes, DOM-confirmed present, a real
+> uncaught error triggered, the outgoing envelope intercepted before it
+> could reach Sentry — zero sentinel occurrences anywhere in the payload,
+> only CSS selectors of which field was touched, never its value.
+>
+> **Sentry has no consent gate**, and with analytics gone there is no
+> longer anything to be asymmetric with. It initialises unconditionally in
+> production, and `browserSessionIntegration()` (a v10 default absent from
+> the old v6 config) sends a session envelope on every page load, unsampled
+> by `tracesSampleRate`. That is a deliberate position, not an oversight:
+> Sentry sets no cookies and stores nothing on the device, and error
+> reporting on a clinical calculator has a legitimate-interest basis that
+> analytics does not. It is also the reason no consent banner is needed
+> anywhere in this app.
+>
+> Sentry was ruled out below partly because it "would have to be declared
+> in a CSP that currently permits no third-party requests at all" — the
+> design spec's §9 hard constraint against any phone-home dependency. That
+> constraint was consciously traded for Sentry alone, not found wrong (spec
+> §9); **issue #68 tracks the resulting CSP conflict** with
+> `treeye.science`'s `default-src 'self'`, unresolved as of this writing.
+> Today the app is
+> served from GitHub Pages, which sends no CSP, so Sentry
+> transmits from the live deployment as soon as this ships — treeye.science's
+> CSP rides on the 302 redirect and never reaches the document that
+> actually loads. Checked 2026-09-03:
+> `https://treeye.science/tools/icl-calc` returns HTTP 302 to
+> `https://ruipinge.github.io/icl-calc/`, with
+> `content-security-policy: default-src 'self'` attached to that 51-byte
+> redirect response; `https://ruipinge.github.io/icl-calc/` returns 200
+> with no `content-security-policy` header at all. #68 covers the future
+> topology where treeye.science serves the build directly instead of
+> redirecting to it — under that topology both would have to be
+> allow-listed. Full account:
+> `docs/superpowers/plans/2026-09-02-phase-4a-telemetry.md` and the Phase 4a
+> PR (`Closes #50`).
+
 `src/misc/GoogleAnalytics.ts:8` initialises `UA-212134595-1`, a **Universal
 Analytics** property. UA stopped processing data on 1 July 2023. Don't port it —
 delete it. Sentry (`src/index.tsx:11`) goes with it: both would have to be
@@ -233,6 +313,29 @@ Commit at each step so a regression can be bisected.
   reporting, no CDN fonts. treeye.science ships
   `Content-Security-Policy: default-src 'self'` and makes zero third-party
   requests; anything added here has to survive that.
+  > **Superseded in Phase 4a (issue #50).** Two corrections to the text
+  > above, which is kept as-written per this document's convention.
+  >
+  > First, the constraint was traded for exactly one dependency, not
+  > abandoned: the owner kept and modernised Sentry, and deleted analytics
+  > outright. So this repo has one runtime dependency that phones home,
+  > scrubbed and documented — see finding 6 above and design spec §9. The
+  > *spirit* of the constraint survives intact and is the harder
+  > requirement: **no patient measurement leaves the browser**, per the
+  > first bullet, which is still true and is verified on the wire rather
+  > than assumed. The "no analytics" half of this bullet was not traded at
+  > all — it now holds more completely than when it was written, since the
+  > dead Universal Analytics integration is gone too.
+  >
+  > Second, the CSP sentence does not mean what it appears to mean.
+  > `treeye.science/tools/icl-calc` is a 302 to
+  > `ruipinge.github.io/icl-calc/`, and that CSP header sits on the
+  > redirect response, which creates no document. The app's document is
+  > served by GitHub Pages, which sends no CSP at all, so no CSP has ever
+  > been in force over this app. The constraint reads as a live
+  > restriction and is not one today; it becomes real only under the
+  > vendored-artifact topology below, where treeye.science would serve the
+  > build directly. Issue #68 tracks that.
 - **`src/data.csv` is not to be modified, reformatted, regenerated or moved.**
   542 rows of real per-eye clinical biometry — age, ICL size and SE, ACD, CCT,
   ATA, CLR, ACA, vault, WTW, keratometry — from patients operated on at
@@ -257,3 +360,8 @@ Commit at each step so a regression can be bisected.
 - **Analytics** — recommendation is none at all. Cloudflare gives server-side
   request counts with no client JS, no cookies and no consent banner; the
   planned sign-up answers "who uses this" properly.
+  > **Adopted, Phase 4a (issue #50).** This recommendation briefly lost and
+  > then won. GA4 was built to replace the dead UA integration, then removed
+  > again on 4 September 2026 for the reasons given here — cookies, consent
+  > banner, complexity — leaving the app with no client-side analytics at
+  > all, as this bullet advised. See finding 6 above.
