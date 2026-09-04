@@ -1,14 +1,8 @@
 import { Formik, FormikProps, FormikState } from 'formik';
 import { ICLInputs, INITIAL_VALUES } from './types';
-import {
-  Route,
-  HashRouter as Router,
-  Switch,
-  useLocation
-} from 'react-router-dom';
+import { Route, HashRouter as Router, Switch } from 'react-router-dom';
 
 import { Footer } from './misc/Footer';
-import GA from './misc/GoogleAnalytics';
 import { ICLSchema } from './ICLSchema';
 import { Matrix } from './matrix';
 import { NavBar } from './misc/NavBar';
@@ -17,7 +11,6 @@ import { Patient } from './patient';
 import { Regression } from './regression';
 import { TabLinks } from './misc/TabLinks';
 import { calcICLSphericalEquivalent } from './formulas';
-import { useEffect } from 'react';
 
 const TabContent = ({
   errors,
@@ -59,29 +52,13 @@ const TabContent = ({
   </Switch>
 );
 
-// Sends a GA4 pageview whenever the active tab changes. Mounted inside
-// <Router> below so `useLocation` sees the four tab routes (/, /normality,
-// /matrix, /regression) - this is a hash-router SPA, so a tab switch is
-// never a full page load and would otherwise never be tracked at all,
-// same as it never was under the old Universal Analytics integration.
-//
-// #49 upgrades react-router-dom 5 -> 7, which changes this import (and
-// possibly useLocation's behaviour) - that issue needs to update this.
-const RouteTracker = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    GA.pageview(location.pathname);
-  }, [location.pathname]);
-
-  return null;
-};
-
-// Formik invokes its `children` render prop directly from its own render,
-// not as a distinct React element - an inline arrow function there is not
-// a component as far as the rules of hooks are concerned, so this is
-// pulled out as a named component instead. That's what lets the mount
-// effect below live here rather than back inside JSX.
+// Formik invokes its `children` render prop directly from its own render
+// - `children(formikbag)` - not as a distinct React element, so this
+// never gets its own Fiber and an inline arrow here would not be a
+// component as far as the rules of hooks are concerned. It holds no
+// hooks today, so that is moot; it stays a named component because it
+// reads better than a 40-line arrow inline, and because anything added
+// here later would need to know the above.
 const FormContent = ({
   errors,
   touched,
@@ -89,28 +66,11 @@ const FormContent = ({
   resetForm,
   ...otherProps
 }: FormikProps<ICLInputs>) => {
-  // Runs once on mount rather than as a side effect during render - see
-  // src/misc/GoogleAnalytics.ts for why this is a no-op unless
-  // VITE_GA_MEASUREMENT_ID is configured.
-  //
-  // NOTE: FormContent is passed to Formik below as `{FormContent}` and
-  // invoked directly - `children(formikbag)` - not through JSX, so it
-  // never gets its own Fiber; this effect actually attaches to Formik's
-  // own hook list. That's harmless only because Formik renders this
-  // child unconditionally today. If that ever changes - wrapping this as
-  // `{(props) => <FormContent {...props} />}`, or a Formik major that
-  // renders children differently - this effect's mount/unmount timing
-  // changes with it, silently.
-  useEffect(() => {
-    GA.init();
-  }, []);
-
   return (
     <>
       <NavBar resetForm={resetForm} />
       <div className="container">
         <Router hashType="noslash">
-          <RouteTracker />
           <TabLinks />
           <hr />
           <TabContent

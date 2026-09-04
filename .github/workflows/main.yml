@@ -172,11 +172,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci --prefer-offline
 
-      # Deliberately NO VITE_GA_MEASUREMENT_ID here, unlike the deploy
-      # job's build. `npm run build` is a production build, so setting it
-      # would arm GA4 in the build the L2 replay drives - a headless run
-      # would then send live pageviews to the real GA4 property on every
-      # CI run. The replay only needs the app's rendered numbers.
       - name: Build
         run: npm run build
 
@@ -257,17 +252,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
 
-      # GA4's measurement id is injected at build time; without it
-      # src/misc/GoogleAnalytics.ts no-ops and GA4 never loads at all. It
-      # is a repository *variable*, not a secret - a GA4 measurement id is
-      # public by design and ships in the bundle. The owner sets it at
-      # Settings -> Secrets and variables -> Actions -> Variables. Until
-      # they do, it resolves to the empty string, which the code already
-      # treats as "GA4 disabled" - so this is safe to land before the GA4
-      # property exists.
+      # No build-time environment is needed. Sentry's DSN is hardcoded in
+      # src/index.tsx (a DSN is public by design and write-only), and this
+      # app ships no analytics - see the Phase 4a note in
+      # docs/modernization-findings.md.
       - name: Build
-        env:
-          VITE_GA_MEASUREMENT_ID: ${{ vars.VITE_GA_MEASUREMENT_ID }}
         run: npm run build
 
       - name: Deploy
