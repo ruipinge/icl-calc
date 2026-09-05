@@ -146,6 +146,23 @@ public repo. CodeClimate treats it as a secret — it permits posting coverage f
 this repo. Low severity, but it belongs in a GitHub secret, and rotating it is
 cheap.
 
+> **Actioned across Phases 2a and 2b.** The workflow was rewritten, not
+> patched, as this finding recommended. CodeClimate is gone entirely — the
+> owner no longer has access to that account, so `CC_TEST_REPORTER_ID` could
+> not be rotated and was removed instead; treat the leaked value as burned
+> rather than secured. Codecov is gone too, a deliberate trade rather than a
+> forced one (spec §11): a coverage credential had already leaked here, it
+> needs a token in a repo whose stated aim is minimising third-party surface,
+> and its 2021 uploader compromise is a supply-chain precedent worth weighing
+> for a clinical tool.
+>
+> What replaced them is stronger than what was lost. Coverage floors now live
+> in `vite.config.ts` and **fail CI** when missed, where Codecov only posted a
+> comment; the table is written to the job summary; and the PR comment uses
+> `actions/github-script`, which is first-party — pulling in a marketplace
+> coverage-comment action would have traded one third-party dependency for
+> another and defeated the point. Cost, accepted: no trend graph, no badge.
+
 ### 6. The analytics have recorded nothing since July 2023
 
 > **Actioned, Phase 4a (issue #50) — partly as recommended below.** The

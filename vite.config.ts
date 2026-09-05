@@ -47,7 +47,26 @@ export default defineConfig(({ mode }) => ({
     include: ['src/**/*.{test,spec}.{js,jsx,ts,tsx}'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'lcov'],
+      // json-summary feeds the PR comment in .github/workflows/main.yml;
+      // text is what the job summary scrapes; lcov is kept because it is
+      // the portable format any future tool will read.
+      reporter: ['text', 'lcov', 'json-summary'],
+      // Seeded at the numbers measured on 2026-09-05, after #51 brought the
+      // Normality tab under test for the first time. These are a ratchet,
+      // not an aspiration: CI fails when coverage drops below them, which
+      // is strictly stronger than the posted comment Codecov used to give
+      // (issue #46). Raise them when coverage genuinely improves; lowering
+      // one is a decision that belongs in a PR description, not a quiet
+      // edit.
+      //
+      // Not set to 100: src/index.tsx is excluded below, and the
+      // ResizeObserver path in Histogram.tsx is unreachable under jsdom.
+      thresholds: {
+        statements: 99.7,
+        branches: 91.51,
+        functions: 99.05,
+        lines: 99.7
+      },
       include: ['src/**/*.{js,jsx,ts,tsx}'],
       exclude: [
         'src/**/*.d.ts',
