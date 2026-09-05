@@ -45,8 +45,7 @@ it('resets form when clicking reset button', async () => {
   expect(asFragment()).toMatchSnapshot();
 });
 
-// While using amcharts 4 that isn't supported by jest
-it.skip('switches to Biometric Normality tab when clicked', async () => {
+it('switches to Biometric Normality tab when clicked', async () => {
   renderWithHash();
 
   await waitFor(() => {
@@ -54,7 +53,7 @@ it.skip('switches to Biometric Normality tab when clicked', async () => {
   });
 
   expect(screen.queryByLabelText('Name')).toBeNull();
-  expect(screen.getByText(/Normality Graphs are coming soon/)).toBeVisible();
+  expect(screen.getByText('Angle to Angle - AtA (mm)')).toBeVisible();
 });
 
 it('switches to Floating Matrix tab when clicked', async () => {
@@ -85,8 +84,7 @@ it('renders Patient form on # route', () => {
   expect(asFragment()).toMatchSnapshot();
 });
 
-// While using amcharts 4 that isn't supported by jest
-it.skip('renders Biometric Normality on #normality route', () => {
+it('renders Biometric Normality on #normality route', () => {
   const { asFragment } = renderWithHash('#normality');
   expect(asFragment()).toMatchSnapshot();
 });
@@ -119,7 +117,8 @@ it('renders Patient for inexistent route', () => {
  */
 it.each([
   ['#matrix', /Number of Eyes/],
-  ['#regression', /Vault Prediction/]
+  ['#regression', /Vault Prediction/],
+  ['#normality', /Angle to Angle - AtA \(mm\)/]
 ])('resolves the legacy %s URL to its tab', (hash, expected) => {
   renderWithHash(hash);
   expect(screen.getByText(expected)).toBeVisible();
@@ -128,7 +127,8 @@ it.each([
 
 it.each([
   ['#/matrix', /Number of Eyes/],
-  ['#/regression', /Vault Prediction/]
+  ['#/regression', /Vault Prediction/],
+  ['#/normality', /Angle to Angle - AtA \(mm\)/]
 ])('resolves the current %s URL to its tab', (hash, expected) => {
   renderWithHash(hash);
   expect(screen.getByText(expected)).toBeVisible();
