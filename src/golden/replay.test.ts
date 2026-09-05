@@ -47,8 +47,10 @@ describe('golden master L1', () => {
   });
 
   it('derives the same histogram bins from the CSV', () => {
-    // Locked here because the amCharts histogram is replaced in Phase 4b:
-    // the chart may change, the numbers behind it may not.
+    // Locked here because Phase 4b replaced the amCharts histogram with
+    // hand-rolled SVG: the chart changed, these numbers did not. This
+    // snapshot is what proved that, and it stays as the guard on any
+    // future change to the chart.
     expect(HISTOGRAM_DATA).toMatchSnapshot();
   });
 

@@ -1,5 +1,12 @@
 # Histogram visual reference — amCharts 4, captured before #51
 
+> **#51 has shipped.** The replacement is hand-rolled SVG in
+> `src/normality/Histogram.tsx`. These images stay as the record of what was
+> replaced. One correction to the notes below, learned during the work: the
+> chart cannot scale to fit its column, because the gauge beneath it shares the
+> same horizontal scale and positions with fixed pixel margins — see design
+> spec §6.5.
+
 These are the six Normality histograms as amCharts 4 rendered them, captured
 from a real build of `392ceb7` (the commit before the replacement) at a
 1280×900 viewport.

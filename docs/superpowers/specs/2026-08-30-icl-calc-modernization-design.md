@@ -242,7 +242,7 @@ Each phase is one GitHub issue, one worktree, one branch, one pull request into
 | 3b | React 17 → 19 | `createRoot`; `@testing-library/react` 11→16; all 8 `react-test-renderer` suites rewritten; every `.snap` regenerated | `expected.json` unchanged **while snapshots churn wholesale** |
 | 3c | Router 5 → 7 | **As implemented:** `Switch`→`Routes` with `element` props, `NavLink` `exact`/`activeClassName`→`end`/`className` callback, `@types/react-router-dom` removed (v7 ships its own), and a `path="*"` catch-all. **No redirect shim** — v7 normalises a missing leading slash itself, so it would have been dead code; tests hold that behaviour instead. See §6.4. | `expected.json` unchanged; tests proving legacy `#matrix` still resolves, each proven capable of failing |
 | 4a | Telemetry | **As implemented:** Sentry `6.2.2`→`10.73` kept and scrubbed; `react-ga`, `GoogleAnalytics.ts` and `web-vitals` removed; `dependencies`/`devDependencies` split fixed. (Originally "remove Sentry too"; see §9.) | `expected.json` unchanged; the only third-party network requests are Sentry's |
-| 4b | Replace amCharts | Hand-rolled SVG histogram over the L1-locked `HISTOGRAM_DATA`; `@amcharts/amcharts4` removed | `expected.json` unchanged |
+| 4b | Replace amCharts | **As implemented:** hand-rolled SVG histogram over the L1-locked `HISTOGRAM_DATA`; `@amcharts/amcharts4` removed; the three tests amCharts blocked under jsdom un-skipped and both coverage exclusions dropped. The chart measures its container rather than scaling a viewBox — see §6.5. | `expected.json` and the `HISTOGRAM_DATA` snapshot unchanged; visual review against `docs/histogram-reference/` |
 | 5 | Ship | Final PR `modernize` → master; semantic-release fires; gh-pages republishes | L2 replayed against the **new live URL** post-deploy; oracle retired only then |
 
 Ordering: 0 → 1 are strictly sequential and everything depends on them. 2a → 2b
@@ -422,6 +422,43 @@ Two related notes for whoever touches this next:
   `#matrix/extra` renders Patient where v5 sent it to Matrix. Deliberately
   untested: `TabLinks` only ever emits the four exact single-segment paths and
   v5 never produced a nested URL either, so no bookmark can hold one.
+
+### 6.5 Why the histogram measures instead of scaling
+
+The replacement chart draws at its container's measured pixel width
+(`ResizeObserver`), not by scaling a `viewBox` to fit. That is a correctness
+requirement, not a stylistic one, and it was got wrong first.
+
+The `Gauge` rendered directly beneath each histogram encodes the **same
+horizontal scale** — it is the red/amber/green quantile band for the same
+metric — and `Gauge.tsx` positions itself with hardcoded CSS pixel margins
+(71px left, 15px right), hand-tuned to amCharts' plot inset. A histogram that
+scales a viewBox can satisfy that alignment at exactly one column width and
+drifts at every other, because the gauge's margins are fixed pixels and a
+scaled viewBox's are not.
+
+The first implementation scaled, and the gauge silently stopped lining up with
+the chart above it. **Every automated gate was green throughout**: the
+`HISTOGRAM_DATA` snapshot was untouched, the L2 replay reproduced the oracle
+exactly, and 167 tests passed. Both components were individually correct; only
+the pair was wrong, and the pair was what no test looked at. It was caught by
+the owner's eye during visual review.
+
+Two things now hold it:
+
+- The insets live in `src/normality/plot-inset.ts` and both components import
+  them. They were previously duplicated literals in two files, which is what
+  made the drift silent.
+- Two tests in `src/normality/Histogram.test.tsx` assert the plot area begins
+  and ends at those insets, proven capable of failing.
+
+Measuring also restored amCharts' fixed 300px height and true text sizes, which
+had been flagged separately as aesthetic trade-offs. All three were the same
+root cause.
+
+Under jsdom there is no `ResizeObserver` and `getBoundingClientRect` returns 0,
+so the component falls back to a nominal width and renders fully. That fallback
+is what makes the Normality tab testable at all.
 
 ## 7. Process
 
