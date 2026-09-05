@@ -62,8 +62,17 @@ const TabContent = ({
         v5's <Switch> picked the first match and a bare path="/" matched
         everything, so an unknown hash fell through to Patient. v7's <Routes>
         ranks matches and path="/" matches only exactly, so the catch-all
-        below is what preserves that behaviour - without it an unknown hash
+        below is what restores that fallback - without it an unknown hash
         renders nothing at all. Both entries point at the same element.
+
+        Precisely: this restores the fallback for unknown *top-level*
+        routes, not v5's prefix matching. A v7 leaf route compiles with
+        end=true, so "/matrix/extra" no longer reaches Matrix the way it
+        did under v5 - it falls through to the splat and renders Patient.
+        That is untested on purpose: TabLinks only ever emits the four
+        exact single-segment paths, and v5 never produced a nested URL
+        either, so no bookmark can hold one. Revisit only if a route ever
+        gains children.
       */}
       <Route path="/" element={patientTab} />
       <Route path="*" element={patientTab} />
