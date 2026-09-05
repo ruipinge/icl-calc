@@ -240,7 +240,7 @@ Each phase is one GitHub issue, one worktree, one branch, one pull request into
 | 2b | Vanilla coverage | Codecov removed. Coverage thresholds in test config as a **merge gate**; coverage table to `$GITHUB_STEP_SUMMARY`; PR comment via `actions/github-script` | Coverage floors seeded at current numbers; a deliberate drop fails CI |
 | 3a | CRA → Vite | Vite + Vitest, TS 4.1→5. React 17 and router 5 deliberately unchanged. `raw.macro`→`?raw` (BOM verified), `index.html` to root, `REACT_APP_*`→`VITE_*`, `PUBLIC_URL`→`BASE_URL`, `NODE_ENV`→`import.meta.env.PROD`, `transformIgnorePatterns` dropped | `expected.json` unchanged to the digit |
 | 3b | React 17 → 19 | `createRoot`; `@testing-library/react` 11→16; all 8 `react-test-renderer` suites rewritten; every `.snap` regenerated | `expected.json` unchanged **while snapshots churn wholesale** |
-| 3c | Router 5 → 7 | `Switch`→`Routes`, `element` props, plus a legacy-hash redirect shim | `expected.json` unchanged; a test proving `#matrix` resolves to `#/matrix` |
+| 3c | Router 5 → 7 | **As implemented:** `Switch`→`Routes` with `element` props, `NavLink` `exact`/`activeClassName`→`end`/`className` callback, `@types/react-router-dom` removed (v7 ships its own), and a `path="*"` catch-all. **No redirect shim** — v7 normalises a missing leading slash itself, so it would have been dead code; tests hold that behaviour instead. See §6.4. | `expected.json` unchanged; tests proving legacy `#matrix` still resolves, each proven capable of failing |
 | 4a | Telemetry | **As implemented:** Sentry `6.2.2`→`10.73` kept and scrubbed; `react-ga`, `GoogleAnalytics.ts` and `web-vitals` removed; `dependencies`/`devDependencies` split fixed. (Originally "remove Sentry too"; see §9.) | `expected.json` unchanged; the only third-party network requests are Sentry's |
 | 4b | Replace amCharts | Hand-rolled SVG histogram over the L1-locked `HISTOGRAM_DATA`; `@amcharts/amcharts4` removed | `expected.json` unchanged |
 | 5 | Ship | Final PR `modernize` → master; semantic-release fires; gh-pages republishes | L2 replayed against the **new live URL** post-deploy; oracle retired only then |
@@ -293,10 +293,18 @@ computed number:
   `vundefined` in the footer, or a broken asset base path, with every L1 and
   L2 assertion green.
 - **Hash-router URLs.** No test in this repo asserts on `window.location` or
-  the URL bar. Phase 3c's `hashType="noslash"` removal (§6.1) changes
+  the URL bar. Phase 3c's `hashType="noslash"` removal (§6.4) changes
   `…/#matrix` to `…/#/matrix`; nothing in the golden master would notice,
   because `fillRow`/`readAll` never read the URL, only form and table
   contents.
+  > **Narrowed, not closed (Phase 3c).** Still true of the golden master:
+  > L1 and L2 read form and table contents, never the URL. But the blind
+  > spot no longer extends to *route resolution* — `src/ICLContainer.test.tsx`
+  > now asserts that each legacy hash (`#matrix`, `#regression`) and each
+  > current one (`#/matrix`, `#/regression`) renders its tab, and that `#`,
+  > `#/` and a bare URL render Patient. Each was proven capable of failing.
+  > What remains uncovered is the URL the app *writes* after a click — no
+  > test reads `window.location` back.
 
 Neither is worth a golden-master test on its own - a snapshot of the footer
 string or the URL bar would be one more brittle assertion for a narrow class
@@ -373,6 +381,47 @@ and awkward once the real `deploy` job has already cut the tag, written the
 GitHub release and republished `gh-pages`.
 
 ---
+
+### 6.4 Why 3c ships no redirect shim
+
+Issue #49's acceptance criteria called for "a redirect shim rewriting legacy
+`#normality`, `#matrix`, `#regression` to their `#/` equivalents on load". No
+shim was written. It would have been dead code duplicating the library.
+
+Verified against `react-router-dom@7.18.3` as installed — `createHashHistory`
+reads the location like this:
+
+```js
+let { pathname = "/", search = "", hash = "" } =
+  parsePath(window.location.hash.substring(1));
+if (!pathname.startsWith("/") && !pathname.startsWith(".")) {
+  pathname = "/" + pathname;
+}
+```
+
+So `#matrix` → `"matrix"` → `{pathname: "matrix"}` → normalised to `/matrix`.
+A bare `#`, or no hash at all, yields `parsePath("")` → `{}` → the
+destructuring default `/`. Every URL this app has ever emitted resolves
+unaided, then normalises to the `#/matrix` form on the next click.
+
+The *tests* from that acceptance criterion were kept unconditionally, and are
+the real deliverable: they pin a library behaviour the app now silently
+depends on, so a future router version dropping the normalisation breaks a
+test rather than a clinician's bookmark. Each was proven capable of failing
+before being accepted.
+
+Two related notes for whoever touches this next:
+
+- **`<Route path="*">` is load-bearing.** v5's `Switch` picked the first match
+  and a bare `path="/"` matched everything; v7's `Routes` ranks matches and
+  `path="/"` matches only exactly. Without the catch-all, an unknown hash
+  renders a blank page — and the existing "inexistent route" test would have
+  kept passing while asserting nothing. Proven by deletion.
+- **The catch-all restores the fallback for unknown *top-level* routes, not
+  v5's prefix matching.** A v7 leaf route compiles with `end=true`, so
+  `#matrix/extra` renders Patient where v5 sent it to Matrix. Deliberately
+  untested: `TabLinks` only ever emits the four exact single-segment paths and
+  v5 never produced a nested URL either, so no bookmark can hold one.
 
 ## 7. Process
 

@@ -36,7 +36,7 @@ around it: `treeye/docs/icl-calc-migration.md` in the Treeye repo.
 | Repo | `ruipinge/icl-calc`, public, MIT, default branch `master` |
 | Version | 1.7.0; last real feature work **2 December 2021** (`6f92f8e`) |
 | Build | `react-scripts` 4.0.2 (Create React App) |
-| Runtime | React 17 · TypeScript 4.1 · `react-router-dom` 5 |
+| Runtime | ~~React 17 · TypeScript 4.1 · `react-router-dom` 5~~ — as of **Phase 3a** TypeScript is 5, as of **Phase 3b** React is 19, and as of **Phase 3c** `react-router-dom` is **7** with `@types/react-router-dom` removed (v7 ships its own types). The app still uses a `HashRouter`: GitHub Pages serves no SPA fallback, so a real path would 404 on reload. That constraint is a property of the *host*, not of this app — the planned move to `treeye.science` on Cloudflare would lift it and allow `BrowserRouter`. v7 dropped the `hashType="noslash"` prop, so links now render `#/matrix` rather than `#matrix`; pre-existing bookmarks still resolve unaided and are held there by tests (spec §6.4) |
 | UI | Bootstrap 4.6 · Formik 2 · Yup · Sass |
 | Charts | amCharts 4 |
 | Services | Sentry 6 · `react-ga` 3 |
@@ -296,6 +296,12 @@ printed depends on which of the two is serving.
 2. Golden-master table, captured from the live app.
 3. CRA → Vite. React 17→19, `react-router-dom` 5→7 (a breaking API rewrite —
    budget for it), TypeScript 4.1→5. Handle `raw.macro` and the CRA-isms above.
+   > **Done, phases 3a/3b/3c.** The router rewrite cost less than budgeted:
+   > `Switch`→`Routes`, `element` props, and `NavLink`'s
+   > `exact`/`activeClassName`→`end`/`className` callback. The two costs that
+   > were *not* anticipated here were a nested-router invariant that broke a
+   > test helper which had been inert since it was written, and `path="/"`
+   > ceasing to be a catch-all — see spec §6.4.
    Diff against the golden master.
 4. Remove amCharts (replace the histogram), Sentry and `react-ga`. Diff again.
 5. Stop. Design system and the move onto treeye.science are separate work.
