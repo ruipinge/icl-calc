@@ -51,9 +51,7 @@ export default defineConfig(({ mode }) => ({
       include: ['src/**/*.{js,jsx,ts,tsx}'],
       exclude: [
         'src/**/*.d.ts',
-        'src/index.tsx',
-        'src/normality/Histogram.tsx',
-        'src/normality/index.tsx'
+        'src/index.tsx'
         // src/normality/linear-gauge/index.ts is intentionally NOT excluded:
         // Phase 3b's Gauge.tsx conversion to @testing-library/react
         // constructs a real LinearGauge for the first time in the

@@ -1,4 +1,5 @@
 import { LinearGauge, Zone } from './linear-gauge';
+import { PLOT_INSET_LEFT, PLOT_INSET_RIGHT } from './plot-inset';
 import { useLayoutEffect, useRef } from 'react';
 
 /**
@@ -100,6 +101,14 @@ export const Gauge = ({
   });
 
   return (
-    <div style={{ marginLeft: '71px', marginRight: '15px' }} ref={container} />
+    // Insets shared with the histogram above - see plot-inset.ts for why
+    // these two must agree.
+    <div
+      style={{
+        marginLeft: `${PLOT_INSET_LEFT}px`,
+        marginRight: `${PLOT_INSET_RIGHT}px`
+      }}
+      ref={container}
+    />
   );
 };

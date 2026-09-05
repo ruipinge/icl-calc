@@ -38,7 +38,7 @@ around it: `treeye/docs/icl-calc-migration.md` in the Treeye repo.
 | Build | `react-scripts` 4.0.2 (Create React App) |
 | Runtime | ~~React 17 · TypeScript 4.1 · `react-router-dom` 5~~ — as of **Phase 3a** TypeScript is 5, as of **Phase 3b** React is 19, and as of **Phase 3c** `react-router-dom` is **7** with `@types/react-router-dom` removed (v7 ships its own types). The app still uses a `HashRouter`: GitHub Pages serves no SPA fallback, so a real path would 404 on reload. That constraint is a property of the *host*, not of this app — the planned move to `treeye.science` on Cloudflare would lift it and allow `BrowserRouter`. v7 dropped the `hashType="noslash"` prop, so links now render `#/matrix` rather than `#matrix`; pre-existing bookmarks still resolve unaided and are held there by tests (spec §6.4) |
 | UI | Bootstrap 4.6 · Formik 2 · Yup · Sass |
-| Charts | amCharts 4 |
+| Charts | ~~amCharts 4~~ — as of **Phase 4b** the histogram is hand-rolled SVG (`src/normality/Histogram.tsx`) and `@amcharts/amcharts4` is gone. No charting library remains |
 | Services | Sentry 6 · `react-ga` 3 |
 | Node | ~~pinned to v14 in `.nvmrc` and both CI jobs~~ ~~as of Phase 0, `.nvmrc` pins v16 (the newest version the build still passes under)~~ — as of **Phase 3a**, `.nvmrc` pins **v22** and all three CI jobs (`test`, `e2e-replay`, `deploy`) share it via `node-version-file: '.nvmrc'`. The v16 ceiling was CRA's webpack 4 build chain (`ERR_PACKAGE_PATH_NOT_EXPORTED` on 18+); Phase 3a removed that chain, so the ceiling is gone — see finding 4 below, kept as the historical record of the problem this fixed |
 | Release | `semantic-release` on `master`, then `peaceiris/actions-gh-pages` publishing `./build` to the `gh-pages` branch |
@@ -242,6 +242,28 @@ than upgrading to v5: one fewer dependency, no licence question, much smaller
 bundle. Note `package.json` carries a `transformIgnorePatterns` entry specifically
 for `@amcharts/amcharts4` — that goes too.
 
+> **Actioned, Phase 4b (issue #51).** Replaced with hand-rolled SVG, as
+> recommended. The licence question is closed and no charting library remains.
+>
+> Two things this finding did not anticipate. First, the old source does not
+> describe what amCharts actually drew: `valueAxis.max` was set to
+> `max(100, …counts)` but treated as a hint and rounded up to a multiple of 50,
+> which is why ACA's axis reaches 200 while the other five stop at 150. A
+> reimplementation written from the source alone would have been subtly wrong
+> on all six. Screenshots of the amCharts render were captured before the
+> dependency was removed and are kept in `docs/histogram-reference/`, because
+> afterwards reproducing them would mean reinstalling an EOL licence-sensitive
+> package.
+>
+> Second, the chart cannot scale to fit: the gauge beneath it shares the same
+> horizontal scale and positions with fixed pixel margins, so the histogram has
+> to draw at measured pixel width to stay aligned. See design spec §6.5 —
+> that alignment broke once, passed every automated gate, and was caught by eye.
+>
+> Bonus: amCharts was the sole reason three tests were skipped and two files
+> excluded from coverage. All are now on, and the Normality tab is verified for
+> the first time — `Histogram.tsx` at 97.5% and `normality/index.tsx` at 100%.
+
 ### 8. Bootstrap 4 will fight the Treeye design system
 
 Not this session's problem. Treeye's site is hand-rolled CSS on custom
@@ -266,6 +288,12 @@ Coverage config in `package.json` excludes `src/index.tsx`,
 `src/normality/linear-gauge/index.ts` — worth knowing which parts are unguarded,
 and note the histogram is both uncovered *and* the thing amCharts is being
 removed from.
+> **Superseded.** Coverage config moved to `vite.config.ts` in Phase 3a. Of the
+> four exclusions, only `src/index.tsx` remains: `linear-gauge` was covered in
+> Phase 3b, and both `normality` entries came off in Phase 4b once amCharts
+> stopped blocking jsdom. The observation was right — the histogram was the one
+> file both uncovered and slated for replacement — and it is now the better
+> covered for it.
 
 ### The deployed app is an oracle — use it before it's gone
 

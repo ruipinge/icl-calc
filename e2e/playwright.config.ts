@@ -63,6 +63,14 @@ export default defineConfig({
       use: { baseURL: `http://127.0.0.1:${SUBJECT_PORT}/icl-calc/` }
     },
     {
+      // Screenshot capture for the amCharts -> SVG replacement (#51).
+      // Runs against the subject build, never in CI - see the header
+      // comment in histogram-visual.spec.ts.
+      name: 'visual',
+      testMatch: /histogram-visual\.spec\.ts/,
+      use: { baseURL: `http://127.0.0.1:${SUBJECT_PORT}/icl-calc/` }
+    },
+    {
       name: 'smoke',
       testMatch: /smoke\.spec\.ts/,
       use: { baseURL: `http://127.0.0.1:${ORACLE_PORT}/icl-calc/` }
