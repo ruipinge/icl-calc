@@ -105,3 +105,37 @@ it('renders Patient for inexistent route', () => {
   const { asFragment } = renderWithHash('#does-not-exist');
   expect(asFragment()).toMatchSnapshot();
 });
+
+/*
+ * Tab URLs were #matrix / #normality / #regression under router 5's
+ * hashType="noslash", which v7 removed - new links render as #/matrix.
+ * Anything a clinician bookmarked before this upgrade is in the old form,
+ * so these assert the old form still lands on the right tab.
+ *
+ * No redirect shim implements this. react-router 7's createHashHistory
+ * prefixes a missing leading slash itself, so "#matrix" parses to the
+ * pathname "/matrix". These tests hold that library behaviour in place:
+ * if a future version drops it, they go red and a shim becomes real work.
+ */
+it.each([
+  ['#matrix', /Number of Eyes/],
+  ['#regression', /Vault Prediction/]
+])('resolves the legacy %s URL to its tab', (hash, expected) => {
+  renderWithHash(hash);
+  expect(screen.getByText(expected)).toBeVisible();
+  expect(screen.queryByLabelText('Name')).toBeNull();
+});
+
+it.each([
+  ['#/matrix', /Number of Eyes/],
+  ['#/regression', /Vault Prediction/]
+])('resolves the current %s URL to its tab', (hash, expected) => {
+  renderWithHash(hash);
+  expect(screen.getByText(expected)).toBeVisible();
+  expect(screen.queryByLabelText('Name')).toBeNull();
+});
+
+it.each(['#', '#/', ''])('resolves %s to the Patient tab', (hash) => {
+  renderWithHash(hash || '/');
+  expect(screen.getByLabelText('Name')).toBeVisible();
+});
