@@ -64,8 +64,20 @@ test('capture the six normality histograms', async ({ page }) => {
   await expect(columns).toHaveCount(METRICS.length);
 
   for (const [index, metric] of METRICS.entries()) {
-    const histogram = columns.nth(index).locator('> div').first();
-    await expect(histogram.locator('svg')).toBeVisible();
+    const column = columns.nth(index);
+
+    // Two shapes, because this harness has to work either side of #51. The
+    // hand-rolled SVG component is its own root and carries the testid;
+    // amCharts drew into a wrapper <div>, which is what an older commit
+    // still renders. Preferring the testid and falling back keeps the
+    // "before" images regenerable from a commit where amCharts still
+    // existed - the whole reason they were captured.
+    const tagged = column.locator('[data-testid="histogram"]');
+    const histogram = (await tagged.count())
+      ? tagged.first()
+      : column.locator('> div').first();
+
+    await expect(histogram.locator('svg').or(histogram)).toBeVisible();
     await waitForStableSvg(histogram);
 
     await histogram.screenshot({ path: `${OUT_DIR}/${metric}.png` });

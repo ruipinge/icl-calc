@@ -7,7 +7,16 @@ import { HistogramEntry } from '../db';
 // distorting the text to force one would look worse than a chart that grows
 // and shrinks slightly with its column width. Flagged for the owner's visual
 // review, same as the tooltip choice below.
-const WIDTH = 460;
+// WIDTH is not arbitrary: it is the aspect ratio the chart renders at. With
+// `viewBox` + `width="100%"` the SVG scales to its column, so the apparent
+// size of every label is (column width / WIDTH). A Bootstrap .col-md-4 in
+// this layout is ~336px at a 1280px viewport - the width the amCharts
+// reference in docs/histogram-reference/ was captured at - so WIDTH ~= 340
+// makes the scale factor ~1 and the text render at the size it is declared.
+// An earlier 460 shrank everything to 73%: same chart, noticeably smaller
+// type and a 220px-tall plot instead of 300px. Caught by comparing against
+// the reference, not by any test.
+const WIDTH = 340;
 const HEIGHT = 300;
 const MARGIN = { top: 34, right: 16, bottom: 28, left: 48 };
 const PLOT_LEFT = MARGIN.left;
@@ -67,12 +76,18 @@ export const Histogram = ({
       width="100%"
       role="img"
       aria-label={`Histogram of ${title}`}
+      // The visual-capture harness (e2e/histogram-visual.spec.ts) targets
+      // this. Without it the harness would have to guess at the DOM shape,
+      // which is exactly how it broke on this change: it was written against
+      // amCharts' wrapper <div> and found nothing once the SVG became the
+      // component's own root.
+      data-testid="histogram"
     >
       <text
         x={WIDTH / 2}
         y={18}
         textAnchor="middle"
-        fontSize={15}
+        fontSize={16}
         fill="currentColor"
       >
         {title}
@@ -96,7 +111,7 @@ export const Histogram = ({
               y={y}
               textAnchor="end"
               dominantBaseline="middle"
-              fontSize={10}
+              fontSize={11}
               fill="#495057"
             >
               {tick}
@@ -108,30 +123,40 @@ export const Histogram = ({
         x={12}
         y={(PLOT_TOP + PLOT_BOTTOM) / 2}
         textAnchor="middle"
-        fontSize={11}
+        fontSize={12}
         fill="#495057"
         transform={`rotate(-90 12 ${(PLOT_TOP + PLOT_BOTTOM) / 2})`}
       >
         Number of Eyes
       </text>
 
-      {/* X axis: amCharts labelled every other bin (minGridDistance = 30). */}
+      {/* X axis: amCharts labelled every other bin (minGridDistance = 30),
+          and drew a vertical gridline at each labelled category. */}
       {data.map((bin, i) => {
         if (i % 2 !== 0) {
           return null;
         }
         const x = PLOT_LEFT + i * slotWidth + slotWidth / 2;
         return (
-          <text
-            key={bin.from}
-            x={x}
-            y={PLOT_BOTTOM + 16}
-            textAnchor="middle"
-            fontSize={10}
-            fill="#495057"
-          >
-            {formatAxisNumber(bin.from)}
-          </text>
+          <g key={bin.from}>
+            <line
+              x1={x}
+              x2={x}
+              y1={PLOT_TOP}
+              y2={PLOT_BOTTOM}
+              stroke="#dee2e6"
+              strokeWidth={1}
+            />
+            <text
+              x={x}
+              y={PLOT_BOTTOM + 16}
+              textAnchor="middle"
+              fontSize={11}
+              fill="#495057"
+            >
+              {formatAxisNumber(bin.from)}
+            </text>
+          </g>
         );
       })}
 
