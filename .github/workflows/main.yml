@@ -70,6 +70,14 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Formatting is no longer enforced by `npm run lint`. #63 removed
+      # eslint-plugin-prettier - running Prettier as an ESLint rule coupled
+      # the two versions together, which is what blocked upgrading either
+      # (see #76) - so Prettier is now its own check and needs its own step.
+      # Without this, the project silently stops checking formatting at all.
+      - name: Format check
+        run: npm run format:check
+
       - name: Typecheck
         run: npx tsc --noEmit
 

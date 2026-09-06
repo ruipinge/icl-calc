@@ -5,10 +5,10 @@ import { HISTOGRAM_DATA } from '../db';
 import { Histogram } from './Histogram';
 
 it('draws one bar per bin', () => {
-  const { container } = render(
+  render(
     <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
   );
-  expect(container.querySelectorAll('[data-testid="bar"]')).toHaveLength(10);
+  expect(screen.getAllByTestId('bar')).toHaveLength(10);
 });
 
 it('renders the title', () => {
@@ -31,16 +31,16 @@ it('renders the title', () => {
  * were individually correct; only the pair was wrong. It was found by eye.
  */
 it('starts and ends its plot area at the inset the gauge uses', () => {
-  const { container } = render(
+  render(
     <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
   );
 
-  const svg = container.querySelector('svg') as SVGSVGElement;
+  const svg = screen.getByTestId('histogram');
   const width = Number(svg.getAttribute('width'));
 
   // The y-axis gridlines span the full plot area, so their endpoints are the
   // plot's left and right edges.
-  const gridline = svg.querySelector('line') as SVGLineElement;
+  const gridline = screen.getAllByTestId('gridline')[0];
 
   expect(Number(gridline.getAttribute('x1'))).toBe(PLOT_INSET_LEFT);
   expect(Number(gridline.getAttribute('x2'))).toBe(width - PLOT_INSET_RIGHT);
@@ -49,14 +49,12 @@ it('starts and ends its plot area at the inset the gauge uses', () => {
 it('keeps that alignment at a different container width', () => {
   // Same assertion, different width: a viewBox-scaled implementation passes
   // the test above at its one design width and fails here.
-  const { container } = render(
-    <Histogram title="Age (years)" data={HISTOGRAM_DATA.age} />
-  );
+  render(<Histogram title="Age (years)" data={HISTOGRAM_DATA.age} />);
 
-  const svg = container.querySelector('svg') as SVGSVGElement;
+  const svg = screen.getByTestId('histogram');
   const width = Number(svg.getAttribute('width'));
-  const bars = svg.querySelectorAll('[data-testid="bar"]');
-  const lastBar = bars[bars.length - 1] as SVGRectElement;
+  const bars = screen.getAllByTestId('bar');
+  const lastBar = bars[bars.length - 1];
 
   const plotRight = width - PLOT_INSET_RIGHT;
   const lastBarRight =

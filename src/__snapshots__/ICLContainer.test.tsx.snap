@@ -105,6 +105,7 @@ exports[`renders Biometric Normality on #normality route 1`] = `
             </text>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -125,6 +126,7 @@ exports[`renders Biometric Normality on #normality route 1`] = `
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -145,6 +147,7 @@ exports[`renders Biometric Normality on #normality route 1`] = `
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -165,6 +168,7 @@ exports[`renders Biometric Normality on #normality route 1`] = `
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -509,6 +513,7 @@ Number of Eyes: 3
             </text>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -529,6 +534,7 @@ Number of Eyes: 3
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -549,6 +555,7 @@ Number of Eyes: 3
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -569,6 +576,7 @@ Number of Eyes: 3
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -923,6 +931,7 @@ Number of Eyes: 3
             </text>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -943,6 +952,7 @@ Number of Eyes: 3
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -963,6 +973,7 @@ Number of Eyes: 3
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -983,6 +994,7 @@ Number of Eyes: 3
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -1327,6 +1339,7 @@ Number of Eyes: 1
             </text>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -1347,6 +1360,7 @@ Number of Eyes: 1
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -1367,6 +1381,7 @@ Number of Eyes: 1
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -1387,6 +1402,7 @@ Number of Eyes: 1
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -1407,6 +1423,7 @@ Number of Eyes: 1
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -1751,6 +1768,7 @@ Number of Eyes: 1
             </text>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -1771,6 +1789,7 @@ Number of Eyes: 1
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -1791,6 +1810,7 @@ Number of Eyes: 1
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -1811,6 +1831,7 @@ Number of Eyes: 1
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -2155,6 +2176,7 @@ Number of Eyes: 13
             </text>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -2175,6 +2197,7 @@ Number of Eyes: 13
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -2195,6 +2218,7 @@ Number of Eyes: 13
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -2215,6 +2239,7 @@ Number of Eyes: 13
             </g>
             <g>
               <line
+                data-testid="gridline"
                 stroke="#dee2e6"
                 stroke-width="1"
                 x1="71"
@@ -4166,6 +4191,7 @@ exports[`renders Patient for inexistent route 1`] = `
               >
                 <select
                   class="form-control"
+                  id="corneaProfile.previousSurgery"
                   name="corneaProfile.previousSurgery"
                 >
                   <option
@@ -5318,6 +5344,7 @@ exports[`renders Patient form on # route 1`] = `
               >
                 <select
                   class="form-control"
+                  id="corneaProfile.previousSurgery"
                   name="corneaProfile.previousSurgery"
                 >
                   <option
@@ -6804,6 +6831,7 @@ exports[`renders without crashing 1`] = `
               >
                 <select
                   class="form-control"
+                  id="corneaProfile.previousSurgery"
                   name="corneaProfile.previousSurgery"
                 >
                   <option
@@ -7956,6 +7984,7 @@ exports[`resets form when clicking reset button 1`] = `
               >
                 <select
                   class="form-control"
+                  id="corneaProfile.previousSurgery"
                   name="corneaProfile.previousSurgery"
                 >
                   <option
@@ -9108,6 +9137,7 @@ exports[`resets form when clicking reset button 2`] = `
               >
                 <select
                   class="form-control"
+                  id="corneaProfile.previousSurgery"
                   name="corneaProfile.previousSurgery"
                 >
                   <option
@@ -10260,6 +10290,7 @@ exports[`resets form when clicking reset button 3`] = `
               >
                 <select
                   class="form-control"
+                  id="corneaProfile.previousSurgery"
                   name="corneaProfile.previousSurgery"
                 >
                   <option

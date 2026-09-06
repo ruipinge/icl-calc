@@ -26,56 +26,65 @@ it('resets form when clicking reset button', async () => {
   const { asFragment } = renderWithHash();
   expect(asFragment()).toMatchSnapshot();
 
-  await waitFor(() => {
-    fireEvent.change(screen.getByLabelText('Name'), {
-      target: { value: 'Blake' }
-    });
+  fireEvent.change(screen.getByLabelText('Name'), {
+    target: { value: 'Blake' }
   });
 
-  expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe(
-    'Blake'
-  );
+  // The fireEvent above is a synchronous DOM event; the waitFor below only
+  // asserts (testing-library/no-wait-for-side-effects forbids firing events
+  // inside a waitFor callback). It still has to be a waitFor rather than a
+  // bare `expect`, though: Formik's validateForm runs asynchronously even
+  // for a synchronous Yup schema, and this form's fields are one shared
+  // schema, so a synchronous assertion here would race that in-flight
+  // validation and under-exercise the error-display branches in
+  // CorneaProfile/Biometry/Refraction/Info that depend on it having
+  // resolved (caught as a branch-coverage regression, not a lint failure).
+  await waitFor(() => {
+    expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe(
+      'Blake'
+    );
+  });
   expect(asFragment()).toMatchSnapshot();
 
-  await waitFor(() => {
-    fireEvent.click(screen.getByText('Reset'));
-  });
+  fireEvent.click(screen.getByText('Reset'));
 
-  expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe('');
+  await waitFor(() => {
+    expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe('');
+  });
   expect(asFragment()).toMatchSnapshot();
 });
 
 it('switches to Biometric Normality tab when clicked', async () => {
   renderWithHash();
 
-  await waitFor(() => {
-    fireEvent.click(screen.getByText('Biometric Normality'));
-  });
+  fireEvent.click(screen.getByText('Biometric Normality'));
 
+  await waitFor(() => {
+    expect(screen.getByText('Angle to Angle - AtA (mm)')).toBeVisible();
+  });
   expect(screen.queryByLabelText('Name')).toBeNull();
-  expect(screen.getByText('Angle to Angle - AtA (mm)')).toBeVisible();
 });
 
 it('switches to Floating Matrix tab when clicked', async () => {
   renderWithHash();
 
-  await waitFor(() => {
-    fireEvent.click(screen.getByText('Floating Matrix'));
-  });
+  fireEvent.click(screen.getByText('Floating Matrix'));
 
+  await waitFor(() => {
+    expect(screen.getByText(/Number of Eyes/)).toBeVisible();
+  });
   expect(screen.queryByLabelText('Name')).toBeNull();
-  expect(screen.getByText(/Number of Eyes/)).toBeVisible();
 });
 
 it('switches to Regression tab when clicked', async () => {
   renderWithHash();
 
-  await waitFor(() => {
-    fireEvent.click(screen.getByText('Regression'));
-  });
+  fireEvent.click(screen.getByText('Regression'));
 
+  await waitFor(() => {
+    expect(screen.getByText(/Vault Prediction/)).toBeVisible();
+  });
   expect(screen.queryByLabelText('Name')).toBeNull();
-  expect(screen.getByText(/Vault Prediction/)).toBeVisible();
   expect(screen.getByText(/Probability of 250 < Vault < 1000/)).toBeVisible();
 });
 

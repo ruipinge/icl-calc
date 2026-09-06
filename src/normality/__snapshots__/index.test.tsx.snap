@@ -27,6 +27,7 @@ exports[`renders without crashing 1`] = `
           </text>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -47,6 +48,7 @@ exports[`renders without crashing 1`] = `
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -67,6 +69,7 @@ exports[`renders without crashing 1`] = `
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -87,6 +90,7 @@ exports[`renders without crashing 1`] = `
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -441,6 +445,7 @@ Number of Eyes: 3
           </text>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -461,6 +466,7 @@ Number of Eyes: 3
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -481,6 +487,7 @@ Number of Eyes: 3
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -501,6 +508,7 @@ Number of Eyes: 3
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -855,6 +863,7 @@ Number of Eyes: 3
           </text>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -875,6 +884,7 @@ Number of Eyes: 3
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -895,6 +905,7 @@ Number of Eyes: 3
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -915,6 +926,7 @@ Number of Eyes: 3
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -1269,6 +1281,7 @@ Number of Eyes: 1
           </text>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -1289,6 +1302,7 @@ Number of Eyes: 1
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -1309,6 +1323,7 @@ Number of Eyes: 1
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -1329,6 +1344,7 @@ Number of Eyes: 1
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -1349,6 +1365,7 @@ Number of Eyes: 1
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -1703,6 +1720,7 @@ Number of Eyes: 1
           </text>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -1723,6 +1741,7 @@ Number of Eyes: 1
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -1743,6 +1762,7 @@ Number of Eyes: 1
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -1763,6 +1783,7 @@ Number of Eyes: 1
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -2107,6 +2128,7 @@ Number of Eyes: 13
           </text>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -2127,6 +2149,7 @@ Number of Eyes: 13
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -2147,6 +2170,7 @@ Number of Eyes: 13
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
@@ -2167,6 +2191,7 @@ Number of Eyes: 13
           </g>
           <g>
             <line
+              data-testid="gridline"
               stroke="#dee2e6"
               stroke-width="1"
               x1="71"
