@@ -3,14 +3,29 @@ import { PLOT_INSET_LEFT, PLOT_INSET_RIGHT } from './plot-inset';
 import { useLayoutEffect, useRef } from 'react';
 
 /**
- * https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
+ * Ascending numeric sort of a *copy*. `Array.prototype.sort` sorts in place,
+ * and the arrays reaching this module are the shared, module-level
+ * `VALUES.ATA`/`CLR`/`ACD`/`ACA`/`WTW`/`AGE` from src/db.ts - sorting them
+ * directly would permanently reorder them out of CSV row order for the
+ * lifetime of the page, for every other reader (issue #58).
  *
- * @param {number[]} values - Dataset
+ * @param {number[]} values - Dataset, not modified
+ * @returns {number[]} a new array, ascending
+ */
+const sortedCopy = (values: number[]): number[] =>
+  [...values].sort((a, b) => a - b);
+
+/**
+ * The interpolation half of `quantile`, split out so `buildZones` can sort
+ * once per call instead of once per quantile. Takes an already-ascending
+ * array; produces exactly what `quantile` would, since `quantile`'s only
+ * use of `values` is the sorted sequence.
+ *
+ * @param {number[]} sorted - Dataset, already sorted ascending
  * @param {number} quantile - Quantile [0.0, 1.0]
  * @returns {number}
  */
-export const quantile = (values: number[], quantile: number) => {
-  const sorted = values.sort((a, b) => a - b);
+const quantileOfSorted = (sorted: number[], quantile: number) => {
   const pos = (sorted.length - 1) * quantile;
   const base = Math.floor(pos);
   const rest = pos - base;
@@ -19,6 +34,18 @@ export const quantile = (values: number[], quantile: number) => {
   }
   return sorted[base];
 };
+
+/**
+ * https://stackoverflow.com/questions/48719873/how-to-get-median-and-quartiles-percentiles-of-an-array-in-javascript-or-php
+ *
+ * Does not modify `values`.
+ *
+ * @param {number[]} values - Dataset
+ * @param {number} quantile - Quantile [0.0, 1.0]
+ * @returns {number}
+ */
+export const quantile = (values: number[], quantile: number) =>
+  quantileOfSorted(sortedCopy(values), quantile);
 
 export type Quantile = {
   readonly value: number;
@@ -55,7 +82,11 @@ export const buildZones = ({
   values: number[];
   quantiles?: Quantile[];
 }): Zone[] => {
-  const qq = quantiles.map((q) => quantile(values, q.value));
+  // Sorted once here rather than once inside each quantile() call: this runs
+  // from a useLayoutEffect with no dependency array, over the 542-element
+  // shared arrays, for six gauges. `values` itself is left untouched.
+  const sorted = sortedCopy(values);
+  const qq = quantiles.map((q) => quantileOfSorted(sorted, q.value));
   return quantiles.map((q, index) => {
     if (index === 0) {
       return {
