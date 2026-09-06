@@ -1,36 +1,42 @@
-name: main
+name: Verify and release
 
 on:
-  # `push:` is scoped to master, not left bare. Bare, it fires on every
+  # `push:` is scoped to main, not left bare. Bare, it fires on every
   # branch - so every push to a PR branch ran this whole workflow TWICE,
   # once for the push and once for the pull_request, building the app and
   # driving a real browser both times for an identical result. The push run
   # produced nothing the PR run did not: golden-master-guard is
-  # pull_request-only and deploy is master-only, so it was a duplicate of
+  # pull_request-only and deploy is main-only, so it was a duplicate of
   # exactly the expensive half.
   #
-  # Master still needs the push trigger - that is what runs deploy.
+  # `main` still needs the push trigger - that is what runs deploy.
   #
   # Trade accepted: a branch with no PR open now gets no CI. The workflow
   # here is always worktree -> branch -> PR, so nothing is lost, but pushing
   # a throwaway branch expecting a green tick will no longer get one.
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
 
 concurrency:
   # Push three times in five minutes and you currently get three full runs,
   # two of them obsolete before they finish. This collapses them.
   group: ${{ github.workflow }}-${{ github.ref }}
-  # Cancel superseded PR runs only. NEVER cancel a master run: that is the
+  # Cancel superseded PR runs only. NEVER cancel a `main` run: that is the
   # one that executes semantic-release and then publishes to gh-pages, so
   # killing it midway can leave a version tagged with nothing deployed, or a
-  # release created against a build that never shipped. Master runs queue
+  # release created against a build that never shipped. Runs on `main` queue
   # behind each other instead.
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# Job ids (test, golden-master-guard, e2e-replay, deploy) are referenced by
+# `needs:` and by branch protection's required-status-check rules. Renaming
+# an id silently stops a required check being enforced, so the ids are
+# fixed: the human-readable `name:` on each job is what changes when the
+# wording needs to improve.
 jobs:
   test:
+    name: Lint, typecheck and unit tests
     runs-on: ubuntu-latest
     # Only what the coverage comment below needs. Declaring permissions on
     # this job narrows the default GITHUB_TOKEN scope for it rather than
@@ -39,8 +45,8 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Check out the branch under test
+        uses: actions/checkout@v7
 
       # NOTE on Node version: CRA/webpack 4 is gone as of Phase 3a task 4, so
       # the old Node-16-only build constraint (ERR_PACKAGE_PATH_NOT_EXPORTED
@@ -52,7 +58,8 @@ jobs:
       # gracefully - see the Phase 3a plan and task-3 fix report. Node 22 was
       # walked and verified (lint, typecheck, test, build, L2 replay all
       # green) before being adopted - see the task-5 report.
-      - uses: actions/setup-node@v4
+      - name: Set up the Node version pinned in .nvmrc
+        uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -64,10 +71,10 @@ jobs:
       # in this workflow - which is the point ahead of #49 (router 5 -> 7):
       # a real peer conflict introduced by that upgrade will now fail loud
       # here instead of installing silently.
-      - name: Install Dependencies
+      - name: Install locked dependencies (peer conflicts fail here)
         run: npm ci --prefer-offline
 
-      - name: Lint
+      - name: Verify the source lints clean (ESLint)
         run: npm run lint
 
       # Formatting is no longer enforced by `npm run lint`. #63 removed
@@ -75,13 +82,13 @@ jobs:
       # the two versions together, which is what blocked upgrading either
       # (see #76) - so Prettier is now its own check and needs its own step.
       # Without this, the project silently stops checking formatting at all.
-      - name: Format check
+      - name: Verify the source is Prettier-formatted
         run: npm run format:check
 
-      - name: Typecheck
+      - name: Verify TypeScript types compile
         run: npx tsc --noEmit
 
-      - name: Test
+      - name: Unit tests, L1 golden-master replay and coverage floors
         # Without an explicit shell:, GitHub Actions runs this under
         # `bash -e {0}` (no pipefail), so the step's exit status is
         # tee's (always 0) rather than npm test's - a failing test suite
@@ -91,7 +98,7 @@ jobs:
         shell: bash
         run: npm test 2>&1 | tee test-output.log
 
-      - name: Write coverage summary
+      - name: Publish the coverage table to the run summary
         if: always()
         run: |
           {
@@ -118,7 +125,7 @@ jobs:
       # dependency for another.
       #
       # This is reporting, not a gate. The gate is `thresholds` in
-      # vite.config.ts, which fails the Test step above before this runs.
+      # vite.config.ts, which fails the unit-test step above before this runs.
       # `if: always()` is deliberate: on a threshold failure the numbers are
       # exactly what a reviewer wants to see, so the comment must still post
       # on a red run. It is scoped to `success() || failure()` rather than a
@@ -138,14 +145,14 @@ jobs:
       # GITHUB_WORKSPACE path.
       #
       # This is reporting, not a gate. The gate is `thresholds` in
-      # vite.config.ts, which fails the Test step above before this runs.
+      # vite.config.ts, which fails the unit-test step above before this runs.
       # `success() || failure()` (rather than a bare always()) is
       # deliberate: on a threshold failure the numbers are exactly what a
       # reviewer wants, so the comment must still post on a red run - but
       # cancelling the workflow should not write one.
-      - name: Comment coverage on the PR
+      - name: Report the coverage numbers as a PR comment
         if: (success() || failure()) && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const comment = require(
@@ -154,11 +161,12 @@ jobs:
             await comment({ github, context, core });
 
   golden-master-guard:
+    name: Golden-master stop rule (expected.json, data.csv)
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Check out full history for the merge-base comparison
+        uses: actions/checkout@v7
         with:
           # Full history, not the default shallow clone: the merge-base
           # comparison below needs it.
@@ -190,8 +198,9 @@ jobs:
 
           # A guarded file can be absent from the merge base rather than
           # modified in it. That is not hypothetical: the final Phase 5 merge
-          # of `modernize` into `master` is exactly this case, because master
-          # predates Phase 1 and has never carried expected.json. Comparing
+          # of `modernize` into the default branch (then named `master`, since
+          # renamed to `main`) is exactly this case, because that branch
+          # predates Phase 1 and had never carried expected.json. Comparing
           # naively against the base reports the file as "changed" and blocks
           # the release - the guard cannot tell "someone edited the fixture"
           # from "the fixture is arriving here for the first time".
@@ -264,11 +273,12 @@ jobs:
           exit 1
 
   e2e-replay:
+    name: L2 browser replay of the golden master
     runs-on: ubuntu-latest
     needs: ['test']
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Check out the branch under test
+        uses: actions/checkout@v7
 
       # L2 needs a real production build of this branch to replay against,
       # and Playwright needs Node 18+. Both now run on the single version
@@ -276,7 +286,8 @@ jobs:
       # split (Node 16 to build, then Node 20 for Playwright) existed only
       # because CRA's build required 16 while Playwright required 18+; that
       # build constraint is gone as of Phase 3a task 4.
-      - uses: actions/setup-node@v4
+      - name: Set up the Node version pinned in .nvmrc
+        uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -286,17 +297,17 @@ jobs:
 
       # No --legacy-peer-deps: see the comment on the `test` job's install
       # step above.
-      - name: Install Dependencies
+      - name: Install locked dependencies (peer conflicts fail here)
         run: npm ci --prefer-offline
 
-      - name: Build
+      - name: Build the production bundle the replay runs against
         run: npm run build
 
-      - name: Install e2e dependencies
+      - name: Install the e2e harness's own locked dependencies
         run: npm ci --prefer-offline
         working-directory: e2e
 
-      - name: Install Playwright browsers
+      - name: Install the Chromium build Playwright drives
         run: npx playwright install --with-deps chromium
         working-directory: e2e
 
@@ -305,19 +316,20 @@ jobs:
       # output against the already-captured src/golden/expected.json. See
       # the comment in e2e/setup.sh for why the oracle checks stay a loud
       # failure for the capture/smoke path.
-      - name: e2e setup (subject-only)
+      - name: Prepare the e2e harness (subject build only, no oracle worktree)
         run: ./setup.sh --subject-only
         working-directory: e2e
 
-      - name: L2 replay
+      - name: Verify the rendered output still matches expected.json (L2)
         env:
           SUBJECT_ONLY: '1'
         run: npm run replay
         working-directory: e2e
 
   deploy:
+    name: Release and publish to gh-pages
     # golden-master-guard is pull_request-only (see its own `if:` above), so
-    # on this job's actual trigger - a push to master - it never runs and
+    # on this job's actual trigger - a push to main - it never runs and
     # its `needs` result is 'skipped', not 'success'. GitHub's default
     # "run only if every needed job succeeded" rule treats a skipped
     # dependency the same as a failed one, which would make this job skip
@@ -341,7 +353,7 @@ jobs:
     # result on this trigger.
     if: |
       !cancelled() &&
-      github.ref == 'refs/heads/master' &&
+      github.ref == 'refs/heads/main' &&
       needs.test.result == 'success' &&
       needs.e2e-replay.result == 'success' &&
       (needs.golden-master-guard.result == 'success' || needs.golden-master-guard.result == 'skipped')
@@ -349,22 +361,38 @@ jobs:
     needs: ['test', 'e2e-replay', 'golden-master-guard']
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Check out the commit being released
+        uses: actions/checkout@v7
 
       # See the NOTE in the `test` job above - every job now runs on the
       # single version pinned in .nvmrc.
-      - uses: actions/setup-node@v4
+      - name: Set up the Node version pinned in .nvmrc
+        uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
       # No --legacy-peer-deps: see the comment on the `test` job's install
       # step above.
-      - name: Install Dependencies
+      - name: Install locked dependencies (peer conflicts fail here)
         run: npm ci --prefer-offline
 
-      - name: Version
+      # semantic-release reads the conventional commits since the last tag,
+      # decides the next version, writes it into the workspace package.json
+      # (@semantic-release/npm's prepare step runs `npm version
+      # --no-git-tag-version` regardless of `private: true`, which only
+      # suppresses the registry publish), pushes the git tag and cuts the
+      # GitHub release. It must run BEFORE the build below, because
+      # vite.config.ts bakes package.json's version into
+      # import.meta.env.VITE_APP_VERSION and the Footer renders it.
+      #
+      # @semantic-release/git is deliberately NOT in the plugin list: it
+      # would commit the bumped package.json back to this branch, and a
+      # protected default branch can reject its own release commit and break
+      # every subsequent deploy. The accepted cost is that the version
+      # committed in git stays behind the released version; the git tag, the
+      # GitHub release and the deployed footer remain correct.
+      - name: Decide the next version, tag it and cut the GitHub release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
@@ -373,11 +401,11 @@ jobs:
       # src/index.tsx (a DSN is public by design and write-only), and this
       # app ships no analytics - see the Phase 4a note in
       # docs/modernization-findings.md.
-      - name: Build
+      - name: Build the bundle at the version just released
         run: npm run build
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Publish ./build to gh-pages (the live clinical tool)
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build

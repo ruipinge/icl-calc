@@ -1,10 +1,10 @@
 # ICL Size Calc
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![build](https://github.com/ruipinge/icl-calc/workflows/main/badge.svg)](https://github.com/ruipinge/icl-calc/actions)
+[![build](https://github.com/ruipinge/icl-calc/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/ruipinge/icl-calc/actions/workflows/main.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/386ed8d68c41f3873530/maintainability)](https://codeclimate.com/github/ruipinge/icl-calc/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/386ed8d68c41f3873530/test_coverage)](https://codeclimate.com/github/ruipinge/icl-calc/test_coverage)
-[![codecov](https://codecov.io/gh/ruipinge/icl-calc/branch/master/graph/badge.svg?token=XVTKUDYAU6)](https://codecov.io/gh/ruipinge/icl-calc)
+[![codecov](https://codecov.io/gh/ruipinge/icl-calc/branch/main/graph/badge.svg?token=XVTKUDYAU6)](https://codecov.io/gh/ruipinge/icl-calc)
 
 An Implantable Collamer Lenses (ICL) vault size calculator available as a web application. The last working version can be found [here](https://ruipinge.github.io/icl-calc/).
 
@@ -54,4 +54,4 @@ TODO: Disclaimer: the statistical data used in this appliction is real data, bla
 
 ## Warranty
 
-This project is available under the [MIT License](https://github.com/ruipinge/icl-calc/blob/master/LICENSE) without any kind of warranty. The authors cannot be held responsible for any consequense of its usage.
+This project is available under the [MIT License](https://github.com/ruipinge/icl-calc/blob/main/LICENSE) without any kind of warranty. The authors cannot be held responsible for any consequense of its usage.

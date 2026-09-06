@@ -15,12 +15,12 @@ export const Footer = () => (
           </a>
         </li>
         <li className="d-inline-block ml-3">
-          <a href="https://github.com/ruipinge/icl-calc/blob/master/README.md#instructions">
+          <a href="https://github.com/ruipinge/icl-calc/blob/main/README.md#instructions">
             Instructions
           </a>
         </li>
         <li className="d-inline-block ml-3">
-          <a href="https://github.com/ruipinge/icl-calc/blob/master/README.md#data">
+          <a href="https://github.com/ruipinge/icl-calc/blob/main/README.md#data">
             Data
           </a>
         </li>
@@ -38,7 +38,7 @@ export const Footer = () => (
       <p className="mb-0">
         Available under the{' '}
         <a
-          href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
+          href="https://github.com/ruipinge/icl-calc/blob/main/LICENSE"
           target="_blank"
           rel="license noopener noreferrer"
         >
