@@ -1,12 +1,43 @@
 name: main
 
 on:
+  # `push:` is scoped to master, not left bare. Bare, it fires on every
+  # branch - so every push to a PR branch ran this whole workflow TWICE,
+  # once for the push and once for the pull_request, building the app and
+  # driving a real browser both times for an identical result. The push run
+  # produced nothing the PR run did not: golden-master-guard is
+  # pull_request-only and deploy is master-only, so it was a duplicate of
+  # exactly the expensive half.
+  #
+  # Master still needs the push trigger - that is what runs deploy.
+  #
+  # Trade accepted: a branch with no PR open now gets no CI. The workflow
+  # here is always worktree -> branch -> PR, so nothing is lost, but pushing
+  # a throwaway branch expecting a green tick will no longer get one.
   push:
+    branches: [master]
   pull_request:
+
+concurrency:
+  # Push three times in five minutes and you currently get three full runs,
+  # two of them obsolete before they finish. This collapses them.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Cancel superseded PR runs only. NEVER cancel a master run: that is the
+  # one that executes semantic-release and then publishes to gh-pages, so
+  # killing it midway can leave a version tagged with nothing deployed, or a
+  # release created against a build that never shipped. Master runs queue
+  # behind each other instead.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Only what the coverage comment below needs. Declaring permissions on
+    # this job narrows the default GITHUB_TOKEN scope for it rather than
+    # widening it - every other job keeps the repository default.
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,6 +102,48 @@ jobs:
             sed -n '/^File/,$p' test-output.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      # Replaces the comment Codecov used to post (#46), using a
+      # first-party action rather than a marketplace one - the whole point
+      # of dropping Codecov was to shrink third-party surface, so pulling in
+      # someone else's coverage-comment action would have traded one
+      # dependency for another.
+      #
+      # This is reporting, not a gate. The gate is `thresholds` in
+      # vite.config.ts, which fails the Test step above before this runs.
+      # `if: always()` is deliberate: on a threshold failure the numbers are
+      # exactly what a reviewer wants to see, so the comment must still post
+      # on a red run. It is scoped to `success() || failure()` rather than a
+      # bare always() so that cancelling the workflow does not still write a
+      # comment.
+      # Replaces the comment Codecov used to post (#46), using a
+      # first-party action rather than a marketplace one - the whole point
+      # of dropping Codecov was to shrink third-party surface, so pulling in
+      # someone else's coverage-comment action would have traded one
+      # dependency for another.
+      #
+      # The logic lives in .github/scripts/coverage-comment.js rather than
+      # inline here, so it is a real file: editable with tooling, diffable,
+      # and runnable outside CI. Only the three objects github-script
+      # injects are passed through. require() resolves relative to the
+      # action's own directory, not the workspace, hence the explicit
+      # GITHUB_WORKSPACE path.
+      #
+      # This is reporting, not a gate. The gate is `thresholds` in
+      # vite.config.ts, which fails the Test step above before this runs.
+      # `success() || failure()` (rather than a bare always()) is
+      # deliberate: on a threshold failure the numbers are exactly what a
+      # reviewer wants, so the comment must still post on a red run - but
+      # cancelling the workflow should not write one.
+      - name: Comment coverage on the PR
+        if: (success() || failure()) && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = require(
+              `${process.env.GITHUB_WORKSPACE}/.github/scripts/coverage-comment.js`
+            );
+            await comment({ github, context, core });
 
   golden-master-guard:
     if: github.event_name == 'pull_request'
