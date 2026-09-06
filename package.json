@@ -15,7 +15,7 @@
   "dependencies": {
     "@sentry/react": "^10.73.0",
     "bootstrap": "^4.6.0",
-    "date-fns": "^2.19.0",
+    "date-fns": "^4.4.0",
     "formik": "^2.2.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
