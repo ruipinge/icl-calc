@@ -29,8 +29,18 @@ export default defineConfig(({ mode }) => ({
   define: {
     // The Footer snapshot pins v0.0.t. Sourcing the real version in test
     // mode would make that snapshot churn on every release.
+    //
+    // APP_VERSION before pkg.version, because the committed package.json is
+    // NOT a reliable source of the released version: @semantic-release/git
+    // was removed (#80), so semantic-release rewrites package.json only on
+    // the deploys where it actually cuts a release. On a ci:/chore: deploy
+    // it rewrites nothing and pkg.version is whatever was last committed -
+    // which shipped a footer reading v1.8.3 while the current release was
+    // v1.9.0. CI sets APP_VERSION from the highest release tag, which is
+    // correct whether or not a release was just cut. pkg.version remains
+    // the fallback for local builds, where it is the only source there is.
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(
-      mode === 'test' ? '0.0.t' : pkg.version
+      mode === 'test' ? '0.0.t' : (process.env.APP_VERSION ?? pkg.version)
     ),
     // The commit this bundle was built from. The version alone cannot
     // identify a build: `deploy` publishes on every push to main, but
