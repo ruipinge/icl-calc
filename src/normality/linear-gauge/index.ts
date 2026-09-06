@@ -264,11 +264,14 @@ export class LinearGauge {
   }
 
   dispose(): HTMLElement {
-    this.el.childNodes.forEach((node) => this.el.removeChild(node));
-    // while (this.el.lastChild) {
-    //   this.el.removeChild(this.el.lastChild);
-    // }
-    // this.el.textContent = '';
+    // Iterate by repeatedly taking the last child rather than walking
+    // `childNodes`: that is a *live* NodeList, so removing during a
+    // forEach shifts every later index down by one and skips alternate
+    // nodes (issue #56). This loop is index-free and so removes all of
+    // them however many there are.
+    while (this.el.lastChild) {
+      this.el.removeChild(this.el.lastChild);
+    }
     return this.el;
   }
 }
