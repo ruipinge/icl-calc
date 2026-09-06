@@ -19,6 +19,7 @@ import importPlugin from 'eslint-plugin-import';
 import globals from 'globals';
 import testingLibrary from 'eslint-plugin-testing-library';
 import vitest from '@vitest/eslint-plugin';
+import sonarjs from 'eslint-plugin-sonarjs';
 import prettierConfig from 'eslint-config-prettier';
 
 export default [
@@ -344,6 +345,70 @@ export default [
       // `no-dom-import` is configured `['error', 'react']` by this preset,
       // as called out in the brief.
       ...testingLibrary.configs['flat/react'].rules
+    }
+  },
+  {
+    // --- maintainability gate (#75) ---
+    //
+    // This block is what replaced CodeClimate. CodeClimate produced a
+    // maintainability *grade* - cognitive complexity plus duplication
+    // detection, rendered as a letter on a dashboard. That service is gone
+    // (both badge URLs now 301 to qlty.sh and 404 there), and the
+    // replacement is deliberately not another dashboard: it is a gate that
+    // fails CI, in the same spirit as the coverage floors in
+    // coverage-thresholds.json. A grade nobody opens is worth less than a
+    // threshold that stops a regression at the PR.
+    //
+    // `eslint-plugin-sonarjs` is the closest single equivalent: it carries
+    // SonarSource's own cognitive-complexity, no-identical-functions and
+    // duplicated-branch rules - exactly the checks CodeClimate's grade was
+    // computed from - with no account, no token and no third-party upload.
+    //
+    // Scoped to the same files as the block above, and placed after it so
+    // the two rule sets merge rather than one masking the other. Only
+    // `.rules` is spread, not the whole `recommended` config object: that
+    // object also carries `settings.react.version = '999.999.999'`, which
+    // would silently override this config's `version: 'detect'`.
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: { sonarjs },
+    rules: {
+      ...sonarjs.configs.recommended.rules,
+
+      // Measured, not guessed. Running every sonarjs rule over src/ on the
+      // commit this was added reported findings from 11 rules; the
+      // `recommended` set (217 rules on, 62 off) reported exactly three
+      // errors, all handled below. Cognitive complexity and every
+      // duplication rule reported nothing at all - the codebase already
+      // passes the checks the CodeClimate grade was made of.
+
+      // A ratchet, not a cliff. The plugin's default ceiling is 15; the
+      // worst function in this repo measures 7 (stripSensitiveFields in
+      // src/index.tsx). Pinning it at 8 means the gate passes today and
+      // still refuses the next function that is worse than anything here
+      // now, which a default of 15 would wave through. Raise this
+      // deliberately, with a reason, or not at all.
+      'sonarjs/cognitive-complexity': ['error', 8],
+
+      // OFF, deliberately. Fires twice: src/formulas.ts:46 and
+      // src/normality/linear-gauge/index.ts:121. The formulas.ts one marks
+      // an unimplemented clinical warning ("ICL Power calculation may not
+      // be accurate because ... consider introducing the posterior corneal
+      // curvatures"). Failing CI on the presence of a TODO does not get
+      // that warning written - it gets the marker deleted, because that is
+      // the cheap way to make the build green. Losing a flagged gap in a
+      // surgical-planning calculation to satisfy a linter is the wrong
+      // trade. Outstanding work is tracked in GitHub issues; the comment is
+      // a pointer, not a defect.
+      'sonarjs/todo-tag': 'off',
+
+      // OFF, deliberately. Fires once, on src/ICLContainer.test.tsx:96:
+      // four route-rendering tests that could be one `it.each`. They are
+      // snapshot tests, so parameterising them renames every test and
+      // therefore every key in __snapshots__/ICLContainer.test.tsx.snap -
+      // churn through the snapshot files of a clinical tool to satisfy a
+      // style preference. Four separately named tests also read better in a
+      // failure report than one parameterised case number.
+      'sonarjs/parameterized-tests': 'off'
     }
   },
   // Last, so it can turn off stylistic rules that would fight Prettier.
