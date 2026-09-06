@@ -14,6 +14,23 @@ const ATA_MIN = 0,
   KA_MAX = 55,
   AXISA_MIN = 0,
   AXISA_MAX = 180,
+  // Posterior keratometry is entered as a POSITIVE dioptric power. Several
+  // biometers report it signed (e.g. -6.20); entering that sign flips the
+  // sign of the posterior corneal power in calcRadiusPosterior and silently
+  // yields a plausible-but-wrong ICL Power, which is why the floor is above
+  // zero rather than a bare `min(0)`.
+  //
+  // The bounds are the app's own: calcRadiusPosterior's fallback estimates
+  // the posterior radius as anterior x 0.84, so a schema-legal anterior
+  // cornea (KA_MIN..KA_MAX) implies a posterior power of
+  // 0.04 / (0.3375 / KA * 0.84), i.e. ~4.23 D at KA 30 and ~7.76 D at KA 55.
+  // Rounded outwards to [4, 8] so the schema can never reject a posterior K
+  // that the calculator itself would have estimated, while still rejecting
+  // an anterior K typed into a posterior field.
+  KP_MIN = 4.0,
+  KP_MAX = 8.0,
+  AXISP_MIN = 0,
+  AXISP_MAX = 180,
   CCT_MIN = 300,
   CCT_MAX = 700,
   SPHERE_MIN = -25,
@@ -29,6 +46,17 @@ const ATA_MIN = 0,
 
 const formatError = (min: number, max: number) =>
   `${INVALID_ERROR} [${min}, ${max}]`;
+
+// Posterior keratometry is optional, and "not measured" is encoded as 0 both
+// by INITIAL_VALUES and by calcRadiusPosterior's `if (kpf && kps)` guard, so
+// a plain min/max cannot express the rule: 0 has to stay valid while every
+// other sub-floor value - a negative above all - must not.
+const formatPosteriorError = (min: number, max: number) =>
+  `${formatError(min, max)} or 0 if not measured.`;
+
+const isUnmeasuredOrInRange = (min: number, max: number) => (
+  value: number | undefined
+) => value === undefined || value === 0 || (value >= min && value <= max);
 
 export const ICLSchema = Yup.object().shape({
   patient: Yup.object().shape({
@@ -77,6 +105,28 @@ export const ICLSchema = Yup.object().shape({
       .required(REQUIRED_ERROR)
       .min(AXISA_MIN, formatError(AXISA_MIN, AXISA_MAX))
       .max(AXISA_MAX, formatError(AXISA_MIN, AXISA_MAX)),
+    kpf: Yup.number()
+      .optional()
+      .test(
+        'posterior-k-or-unmeasured',
+        formatPosteriorError(KP_MIN, KP_MAX),
+        isUnmeasuredOrInRange(KP_MIN, KP_MAX)
+      ),
+    kps: Yup.number()
+      .optional()
+      .test(
+        'posterior-k-or-unmeasured',
+        formatPosteriorError(KP_MIN, KP_MAX),
+        isUnmeasuredOrInRange(KP_MIN, KP_MAX)
+      ),
+    axispf: Yup.number()
+      .optional()
+      .min(AXISP_MIN, formatError(AXISP_MIN, AXISP_MAX))
+      .max(AXISP_MAX, formatError(AXISP_MIN, AXISP_MAX)),
+    axisps: Yup.number()
+      .optional()
+      .min(AXISP_MIN, formatError(AXISP_MIN, AXISP_MAX))
+      .max(AXISP_MAX, formatError(AXISP_MIN, AXISP_MAX)),
     cct: Yup.number()
       .required(REQUIRED_ERROR)
       .min(CCT_MIN, formatError(CCT_MIN, CCT_MAX))
