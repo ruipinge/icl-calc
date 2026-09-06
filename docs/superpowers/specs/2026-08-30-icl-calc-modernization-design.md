@@ -399,6 +399,54 @@ before the real run) is cheap at that point and awkward once the real
 `deploy` job has already cut the tag, written the GitHub release and
 republished `gh-pages`.
 
+**Annotated 6 September 2026 (#94, post-v1.8.3).** Two sentences in the first
+paragraph above are now stale, and are corrected here rather than rewritten
+there, so the record of what was decided when stays readable:
+
+- The `deploy` job is **`main`-only**, not `master`-only. The default branch
+  was renamed in #90; `master` no longer exists.
+- semantic-release **no longer commits the bumped `package.json` back**.
+  `@semantic-release/git` was removed in #80 so that nothing automated pushes
+  to a protected branch. The git tag, the GitHub release and the version baked
+  into the deployed bundle all remain correct; only the version committed in
+  the repository stays behind, and it will drift further with every release.
+
+**The gap this exposed, and the decision taken.** `deploy` is not gated on a
+release: it publishes to `gh-pages` on every qualifying push to `main`, while
+semantic-release bumps the version only when a release-triggering commit has
+landed since the last tag. A `ci:`/`chore:` change that nonetheless alters the
+bundle therefore ships an artifact reporting the *previous* version. #90 did
+exactly that — it rewrote the footer's links and shipped under v1.8.3, whose
+tag predates it. Because the footer renders the version as a hyperlink to
+`releases/tag/v${version}`, the result was not merely an unlabelled build but
+a false provenance claim: the link resolved to source the running build did
+not contain.
+
+Two changes were made, and three alternatives rejected:
+
+- **Every bundle now names its own commit.** `vite.config.ts` defines
+  `VITE_APP_COMMIT` from `GITHUB_SHA`, and the footer renders it beside the
+  version, linked to that commit. This satisfies traceability unconditionally
+  and independently of release policy — it keeps working whatever is decided
+  about versioning later. `GITHUB_SHA` only, never a local `git rev-parse`: a
+  CI checkout is clean by construction, whereas stamping a commit onto a
+  possibly-dirty local tree would reintroduce the same false claim.
+- **Commits are labelled by what they ship, not by what they touch** — written
+  down in README's "Commits and releases". Under that rule #90 was a `fix:`
+  and would have cut v1.8.4. Nothing enforces it; it is judgement at commit
+  time, which is why the SHA above exists as the backstop.
+- **Rejected: gating `deploy` on a release.** It does not fix traceability, it
+  prevents deploying, and it creates standing pressure to mislabel a commit as
+  `fix:` merely to ship — corroding the labelling rule it would depend on.
+- **Rejected: custom `releaseRules` scoped to `src/`.** Not expressible:
+  `releaseRules` match parsed-commit properties (`type`, `scope`, `subject`,
+  `breaking`, `revert`, `tag`), never the files a commit changed. The only
+  expressible variant, making `ci:`/`chore:` always patch-releasing, would put
+  toolchain churn into version numbers — against this section's whole point.
+- **Rejected: restoring `@semantic-release/git`.** The protection-bypass cost
+  stands, and once the bundle carries its own SHA the committed-`package.json`
+  drift no longer obscures which build is live.
+
 ---
 
 ### 6.4 Why 3c ships no redirect shim

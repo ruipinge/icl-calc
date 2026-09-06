@@ -68,6 +68,37 @@ renders to the golden master in `src/golden/expected.json`. `src/golden/expected
 and `src/data.csv` are guarded in CI — changing either outside an `oracle/*`
 branch fails the build by design.
 
+### Commits and releases
+
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/).
+`semantic-release` reads them on every push to `main` and cuts a version only
+for `feat:` (minor), `fix:`, `perf:`, `revert:` (patch), and breaking changes
+(major). Everything else — `ci:`, `chore:`, `docs:`, `style:`, `refactor:`,
+`test:`, `build:` — still deploys, but produces no new version.
+
+**Label a commit by what it ships, not by what it touches.** The deciding
+question is whether the change alters what a clinician's browser loads. If it
+does, it is a `fix:` or a `feat:` even when every edited line lives in CI
+config, a build script or a comment. If it does not, it is `chore:`/`ci:` even
+when the diff is entirely under `src/`.
+
+This rule exists because the alternative was tried and failed. #90 was labelled
+`ci:` because it edited a workflow — but it also rewrote the footer's own
+links, so it changed the shipped bundle and shipped it under the previous
+version's number. Nothing enforces this rule; it is a judgement made at commit
+time, which is why it is written down here.
+
+The version tracks **the product a clinician sees, not the toolchain
+underneath it**. A major is reserved for the Treeye UI/UX reskin. Never add a
+breaking-change footer (a line-initial `BREAKING CHANGE:` in the body, or a
+`!` after the type) unless a major is genuinely intended — the footer alone is
+enough to force one.
+
+Because judgement can still be wrong, every deployed bundle names the commit
+it was built from: the footer renders the version *and* the short SHA, linked
+to that commit. A build is therefore identifiable even when no release was cut
+for it. See `define` in `vite.config.ts`.
+
 ## Tech
 
 - [JavaScript](https://www.javascript.com/), [TypeScript](https://www.typescriptlang.org/)
