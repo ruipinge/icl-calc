@@ -31,6 +31,12 @@ updates:
     ignore:
       # Pinned exactly on purpose (#76) so formatting is reproducible across
       # machines and CI. Upgrade it deliberately, never on a schedule.
+      #
+      # Note the cost, so it is a decision rather than a side effect: `ignore`
+      # is honoured for security updates as well as version updates, so an
+      # advisory against prettier will not open a PR either. Accepted because
+      # prettier formats source and does not build the shipped artifact; if
+      # that stops being true, this entry is the first thing to revisit.
       - dependency-name: prettier
 
     # Every install step runs `npm ci` without --legacy-peer-deps, so a
