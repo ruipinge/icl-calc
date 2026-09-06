@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
+import coverageThresholds from './coverage-thresholds.json';
 import pkg from './package.json';
 import react from '@vitejs/plugin-react';
 
@@ -51,22 +52,26 @@ export default defineConfig(({ mode }) => ({
       // text is what the job summary scrapes; lcov is kept because it is
       // the portable format any future tool will read.
       reporter: ['text', 'lcov', 'json-summary'],
-      // Seeded at the numbers measured on 2026-09-05, after #51 brought the
-      // Normality tab under test for the first time. These are a ratchet,
-      // not an aspiration: CI fails when coverage drops below them, which
-      // is strictly stronger than the posted comment Codecov used to give
-      // (issue #46). Raise them when coverage genuinely improves; lowering
-      // one is a decision that belongs in a PR description, not a quiet
-      // edit.
+      // The single source for these lives in coverage-thresholds.json,
+      // because .github/scripts/coverage-comment.js needs the same numbers
+      // and plain CI JavaScript cannot import this TypeScript config. An
+      // earlier version duplicated them in both places - the same
+      // two-copies-of-one-truth mistake that let the histogram and its
+      // gauge drift apart in #51, caught there only by eye.
       //
-      // Not set to 100: src/index.tsx is excluded below, and the
-      // ResizeObserver path in Histogram.tsx is unreachable under jsdom.
-      thresholds: {
-        statements: 99.7,
-        branches: 91.51,
-        functions: 99.05,
-        lines: 99.7
-      },
+      // They are a ratchet, not an aspiration: CI fails when coverage drops
+      // below them, which is strictly stronger than the comment Codecov
+      // used to post (issue #46). Seeded at the numbers measured on
+      // 2026-09-05, after #51 brought the Normality tab under test for the
+      // first time.
+      //
+      // Not 100: src/index.tsx is excluded below, and the ResizeObserver
+      // path in Histogram.tsx is unreachable under jsdom.
+      thresholds: coverageThresholds,
+      // Scopes coverage to the app. Without this, Vitest measures every
+      // file it can reach - including e2e/playwright.config.ts and
+      // e2e/lib/app.ts, which are the golden-master harness and are never
+      // imported by a unit test, dragging the total from 99.7% to 88.31%.
       include: ['src/**/*.{js,jsx,ts,tsx}'],
       exclude: [
         'src/**/*.d.ts',

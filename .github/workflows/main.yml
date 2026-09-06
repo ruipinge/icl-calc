@@ -91,81 +91,34 @@ jobs:
       # on a red run. It is scoped to `success() || failure()` rather than a
       # bare always() so that cancelling the workflow does not still write a
       # comment.
+      # Replaces the comment Codecov used to post (#46), using a
+      # first-party action rather than a marketplace one - the whole point
+      # of dropping Codecov was to shrink third-party surface, so pulling in
+      # someone else's coverage-comment action would have traded one
+      # dependency for another.
+      #
+      # The logic lives in .github/scripts/coverage-comment.js rather than
+      # inline here, so it is a real file: editable with tooling, diffable,
+      # and runnable outside CI. Only the three objects github-script
+      # injects are passed through. require() resolves relative to the
+      # action's own directory, not the workspace, hence the explicit
+      # GITHUB_WORKSPACE path.
+      #
+      # This is reporting, not a gate. The gate is `thresholds` in
+      # vite.config.ts, which fails the Test step above before this runs.
+      # `success() || failure()` (rather than a bare always()) is
+      # deliberate: on a threshold failure the numbers are exactly what a
+      # reviewer wants, so the comment must still post on a red run - but
+      # cancelling the workflow should not write one.
       - name: Comment coverage on the PR
         if: (success() || failure()) && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-
-            let total;
-            try {
-              total = JSON.parse(
-                fs.readFileSync('coverage/coverage-summary.json', 'utf8')
-              ).total;
-            } catch (error) {
-              // The suite can fail before coverage is written at all. Say so
-              // rather than failing this step and turning one red signal into
-              // two.
-              core.warning(`No coverage summary to report: ${error.message}`);
-              return;
-            }
-
-            const thresholds = {
-              statements: 99.7,
-              branches: 91.51,
-              functions: 99.05,
-              lines: 99.7
-            };
-
-            const rows = Object.keys(thresholds).map((key) => {
-              const pct = total[key].pct;
-              const floor = thresholds[key];
-              const mark = pct >= floor ? 'ok' : '**under**';
-              return `| ${key} | ${pct}% | ${floor}% | ${mark} |`;
-            });
-
-            const body = [
-              '<!-- coverage-comment -->',
-              '## Coverage',
-              '',
-              '| | measured | floor | |',
-              '| --- | ---: | ---: | :---: |',
-              ...rows,
-              '',
-              'Floors live in `vite.config.ts` and fail CI when missed.',
-              'Raise them when coverage improves; lowering one belongs in a',
-              'PR description, not a quiet edit.'
-            ].join('\n');
-
-            const { owner, repo } = context.repo;
-            const issue_number = context.issue.number;
-
-            // Update the existing comment rather than adding one per push -
-            // a long-running PR would otherwise accumulate a wall of them.
-            const existing = await github.paginate(
-              github.rest.issues.listComments,
-              { owner, repo, issue_number }
+            const comment = require(
+              `${process.env.GITHUB_WORKSPACE}/.github/scripts/coverage-comment.js`
             );
-            const mine = existing.find((comment) =>
-              comment.body.includes('<!-- coverage-comment -->')
-            );
-
-            if (mine) {
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: mine.id,
-                body
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number,
-                body
-              });
-            }
+            await comment({ github, context, core });
 
   golden-master-guard:
     if: github.event_name == 'pull_request'
