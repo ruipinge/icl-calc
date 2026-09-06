@@ -55,6 +55,18 @@ export default defineConfig(({ mode }) => ({
   test: {
     globals: true,
     environment: 'jsdom',
+    // Vitest 5 no longer resolves `base` into import.meta.env.BASE_URL for
+    // the test environment: it reports '/' where vitest 1 reported
+    // '/icl-calc/'. Production is unaffected - a real `npm run build` still
+    // emits href="/icl-calc/" and every asset path under /icl-calc/ - so
+    // this is purely a test-environment divergence.
+    //
+    // Pinned rather than absorbed into the snapshots, because NavBar renders
+    // BASE_URL into the brand link: recording '/' would have the L1 suite
+    // assert a path the shipped app never uses, and stop it catching a real
+    // base-path regression - exactly the break `base` exists to prevent,
+    // since this app is served from a sub-path (see `base` above).
+    env: { BASE_URL: '/icl-calc/' },
     setupFiles: './src/setupTests.ts',
     // CRA's Jest preset set resetMocks: true; this config does not, and
     // Vitest defaults to false too. Currently inert - both spyOn usages
