@@ -25,7 +25,7 @@ exports[`renders without crashing 1`] = `
           class="d-inline-block ml-3"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/blob/master/README.md#instructions"
+            href="https://github.com/ruipinge/icl-calc/blob/main/README.md#instructions"
           >
             Instructions
           </a>
@@ -34,7 +34,7 @@ exports[`renders without crashing 1`] = `
           class="d-inline-block ml-3"
         >
           <a
-            href="https://github.com/ruipinge/icl-calc/blob/master/README.md#data"
+            href="https://github.com/ruipinge/icl-calc/blob/main/README.md#data"
           >
             Data
           </a>
@@ -71,7 +71,7 @@ exports[`renders without crashing 1`] = `
       >
         Available under the 
         <a
-          href="https://github.com/ruipinge/icl-calc/blob/master/LICENSE"
+          href="https://github.com/ruipinge/icl-calc/blob/main/LICENSE"
           rel="license noopener noreferrer"
           target="_blank"
         >
