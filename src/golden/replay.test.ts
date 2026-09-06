@@ -205,13 +205,20 @@ describe('golden master L1', () => {
   // which jsdom never populates - so only the min/max boundaries are the
   // point here; colours are not asserted.
   //
-  // quantile() (used by buildZones) sorts its argument array IN PLACE, which
-  // mutates the shared VALUES.* arrays from src/db.ts. That is safe only
-  // because HISTOGRAM_DATA above is computed once, at db.ts module load,
-  // before this test (or any test) runs - see "Known hazards recorded, not
-  // fixed" in the design spec. The histogram snapshot test above was run
-  // alongside this one and still passes unchanged, proving that ordering
-  // holds.
+  // This test and the HISTOGRAM_DATA snapshot above read the same shared
+  // VALUES.* arrays from src/db.ts, and they can coexist in either order
+  // because buildZones no longer writes to them. It used to: quantile()
+  // sorted its argument IN PLACE, so this test permanently reordered all
+  // six arrays out of CSV row order, and the histogram snapshot was correct
+  // only because HISTOGRAM_DATA is computed eagerly at db.ts module load,
+  // before any test body runs. Issue #58 removed that coupling - quantile()
+  // and buildZones now sort a copy - so the histogram result no longer
+  // depends on db.ts computing eagerly, nor on which of these two tests runs
+  // first. The zone boundaries below are unchanged by that fix: sorting a
+  // copy yields the same ascending sequence as sorting in place, and
+  // Math.min(...values) is order-independent. If a future change makes
+  // anything here mutate VALUES.* again, this pairing is where it will
+  // silently start mattering.
   it('locks the Normality percentile bands over the real dataset', () => {
     expect({
       ata: buildZones({ values: VALUES.ATA }),

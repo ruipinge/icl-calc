@@ -162,6 +162,13 @@ capture broke.
 - `quantile()` sorts its input array **in place**, mutating the shared
   `VALUES.*` arrays. Harmless today only because `HISTOGRAM_DATA` is computed at
   module load before any sort occurs. Revisit if load order changes.
+  > **Fixed, issue #58 (PR #85).** `quantile()` and `buildZones` now sort a
+  > copy, so nothing mutates the shared `VALUES.*` arrays and they stay in CSV
+  > row order for every reader. The histogram's correctness no longer rests on
+  > `db.ts` computing `HISTOGRAM_DATA` eagerly at module load, so "revisit if
+  > load order changes" no longer applies — module evaluation order is not
+  > load-bearing here any more. No zone boundary moved: all 60 were verified
+  > float-exact identical over the real 542-eye dataset.
 - `Gauge.tsx` reads Bootstrap CSS custom properties via
   `getComputedStyle(document.body)` at module scope. Returns empty strings under
   jsdom, and will need attention whenever Bootstrap is removed.
