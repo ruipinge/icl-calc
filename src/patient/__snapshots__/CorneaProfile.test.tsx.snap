@@ -340,6 +340,7 @@ exports[`renders without crashing 1`] = `
         >
           <select
             class="form-control"
+            id="corneaProfile.previousSurgery"
             name="corneaProfile.previousSurgery"
           >
             <option

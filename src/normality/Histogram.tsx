@@ -149,6 +149,7 @@ export const Histogram = ({
           return (
             <g key={tick}>
               <line
+                data-testid="gridline"
                 x1={plotLeft}
                 x2={plotRight}
                 y1={y}

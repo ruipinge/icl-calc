@@ -1,11 +1,11 @@
+import { render, screen } from '@testing-library/react';
 import { CorneaProfile } from './CorneaProfile';
 import { Formik } from 'formik';
 import { ICLSchema } from '../ICLSchema';
 import { PreviousSurgery } from '../types';
-import { render } from '@testing-library/react';
 
 it('renders without crashing', () => {
-  const { asFragment, container } = render(
+  const { asFragment } = render(
     <Formik
       initialValues={{
         corneaProfile: {
@@ -38,9 +38,12 @@ it('renders without crashing', () => {
 
   // asFragment() serialises markup only; React sets a <select>'s selection
   // as a DOM property, so this value is otherwise unverified at every layer.
-  // The <label> here has no matching id on the <select> (Formik `Field`
-  // doesn't set one), so getByLabelText can't resolve it — query by name.
+  // The <label> previously had no matching id on the <select> (Formik
+  // `Field` doesn't set one on its own), which is what the
+  // testing-library/no-node-access lint rule caught here - fixed by giving
+  // the Field an explicit id in CorneaProfile.tsx, so getByLabelText now
+  // resolves it.
   expect(
-    container.querySelector('select[name="corneaProfile.previousSurgery"]')
+    screen.getByLabelText('Previous Corneal Refractive Surgery')
   ).toHaveValue('None');
 });

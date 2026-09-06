@@ -17,6 +17,8 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import importPlugin from 'eslint-plugin-import';
 import globals from 'globals';
+import testingLibrary from 'eslint-plugin-testing-library';
+import vitest from '@vitest/eslint-plugin';
 import prettierConfig from 'eslint-config-prettier';
 
 export default [
@@ -298,6 +300,50 @@ export default [
       globals: {
         ...globals.vitest
       }
+    }
+  },
+  {
+    // Test-file rules — the actual point of #63. Under the old
+    // `eslint-config-react-app`, `react-app/jest` supplied `jest/*` rules,
+    // but they were never wired to anything test-file-scoped (see
+    // established fact #4: zero jest/testing-library rules were ever
+    // active). This block replaces that dead configuration with two
+    // runner-appropriate plugins, restricted to test files only.
+    files: ['src/**/*.{test,spec}.{ts,tsx}'],
+    plugins: {
+      vitest,
+      'testing-library': testingLibrary
+    },
+    rules: {
+      // `@vitest/eslint-plugin` recommended - the Vitest-native replacement
+      // for the `jest/*` rules `react-app/jest` used to define. Mapping
+      // from the old jest rule set, deliberately:
+      //   jest/no-conditional-expect        -> vitest/no-conditional-expect (direct)
+      //   jest/no-identical-title           -> vitest/no-identical-title (direct)
+      //   jest/no-interpolation-in-snapshots -> vitest/no-interpolation-in-snapshots (direct)
+      //   jest/no-mocks-import              -> vitest/no-mocks-import (direct)
+      //   jest/valid-describe               -> vitest/valid-describe-callback (renamed equivalent)
+      //   jest/valid-expect                 -> vitest/valid-expect (direct)
+      //   jest/valid-expect-in-promise      -> vitest/valid-expect-in-promise (direct)
+      //   jest/valid-title                  -> vitest/valid-title (direct)
+      //   jest/no-jasmine-globals           -> no equivalent, dropped: Jasmine globals
+      //     are a Jest-runner concept (Jest's Jasmine-compat layer); Vitest has no
+      //     Jasmine compatibility layer, so the condition the rule checks for
+      //     cannot occur here.
+      //   jest/no-jest-import               -> no equivalent, dropped: that rule bans
+      //     `import jest from 'jest'` because Jest globals are ambient; under Vitest,
+      //     `import { vi } from 'vitest'` is the normal, encouraged way to reach the
+      //     mocking API, so an inverse rule would be actively wrong here.
+      // `recommended` also adds rules the old jest set never had -
+      // notably `vitest/expect-expect`, which is exactly the shape of bug
+      // this task found by hand (a test with no assertion in its body).
+      ...vitest.configs.recommended.rules,
+      // `eslint-plugin-testing-library`, `flat/react` preset - these lint
+      // DOM Testing Library usage and are runner-agnostic, so they map
+      // directly rather than needing per-rule translation.
+      // `no-dom-import` is configured `['error', 'react']` by this preset,
+      // as called out in the brief.
+      ...testingLibrary.configs['flat/react'].rules
     }
   },
   // Last, so it can turn off stylistic rules that would fight Prettier.
