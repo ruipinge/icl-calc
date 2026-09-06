@@ -187,10 +187,46 @@ jobs:
           set -euo pipefail
 
           MERGE_BASE="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
-          CHANGED="$(git diff --name-only "$MERGE_BASE" "$HEAD_SHA" -- src/golden/expected.json src/data.csv)"
+
+          # A guarded file can be absent from the merge base rather than
+          # modified in it. That is not hypothetical: the final Phase 5 merge
+          # of `modernize` into `master` is exactly this case, because master
+          # predates Phase 1 and has never carried expected.json. Comparing
+          # naively against the base reports the file as "changed" and blocks
+          # the release - the guard cannot tell "someone edited the fixture"
+          # from "the fixture is arriving here for the first time".
+          #
+          # The fix is a real check, not an exemption. When a guarded file is
+          # absent from the base, compare the incoming version against the
+          # commit that first ADDED it. Identical means it is being
+          # introduced exactly as captured, which is the only legitimate way
+          # for it to appear. Different means it drifted between capture and
+          # here, which is precisely what this job exists to stop, and it
+          # falls through to the failure branch below.
+          CHANGED=""
+          for FILE in src/golden/expected.json src/data.csv; do
+            if git cat-file -e "$MERGE_BASE:$FILE" 2>/dev/null; then
+              if ! git diff --quiet "$MERGE_BASE" "$HEAD_SHA" -- "$FILE"; then
+                CHANGED="$CHANGED$FILE"$'\n'
+              fi
+              continue
+            fi
+
+            ADDED_IN="$(git log --diff-filter=A --format=%H "$HEAD_SHA" -- "$FILE" | tail -1)"
+            if [ -z "$ADDED_IN" ]; then
+              echo "::error::$FILE is absent from the merge base and has no add commit reachable from HEAD. Refusing to guess."
+              CHANGED="$CHANGED$FILE"$'\n'
+            elif git diff --quiet "$ADDED_IN" "$HEAD_SHA" -- "$FILE"; then
+              echo "$FILE is absent from the merge base ($MERGE_BASE) and is being introduced byte-identical to its original capture in $ADDED_IN. OK."
+            else
+              echo "::error::$FILE has drifted since it was captured in $ADDED_IN."
+              CHANGED="$CHANGED$FILE"$'\n'
+            fi
+          done
+          CHANGED="$(printf '%s' "$CHANGED")"
 
           if [ -z "$CHANGED" ]; then
-            echo "src/golden/expected.json and src/data.csv are unchanged against the merge base ($MERGE_BASE). OK."
+            echo "src/golden/expected.json and src/data.csv are intact against the merge base ($MERGE_BASE). OK."
             exit 0
           fi
 
