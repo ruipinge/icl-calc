@@ -118,8 +118,7 @@ function stripSensitiveFields(
 // sends; every option below is chosen with that in mind.
 if (import.meta.env.PROD) {
   Sentry.init({
-    dsn:
-      'https://2e937d9ae4044696992e8d4afba8d9b5@o551236.ingest.sentry.io/5674476',
+    dsn: 'https://2e937d9ae4044696992e8d4afba8d9b5@o551236.ingest.sentry.io/5674476',
 
     // `new Integrations.BrowserTracing()` (the removed @sentry/tracing v6
     // API) is replaced by this function in v10 - confirmed against this
