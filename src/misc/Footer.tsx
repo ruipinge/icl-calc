@@ -12,6 +12,14 @@ export const Footer = () => (
             }`}
           >
             {`v${import.meta.env.VITE_APP_VERSION}`}
+          </a>{' '}
+          <a
+            href={`https://github.com/ruipinge/icl-calc/commit/${
+              import.meta.env.VITE_APP_COMMIT
+            }`}
+            title="The commit this build was made from"
+          >
+            {`(${import.meta.env.VITE_APP_COMMIT})`}
           </a>
         </li>
         <li className="d-inline-block ml-3">

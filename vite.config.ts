@@ -31,6 +31,25 @@ export default defineConfig(({ mode }) => ({
     // mode would make that snapshot churn on every release.
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(
       mode === 'test' ? '0.0.t' : pkg.version
+    ),
+    // The commit this bundle was built from. The version alone cannot
+    // identify a build: `deploy` publishes on every push to main, but
+    // semantic-release only bumps package.json when a commit since the last
+    // tag was release-triggering, so a ci:/chore: change ships an artifact
+    // that still reports the previous version. That is not hypothetical -
+    // #90 rewrote the footer's own links and shipped under v1.8.3, whose
+    // tag predates it, making the version link point at source the running
+    // build does not contain (#94).
+    //
+    // GITHUB_SHA only, never a local `git rev-parse`. A CI checkout is clean
+    // by construction, so the SHA describes the tree that was built; a local
+    // tree can be dirty, and stamping a commit onto a build that does not
+    // match it would reintroduce the exact false claim this exists to fix.
+    // Local builds say 'dev', which is true.
+    //
+    // Pinned in test mode for the same reason as the version above.
+    'import.meta.env.VITE_APP_COMMIT': JSON.stringify(
+      mode === 'test' ? '0000000' : (process.env.GITHUB_SHA ?? 'dev').slice(0, 7)
     )
   },
   test: {
