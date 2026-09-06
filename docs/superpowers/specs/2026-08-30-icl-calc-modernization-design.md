@@ -852,6 +852,41 @@ and was deliberately left in place pending a separate decision.
     non-trivial set beforehand. Not restored here: re-enabling risked
     surfacing new failures across ~20 test files as unrelated churn.
     Tracked as [#63](https://github.com/ruipinge/icl-calc/issues/63).
+    > **Restored (#63)**, and the deferral was vindicated — it did surface
+    > real failures: 21 errors across 5 test files. (Not ~20 files: 12 of
+    > the 21 test files are pure-unit and never touch the DOM, so
+    > `testing-library/*` cannot apply to them.)
+    >
+    > `jest/*` did not come back. The runner is Vitest, so
+    > `@vitest/eslint-plugin` replaces it: 8 of the 10 old rules have an
+    > equivalent, `valid-describe` becoming `valid-describe-callback`.
+    > `no-jasmine-globals` and `no-jest-import` were dropped as
+    > Jest-runner-specific with no Vitest analogue — Vitest has no Jasmine
+    > compatibility layer, and importing from `vitest` is the normal way to
+    > reach mocking, so an inverse rule would be actively wrong.
+    > `testing-library/*` came back close to as-is, being runner-agnostic.
+    >
+    > **Two findings worth more than the lint fixes.**
+    >
+    > `vitest/expect-expect` caught `src/App.test.tsx` asserting nothing —
+    > `render(<App />)` and no expectation, so a component that mounted
+    > blank or rendered the wrong tab still passed. That is the **sixth**
+    > test found in this migration that could not fail.
+    >
+    > `testing-library/prefer-screen-queries` pushed `CorneaProfile.test.tsx`
+    > off `container.querySelector` onto `getByLabelText`, which then failed
+    > — revealing that `<label htmlFor="corneaProfile.previousSurgery">`
+    > pointed at an `id` no element had. The Previous Corneal Refractive
+    > Surgery dropdown had been unlabelled to screen readers since 2021. A
+    > lint rule surfaced a real accessibility defect in a clinical form.
+    >
+    > And a near-miss worth recording: naively satisfying
+    > `no-wait-for-side-effects` by dropping `waitFor` and calling
+    > `fireEvent` synchronously collapsed branch coverage in four Patient
+    > components from ~91.5% to as low as 10% — Formik's `validateForm()`
+    > is asynchronous even against a synchronous Yup schema, and the
+    > `await` was the only thing giving it a tick to settle. **The coverage
+    > floors from #46 are what caught it**, one phase after they landed.
   - **Gates, all re-run on Node 22 immediately before Task 6's PR**: `npm
     test` 158 passed / 3 skipped; `npx tsc --noEmit` clean; `npm run lint`
     exit 0; `npm run build` exit 0; `SUBJECT_ONLY=1` L2 setup + replay, 2
@@ -1064,6 +1099,30 @@ and was deliberately left in place pending a separate decision.
     Phase 3a (sourced from `import.meta.env` in `src/index.tsx`) are the
     only output, and they are not errors. Left exactly as-is; the staleness
     is real and is #63's problem, not this phase's.
+    > **Actioned (#63).** ESLint 7.32 → **9.39.5** on flat config
+    > (`eslint.config.mjs`); `eslint-config-react-app` deleted — the last
+    > Create React App remnant in the repo — along with `babel-eslint` and
+    > `eslint-plugin-flowtype` (this project has no Flow).
+    > typescript-eslint 4 → 8. The `jsx-ast-utils` notices are gone with the
+    > old plugin.
+    >
+    > **Not ESLint 10**, though it exists: `eslint-plugin-react` peers at
+    > `^9.7` and `jsx-a11y` at `^9`, so 10 would have dropped React and
+    > accessibility linting — 31 of the 116 active rules.
+    >
+    > Parity was measured rather than asserted, the same discipline the
+    > golden master applies to behaviour: `eslint --print-config` captured
+    > before the change and diffed after. 116 → 107 active rules, all nine
+    > losses accounted for — three `flowtype`, `prettier/prettier` (now its
+    > own check), and five formatting rules `eslint-config-prettier` turns
+    > off. The last group was verified, not assumed: `no-mixed-operators`
+    > reads like a safety rule rather than a style one, so it was checked
+    > directly — Prettier rewrites `p && q || r` to `(p && q) || r`, so it
+    > enforces exactly the clarity that rule was checking.
+    >
+    > Prettier itself is deliberately untouched at 2.2.1 (#76). Removing
+    > `eslint-plugin-prettier` is what decoupled the two versions, which is
+    > what makes that a separate decision at all.
   - **Gates, all re-run on Node 22 immediately before the PR**: `npm test`
     158 passed / 3 skipped; `npx tsc --noEmit` clean; `npm run lint` exit
     0; `npm run build` exit 0; `SUBJECT_ONLY=1` L2 setup + replay, 2
