@@ -47,3 +47,47 @@ it('renders without crashing', () => {
     screen.getByLabelText('Previous Corneal Refractive Surgery')
   ).toHaveValue('None');
 });
+
+// The four posterior fields already pass `error`/`touched` down to
+// FieldWithUnit, so no wiring was needed for #41 - but "already wired" was
+// worth proving rather than assuming: until ICLSchema constrained them there
+// was nothing for that wiring to carry, and a negative posterior K reached
+// calcRadiusPosterior unchallenged.
+it('shows a validation error for a negative posterior keratometry', async () => {
+  render(
+    <Formik
+      initialValues={{
+        corneaProfile: {
+          kaf: 42.0,
+          kas: 43.5,
+          axisaf: 90,
+          axisas: 180,
+          // As reported, signed, by several biometers.
+          kpf: -6.2,
+          kps: 6.5,
+          axispf: 90,
+          axisps: 180,
+          cct: 540,
+          previousSurgery: PreviousSurgery.none
+        }
+      }}
+      initialTouched={{ corneaProfile: { kpf: true } }}
+      validationSchema={ICLSchema}
+      validateOnMount={true}
+      onSubmit={() => {}}
+    >
+      {({ errors, touched, values, resetForm, ...otherProps }) => (
+        <CorneaProfile
+          errors={errors}
+          values={values}
+          touched={touched}
+          {...otherProps}
+        />
+      )}
+    </Formik>
+  );
+
+  expect(
+    await screen.findByText('Invalid value. [4, 8] or 0 if not measured.')
+  ).toBeInTheDocument();
+});
