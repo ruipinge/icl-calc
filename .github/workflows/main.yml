@@ -1,91 +1,378 @@
 name: main
 
-on: push
+on:
+  # `push:` is scoped to master, not left bare. Bare, it fires on every
+  # branch - so every push to a PR branch ran this whole workflow TWICE,
+  # once for the push and once for the pull_request, building the app and
+  # driving a real browser both times for an identical result. The push run
+  # produced nothing the PR run did not: golden-master-guard is
+  # pull_request-only and deploy is master-only, so it was a duplicate of
+  # exactly the expensive half.
+  #
+  # Master still needs the push trigger - that is what runs deploy.
+  #
+  # Trade accepted: a branch with no PR open now gets no CI. The workflow
+  # here is always worktree -> branch -> PR, so nothing is lost, but pushing
+  # a throwaway branch expecting a green tick will no longer get one.
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  # Push three times in five minutes and you currently get three full runs,
+  # two of them obsolete before they finish. This collapses them.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Cancel superseded PR runs only. NEVER cancel a master run: that is the
+  # one that executes semantic-release and then publishes to gh-pages, so
+  # killing it midway can leave a version tagged with nothing deployed, or a
+  # release created against a build that never shipped. Master runs queue
+  # behind each other instead.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Only what the coverage comment below needs. Declaring permissions on
+    # this job narrows the default GITHUB_TOKEN scope for it rather than
+    # widening it - every other job keeps the repository default.
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v2
+      # NOTE on Node version: CRA/webpack 4 is gone as of Phase 3a task 4, so
+      # the old Node-16-only build constraint (ERR_PACKAGE_PATH_NOT_EXPORTED
+      # above Node 16 - see Phase 0) no longer exists, and every job in this
+      # workflow now runs on the single version pinned in .nvmrc. That
+      # version floor is set by Vitest, which declares engines.node
+      # "^18.0.0 || >=20.0.0" and crashes immediately on Node 16
+      # (`crypto$2.getRandomValues is not a function`) rather than failing
+      # gracefully - see the Phase 3a plan and task-3 fix report. Node 22 was
+      # walked and verified (lint, typecheck, test, build, L2 replay all
+      # green) before being adopted - see the task-5 report.
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version-file: '.nvmrc'
+          cache: 'npm'
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: |
-            **/node_modules
-            ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
+      # No --legacy-peer-deps: #50 upgraded @sentry/react to v10 and
+      # replaced react-ga with react-ga4, the two packages that used to cap
+      # peer ranges at React 18 and forced this flag on since Phase 3b.
+      # With it gone, npm's peer resolution is back on for every install
+      # in this workflow - which is the point ahead of #49 (router 5 -> 7):
+      # a real peer conflict introduced by that upgrade will now fail loud
+      # here instead of installing silently.
       - name: Install Dependencies
         run: npm ci --prefer-offline
 
       - name: Lint
         run: npm run lint
 
+      # Formatting is no longer enforced by `npm run lint`. #63 removed
+      # eslint-plugin-prettier - running Prettier as an ESLint rule coupled
+      # the two versions together, which is what blocked upgrading either
+      # (see #76) - so Prettier is now its own check and needs its own step.
+      # Without this, the project silently stops checking formatting at all.
+      - name: Format check
+        run: npm run format:check
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
       - name: Test
-        run: npm test
+        # Without an explicit shell:, GitHub Actions runs this under
+        # `bash -e {0}` (no pipefail), so the step's exit status is
+        # tee's (always 0) rather than npm test's - a failing test suite
+        # would go green. `shell: bash` switches Actions' default
+        # invocation to `bash --noprofile --norc -eo pipefail {0}`,
+        # which makes the step fail when npm test does.
+        shell: bash
+        run: npm test 2>&1 | tee test-output.log
 
-      - name: Coverage
-        uses: codecov/codecov-action@v1
+      - name: Write coverage summary
+        if: always()
+        run: |
+          {
+            echo '## Coverage summary'
+            echo
+            echo '```'
+            # The end pattern '^Ran all test suites' is a Jest string that
+            # Vitest never prints, so this range is open-ended in practice:
+            # it runs from the coverage table header to EOF. That is
+            # deliberate, not an accidental leftover from the Jest->Vitest
+            # migration - Vitest prints the coverage table last, after all
+            # test results, so "everything from '^File' to EOF" is exactly
+            # the coverage table on every run. Left unpaired (rather than
+            # invented a Vitest terminator) because there is nothing after
+            # it in test-output.log to accidentally slurp in.
+            sed -n '/^File/,$p' test-output.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Replaces the comment Codecov used to post (#46), using a
+      # first-party action rather than a marketplace one - the whole point
+      # of dropping Codecov was to shrink third-party surface, so pulling in
+      # someone else's coverage-comment action would have traded one
+      # dependency for another.
+      #
+      # This is reporting, not a gate. The gate is `thresholds` in
+      # vite.config.ts, which fails the Test step above before this runs.
+      # `if: always()` is deliberate: on a threshold failure the numbers are
+      # exactly what a reviewer wants to see, so the comment must still post
+      # on a red run. It is scoped to `success() || failure()` rather than a
+      # bare always() so that cancelling the workflow does not still write a
+      # comment.
+      # Replaces the comment Codecov used to post (#46), using a
+      # first-party action rather than a marketplace one - the whole point
+      # of dropping Codecov was to shrink third-party surface, so pulling in
+      # someone else's coverage-comment action would have traded one
+      # dependency for another.
+      #
+      # The logic lives in .github/scripts/coverage-comment.js rather than
+      # inline here, so it is a real file: editable with tooling, diffable,
+      # and runnable outside CI. Only the three objects github-script
+      # injects are passed through. require() resolves relative to the
+      # action's own directory, not the workspace, hence the explicit
+      # GITHUB_WORKSPACE path.
+      #
+      # This is reporting, not a gate. The gate is `thresholds` in
+      # vite.config.ts, which fails the Test step above before this runs.
+      # `success() || failure()` (rather than a bare always()) is
+      # deliberate: on a threshold failure the numbers are exactly what a
+      # reviewer wants, so the comment must still post on a red run - but
+      # cancelling the workflow should not write one.
+      - name: Comment coverage on the PR
+        if: (success() || failure()) && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ${{github.workspace}}/coverage/lcov.info
-          flags: unittests
-          name: icl-calc-tests
-          fail_ci_if_error: true # optional (default = false)
-          verbose: false # optional (default = false)
+          script: |
+            const comment = require(
+              `${process.env.GITHUB_WORKSPACE}/.github/scripts/coverage-comment.js`
+            );
+            await comment({ github, context, core });
 
-      - name: Code Climate
-        uses: paambaati/codeclimate-action@v2.7.5
+  golden-master-guard:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history, not the default shallow clone: the merge-base
+          # comparison below needs it.
+          fetch-depth: 0
+
+      # Design spec section 7.3 (the stop rule) says: "CI enforces the
+      # branch-name condition mechanically, so the fixture cannot drift by
+      # accident." Until this job existed, no such job did - nothing in
+      # this workflow read expected.json or checked for an oracle/ branch
+      # prefix (see the "Correction" note appended to spec 7.3, issue #45).
+      # This is that job.
+      #
+      # Guarded paths: src/golden/expected.json (the golden-master
+      # snapshot itself) and src/data.csv (the 542-row clinical dataset
+      # those values are computed from). A silent edit to the CSV is at
+      # least as dangerous as one to expected.json - it moves the inputs
+      # instead of the outputs - and until this guard existed it was
+      # unprotected by anything except assertions inside the `test` job,
+      # which Critical 1 showed could not fail.
+      - name: Enforce the expected.json / data.csv stop rule (design spec 7.3)
         env:
-          CC_TEST_REPORTER_ID: f2ea7af8e046090fb114aa95b903c3e2980fba5afbbb715cd6cecabd7aba27b3
-        with:
-          coverageLocations: |
-            ${{github.workspace}}/coverage/lcov.info:lcov
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
 
-  deploy:
-    if: github.ref == 'refs/heads/master'
+          MERGE_BASE="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
+
+          # A guarded file can be absent from the merge base rather than
+          # modified in it. That is not hypothetical: the final Phase 5 merge
+          # of `modernize` into `master` is exactly this case, because master
+          # predates Phase 1 and has never carried expected.json. Comparing
+          # naively against the base reports the file as "changed" and blocks
+          # the release - the guard cannot tell "someone edited the fixture"
+          # from "the fixture is arriving here for the first time".
+          #
+          # The fix is a real check, not an exemption. When a guarded file is
+          # absent from the base, compare the incoming version against the
+          # commit that first ADDED it. Identical means it is being
+          # introduced exactly as captured, which is the only legitimate way
+          # for it to appear. Different means it drifted between capture and
+          # here, which is precisely what this job exists to stop, and it
+          # falls through to the failure branch below.
+          CHANGED=""
+          for FILE in src/golden/expected.json src/data.csv; do
+            if git cat-file -e "$MERGE_BASE:$FILE" 2>/dev/null; then
+              if ! git diff --quiet "$MERGE_BASE" "$HEAD_SHA" -- "$FILE"; then
+                CHANGED="$CHANGED$FILE"$'\n'
+              fi
+              continue
+            fi
+
+            ADDED_IN="$(git log --diff-filter=A --format=%H "$HEAD_SHA" -- "$FILE" | tail -1)"
+            if [ -z "$ADDED_IN" ]; then
+              echo "::error::$FILE is absent from the merge base and has no add commit reachable from HEAD. Refusing to guess."
+              CHANGED="$CHANGED$FILE"$'\n'
+            elif git diff --quiet "$ADDED_IN" "$HEAD_SHA" -- "$FILE"; then
+              echo "$FILE is absent from the merge base ($MERGE_BASE) and is being introduced byte-identical to its original capture in $ADDED_IN. OK."
+            else
+              echo "::error::$FILE has drifted since it was captured in $ADDED_IN."
+              CHANGED="$CHANGED$FILE"$'\n'
+            fi
+          done
+          CHANGED="$(printf '%s' "$CHANGED")"
+
+          if [ -z "$CHANGED" ]; then
+            echo "src/golden/expected.json and src/data.csv are intact against the merge base ($MERGE_BASE). OK."
+            exit 0
+          fi
+
+          # Case-sensitive on purpose: 'Oracle/x' or 'ORACLE/x' falls through to
+          # the failure branch below, not this one. That's the fail-safe
+          # direction - don't "fix" it into a case-insensitive match.
+          case "$HEAD_REF" in
+            oracle/*)
+              echo "Guarded file(s) changed on an approved oracle/ branch ('$HEAD_REF'). OK. Changed:"
+              echo "$CHANGED"
+              echo "This still requires the written per-value justification and explicit sign-off spec 7.3 calls for - confirm that happened in review."
+              exit 0
+              ;;
+          esac
+
+          {
+            echo "::error::Guarded golden-master file(s) were modified on branch '$HEAD_REF', which is not an oracle/ branch. Changed:"
+            echo "$CHANGED"
+            echo
+            echo "Design spec section 7.3 (the stop rule):"
+            echo '  "If a value in expected.json moves, work stops. No fixing forward, no'
+            echo '   regenerating the fixture, no assuming it is rounding."'
+            echo "The same rule covers src/data.csv: it is the input the golden master is"
+            echo "computed from, so an undeclared edit there is the same class of risk."
+            echo
+            echo "A deliberate correction to the golden master requires a dedicated oracle/*"
+            echo "branch, a written justification per changed value, and explicit sign-off"
+            echo "before expected.json or data.csv is touched (spec 7.3, 'Deliberate correction')."
+            echo
+            echo "If this diff is a real regression: revert it, don't edit the fixture."
+            echo "If it is a deliberate, reviewed correction to the recorded oracle values:"
+            echo "re-open this change from a branch named oracle/<something>, with that"
+            echo "justification and sign-off recorded in the PR description."
+          } >&2
+          exit 1
+
+  e2e-replay:
     runs-on: ubuntu-latest
     needs: ['test']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # L2 needs a real production build of this branch to replay against,
+      # and Playwright needs Node 18+. Both now run on the single version
+      # pinned in .nvmrc - see the NOTE in the `test` job above. The old
+      # split (Node 16 to build, then Node 20 for Playwright) existed only
+      # because CRA's build required 16 while Playwright required 18+; that
+      # build constraint is gone as of Phase 3a task 4.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            e2e/package-lock.json
+
+      # No --legacy-peer-deps: see the comment on the `test` job's install
+      # step above.
+      - name: Install Dependencies
+        run: npm ci --prefer-offline
+
+      - name: Build
+        run: npm run build
+
+      - name: Install e2e dependencies
+        run: npm ci --prefer-offline
+        working-directory: e2e
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: e2e
+
+      # Subject-only: there is no oracle worktree on a runner, and L2's
+      # replay project doesn't need one - it replays this build's rendered
+      # output against the already-captured src/golden/expected.json. See
+      # the comment in e2e/setup.sh for why the oracle checks stay a loud
+      # failure for the capture/smoke path.
+      - name: e2e setup (subject-only)
+        run: ./setup.sh --subject-only
+        working-directory: e2e
+
+      - name: L2 replay
+        env:
+          SUBJECT_ONLY: '1'
+        run: npm run replay
+        working-directory: e2e
+
+  deploy:
+    # golden-master-guard is pull_request-only (see its own `if:` above), so
+    # on this job's actual trigger - a push to master - it never runs and
+    # its `needs` result is 'skipped', not 'success'. GitHub's default
+    # "run only if every needed job succeeded" rule treats a skipped
+    # dependency the same as a failed one, which would make this job skip
+    # forever if golden-master-guard were added to `needs` unguarded - a
+    # silent, permanent outage of the release path.
+    #
+    # !cancelled() (not always()) is what fixes that without introducing a
+    # worse problem. A plain `if:` gets an implicit success() check, which
+    # also gives it implicit cancellation protection: cancel the run and
+    # success() goes false, so the job auto-skips. always() discards that
+    # protection along with the default-skip behaviour, which would let
+    # this job - semantic-release plus the gh-pages publish, the actual
+    # release of a clinical tool - run to completion even after an
+    # operator hits Cancel workflow. !cancelled() only overrides the
+    # "skip if any dependency didn't succeed" default; it still evaluates
+    # false the moment the run is cancelled, so Cancel workflow remains an
+    # effective stop button here. The explicit needs.*.result checks below
+    # do the rest: block on a real failure of any gate (test, e2e-replay,
+    # or - on the rare path where golden-master-guard did run - a failed
+    # guard), but do not block on golden-master-guard's expected 'skipped'
+    # result on this trigger.
+    if: |
+      !cancelled() &&
+      github.ref == 'refs/heads/master' &&
+      needs.test.result == 'success' &&
+      needs.e2e-replay.result == 'success' &&
+      (needs.golden-master-guard.result == 'success' || needs.golden-master-guard.result == 'skipped')
+    runs-on: ubuntu-latest
+    needs: ['test', 'e2e-replay', 'golden-master-guard']
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v2
+      # See the NOTE in the `test` job above - every job now runs on the
+      # single version pinned in .nvmrc.
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version-file: '.nvmrc'
+          cache: 'npm'
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: |
-            **/node_modules
-            ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      # No --legacy-peer-deps: see the comment on the `test` job's install
+      # step above.
+      - name: Install Dependencies
+        run: npm ci --prefer-offline
 
       - name: Version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
 
+      # No build-time environment is needed. Sentry's DSN is hardcoded in
+      # src/index.tsx (a DSN is public by design and write-only), and this
+      # app ships no analytics - see the Phase 4a note in
+      # docs/modernization-findings.md.
       - name: Build
         run: npm run build
 

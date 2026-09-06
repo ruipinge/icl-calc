@@ -29,9 +29,10 @@ export const TabLinks = () => (
     {LINKS.map((link, index) => (
       <li className="nav-item" key={index}>
         <NavLink
-          exact={true}
-          className="nav-link"
-          activeClassName="active"
+          end={true}
+          className={({ isActive }) =>
+            isActive ? 'nav-link active' : 'nav-link'
+          }
           to={link.to}
         >
           {link.label}
