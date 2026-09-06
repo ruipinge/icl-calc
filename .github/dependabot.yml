@@ -54,6 +54,25 @@ updates:
       - dependency-name: typescript
         versions: ['>=7.0.0']
 
+      # ESLint 10 is blocked by plugins that cap at 9 in their LATEST
+      # published releases, so there is nothing to bump them to:
+      #
+      #   eslint-plugin-jsx-a11y@6.10.2  eslint "^3 || ... || ^9"
+      #   eslint-plugin-react@7.37.5     eslint "^3 || ... || ^9.7"
+      #
+      # eslint-plugin-import was a third such blocker and is now gone,
+      # replaced by eslint-plugin-import-x (#102), whose peer range already
+      # includes 10. The other two have to publish support before eslint 10
+      # can install at all, and until then the grouped bump can only produce
+      # a PR that fails at `npm ci`.
+      #
+      # Same shape as the typescript entry above and for the same reason:
+      # a range rather than update-types, so a future eslint 11 that the
+      # ecosystem does support is not also blocked by this line. Remove it
+      # once both plugins accept 10.
+      - dependency-name: eslint
+        versions: ['>=10.0.0']
+
     # Every install step runs `npm ci` without --legacy-peer-deps, so a
     # peer-linked set that arrives split cannot install. Each group below is
     # one peer edge read out of node_modules, not a guess at what looks
