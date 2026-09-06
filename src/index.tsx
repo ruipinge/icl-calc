@@ -120,6 +120,35 @@ if (import.meta.env.PROD) {
   Sentry.init({
     dsn: 'https://2e937d9ae4044696992e8d4afba8d9b5@o551236.ingest.sentry.io/5674476',
 
+    // Which build an error came from. Without this every event since 2021
+    // lands in one undifferentiated bucket: no "first seen in 1.8.1", no
+    // "regressed in 1.8.4", and no way to confirm a fix actually stopped an
+    // error in the build that shipped it. Sentry's regression detection and
+    // "resolved in next release" workflow key off this field and are inert
+    // without it (#95).
+    //
+    // Version AND commit, not the version alone. `deploy` publishes on every
+    // qualifying push to main while semantic-release bumps only for a
+    // release-triggering commit, so the version does not uniquely identify a
+    // build - that is the whole finding of #94, and tagging Sentry with the
+    // version alone would reproduce it inside Sentry. The commit is exact;
+    // the version is kept alongside it because a bare SHA is unreadable when
+    // triaging.
+    //
+    // Both halves come from vite.config.ts's `define`. When source maps
+    // start being uploaded rather than published (#95 part 2), the release
+    // sentry-cli creates MUST be this same string, derived from the same two
+    // sources - package.json's version and the short GITHUB_SHA. If they
+    // ever diverge, symbolication fails silently.
+    release: `${import.meta.env.VITE_APP_VERSION}+${import.meta.env.VITE_APP_COMMIT}`,
+
+    // Constant today, and deliberately explicit rather than left to the
+    // SDK's default: this init block only runs under `import.meta.env.PROD`
+    // (see the guard above), so the only build that reports to Sentry is the
+    // gh-pages one. Stated so that the field exists if a staging deploy is
+    // ever added, not because it distinguishes anything today.
+    environment: 'production',
+
     // `new Integrations.BrowserTracing()` (the removed @sentry/tracing v6
     // API) is replaced by this function in v10 - confirmed against this
     // installed package's own
