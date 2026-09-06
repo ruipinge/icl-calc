@@ -70,11 +70,14 @@ branch fails the build by design.
 
 ### Commits and releases
 
-Commits follow [Conventional Commits](https://www.conventionalcommits.org/).
+Commits follow [Conventional Commits](https://www.conventionalcommits.org/),
+with two exceptions noted below where this project's configuration does not
+implement that spec.
+
 `semantic-release` reads them on every push to `main` and cuts a version only
-for `feat:` (minor), `fix:`, `perf:`, `revert:` (patch), and breaking changes
-(major). Everything else — `ci:`, `chore:`, `docs:`, `style:`, `refactor:`,
-`test:`, `build:` — still deploys, but produces no new version.
+for `feat:` (minor), `fix:` and `perf:` (patch), and breaking changes (major).
+Everything else — `ci:`, `chore:`, `docs:`, `style:`, `refactor:`, `test:`,
+`build:` — still deploys, but produces no new version.
 
 **Label a commit by what it ships, not by what it touches.** The deciding
 question is whether the change alters what a clinician's browser loads. If it
@@ -90,9 +93,26 @@ time, which is why it is written down here.
 
 The version tracks **the product a clinician sees, not the toolchain
 underneath it**. A major is reserved for the Treeye UI/UX reskin. Never add a
-breaking-change footer (a line-initial `BREAKING CHANGE:` in the body, or a
-`!` after the type) unless a major is genuinely intended — the footer alone is
-enough to force one.
+line-initial `BREAKING CHANGE:` footer to a commit body unless a major is
+genuinely intended — that footer alone is enough to force one.
+
+**Two things Conventional Commits describes that this configuration does not
+do.** Both were verified by running the installed commit-analyzer plugin
+against these exact message shapes, not read from documentation:
+
+- **A `!` suffix does not mark a breaking change here — it cancels the release
+  entirely.** `feat!: …` produces *no version at all*, not a major and not
+  even the minor `feat:` would have given. The default `angular` preset reads
+  the type as `feat!`, which matches no release rule. Use the
+  `BREAKING CHANGE:` footer, which does work. This matters because the
+  Conventional Commits spec linked above presents `!` as the short form, so
+  following it here silently discards the release.
+- **`revert:` as a type cuts nothing.** Only a git-generated revert — subject
+  `Revert "…"` with `This reverts commit <sha>.` in the body, which
+  `git revert` writes for you — is recognised, and it cuts a patch.
+
+Neither syntax appears anywhere in this repository's history, so nothing has
+been lost to them; they are recorded so the first use is not the discovery.
 
 Because judgement can still be wrong, every deployed bundle names the commit
 it was built from: the footer renders the version *and* the short SHA, linked
