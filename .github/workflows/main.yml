@@ -390,17 +390,56 @@ jobs:
       # would commit the bumped package.json back to this branch, and a
       # protected default branch can reject its own release commit and break
       # every subsequent deploy. The accepted cost is that the version
-      # committed in git stays behind the released version; the git tag, the
-      # GitHub release and the deployed footer remain correct.
+      # committed in git stays behind the released version.
+      #
+      # That cost was understated: it reaches the artifact, not just the
+      # repository. semantic-release only rewrites package.json when it
+      # actually cuts a release, so on a ci:/chore: push - which still
+      # deploys - the build falls back to the committed version and the
+      # footer reports it. Observed live: the vite 8 upgrade (chore:, no
+      # release) shipped reporting v1.8.3 while the current release was
+      # v1.9.0, so the footer's version link pointed two releases back. The
+      # version does not merely lag, it oscillates: correct after a
+      # releasing commit, stale on the next non-releasing one. The step
+      # below fixes that at the source rather than by restoring the plugin
+      # and its protection bypass.
       - name: Decide the next version, tag it and cut the GitHub release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
 
-      # No build-time environment is needed. Sentry's DSN is hardcoded in
-      # src/index.tsx (a DSN is public by design and write-only), and this
-      # app ships no analytics - see the Phase 4a note in
-      # docs/modernization-findings.md.
+      # The version the build should report, taken from the release tags
+      # rather than the committed package.json, which is frozen at whatever
+      # was committed when @semantic-release/git was removed.
+      #
+      # Correct in both cases by construction. If semantic-release just cut
+      # a release, its tag is the highest and matches the package.json it
+      # rewrote. If it cut nothing, the highest tag is still the release
+      # this build descends from, while package.json is stale. So the
+      # highest tag is right either way, and no branching is needed.
+      #
+      # Tags are re-fetched because actions/checkout does not fetch them by
+      # default, and filtered to `v*` because this repo also carries the
+      # annotated `golden-master-oracle` tag, whose ordering under
+      # `-v:refname` is not something to depend on. `--sort` is used rather
+      # than `git describe`, which needs commit ancestry this shallow
+      # checkout does not have.
+      - name: Resolve the version this build should report
+        run: |
+          git fetch --tags --force --quiet
+          version="$(git tag --list 'v*' --sort=-v:refname | head -n 1)"
+          version="${version#v}"
+          if [ -z "$version" ]; then
+            version="$(node -p "require('./package.json').version")"
+            echo "No v* tag found; falling back to package.json: $version"
+          fi
+          echo "APP_VERSION=$version" >> "$GITHUB_ENV"
+          echo "This build will report version $version"
+
+      # No build-time environment is needed beyond APP_VERSION above.
+      # Sentry's DSN is hardcoded in src/index.tsx (a DSN is public by
+      # design and write-only), and this app ships no analytics - see the
+      # Phase 4a note in docs/modernization-findings.md.
       - name: Build the bundle at the version just released
         run: npm run build
 
