@@ -20,7 +20,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.3",
-    "yup": "^0.32.9"
+    "yup": "^1.7.1"
   },
   "scripts": {
     "start": "vite",
