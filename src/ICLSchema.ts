@@ -54,9 +54,9 @@ const formatError = (min: number, max: number) =>
 const formatPosteriorError = (min: number, max: number) =>
   `${formatError(min, max)} or 0 if not measured.`;
 
-const isUnmeasuredOrInRange = (min: number, max: number) => (
-  value: number | undefined
-) => value === undefined || value === 0 || (value >= min && value <= max);
+const isUnmeasuredOrInRange =
+  (min: number, max: number) => (value: number | undefined) =>
+    value === undefined || value === 0 || (value >= min && value <= max);
 
 export const ICLSchema = Yup.object().shape({
   patient: Yup.object().shape({
