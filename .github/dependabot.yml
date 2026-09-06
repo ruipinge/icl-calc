@@ -39,6 +39,21 @@ updates:
       # that stops being true, this entry is the first thing to revisit.
       - dependency-name: prettier
 
+      # TypeScript 7 (the native port) has nothing in the lint toolchain that
+      # can accept it: typescript-eslint@8.69.0 is the latest release and
+      # peers typescript ">=4.8.4 <6.1.0", with no newer line published
+      # (its only other dist-tag is canary 8.69.1-alpha.0, still 8.x).
+      # Proposing the bump just produces a group PR that cannot install, so
+      # it is ignored until typescript-eslint gains a supporting release.
+      #
+      # A range, not `update-types: semver-major`: that would also block
+      # TypeScript 6, which "<6.1.0" explicitly admits. Only 7 and above are
+      # unsupported, so only 7 and above are ignored. Remove this entry when
+      # typescript-eslint's peer range moves; it is the whole reason it
+      # exists. See #102, which tracks the sibling block on eslint 10.
+      - dependency-name: typescript
+        versions: ['>=7.0.0']
+
     # Every install step runs `npm ci` without --legacy-peer-deps, so a
     # peer-linked set that arrives split cannot install. Each group below is
     # one peer edge read out of node_modules, not a guess at what looks
