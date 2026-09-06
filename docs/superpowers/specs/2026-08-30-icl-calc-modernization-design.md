@@ -243,7 +243,7 @@ Each phase is one GitHub issue, one worktree, one branch, one pull request into
 | 3c | Router 5 → 7 | **As implemented:** `Switch`→`Routes` with `element` props, `NavLink` `exact`/`activeClassName`→`end`/`className` callback, `@types/react-router-dom` removed (v7 ships its own), and a `path="*"` catch-all. **No redirect shim** — v7 normalises a missing leading slash itself, so it would have been dead code; tests hold that behaviour instead. See §6.4. | `expected.json` unchanged; tests proving legacy `#matrix` still resolves, each proven capable of failing |
 | 4a | Telemetry | **As implemented:** Sentry `6.2.2`→`10.73` kept and scrubbed; `react-ga`, `GoogleAnalytics.ts` and `web-vitals` removed; `dependencies`/`devDependencies` split fixed. (Originally "remove Sentry too"; see §9.) | `expected.json` unchanged; the only third-party network requests are Sentry's |
 | 4b | Replace amCharts | **As implemented:** hand-rolled SVG histogram over the L1-locked `HISTOGRAM_DATA`; `@amcharts/amcharts4` removed; the three tests amCharts blocked under jsdom un-skipped and both coverage exclusions dropped. The chart measures its container rather than scaling a viewBox — see §6.5. | `expected.json` and the `HISTOGRAM_DATA` snapshot unchanged; visual review against `docs/histogram-reference/` |
-| 5 | Ship | Final PR `modernize` → master; semantic-release fires; gh-pages republishes | L2 replayed against the **new live URL** post-deploy; oracle retired only then |
+| 5 | Ship | Final PR `modernize` → master as a **merge commit** (semantic-release reads every phase commit); gh-pages republishes | Dry-run confirms **1.8.0** *before* merging; L2 replayed against the **new live URL** post-deploy; oracle **kept**, tagged `golden-master-oracle` |
 
 Ordering: 0 → 1 are strictly sequential and everything depends on them. 2a → 2b
 follow. 3a → 3b → 3c are strictly sequential so each blast radius is isolated.
@@ -321,7 +321,7 @@ that can cause them**, so that "the golden master is green" is never read as
   own test, §6.1, covers the shim mechanically; this is the manual
   confirmation that a real old-style bookmark still works end to end).
 
-### 6.3 Versioning (recorded Phase 3a, Task 1; version target confirmed by owner)
+### 6.3 Versioning (recorded Phase 3a; target revised by owner, Phase 5)
 
 `semantic-release` runs in the `deploy` job of `.github/workflows/main.yml`,
 master-only, gated behind `test`, `e2e-replay` and `!cancelled()` (§6, §7.1).
@@ -342,43 +342,55 @@ worth rewriting history over; from here, tooling commits should use `ci:` or
 `chore(ci):` so the version continues to track user-facing change, not build
 plumbing.
 
-**Agreed target: 2.0.0, decided deliberately, not provisional.** The owner
-has confirmed this. The declaration point is Phase 3c (issue #49), where the
-genuine breaking change lives: `hashType="noslash"` does not exist in
-react-router 6/7 (§6.1), so hash URLs move from `#matrix` to `#/matrix`. Even
-with the redirect shim in place, this breaks every bookmarked or shared deep
-link that predates it. But the version target is not decided on that break
-alone — it is decided on the shape of the whole programme: build tool
-(CRA → Vite), runtime (React 17 → 19), chart library (amCharts → hand-rolled
-SVG) and telemetry (Sentry/GA removed) all change across Phases 3–4b. For a
-clinical tool, a major version bump is the correct signal for that: it tells
-the owner, and anyone auditing a deploy, to re-verify rather than assume
-continuity with 1.x behaviour.
+**Target reversed to 1.8.0 by the owner (6 September 2026), immediately
+before the Phase 5 merge.** The earlier decision, recorded below as it stood,
+was 2.0.0. The reasoning for the reversal: *"only the tech stack modernizing
+should be a minor bump, not a major. major will only be when we redo the look
+and feel to match the new treeye website ui/ux scheme."*
 
-**Mechanically, the commit that lands the router migration needs
-`BREAKING CHANGE:` in its footer, or `!` after the type** — that is the only
-mechanism in this pipeline capable of producing a major bump.
+That is a coherent versioning policy and worth stating as one: **this
+project's version tracks the product a clinician sees, not the toolchain
+underneath it.** Every phase of this programme was explicitly designed to
+change nothing a clinician sees — that is what the golden master exists to
+prove, and it held through all of it. A major bump would have signalled a
+discontinuity that deliberately does not exist. The major is reserved for the
+Treeye UI/UX reskin, which will be a real discontinuity.
 
-**This must survive squash-merging.** Per §7.2, each phase branch is
-squash-merged into `modernize`, and semantic-release reads commit history on
-`master` after the final `modernize` → master merge (§7.2 step 7) — the
-squash commit message is what it actually sees, not the individual commits
-authored on the Phase 3c branch. Writing `BREAKING CHANGE:`/`!` on a commit
-partway through the Phase 3c branch and losing it when that branch is
-squashed into one `modernize` commit would silently revert the target to
-1.8.0. The footer must be present in **the Phase 3c squash commit message
-itself** — this is the one place it is easy to write correctly on a branch
-and lose at merge time, so it needs a deliberate check during Phase 3c's
-squash-merge step, not an assumption that it carried over.
+**Superseded reasoning, kept as the record:** the earlier argument was that
+the breadth of change — build tool (CRA → Vite), runtime (React 17 → 19),
+chart library (amCharts → hand-rolled SVG), telemetry, router — warranted a
+major on its own, as a signal to re-verify rather than assume continuity.
+The counter-argument that won is that "re-verify" is exactly what the golden
+master already did, mechanically and per-phase.
+
+**Two user-visible breaks exist and are documented rather than versioned.**
+Neither is hidden by shipping 1.8.0, and both are recorded here and in
+`docs/modernization-findings.md`:
+
+- **Hash URLs moved from `#matrix` to `#/matrix`** (§6.4). Old bookmarks
+  still resolve — react-router 7 prefixes a missing leading slash itself, and
+  tests hold that behaviour — so nothing breaks in practice.
+- **The build is ESM-only, targeting chrome87 / edge88 / firefox78 /
+  safari14.** Below that floor the app renders blank rather than degrading.
+  This is the sharper of the two, and the one a reader might reasonably have
+  expected a major for.
+
+**Mechanically, this means the merge commit must NOT carry a
+`BREAKING CHANGE:` footer or a `!` type suffix.** Verified empirically on
+2026-09-06 against the real integrated history: with no such footer,
+semantic-release analyses 15 commits and reports `minor release` →
+**1.8.0**; adding `BREAKING CHANGE:` to the merge commit body alone flips it
+to `major release` → 2.0.0. So the footer is both sufficient and necessary,
+and its *absence* is now the thing to verify, not its presence.
 
 **Phase 5 must verify the computed version before releasing, not after.**
 Before merging `modernize` → `master`, run `npx semantic-release --dry-run`
-against the merge commit and confirm it reports **2.0.0**. If it reports
-1.8.0 instead, the breaking-change declaration was lost somewhere between
-Phase 3c and the final merge, and the fix (amend the merge commit's message,
-or the relevant squash commit, before the real run) is cheap at that point
-and awkward once the real `deploy` job has already cut the tag, written the
-GitHub release and republished `gh-pages`.
+against the merge commit and confirm it reports **1.8.0**. If it reports
+2.0.0 instead, a `BREAKING CHANGE:` footer or `!` suffix has crept into the
+merge commit or one of the phase squashes, and the fix (amend the message
+before the real run) is cheap at that point and awkward once the real
+`deploy` job has already cut the tag, written the GitHub release and
+republished `gh-pages`.
 
 ---
 
@@ -459,6 +471,34 @@ root cause.
 Under jsdom there is no `ResizeObserver` and `getBoundingClientRect` returns 0,
 so the component falls back to a nominal width and renders fully. That fallback
 is what makes the Normality tab testable at all.
+
+### 6.6 The oracle is kept, not retired
+
+Phase 5 originally planned to retire the frozen oracle worktree once the
+post-deploy L2 replay passed. The owner reversed that on 6 September 2026:
+keep both the worktree and the `gh-pages` history, tagged and documented.
+
+It is tagged **`golden-master-oracle`**, an annotated tag on `gh-pages@789ac2d`
+— the build from app commit `2436da4`, authored 2 December 2021, and the last
+published state before this migration republished the site.
+
+The reasoning is that a reference costs nothing to keep and is unreproducible
+once gone. Everything needed to rebuild it — Create React App 4, the pinned
+Node 14 toolchain, the exact dependency resolutions of December 2021 — is
+either retired or no longer installable. If a clinical number is ever
+disputed, this is the only artifact that can settle it independently of the
+code that computes the answer today.
+
+Recreate the worktree with:
+
+```bash
+git worktree add ../icl-calc-oracle golden-master-oracle
+```
+
+The tag also preserves `2026-07-08/index.html`, Treeye vision notes that had
+been committed straight to `gh-pages`. They are backed up in the `treeye` repo
+at `docs/meeting-notes-2026-07-08.html` — verified byte-identical by SHA-256
+before the deploy removed them from the live site.
 
 ## 7. Process
 
