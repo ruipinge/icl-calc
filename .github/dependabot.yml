@@ -1,0 +1,139 @@
+# Dependency maintenance. See #92.
+#
+# Three things are watched: the app at the repo root, the golden-master e2e
+# harness (which has its own lockfile and was previously unwatched), and the
+# actions used by .github/workflows/main.yml.
+#
+# Every group is declared twice, once per `applies-to`. `groups` defaults to
+# version updates alone, and the bump that broke #89 was a *security* update,
+# so the security half is the half that matters here.
+
+version: 2
+
+updates:
+  # --------------------------------------------------------------- root npm
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/London
+    open-pull-requests-limit: 5
+    commit-message:
+      # Produces `build(deps):` and `build(deps-dev):`. Neither cuts a
+      # release: only feat, fix, perf, revert and breaking changes do.
+      # Verified by running the installed @semantic-release/commit-analyzer
+      # against these exact message shapes.
+      prefix: build
+      prefix-development: build
+      include: scope
+    ignore:
+      # Pinned exactly on purpose (#76) so formatting is reproducible across
+      # machines and CI. Upgrade it deliberately, never on a schedule.
+      - dependency-name: prettier
+
+    # Every install step runs `npm ci` without --legacy-peer-deps, so a
+    # peer-linked set that arrives split cannot install. Each group below is
+    # one peer edge read out of node_modules, not a guess at what looks
+    # related:
+    #
+    #   @vitest/coverage-v8 peers vitest at an exact version, and
+    #   @vitejs/plugin-react peers vite "^4.2.0 || ^5 || ^6 || ^7".
+    #   typescript-eslint peers eslint "^8.57 || ^9 || ^10" and typescript
+    #   ">=4.8.4 <6.1.0", so typescript belongs here rather than alone.
+    #   @testing-library/react peers react, react-dom, @types/react and
+    #   @types/react-dom at "^18 || ^19", plus @testing-library/dom "^10",
+    #   and @sentry/react peers react "^16.14.0 || 17.x || 18.x || 19.x",
+    #   so the Sentry SDK travels with React whether or not it stays (#42).
+    groups:
+      vite-vitest:
+        patterns:
+          - vite
+          - '@vitejs/*'
+          - vitest
+          - '@vitest/*'
+      vite-vitest-security:
+        applies-to: security-updates
+        patterns:
+          - vite
+          - '@vitejs/*'
+          - vitest
+          - '@vitest/*'
+
+      eslint:
+        patterns:
+          - eslint
+          - 'eslint-*'
+          - '@eslint/*'
+          - typescript-eslint
+          - '@typescript-eslint/*'
+          - typescript
+          - globals
+      eslint-security:
+        applies-to: security-updates
+        patterns:
+          - eslint
+          - 'eslint-*'
+          - '@eslint/*'
+          - typescript-eslint
+          - '@typescript-eslint/*'
+          - typescript
+          - globals
+
+      react:
+        patterns:
+          - react
+          - react-dom
+          - '@types/react'
+          - '@types/react-dom'
+          - '@testing-library/*'
+          - '@sentry/*'
+      react-security:
+        applies-to: security-updates
+        patterns:
+          - react
+          - react-dom
+          - '@types/react'
+          - '@types/react-dom'
+          - '@testing-library/*'
+          - '@sentry/*'
+
+  # ---------------------------------------------------------------- e2e npm
+  # The golden-master capture/replay harness is deliberately separate from the
+  # app's dependency tree and keeps its own lockfile. Two direct dependencies,
+  # neither peer-linked to the other, so nothing to group.
+  - package-ecosystem: npm
+    directory: /e2e
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/London
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: build
+      prefix-development: build
+      include: scope
+
+  # --------------------------------------------------------- github-actions
+  # Four actions, bumped once already in #74 and free to drift again. Monthly
+  # and grouped, so they arrive as one reviewable PR rather than four.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+      time: '06:00'
+      timezone: Europe/London
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: ci
+      include: scope
+    groups:
+      actions:
+        patterns:
+          - '*'
+      actions-security:
+        applies-to: security-updates
+        patterns:
+          - '*'
