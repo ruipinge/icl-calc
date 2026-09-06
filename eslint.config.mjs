@@ -15,7 +15,7 @@ import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
-import importPlugin from 'eslint-plugin-import';
+import importX from 'eslint-plugin-import-x';
 import globals from 'globals';
 import testingLibrary from 'eslint-plugin-testing-library';
 import vitest from '@vitest/eslint-plugin';
@@ -42,7 +42,7 @@ export default [
       react,
       'react-hooks': reactHooks,
       'jsx-a11y': jsxA11y,
-      import: importPlugin
+      'import-x': importX
     },
     settings: {
       react: {
@@ -285,11 +285,17 @@ export default [
       ],
       '@typescript-eslint/no-useless-constructor': ['warn'],
 
-      // --- import (4) ---
-      'import/first': ['error'],
-      'import/no-amd': ['error'],
-      'import/no-anonymous-default-export': ['warn'],
-      'import/no-webpack-loader-syntax': ['error']
+      // --- import-x (4) ---
+      // eslint-plugin-import-x, not eslint-plugin-import: the original's
+      // latest release (2.32.0) peers eslint "^2 || ... || ^9" and has no
+      // successor, so it pinned eslint at 9 (#102). The fork carries the
+      // same four rules under an `import-x/` prefix. Each is demonstrated
+      // failing and then passing in that PR - a clean lint run proves
+      // nothing here, because a half-renamed rule silently enforces less.
+      'import-x/first': ['error'],
+      'import-x/no-amd': ['error'],
+      'import-x/no-anonymous-default-export': ['warn'],
+      'import-x/no-webpack-loader-syntax': ['error']
     }
   },
   {
