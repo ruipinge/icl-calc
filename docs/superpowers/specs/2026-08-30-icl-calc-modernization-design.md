@@ -447,6 +447,31 @@ Two changes were made, and three alternatives rejected:
   stands, and once the bundle carries its own SHA the committed-`package.json`
   drift no longer obscures which build is live.
 
+**Annotated 6 September 2026 (#92, semantic-release 17 -> 25).** The paragraph
+above beginning "Mechanically, this means" is half wrong, and the wrong half
+is the dangerous half. Verified by running the installed commit-analyzer
+against each message shape rather than by reading documentation:
+
+- The **`BREAKING CHANGE:` footer works as described.** A line-initial footer
+  in a commit body cuts a major. That warning stands, and it is the one that
+  has already caught someone out once.
+- A **`!` type suffix does not force a major. It cancels the release.**
+  `feat!: …` yields *no version at all* - not a major, and not even the minor
+  that `feat:` alone would have produced. The `angular` preset parses the type
+  as `feat!`, which matches no release rule, so the commit falls through
+  every rule silently. Recorded here because §6.3 currently presents `!` as a
+  way to *cause* a major, and someone acting on that sentence to signal a
+  breaking change would instead ship nothing.
+- Relatedly, **`revert:` as a commit type cuts nothing** either, though the
+  version notes list it among the release-triggering types. Only a
+  git-generated revert - the subject `Revert "..."` with a body line reading
+  `This reverts commit <sha>.` - is recognised, and it cuts a patch.
+
+Neither syntax appears in this repository's 132 commits, so nothing has been
+lost to them. They are recorded so that the first use is not also the
+discovery. The same corrections are in README's "Commits and releases", which
+is where a contributor will actually look.
+
 ---
 
 ### 6.4 Why 3c ships no redirect shim
