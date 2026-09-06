@@ -1,6 +1,4 @@
-import raw from 'raw.macro';
-
-const CSV = raw('./data.csv');
+import CSV from './data.csv?raw';
 
 export interface DataPoint {
   age: number;

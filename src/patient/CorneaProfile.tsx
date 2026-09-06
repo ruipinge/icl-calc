@@ -83,6 +83,7 @@ export const CorneaProfile = ({
         <div className="input-group">
           <Field
             as="select"
+            id="corneaProfile.previousSurgery"
             name="corneaProfile.previousSurgery"
             className="form-control"
           >
