@@ -1,8 +1,33 @@
 name: main
 
 on:
+  # `push:` is scoped to master, not left bare. Bare, it fires on every
+  # branch - so every push to a PR branch ran this whole workflow TWICE,
+  # once for the push and once for the pull_request, building the app and
+  # driving a real browser both times for an identical result. The push run
+  # produced nothing the PR run did not: golden-master-guard is
+  # pull_request-only and deploy is master-only, so it was a duplicate of
+  # exactly the expensive half.
+  #
+  # Master still needs the push trigger - that is what runs deploy.
+  #
+  # Trade accepted: a branch with no PR open now gets no CI. The workflow
+  # here is always worktree -> branch -> PR, so nothing is lost, but pushing
+  # a throwaway branch expecting a green tick will no longer get one.
   push:
+    branches: [master]
   pull_request:
+
+concurrency:
+  # Push three times in five minutes and you currently get three full runs,
+  # two of them obsolete before they finish. This collapses them.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # Cancel superseded PR runs only. NEVER cancel a master run: that is the
+  # one that executes semantic-release and then publishes to gh-pages, so
+  # killing it midway can leave a version tagged with nothing deployed, or a
+  # release created against a build that never shipped. Master runs queue
+  # behind each other instead.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
