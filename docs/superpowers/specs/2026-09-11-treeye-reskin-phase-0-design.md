@@ -84,7 +84,8 @@ stay exactly as they are. The single exception is §7.1's gh-pages stopgap.
 
 Explicitly out of scope, and not to be "helpfully" fixed:
 
-- **Any visual change.** This phase is `chore:`/`test:`/`ci:` only.
+- **Any visual change.** This phase is `chore:`/`test:`/`ci:` only, with the
+  single documented exception below.
 - **`src/golden/expected.json`, `src/data.csv`** — CI-protected (§7.3 of the
   modernization spec). Nothing here touches rendering, so L2 stays green
   throughout. If it goes red, the test refactor is wrong, not the fixture.
@@ -96,6 +97,41 @@ Explicitly out of scope, and not to be "helpfully" fixed:
   which marks an unwritten clinical safety warning and must not be deleted.
 - **Automatic pruning of accumulated gh-pages bundles** (§7.1).
 - **#65** (input presets) — rides at the end of phase 1, not here.
+
+### 3.1 The one exception: #129
+
+Phase 0 was scoped to touch no source. It touches exactly two lines, in
+`src/patient/FieldWithUnit.tsx`, and this section records why rather than
+leaving the spec contradicting the work.
+
+`FieldWithUnit` renders `<label htmlFor={name + 'field'}>` but never set that
+id on either the `<Field>` or the disabled `<input>`, so the label was
+associated with nothing. It affects **23 of the 27 inputs on the Patient tab**
+— Biometry 6, CorneaProfile 9, ICLPower 4, SpectacleRefraction 4. `Info`'s four
+carry explicit ids and are unaffected.
+
+It is in scope for two reasons:
+
+- **It blocks the agreed strategy.** Neither `getByLabelText` nor
+  `getByRole(…, { name })` can reach those inputs, and the alternative,
+  `container.querySelector('input[name=…]')`, is what `testing-library/
+  no-node-access` forbids here. §4 cannot be applied to the clinical form
+  without it.
+- **It is a real defect in a clinical tool**, independent of the reskin: a
+  screen reader announces 23 numeric surgical-planning inputs unlabelled.
+
+It satisfies the phase's actual invariant — **zero visual impact** — because an
+`id` attribute renders nothing, and L2 is unaffected because `e2e/lib/app.ts`
+locates fields by `input[name="…"]`. Verified: L2 green, coverage unchanged,
+golden master untouched.
+
+It lands as its own pull request ahead of the conversions (§9), so the source
+change is reviewed on its own rather than inside a test refactor.
+
+The snapshot move it causes is **147 insertions, 0 deletions**, every changed
+line an added `id="…field"` attribute. That the ICLContainer snapshot already
+recorded 138 `for="…field"` attributes while asserting nothing about any of
+them is §4's argument made by the fixtures themselves.
 
 ---
 
@@ -510,6 +546,7 @@ watching each land before the next.
 | # | Branch | Scope |
 |---|---|---|
 | 1 | `docs/121-phase-0-spec` | this document |
+| 1b | `fix/129-fieldwithunit-label-association` | #129, the §3.1 exception — merged alone, ahead of the conversions |
 | 2 | `test/121-snapshot-strategy-shell-and-forms` | NavBar, TabLinks, Footer, Info, CorneaProfile — establishes the pattern (~658 snap lines) |
 | 3 | `test/121-snapshot-strategy-tables` | matrix ×4, regression (~1,296 lines) |
 | 4 | `test/121-snapshot-strategy-charts` | normality index, Gauge — geometry (~2,601 lines) |
