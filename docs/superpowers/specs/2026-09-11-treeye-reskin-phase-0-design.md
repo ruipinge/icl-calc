@@ -196,6 +196,12 @@ line. This is checked by running coverage before and after, not assumed.
 No threshold is lowered. If coverage drops, the cause is understood before
 anything else happens.
 
+Measured 11 September 2026: current coverage is **exactly** the floor on all
+four metrics (98.96 / 98.11 / 99.39 / 99.13 — 477/482, 104/106, 163/164,
+457/461). There is no headroom whatsoever, so a single uncovered statement fails
+CI. This makes the "delete no render" rule above a hard constraint rather than
+a precaution.
+
 ### 4.6 What #65 needs, and what it loses
 
 Form values remain visible to tests, and become more so: `getByLabelText('Name')
@@ -411,14 +417,51 @@ pull request descriptions for #122.
 Every new or changed test is proven capable of failing. Both directions are
 reported, with real output, per this repository's standing rule.
 
-### 8.1 The gate #121 sets
+### 8.1 The measured baseline
+
+Taken on 11 September 2026 in a throwaway worktree at `d2a94df`, before any
+conversion. Baseline suite: **26 files, 211 tests, all green**, coverage exactly
+**98.96 / 98.11 / 99.39 / 99.13** — identical to the floors, so there is *zero*
+headroom and any coverage loss at all fails CI.
+
+**Measurement A — two class names.** `btn-danger` → `btn-primary` in `NavBar`,
+and `text-right` → `text-end` (the real Bootstrap 4→5 rename) everywhere in
+`.tsx`:
+
+```
+13 source lines changed, 7 files
+  -> 15 tests failed across 9 of 26 files, every failure a snapshot
+  -> 898 lines of fixture diff (449 added, 449 deleted), 9 files
+```
+
+**69× amplification** from the smallest edit representative of the reskin.
+
+**Measurement B — the whole class vocabulary.** Every literal `className` token
+in every `.tsx` prefixed, simulating adoption of a different design system's
+vocabulary without touching structure:
+
+```
+150 source lines changed, 16 files
+  -> 2,916 lines of fixture diff (1,458 added, 1,458 deleted), 12 files
+  -> after `npm test -u`: 26 files, 211 tests, ALL PASS
+```
+
+That last line is the argument for this phase, stated as a fact rather than a
+worry: **a wholesale change of every class name in the application regenerates
+clean and no test notices.** The fixtures are not protecting anything a reskin
+can break; they are only large enough to hide what it does break.
+
+Both figures are floors, not estimates. #122 also removes element nesting — the
+`.row` / `.col-md-4` / `.form-group` wrappers — which reindents subtrees that
+neither measurement touched.
+
+### 8.2 The gate #121 sets
 
 Run on a throwaway commit that never reaches a pull request:
 
-1. **Class-name-only edit** — change a Bootstrap class in `NavBar.tsx` and the
-   `text-right` on a Matrix cell. Measured **before** the conversion as the
-   baseline diff size, and **after**, where the expectation is zero failing
-   tests and a zero-line fixture diff.
+1. **Class-name-only edit** — repeat measurements A and B above. The expectation
+   after conversion is zero failing tests and a **zero-line** fixture diff,
+   against the 898 and 2,916 recorded here.
 2. **Behavioural change, two mutations**, because they fail differently:
    - reorder two fields in `CorneaProfile` — must fail on **structure**;
    - change a rendered clinical value's rounding in a Matrix row — must fail on
@@ -428,7 +471,7 @@ Run on a throwaway commit that never reaches a pull request:
 4. **Visual coverage** — change a colour and a spacing value in `App.scss`, see
    the screenshot assertions go red, restore, see green.
 
-### 8.2 Standing verification, every pull request
+### 8.3 Standing verification, every pull request
 
 ```
 npm run lint
@@ -512,7 +555,7 @@ request body never becomes the commit body: semantic-release reads it.
 |---|---|
 | Golden master moves | Out of scope by construction (§3, §4.1). L2 green throughout. Red means the refactor is wrong; no fixing forward, no regenerating. A deliberate correction needs an `oracle/*` branch and per-value justification (§7.3 of the modernization spec). |
 | Coverage floors trip | §4.5 — no render is deleted; coverage measured before and after; no floor lowered. |
-| Two L2 replays concurrently | §8.2 — the visual project runs sequentially inside `e2e-replay`, not as a parallel job. |
+| Two L2 replays concurrently | §8.3 — the visual project runs sequentially inside `e2e-replay`, not as a parallel job. |
 | `keep_files` edits the production deploy | §7.1 — its own pull request, merged alone and watched. |
 | Cloudflare preview URL is unstable | §7.2 — `--branch` passed explicitly; hostname confirmed against the first real deployment. |
 | `noindex` leaks into production | §7.3 — `_headers` at the upload root, never `index.html`. #126 tracks re-enabling. |
