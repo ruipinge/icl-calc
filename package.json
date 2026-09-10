@@ -76,7 +76,7 @@
     "globals": "^17.12.0",
     "jsdom": "^30.0.1",
     "prettier": "3.9.6",
-    "sass": "^1.32.8",
+    "sass": "^1.104.0",
     "semantic-release": "^25.0.9",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.69.0",
