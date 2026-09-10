@@ -51,6 +51,7 @@ export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
         <div className="input-group">
           {disabled ? (
             <input
+              id={name + 'field'}
               name={name}
               value={value}
               className="form-control text-right"
@@ -59,6 +60,7 @@ export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
           ) : (
             <Field
               type="number"
+              id={name + 'field'}
               name={name}
               className={getClassName({
                 error: error,
