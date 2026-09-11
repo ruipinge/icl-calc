@@ -3670,6 +3670,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.atafield"
                   name="biometry.ata"
                   type="number"
                   value="0"
@@ -3705,6 +3706,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.wtwfield"
                   name="biometry.wtw"
                   type="number"
                   value="0"
@@ -3740,6 +3742,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.clrfield"
                   name="biometry.clr"
                   type="number"
                   value="0"
@@ -3775,6 +3778,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acdfield"
                   name="biometry.acd"
                   type="number"
                   value="0"
@@ -3810,6 +3814,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acanfield"
                   name="biometry.acan"
                   type="number"
                   value="0"
@@ -3845,6 +3850,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acatfield"
                   name="biometry.acat"
                   type="number"
                   value="0"
@@ -3891,6 +3897,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kaffield"
                   name="corneaProfile.kaf"
                   type="number"
                   value="0"
@@ -3926,6 +3933,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisaffield"
                   name="corneaProfile.axisaf"
                   type="number"
                   value="0"
@@ -3961,6 +3969,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kasfield"
                   name="corneaProfile.kas"
                   type="number"
                   value="0"
@@ -3996,6 +4005,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisasfield"
                   name="corneaProfile.axisas"
                   type="number"
                   value="0"
@@ -4031,6 +4041,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpffield"
                   name="corneaProfile.kpf"
                   type="number"
                   value="0"
@@ -4066,6 +4077,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispffield"
                   name="corneaProfile.axispf"
                   type="number"
                   value="0"
@@ -4101,6 +4113,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpsfield"
                   name="corneaProfile.kps"
                   type="number"
                   value="0"
@@ -4136,6 +4149,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispsfield"
                   name="corneaProfile.axisps"
                   type="number"
                   value="0"
@@ -4171,6 +4185,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.cctfield"
                   name="corneaProfile.cct"
                   type="number"
                   value="0"
@@ -4256,6 +4271,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.spherefield"
                   name="spectacleRefraction.sphere"
                   type="number"
                   value="0"
@@ -4291,6 +4307,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.cylindrefield"
                   name="spectacleRefraction.cylindre"
                   type="number"
                   value="0"
@@ -4326,6 +4343,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.axisfield"
                   name="spectacleRefraction.axis"
                   type="number"
                   value="0"
@@ -4361,6 +4379,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.vertexfield"
                   name="spectacleRefraction.vertex"
                   type="number"
                   value="0"
@@ -4401,6 +4420,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSpherefield"
                   name="iclSphere"
                   value="0"
                 />
@@ -4435,6 +4455,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclCylindrefield"
                   name="iclCylindre"
                   value="0"
                 />
@@ -4469,6 +4490,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclAxisfield"
                   name="iclAxis"
                   value="90"
                 />
@@ -4503,6 +4525,7 @@ exports[`renders Patient for inexistent route 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSphericalEquivalentfield"
                   name="iclSphericalEquivalent"
                   value="0"
                 />
@@ -4830,6 +4853,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.atafield"
                   name="biometry.ata"
                   type="number"
                   value="0"
@@ -4865,6 +4889,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.wtwfield"
                   name="biometry.wtw"
                   type="number"
                   value="0"
@@ -4900,6 +4925,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.clrfield"
                   name="biometry.clr"
                   type="number"
                   value="0"
@@ -4935,6 +4961,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acdfield"
                   name="biometry.acd"
                   type="number"
                   value="0"
@@ -4970,6 +4997,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acanfield"
                   name="biometry.acan"
                   type="number"
                   value="0"
@@ -5005,6 +5033,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acatfield"
                   name="biometry.acat"
                   type="number"
                   value="0"
@@ -5051,6 +5080,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kaffield"
                   name="corneaProfile.kaf"
                   type="number"
                   value="0"
@@ -5086,6 +5116,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisaffield"
                   name="corneaProfile.axisaf"
                   type="number"
                   value="0"
@@ -5121,6 +5152,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kasfield"
                   name="corneaProfile.kas"
                   type="number"
                   value="0"
@@ -5156,6 +5188,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisasfield"
                   name="corneaProfile.axisas"
                   type="number"
                   value="0"
@@ -5191,6 +5224,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpffield"
                   name="corneaProfile.kpf"
                   type="number"
                   value="0"
@@ -5226,6 +5260,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispffield"
                   name="corneaProfile.axispf"
                   type="number"
                   value="0"
@@ -5261,6 +5296,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpsfield"
                   name="corneaProfile.kps"
                   type="number"
                   value="0"
@@ -5296,6 +5332,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispsfield"
                   name="corneaProfile.axisps"
                   type="number"
                   value="0"
@@ -5331,6 +5368,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.cctfield"
                   name="corneaProfile.cct"
                   type="number"
                   value="0"
@@ -5416,6 +5454,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.spherefield"
                   name="spectacleRefraction.sphere"
                   type="number"
                   value="0"
@@ -5451,6 +5490,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.cylindrefield"
                   name="spectacleRefraction.cylindre"
                   type="number"
                   value="0"
@@ -5486,6 +5526,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.axisfield"
                   name="spectacleRefraction.axis"
                   type="number"
                   value="0"
@@ -5521,6 +5562,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.vertexfield"
                   name="spectacleRefraction.vertex"
                   type="number"
                   value="0"
@@ -5561,6 +5603,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSpherefield"
                   name="iclSphere"
                   value="0"
                 />
@@ -5595,6 +5638,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclCylindrefield"
                   name="iclCylindre"
                   value="0"
                 />
@@ -5629,6 +5673,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclAxisfield"
                   name="iclAxis"
                   value="90"
                 />
@@ -5663,6 +5708,7 @@ exports[`renders Patient form on # route 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSphericalEquivalentfield"
                   name="iclSphericalEquivalent"
                   value="0"
                 />
@@ -6331,6 +6377,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.atafield"
                   name="biometry.ata"
                   type="number"
                   value="0"
@@ -6366,6 +6413,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.wtwfield"
                   name="biometry.wtw"
                   type="number"
                   value="0"
@@ -6401,6 +6449,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.clrfield"
                   name="biometry.clr"
                   type="number"
                   value="0"
@@ -6436,6 +6485,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acdfield"
                   name="biometry.acd"
                   type="number"
                   value="0"
@@ -6471,6 +6521,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acanfield"
                   name="biometry.acan"
                   type="number"
                   value="0"
@@ -6506,6 +6557,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acatfield"
                   name="biometry.acat"
                   type="number"
                   value="0"
@@ -6552,6 +6604,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kaffield"
                   name="corneaProfile.kaf"
                   type="number"
                   value="0"
@@ -6587,6 +6640,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisaffield"
                   name="corneaProfile.axisaf"
                   type="number"
                   value="0"
@@ -6622,6 +6676,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kasfield"
                   name="corneaProfile.kas"
                   type="number"
                   value="0"
@@ -6657,6 +6712,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisasfield"
                   name="corneaProfile.axisas"
                   type="number"
                   value="0"
@@ -6692,6 +6748,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpffield"
                   name="corneaProfile.kpf"
                   type="number"
                   value="0"
@@ -6727,6 +6784,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispffield"
                   name="corneaProfile.axispf"
                   type="number"
                   value="0"
@@ -6762,6 +6820,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpsfield"
                   name="corneaProfile.kps"
                   type="number"
                   value="0"
@@ -6797,6 +6856,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispsfield"
                   name="corneaProfile.axisps"
                   type="number"
                   value="0"
@@ -6832,6 +6892,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.cctfield"
                   name="corneaProfile.cct"
                   type="number"
                   value="0"
@@ -6917,6 +6978,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.spherefield"
                   name="spectacleRefraction.sphere"
                   type="number"
                   value="0"
@@ -6952,6 +7014,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.cylindrefield"
                   name="spectacleRefraction.cylindre"
                   type="number"
                   value="0"
@@ -6987,6 +7050,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.axisfield"
                   name="spectacleRefraction.axis"
                   type="number"
                   value="0"
@@ -7022,6 +7086,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.vertexfield"
                   name="spectacleRefraction.vertex"
                   type="number"
                   value="0"
@@ -7062,6 +7127,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSpherefield"
                   name="iclSphere"
                   value="0"
                 />
@@ -7096,6 +7162,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclCylindrefield"
                   name="iclCylindre"
                   value="0"
                 />
@@ -7130,6 +7197,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclAxisfield"
                   name="iclAxis"
                   value="90"
                 />
@@ -7164,6 +7232,7 @@ exports[`renders without crashing 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSphericalEquivalentfield"
                   name="iclSphericalEquivalent"
                   value="0"
                 />
@@ -7491,6 +7560,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.atafield"
                   name="biometry.ata"
                   type="number"
                   value="0"
@@ -7526,6 +7596,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.wtwfield"
                   name="biometry.wtw"
                   type="number"
                   value="0"
@@ -7561,6 +7632,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.clrfield"
                   name="biometry.clr"
                   type="number"
                   value="0"
@@ -7596,6 +7668,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acdfield"
                   name="biometry.acd"
                   type="number"
                   value="0"
@@ -7631,6 +7704,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acanfield"
                   name="biometry.acan"
                   type="number"
                   value="0"
@@ -7666,6 +7740,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acatfield"
                   name="biometry.acat"
                   type="number"
                   value="0"
@@ -7712,6 +7787,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kaffield"
                   name="corneaProfile.kaf"
                   type="number"
                   value="0"
@@ -7747,6 +7823,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisaffield"
                   name="corneaProfile.axisaf"
                   type="number"
                   value="0"
@@ -7782,6 +7859,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kasfield"
                   name="corneaProfile.kas"
                   type="number"
                   value="0"
@@ -7817,6 +7895,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisasfield"
                   name="corneaProfile.axisas"
                   type="number"
                   value="0"
@@ -7852,6 +7931,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpffield"
                   name="corneaProfile.kpf"
                   type="number"
                   value="0"
@@ -7887,6 +7967,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispffield"
                   name="corneaProfile.axispf"
                   type="number"
                   value="0"
@@ -7922,6 +8003,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpsfield"
                   name="corneaProfile.kps"
                   type="number"
                   value="0"
@@ -7957,6 +8039,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispsfield"
                   name="corneaProfile.axisps"
                   type="number"
                   value="0"
@@ -7992,6 +8075,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.cctfield"
                   name="corneaProfile.cct"
                   type="number"
                   value="0"
@@ -8077,6 +8161,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.spherefield"
                   name="spectacleRefraction.sphere"
                   type="number"
                   value="0"
@@ -8112,6 +8197,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.cylindrefield"
                   name="spectacleRefraction.cylindre"
                   type="number"
                   value="0"
@@ -8147,6 +8233,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.axisfield"
                   name="spectacleRefraction.axis"
                   type="number"
                   value="0"
@@ -8182,6 +8269,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.vertexfield"
                   name="spectacleRefraction.vertex"
                   type="number"
                   value="0"
@@ -8222,6 +8310,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSpherefield"
                   name="iclSphere"
                   value="0"
                 />
@@ -8256,6 +8345,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclCylindrefield"
                   name="iclCylindre"
                   value="0"
                 />
@@ -8290,6 +8380,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclAxisfield"
                   name="iclAxis"
                   value="90"
                 />
@@ -8324,6 +8415,7 @@ exports[`resets form when clicking reset button 1`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSphericalEquivalentfield"
                   name="iclSphericalEquivalent"
                   value="0"
                 />
@@ -8651,6 +8743,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.atafield"
                   name="biometry.ata"
                   type="number"
                   value="0"
@@ -8686,6 +8779,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.wtwfield"
                   name="biometry.wtw"
                   type="number"
                   value="0"
@@ -8721,6 +8815,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.clrfield"
                   name="biometry.clr"
                   type="number"
                   value="0"
@@ -8756,6 +8851,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acdfield"
                   name="biometry.acd"
                   type="number"
                   value="0"
@@ -8791,6 +8887,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acanfield"
                   name="biometry.acan"
                   type="number"
                   value="0"
@@ -8826,6 +8923,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acatfield"
                   name="biometry.acat"
                   type="number"
                   value="0"
@@ -8872,6 +8970,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kaffield"
                   name="corneaProfile.kaf"
                   type="number"
                   value="0"
@@ -8907,6 +9006,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisaffield"
                   name="corneaProfile.axisaf"
                   type="number"
                   value="0"
@@ -8942,6 +9042,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kasfield"
                   name="corneaProfile.kas"
                   type="number"
                   value="0"
@@ -8977,6 +9078,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisasfield"
                   name="corneaProfile.axisas"
                   type="number"
                   value="0"
@@ -9012,6 +9114,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpffield"
                   name="corneaProfile.kpf"
                   type="number"
                   value="0"
@@ -9047,6 +9150,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispffield"
                   name="corneaProfile.axispf"
                   type="number"
                   value="0"
@@ -9082,6 +9186,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpsfield"
                   name="corneaProfile.kps"
                   type="number"
                   value="0"
@@ -9117,6 +9222,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispsfield"
                   name="corneaProfile.axisps"
                   type="number"
                   value="0"
@@ -9152,6 +9258,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.cctfield"
                   name="corneaProfile.cct"
                   type="number"
                   value="0"
@@ -9237,6 +9344,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.spherefield"
                   name="spectacleRefraction.sphere"
                   type="number"
                   value="0"
@@ -9272,6 +9380,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.cylindrefield"
                   name="spectacleRefraction.cylindre"
                   type="number"
                   value="0"
@@ -9307,6 +9416,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.axisfield"
                   name="spectacleRefraction.axis"
                   type="number"
                   value="0"
@@ -9342,6 +9452,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.vertexfield"
                   name="spectacleRefraction.vertex"
                   type="number"
                   value="0"
@@ -9382,6 +9493,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSpherefield"
                   name="iclSphere"
                   value="0"
                 />
@@ -9416,6 +9528,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclCylindrefield"
                   name="iclCylindre"
                   value="0"
                 />
@@ -9450,6 +9563,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclAxisfield"
                   name="iclAxis"
                   value="90"
                 />
@@ -9484,6 +9598,7 @@ exports[`resets form when clicking reset button 2`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSphericalEquivalentfield"
                   name="iclSphericalEquivalent"
                   value="0"
                 />
@@ -9811,6 +9926,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.atafield"
                   name="biometry.ata"
                   type="number"
                   value="0"
@@ -9846,6 +9962,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.wtwfield"
                   name="biometry.wtw"
                   type="number"
                   value="0"
@@ -9881,6 +9998,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.clrfield"
                   name="biometry.clr"
                   type="number"
                   value="0"
@@ -9916,6 +10034,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acdfield"
                   name="biometry.acd"
                   type="number"
                   value="0"
@@ -9951,6 +10070,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acanfield"
                   name="biometry.acan"
                   type="number"
                   value="0"
@@ -9986,6 +10106,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="biometry.acatfield"
                   name="biometry.acat"
                   type="number"
                   value="0"
@@ -10032,6 +10153,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kaffield"
                   name="corneaProfile.kaf"
                   type="number"
                   value="0"
@@ -10067,6 +10189,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisaffield"
                   name="corneaProfile.axisaf"
                   type="number"
                   value="0"
@@ -10102,6 +10225,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kasfield"
                   name="corneaProfile.kas"
                   type="number"
                   value="0"
@@ -10137,6 +10261,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axisasfield"
                   name="corneaProfile.axisas"
                   type="number"
                   value="0"
@@ -10172,6 +10297,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpffield"
                   name="corneaProfile.kpf"
                   type="number"
                   value="0"
@@ -10207,6 +10333,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispffield"
                   name="corneaProfile.axispf"
                   type="number"
                   value="0"
@@ -10242,6 +10369,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.kpsfield"
                   name="corneaProfile.kps"
                   type="number"
                   value="0"
@@ -10277,6 +10405,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.axispsfield"
                   name="corneaProfile.axisps"
                   type="number"
                   value="0"
@@ -10312,6 +10441,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="corneaProfile.cctfield"
                   name="corneaProfile.cct"
                   type="number"
                   value="0"
@@ -10397,6 +10527,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.spherefield"
                   name="spectacleRefraction.sphere"
                   type="number"
                   value="0"
@@ -10432,6 +10563,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.cylindrefield"
                   name="spectacleRefraction.cylindre"
                   type="number"
                   value="0"
@@ -10467,6 +10599,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.axisfield"
                   name="spectacleRefraction.axis"
                   type="number"
                   value="0"
@@ -10502,6 +10635,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   autocomplete="off"
                   class="form-control text-right"
+                  id="spectacleRefraction.vertexfield"
                   name="spectacleRefraction.vertex"
                   type="number"
                   value="0"
@@ -10542,6 +10676,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSpherefield"
                   name="iclSphere"
                   value="0"
                 />
@@ -10576,6 +10711,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclCylindrefield"
                   name="iclCylindre"
                   value="0"
                 />
@@ -10610,6 +10746,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclAxisfield"
                   name="iclAxis"
                   value="90"
                 />
@@ -10644,6 +10781,7 @@ exports[`resets form when clicking reset button 3`] = `
                 <input
                   class="form-control text-right"
                   disabled=""
+                  id="iclSphericalEquivalentfield"
                   name="iclSphericalEquivalent"
                   value="0"
                 />
