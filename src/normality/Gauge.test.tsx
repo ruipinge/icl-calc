@@ -78,7 +78,23 @@ it('builds zones correctly', () => {
   ]);
 });
 
-it('renders without crashing', () => {
-  const { asFragment } = render(<Gauge value={4} values={DATASET} />);
-  expect(asFragment()).toMatchSnapshot();
+/*
+ * Replaces an asFragment() snapshot (#121).
+ *
+ * The gauge is the one component in this suite with no text, no roles and no
+ * accessible names - it is styled divs and one SVG pointer - so there is
+ * nothing here for the text-and-roles strategy to assert, and nothing any
+ * testing-library query can reach. Its geometry is asserted instead, in
+ * linear-gauge/index.test.ts, driven through buildZones exactly as this
+ * component drives it; see the tests there for the band widths and pointer
+ * placement this snapshot used to record.
+ *
+ * What remains here is the mount/unmount cycle, which is real: #56 was a
+ * dispose bug in precisely this path, where LinearGauge left children behind
+ * because it mutated the live childNodes list while iterating it.
+ */
+it('mounts and disposes cleanly', () => {
+  const view = render(<Gauge value={4} values={DATASET} />);
+
+  expect(() => view.unmount()).not.toThrow();
 });

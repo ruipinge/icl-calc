@@ -65,3 +65,31 @@ it('keeps that alignment at a different container width', () => {
   expect(lastBarRight).toBeLessThanOrEqual(plotRight);
   expect(lastBarRight).toBeGreaterThan(plotRight - 10);
 });
+
+/*
+ * The x axis is labelled on every other bin, following what amCharts did at
+ * minGridDistance = 30. Without this, nothing asserts the axis at all: bar
+ * geometry and bar titles are covered above and in normality/index.test.tsx,
+ * but the labels a clinician reads the scale off were only ever recorded by
+ * the Normality asFragment() snapshot that #121 removes.
+ *
+ * Caught by mutation-testing the conversion: dropping the first axis label
+ * left the whole suite green.
+ *
+ * The values are the AtA bin boundaries, rounded for display. Labelling
+ * alternate bins is asserted in both directions - a labelled boundary is
+ * present and the unlabelled one between two of them is absent - because an
+ * implementation that labelled every bin would satisfy the first half alone.
+ */
+it('labels every other bin along the x axis', () => {
+  render(
+    <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
+  );
+
+  ['10.72', '11.288', '11.856', '12.424', '12.992'].forEach((label) => {
+    expect(screen.getByText(label)).toBeInTheDocument();
+  });
+
+  expect(screen.queryByText('11.004')).not.toBeInTheDocument();
+  expect(screen.queryByText('11.572')).not.toBeInTheDocument();
+});
