@@ -3,3 +3,7 @@ test-results/
 playwright-report/
 .serve/
 .serve-subject/
+
+# Output of the `visual` capture-tool project (histogram-visual.spec.ts).
+# Regenerated on demand; never committed.
+histogram-shots/

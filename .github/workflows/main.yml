@@ -326,6 +326,40 @@ jobs:
         run: npm run replay
         working-directory: e2e
 
+      # Visual and structural coverage for all four routes plus the shell
+      # (#121). Until this step existed, nothing in CI could observe a visual
+      # regression: L1 asserted authored class strings, L2 asserts computed
+      # values, and `histogram-visual.spec.ts` - often described as the
+      # visual coverage - is a capture tool its own header says never runs in
+      # CI. It did not: the only Playwright invocation in this workflow was
+      # `--project=replay`.
+      #
+      # Runs inside the official Playwright container rather than on the
+      # runner directly. Screenshots are pixel fixtures and therefore
+      # platform-bound, so the baselines a maintainer generates and the
+      # pixels this step compares them against have to come from the same
+      # browser build, the same OS and the same fonts. Generated locally with
+      # the identical command - see e2e/README.md. The image tag tracks the
+      # @playwright/test version in e2e/package-lock.json and must be bumped
+      # with it, or the browsers differ from the ones the tests were written
+      # against.
+      #
+      # Placed in this job, after the replay step, rather than in a job of
+      # its own: both drive the subject build on port 4022 with
+      # `reuseExistingServer: true`, so two concurrent runs would leave the
+      # second silently validating the first's build.
+      #
+      # No diff-image artifact is uploaded. Regenerating locally with the
+      # documented command produces the same images deterministically, which
+      # avoids pinning another third-party action for output a reviewer can
+      # reproduce in one command.
+      - name: Verify every route still looks and reads as expected (visual)
+        run: |
+          docker run --rm \
+            -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
+            mcr.microsoft.com/playwright:v1.62.1-noble \
+            npx playwright test --project=visual-assert
+
   deploy:
     name: Release and publish to gh-pages
     # golden-master-guard is pull_request-only (see its own `if:` above), so

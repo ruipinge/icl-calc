@@ -1,0 +1,55 @@
+- navigation:
+  - link "ICL Size Calc":
+    - /url: /icl-calc/
+  - button "Reset"
+- list:
+  - listitem:
+    - link "Patient":
+      - /url: "#/"
+  - listitem:
+    - link "Biometric Normality":
+      - /url: "#/normality"
+  - listitem:
+    - link "Floating Matrix":
+      - /url: "#/matrix"
+  - listitem:
+    - link "Regression":
+      - /url: "#/regression"
+- separator
+- img "Histogram of Angle to Angle - AtA (mm)": /Angle to Angle - AtA \(mm\) 0 \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
+- img "Histogram of Crystalline Lens Rise - CLR (μm)": /Crystalline Lens Rise - CLR \(μm\) 0 \d+ \d+ \d+ Number of Eyes -\d+ -\d+ \d+ \d+ \d+/
+- img
+- img "Histogram of Internal Anterior Chamber Depth - ACD (mm)": /Internal Anterior Chamber Depth - ACD \(mm\) 0 \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
+- img "Histogram of Average Anterior Chamber Angle - ACA (º)": /Average Anterior Chamber Angle - ACA \(º\) 0 \d+ \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
+- img "Histogram of White to White - WtW (mm)": /White to White - WtW \(mm\) 0 \d+ \d+ \d+ Number of Eyes 9\.8 \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
+- img "Histogram of Age (years)": /Age \(years\) 0 \d+ \d+ \d+ Number of Eyes \d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
+- contentinfo:
+  - list:
+    - listitem:
+      - link "v1.8.3":
+        - /url: https://github.com/ruipinge/icl-calc/releases/tag/v1.8.3
+      - link "(dev)":
+        - /url: https://github.com/ruipinge/icl-calc/commit/dev
+    - listitem:
+      - link "Instructions":
+        - /url: https://github.com/ruipinge/icl-calc/blob/main/README.md#instructions
+    - listitem:
+      - link "Data":
+        - /url: https://github.com/ruipinge/icl-calc/blob/main/README.md#data
+    - listitem:
+      - link "GitHub":
+        - /url: https://github.com/ruipinge/icl-calc
+  - paragraph:
+    - text: Designed and built with love by
+    - link "Pedro Serra":
+      - /url: https://www.linkedin.com/in/pedro-serra-44697321/
+    - text: and
+    - link "Rui Pinge":
+      - /url: https://ruipinge.github.io/resume
+    - text: .
+  - paragraph:
+    - text: Available under the
+    - link "MIT License":
+      - /url: https://github.com/ruipinge/icl-calc/blob/main/LICENSE
+    - text: without any kind of warranty.
+  - paragraph: The authors cannot be held responsible for any consequense of its usage.
