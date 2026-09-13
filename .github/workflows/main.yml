@@ -14,8 +14,14 @@ on:
   # Trade accepted: a branch with no PR open now gets no CI. The workflow
   # here is always worktree -> branch -> PR, so nothing is lost, but pushing
   # a throwaway branch expecting a green tick will no longer get one.
+  #
+  # `treeye-reskin` is the #120 integration branch, added so that merging a
+  # phase-0 or phase-1 pull request into it publishes the preview below
+  # (#121). It cuts no version and cannot reach production: `deploy` is gated
+  # on `refs/heads/main`, and the preview publishes into a `preview/`
+  # subdirectory of gh-pages rather than its root.
   push:
-    branches: [main]
+    branches: [main, treeye-reskin]
   pull_request:
 
 concurrency:
@@ -415,6 +421,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: ['test', 'e2e-replay', 'golden-master-guard']
 
+    # gh-pages now has two writers - this job and preview-gh-pages below - so
+    # they are serialised against each other. Both push to the same branch,
+    # and two pushes racing produce either a rejected non-fast-forward or one
+    # silently clobbering the other's commit.
+    #
+    # cancel-in-progress is false, and must stay false: this job runs
+    # semantic-release and then publishes the live clinical tool, so a queued
+    # run has to wait rather than kill the one holding the lock. The group is
+    # deliberately NOT parameterised by ref - serialising per-branch would
+    # defeat the point, since the two writers are on different branches.
+    concurrency:
+      group: gh-pages-publish
+      cancel-in-progress: false
+
     steps:
       - name: Check out the commit being released
         uses: actions/checkout@v7
@@ -498,8 +518,99 @@ jobs:
       - name: Build the bundle at the version just released
         run: npm run build
 
+      # keep_files is REQUIRED here, and it is the one change in #121 that
+      # touches the production release path. This action wipes the publish
+      # branch before copying by default, so without it the next release to
+      # main deletes the `preview/` directory the job below publishes - and
+      # deletes it silently, since nothing about the production deploy would
+      # look wrong.
+      #
+      # The accepted cost, decided by the owner on 2026-09-10: content-hashed
+      # bundles now accumulate on gh-pages indefinitely, for production as
+      # well as for the preview. Slow on a repository that ships a few times a
+      # month, prunable by hand, and deliberately NOT automated here - an
+      # automatic pruner on the branch that serves a live clinical tool is a
+      # worse risk than a large branch.
       - name: Publish ./build to gh-pages (the live clinical tool)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
+          keep_files: true
+
+  preview-gh-pages:
+    name: Publish the integration-branch preview to gh-pages
+    # Push to the integration branch only. Never on main, never on a pull
+    # request: a PR from a fork would otherwise get a token that can write to
+    # the branch serving the live tool.
+    #
+    # A plain `if:` keeps its implicit success() check, so this still skips
+    # when `test` or `e2e-replay` fails - the preview is never published from
+    # a build that did not pass the gates. See the long note on `deploy` for
+    # why that implicit check matters.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/treeye-reskin'
+    runs-on: ubuntu-latest
+    needs: ['test', 'e2e-replay']
+
+    # See the note on `deploy`: both jobs write gh-pages and must not race.
+    concurrency:
+      group: gh-pages-publish
+      cancel-in-progress: false
+
+    steps:
+      - name: Check out the integration branch
+        uses: actions/checkout@v7
+
+      - name: Set up the Node version pinned in .nvmrc
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install locked dependencies (peer conflicts fail here)
+        run: npm ci --prefer-offline
+
+      # The ONLY destination in this project that needs a base override. The
+      # app is built for /icl-calc/ everywhere else - production today, and
+      # tools.treeye.science/icl-calc/ after #123 - but this stopgap serves
+      # from a subdirectory of that, so `base` has to move with it or every
+      # asset 404s against the production path.
+      #
+      # Two consequences, both reasons to retire this the moment the
+      # Cloudflare preview is up rather than run both indefinitely:
+      #
+      #   - these are NOT the bytes L2 validated. It validated a /icl-calc/
+      #     build; this is a second build differing only in base, so the
+      #     preview ships an artifact no gate ran against.
+      #   - it is the only place `import.meta.env.BASE_URL` takes a value the
+      #     shipped app never uses, which is exactly the divergence
+      #     vite.config.ts's test.env pin exists to prevent elsewhere.
+      #
+      # No version is cut: semantic-release runs in `deploy`, which is gated
+      # on main and never runs here.
+      - name: Build for the preview sub-path
+        run: npm run build -- --base=/icl-calc/preview/
+
+      # destination_dir scopes the publish to preview/, and keep_files stops
+      # it wiping the production build at the branch root - the same hazard,
+      # in the opposite direction, as the keep_files on `deploy`. Without it
+      # the first preview publish takes the live clinical tool offline.
+      - name: Publish ./build to gh-pages under preview/
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          destination_dir: preview
+          keep_files: true
+
+      - name: Report where the preview landed
+        run: |
+          {
+            echo '## Preview published'
+            echo
+            echo '<https://ruipinge.github.io/icl-calc/preview/>'
+            echo
+            echo 'This is the **stopgap** preview. Once the Cloudflare Pages'
+            echo 'project is wired in (#121), that one is authoritative and'
+            echo 'this one is retired - see e2e/README.md and the issue.'
+          } >> "$GITHUB_STEP_SUMMARY"
