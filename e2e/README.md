@@ -3,7 +3,7 @@
 A deliberately separate workspace with its own `package.json` and lockfile, so
 Playwright is never a dependency of the application.
 
-Four Playwright projects live here. Two run in CI and two do not, and the
+Five Playwright projects live here. Two run in CI and two do not, and the
 difference matters:
 
 | project | asserts? | runs in CI? | what it is |
