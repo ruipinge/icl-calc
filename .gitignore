@@ -9,6 +9,10 @@
 # production
 /build
 
+# Cloudflare Direct Upload staging tree, assembled by the preview job
+# (#121). Ephemeral in CI; ignored so a local dry run cannot be committed.
+/upload
+
 # misc
 .DS_Store
 .env.local

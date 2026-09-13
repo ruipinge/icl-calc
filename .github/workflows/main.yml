@@ -614,3 +614,100 @@ jobs:
             echo 'project is wired in (#121), that one is authoritative and'
             echo 'this one is retired - see e2e/README.md and the issue.'
           } >> "$GITHUB_STEP_SUMMARY"
+
+  preview-cloudflare:
+    name: Publish the integration-branch preview to Cloudflare Pages
+    # Same trigger and the same gating as preview-gh-pages: pushes to the
+    # integration branch only, never main, never a pull request. A plain `if:`
+    # keeps its implicit success() check, so nothing is published from a build
+    # that failed a gate.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/treeye-reskin'
+    runs-on: ubuntu-latest
+    needs: ['test', 'e2e-replay']
+
+    # Deliberately NOT in the gh-pages-publish concurrency group. This job
+    # writes a Cloudflare project, never the gh-pages branch, so it cannot
+    # race the release path and should not queue behind it.
+    steps:
+      - name: Check out the integration branch
+        uses: actions/checkout@v7
+
+      - name: Set up the Node version pinned in .nvmrc
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install locked dependencies (peer conflicts fail here)
+        run: npm ci --prefer-offline
+
+      # No base override, unlike the gh-pages stopgap. This preview serves the
+      # app at /icl-calc/, which is the base production uses today and the one
+      # tools.treeye.science/icl-calc/ will use after #123 - so one value is
+      # correct everywhere and there is nothing to parameterise.
+      - name: Build the bundle to upload
+        run: npm run build
+
+      # Direct Upload serves the uploaded directory as the site root, but the
+      # app must live at /icl-calc/ - so upload a wrapper, not the build.
+      #
+      # _headers goes at the root of the upload, NOT inside icl-calc/:
+      # Cloudflare only reads it there.
+      #
+      # noindex is scoped to this preview hostname and never to the
+      # application. Putting it in the app's own index.html would follow the
+      # build into production and silently de-index the real tool - nothing
+      # breaks, no test goes red, traffic just stops. #126 tracks re-enabling
+      # indexing when #123 makes the Cloudflare deployment the live one.
+      - name: Assemble the upload directory
+        run: |
+          set -euo pipefail
+          rm -rf upload
+          mkdir -p upload/icl-calc
+          cp -r build/* upload/icl-calc/
+          printf '/*\n  X-Robots-Tag: noindex\n' > upload/_headers
+          test -f upload/icl-calc/index.html
+          test -f upload/_headers
+          echo "Upload tree:"
+          find upload -maxdepth 2 -mindepth 1 | sort
+
+      # Direct Upload, never the Git integration. The Git integration would
+      # have Cloudflare build the application, shipping bytes that never
+      # passed this repository's gates; this job runs only after `test` and
+      # `e2e-replay` have passed on this commit.
+      #
+      # --branch is explicit and load-bearing. Cloudflare serves a deployment
+      # at the stable <project>.pages.dev hostname only when it is a
+      # PRODUCTION deployment of that project; a preview deployment gets a
+      # per-commit <hash>.<project>.pages.dev alias instead. Wrangler infers
+      # the branch from the CI environment, so without this an
+      # integration-branch push would land as a preview alias and produce a
+      # URL that changes on every push - which defeats the point of having a
+      # reviewable one.
+      #
+      # CONFIRM THE RESULTING HOSTNAME ON THE FIRST REAL DEPLOY. If it comes
+      # back as a hash alias, the project's production branch is not `main`
+      # and this flag must match whatever it is.
+      - name: Deploy the preview to Cloudflare Pages (Direct Upload)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy upload --project-name=icl-calc-preview --branch=main
+
+      - name: Report where the preview landed
+        run: |
+          {
+            echo '## Cloudflare preview published'
+            echo
+            echo '<https://icl-calc-preview.pages.dev/icl-calc/>'
+            echo
+            echo 'This is the **authoritative** preview. The gh-pages one at'
+            echo '`/icl-calc/preview/` is a stopgap and should be retired once'
+            echo 'this URL is confirmed working (#121).'
+            echo
+            echo 'Not indexed: `_headers` sets `X-Robots-Tag: noindex` for the'
+            echo 'whole hostname. #126 tracks re-enabling that when #123 makes'
+            echo 'this deployment the live one.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
