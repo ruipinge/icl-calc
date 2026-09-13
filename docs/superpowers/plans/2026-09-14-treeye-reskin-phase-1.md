@@ -1084,7 +1084,7 @@ const TreeyeMark = () => (
 );
 
 export const NavBar = ({ resetForm }: { resetForm: (a?: any) => void }) => (
-  <header className="chrome">
+  <nav className="chrome">
     <div className="chrome-bar wrap">
       <a className="brand" href="https://treeye.science/">
         <TreeyeMark />
@@ -1103,11 +1103,11 @@ export const NavBar = ({ resetForm }: { resetForm: (a?: any) => void }) => (
         Reset
       </button>
     </div>
-  </header>
+  </nav>
 );
 ```
 
-Note `<header>` replaces `<nav>`. **That breaks PR 1's `getByRole('navigation')` locator in `e2e/visual.spec.ts`.** Change it in the same commit to `page.locator('header.chrome')` — and say so in the commit body, because a locator changing twice in three PRs needs its reason on the record.
+**The element stays `<nav>` — only its classes change.** An earlier draft promoted it to `<header>`. Pre-flight rejected that: it swaps the `navigation` landmark for `banner`, which moves PR 1's `getByRole('navigation')` locator a second time in three PRs, and changes landmark semantics under cover of a restyle — against #122's "restyle the controls, keep the arrangement". `e2e/visual.spec.ts` is therefore untouched by this task.
 
 - [ ] **Step 2: Add the assertion for the new link**
 
@@ -1165,9 +1165,14 @@ Replace the Bootstrap utility classes with the footer pattern. Keep every link, 
 ```jsx
   <footer className="site-footer">
     <div className="wrap">
-      <hr className="rule" />
+      <div className="rule" />
       <ul>
 ```
+
+The spectrum bar is a `<div>`, not an `<hr>`. An `<hr>` renders a `separator` in
+the accessibility tree, and this one is decoration — the footer already carries
+its own `border-top`. Using `<hr>` here would add a separator in the same commit
+that removes one, for no reader's benefit.
 
 and drop `className="p-3 p-md-5 mt-5 bg-light text-center text-sm-left"`, the inline `style`, `bd-footer-links pl-0 mb-3`, `d-inline-block`, `ml-3` and `mb-0` from the elements below.
 
@@ -1190,7 +1195,7 @@ echo $?
 - [ ] **Step 8: Commit**
 
 ```bash
-git add src/misc/ src/ICLContainer.tsx e2e/visual.spec.ts
+git add src/misc/ src/ICLContainer.tsx
 git commit -F - <<'EOF'
 feat: reskin the shell to the Treeye chrome
 
@@ -1209,12 +1214,13 @@ sets and TabLinks.test.tsx already asserts.
 
 The <hr> between the tabs and the content goes: the chrome's own rule does
 that job, and the element rendered a `separator` entry in all four aria
-fixtures.
+fixtures. The footer's spectrum bar is a <div> rather than an <hr> so that it
+does not put one straight back.
 
-The shell screenshot locator moves from getByRole('navigation') to
-header.chrome. It moved to the role in the previous PR to escape Bootstrap's
-`nav.navbar`; the element is now a <header>, so the role no longer matches.
-Second move, same reason both times: the locator follows the semantics.
+The header stays a <nav>. Promoting it to <header> would read better as a
+landmark, but it swaps `navigation` for `banner` in every aria fixture and
+moves the shell screenshot locator a second time in three PRs - a semantic
+change wearing a restyle's clothes. Worth doing deliberately later, not here.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01X71fYrkATTNbKWjUfMmHZi
@@ -1243,8 +1249,14 @@ ls e2e/test-results/
 
 The **only** aria changes this PR may produce are:
 
-1. `- separator` entries disappearing (the `<hr>` removals).
-2. One new `link "Treeye"` with `/url: https://treeye.science/` in every route's header.
+1. The single `- separator` entry disappearing — the `<hr>` between the tab strip
+   and the content. Nothing adds one back: the footer's spectrum bar is a `<div>`
+   precisely so it stays out of the tree.
+2. One new `link "Treeye"` with `/url: https://treeye.science/` in every route's
+   header.
+
+The header stays `- navigation:` in every fixture. If it became `- banner:`, the
+`<nav>` was promoted to `<header>` against Ruling 1 — stop and revert that.
 
 **Anything else is a bug in this PR, not a fixture to update.** In particular the form field names, the table cell contents and the footer links must be untouched. If a `spinbutton` or `cell` entry moved, stop.
 
