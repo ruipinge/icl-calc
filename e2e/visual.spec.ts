@@ -48,16 +48,47 @@ const ROUTES = [
 ] as const;
 
 /**
- * The footer renders the release tag and the build's commit, which differ
- * between a developer's build (`dev`, and package.json's committed version)
- * and CI's (a real tag and GITHUB_SHA). Masking them is what keeps the
- * screenshots about the page rather than about who built it. Nothing else on
- * any route varies by build.
+ * The footer renders the release tag and the commit the bundle was built
+ * from, and both vary by build: a developer's says `dev` and package.json's
+ * committed version, CI's says GITHUB_SHA and whatever tag the release step
+ * resolved. Neither is a property of the page, so both are rewritten to fixed
+ * values before anything is captured.
+ *
+ * Masking is not sufficient and was tried first. A mask paints over pixels,
+ * so it does nothing for the accessibility tree - all four aria snapshots
+ * failed in CI on `(dev)` versus `(b054e56)` - and it does not even fix the
+ * pixels, because the two strings are different widths and the footer reflows
+ * around the masked box. Normalising the text is what makes both fixture
+ * kinds independent of who produced the build.
+ *
+ * This is the only DOM the visual tests touch, and it is deliberately narrow:
+ * two anchors' text and href, nothing else. Their real content is asserted by
+ * src/misc/Footer.test.tsx, which is where it belongs.
  */
-const buildStamp = (page: Page) => [
-  page.locator('footer a[href*="/releases/tag/"]'),
-  page.locator('footer a[href*="/commit/"]')
-];
+const PINNED_VERSION = '0.0.0';
+const PINNED_COMMIT = '0000000';
+
+const pinBuildStamp = async (page: Page) => {
+  await page.evaluate(
+    ([version, commit]) => {
+      const release = document.querySelector<HTMLAnchorElement>(
+        'footer a[href*="/releases/tag/"]'
+      );
+      if (release) {
+        release.textContent = `v${version}`;
+        release.href = `https://github.com/ruipinge/icl-calc/releases/tag/v${version}`;
+      }
+      const built = document.querySelector<HTMLAnchorElement>(
+        'footer a[href*="/commit/"]'
+      );
+      if (built) {
+        built.textContent = `(${commit})`;
+        built.href = `https://github.com/ruipinge/icl-calc/commit/${commit}`;
+      }
+    },
+    [PINNED_VERSION, PINNED_COMMIT]
+  );
+};
 
 /**
  * The form is left at INITIAL_VALUES: an empty patient with zeroed biometry.
@@ -72,6 +103,7 @@ const open = async (page: Page, tab: string | null) => {
   if (tab !== null) {
     await gotoTab(page, tab);
   }
+  await pinBuildStamp(page);
 };
 
 for (const viewport of VIEWPORTS) {
@@ -84,7 +116,7 @@ for (const viewport of VIEWPORTS) {
 
         await expect(page).toHaveScreenshot(
           `${route.name}-${viewport.name}.png`,
-          { fullPage: true, mask: buildStamp(page) }
+          { fullPage: true }
         );
       });
     }
@@ -108,8 +140,7 @@ for (const viewport of VIEWPORTS) {
         `shell-tabs-${viewport.name}.png`
       );
       await expect(page.locator('footer')).toHaveScreenshot(
-        `shell-footer-${viewport.name}.png`,
-        { mask: buildStamp(page) }
+        `shell-footer-${viewport.name}.png`
       );
     });
   });

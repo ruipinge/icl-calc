@@ -56,10 +56,10 @@
 - contentinfo:
   - list:
     - listitem:
-      - link "v1.8.3":
-        - /url: https://github.com/ruipinge/icl-calc/releases/tag/v1.8.3
-      - link "(dev)":
-        - /url: https://github.com/ruipinge/icl-calc/commit/dev
+      - link "v0.0.0":
+        - /url: https://github.com/ruipinge/icl-calc/releases/tag/v0.0.0
+      - link /\(\d+\)/:
+        - /url: https://github.com/ruipinge/icl-calc/commit/0000000
     - listitem:
       - link "Instructions":
         - /url: https://github.com/ruipinge/icl-calc/blob/main/README.md#instructions
