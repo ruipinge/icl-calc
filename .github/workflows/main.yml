@@ -689,18 +689,57 @@ jobs:
       # back as a hash alias, the project's production branch is not `main`
       # and this flag must match whatever it is.
       - name: Deploy the preview to Cloudflare Pages (Direct Upload)
+        id: cf
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy upload --project-name=icl-calc-preview --branch=main
 
+      # Reports the URL wrangler actually returned rather than the one this
+      # workflow hopes for, and says so out loud when they differ.
+      #
+      # The project has no Git provider (confirmed by the owner), so it is
+      # Direct Upload only - but a Pages project still has a production
+      # branch, and a deployment whose --branch does not match it is a
+      # PREVIEW deployment served at a per-commit <hash>.<project>.pages.dev
+      # alias rather than at the stable hostname. Hoping and checking a
+      # dashboard is how that goes unnoticed; a warning in the run is not.
       - name: Report where the preview landed
+        env:
+          DEPLOYMENT_URL: ${{ steps.cf.outputs.deployment-url }}
+          ALIAS_URL: ${{ steps.cf.outputs.pages-deployment-alias-url }}
         run: |
+          set -uo pipefail
+          STABLE='https://icl-calc-preview.pages.dev'
+
           {
             echo '## Cloudflare preview published'
             echo
-            echo '<https://icl-calc-preview.pages.dev/icl-calc/>'
+            echo "Deployment URL: \`${DEPLOYMENT_URL:-<none reported>}\`"
+            echo
+            echo "Alias URL: \`${ALIAS_URL:-<none reported>}\`"
+            echo
+            echo "Expected stable entry point: <${STABLE}/icl-calc/>"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # A production deployment is also reachable at the stable hostname;
+          # a preview deployment is not. Compare on the alias when wrangler
+          # reports one, since that is the stable-hostname candidate.
+          if [ -n "${ALIAS_URL:-}" ] && [ "${ALIAS_URL}" = "${STABLE}" ]; then
+            echo "Deployed to the stable hostname. OK."
+          else
+            echo "::warning::Cloudflare did not report ${STABLE} as this deployment's alias (deployment-url='${DEPLOYMENT_URL:-}', alias='${ALIAS_URL:-}'). That means --branch did not match the project's production branch, so this is a PREVIEW deployment on a per-commit hostname that changes every push. Set --branch to the project's production branch. See #121."
+            {
+              echo
+              echo '> [!WARNING]'
+              echo '> This landed as a **preview** deployment, not a production one,'
+              echo "> so its hostname changes on every push. \`--branch\` in this job"
+              echo '> does not match the projects production branch. See #121.'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          {
             echo
             echo 'This is the **authoritative** preview. The gh-pages one at'
             echo '`/icl-calc/preview/` is a stopgap and should be retired once'
