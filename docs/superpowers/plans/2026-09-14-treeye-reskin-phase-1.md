@@ -234,8 +234,14 @@ Replace `Four Playwright projects live here.` with `Five Playwright projects liv
 This is the important step, and it is per-locator, not per-file. For each of the four locators, break the thing it addresses, confirm red, restore, confirm green. Record both outcomes.
 
 ```sh
-# (a) tab assertion — temporarily make TabLinks render no aria-current
-#     by passing `end={false}` … then:
+# (a) tab assertion — temporarily add `aria-current={false}` to the NavLink
+#     in src/misc/TabLinks.tsx, which really removes the attribute from the
+#     rendered anchor.
+#
+#     NOT `end={false}`: that is inert here, verified empirically. All four
+#     routes are distinct top-level paths, so react-router v7's `end` prop
+#     changes no matching decision in this app and TabLinks.test.tsx still
+#     passes with it flipped. A break that does not break proves nothing.
 SUBJECT_ONLY=1 npm --prefix e2e run replay     # expect FAIL in gotoTab
 echo $?
 
