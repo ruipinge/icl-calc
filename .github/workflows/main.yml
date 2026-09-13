@@ -697,45 +697,58 @@ jobs:
           command: pages deploy upload --project-name=icl-calc-preview --branch=main
 
       # Reports the URL wrangler actually returned rather than the one this
-      # workflow hopes for, and says so out loud when they differ.
+      # workflow hopes for.
       #
-      # The project has no Git provider (confirmed by the owner), so it is
-      # Direct Upload only - but a Pages project still has a production
-      # branch, and a deployment whose --branch does not match it is a
-      # PREVIEW deployment served at a per-commit <hash>.<project>.pages.dev
-      # alias rather than at the stable hostname. Hoping and checking a
-      # dashboard is how that goes unnoticed; a warning in the run is not.
+      # Cloudflare gives a Pages deployment two URLs: a per-commit one
+      # (<hash>.<project>.pages.dev) that is different on every push, and a
+      # BRANCH ALIAS (<branch>.<project>.pages.dev) that always points at the
+      # newest deployment of that branch. The alias is the stable, reviewable
+      # URL, and it exists whether or not the deployment is a production one.
+      #
+      # The bare <project>.pages.dev hostname is served only by a PRODUCTION
+      # deployment - one whose --branch matches the project's production
+      # branch. This project's is not `main`: the first real deploy landed as
+      # a preview on `main`, and the bare hostname 404s while the alias
+      # serves. That is recorded rather than chased, because the alias already
+      # satisfies what #121 asked for: a preview URL that does not change.
+      #
+      # So this warns when there is no alias at all - which would leave only
+      # the per-commit URL and no stable entry point - and not merely because
+      # the bare hostname is unused.
       - name: Report where the preview landed
         env:
           DEPLOYMENT_URL: ${{ steps.cf.outputs.deployment-url }}
           ALIAS_URL: ${{ steps.cf.outputs.pages-deployment-alias-url }}
         run: |
           set -uo pipefail
-          STABLE='https://icl-calc-preview.pages.dev'
 
           {
             echo '## Cloudflare preview published'
             echo
-            echo "Deployment URL: \`${DEPLOYMENT_URL:-<none reported>}\`"
+            if [ -n "${ALIAS_URL:-}" ]; then
+              echo "**Review here:** <${ALIAS_URL}/icl-calc/>"
+              echo
+              echo 'That is the branch alias. It always points at the newest'
+              echo 'deployment of this branch, so it is safe to bookmark and to'
+              echo 'paste into a review.'
+            fi
             echo
-            echo "Alias URL: \`${ALIAS_URL:-<none reported>}\`"
-            echo
-            echo "Expected stable entry point: <${STABLE}/icl-calc/>"
+            echo "This deployment only: \`${DEPLOYMENT_URL:-<none reported>}\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-          # A production deployment is also reachable at the stable hostname;
-          # a preview deployment is not. Compare on the alias when wrangler
-          # reports one, since that is the stable-hostname candidate.
-          if [ -n "${ALIAS_URL:-}" ] && [ "${ALIAS_URL}" = "${STABLE}" ]; then
-            echo "Deployed to the stable hostname. OK."
+          # Warn only when there is no alias, which would leave the per-commit
+          # URL as the only way in - a different address on every push, and so
+          # no reviewable preview at all. The bare <project>.pages.dev
+          # hostname is deliberately not required: see the note above.
+          if [ -n "${ALIAS_URL:-}" ]; then
+            echo "Stable alias: ${ALIAS_URL}/icl-calc/"
           else
-            echo "::warning::Cloudflare did not report ${STABLE} as this deployment's alias (deployment-url='${DEPLOYMENT_URL:-}', alias='${ALIAS_URL:-}'). That means --branch did not match the project's production branch, so this is a PREVIEW deployment on a per-commit hostname that changes every push. Set --branch to the project's production branch. See #121."
+            echo "::warning::Cloudflare reported no branch alias for this deployment (deployment-url='${DEPLOYMENT_URL:-}'), so the only way to reach this preview is a per-commit URL that changes on every push. See #121."
             {
               echo
               echo '> [!WARNING]'
-              echo '> This landed as a **preview** deployment, not a production one,'
-              echo "> so its hostname changes on every push. \`--branch\` in this job"
-              echo '> does not match the projects production branch. See #121.'
+              echo '> No branch alias was reported, so this preview has no stable'
+              echo '> address. See #121.'
             } >> "$GITHUB_STEP_SUMMARY"
           fi
 

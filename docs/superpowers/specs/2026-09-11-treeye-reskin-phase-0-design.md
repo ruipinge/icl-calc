@@ -409,16 +409,34 @@ base path is identical to production and to its eventual home:
 mkdir -p upload/icl-calc && cp -r build/* upload/icl-calc/
 ```
 
-giving `icl-calc-preview.pages.dev/icl-calc/`, from the same build L2 validated.
+giving `main.icl-calc-preview.pages.dev/icl-calc/` — see the note below on
+which hostname is the stable one.
 
-**One subtlety to verify on first deploy.** Cloudflare serves a deployment at
-the stable `<project>.pages.dev` hostname only when it is a *production*
-deployment of that project; a preview deployment gets a per-commit
-`<hash>.<project>.pages.dev` alias instead. Wrangler infers the branch from the
-CI environment, so an integration-branch deploy may land as a preview alias and
-produce a URL that changes every push — which defeats "a reviewable preview
-URL". `--branch` is therefore passed explicitly, and the resulting hostname is
-confirmed against the first real deployment rather than assumed.
+**What the first real deploy established (2026-09-13).** Cloudflare gives a
+Pages deployment two URLs: a per-commit `<hash>.<project>.pages.dev`, different
+on every push, and a **branch alias** `<branch>.<project>.pages.dev` that
+always points at the newest deployment of that branch. The bare
+`<project>.pages.dev` is served only by a *production* deployment — one whose
+`--branch` matches the project's production branch.
+
+This project's production branch is **not** `main`. The first deploy with
+`--branch=main` landed as a preview: the bare hostname 404s, while the alias
+serves. That is recorded rather than chased, because **the alias already
+satisfies what this phase needs** — a preview URL that does not change between
+pushes.
+
+So the reviewable URL is:
+
+```
+https://main.icl-calc-preview.pages.dev/icl-calc/
+```
+
+Verified serving, with `X-Robots-Tag: noindex` present on the response.
+
+The deploy job warns only when *no* alias is reported, which would leave the
+per-commit URL as the only way in. An earlier version warned whenever the bare
+hostname was not returned, which mischaracterised a working, stable alias as a
+URL that changes every push.
 
 ### 7.3 The preview must not be indexed
 
