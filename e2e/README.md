@@ -54,10 +54,22 @@ docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
   npx playwright test --project=visual-assert --update-snapshots
 ```
 
-On a failure, Playwright writes `expected`, `actual` and `diff` images under
-`e2e/test-results/`. CI uploads no artifact for these on purpose: the command
-above reproduces them deterministically, which is worth more than pinning
-another third-party action.
+On a failure, Playwright writes three images per disagreement under
+`e2e/test-results/`:
+
+| image | what it is |
+|---|---|
+| `*-expected.png` | the committed baseline — how the page looks on the branch being compared against |
+| `*-actual.png` | how it looks now |
+| `*-diff.png` | the two overlaid, differences highlighted |
+
+CI uploads that directory as a **`visual-diffs` artifact** on failure, so a
+disagreement is reviewable from the run page without checking the branch out.
+It is also how the #122 reskin gets compared against the current look: every
+baseline the reskin moves produces exactly this triple.
+
+Uploaded on failure only — on a green run the files do not exist, and an
+artifact per run of a passing gate is noise.
 
 **The image tag tracks `@playwright/test` in `e2e/package-lock.json`.** Bump
 them together. Leaving them apart means the browsers the tests were written

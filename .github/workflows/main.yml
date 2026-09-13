@@ -349,16 +349,37 @@ jobs:
       # `reuseExistingServer: true`, so two concurrent runs would leave the
       # second silently validating the first's build.
       #
-      # No diff-image artifact is uploaded. Regenerating locally with the
-      # documented command produces the same images deterministically, which
-      # avoids pinning another third-party action for output a reviewer can
-      # reproduce in one command.
       - name: Verify every route still looks and reads as expected (visual)
         run: |
           docker run --rm \
             -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
             mcr.microsoft.com/playwright:v1.62.1-noble \
             npx playwright test --project=visual-assert
+
+      # On a disagreement Playwright writes three images per failure:
+      # `-expected` (the committed baseline, i.e. how the page looks on the
+      # branch this is compared against), `-actual` (how it looks now) and
+      # `-diff`. Uploading them is what makes a visual failure reviewable
+      # without checking the branch out - and it is how the #122 reskin gets
+      # compared against the current look, since every baseline it moves
+      # produces exactly this triple.
+      #
+      # `if: failure()` rather than always(): on a green run these files do
+      # not exist, and an artifact per run of a passing gate is noise. The
+      # L2 replay step above can also fail and leave nothing behind, hence
+      # if-no-files-found: ignore rather than a spurious red on the upload.
+      #
+      # v7 matches the actions/checkout and actions/setup-node majors already
+      # used in this workflow, and is what dependabot's github-actions
+      # ecosystem will keep current.
+      - name: Upload the visual diffs when they disagree
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-diffs
+          path: e2e/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
 
   deploy:
     name: Release and publish to gh-pages
