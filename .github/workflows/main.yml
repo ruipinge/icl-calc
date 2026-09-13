@@ -326,6 +326,61 @@ jobs:
         run: npm run replay
         working-directory: e2e
 
+      # Visual and structural coverage for all four routes plus the shell
+      # (#121). Until this step existed, nothing in CI could observe a visual
+      # regression: L1 asserted authored class strings, L2 asserts computed
+      # values, and `histogram-visual.spec.ts` - often described as the
+      # visual coverage - is a capture tool its own header says never runs in
+      # CI. It did not: the only Playwright invocation in this workflow was
+      # `--project=replay`.
+      #
+      # Runs inside the official Playwright container rather than on the
+      # runner directly. Screenshots are pixel fixtures and therefore
+      # platform-bound, so the baselines a maintainer generates and the
+      # pixels this step compares them against have to come from the same
+      # browser build, the same OS and the same fonts. Generated locally with
+      # the identical command - see e2e/README.md. The image tag tracks the
+      # @playwright/test version in e2e/package-lock.json and must be bumped
+      # with it, or the browsers differ from the ones the tests were written
+      # against.
+      #
+      # Placed in this job, after the replay step, rather than in a job of
+      # its own: both drive the subject build on port 4022 with
+      # `reuseExistingServer: true`, so two concurrent runs would leave the
+      # second silently validating the first's build.
+      #
+      - name: Verify every route still looks and reads as expected (visual)
+        run: |
+          docker run --rm \
+            -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
+            mcr.microsoft.com/playwright:v1.62.1-noble \
+            npx playwright test --project=visual-assert
+
+      # On a disagreement Playwright writes three images per failure:
+      # `-expected` (the committed baseline, i.e. how the page looks on the
+      # branch this is compared against), `-actual` (how it looks now) and
+      # `-diff`. Uploading them is what makes a visual failure reviewable
+      # without checking the branch out - and it is how the #122 reskin gets
+      # compared against the current look, since every baseline it moves
+      # produces exactly this triple.
+      #
+      # `if: failure()` rather than always(): on a green run these files do
+      # not exist, and an artifact per run of a passing gate is noise. The
+      # L2 replay step above can also fail and leave nothing behind, hence
+      # if-no-files-found: ignore rather than a spurious red on the upload.
+      #
+      # v7 matches the actions/checkout and actions/setup-node majors already
+      # used in this workflow, and is what dependabot's github-actions
+      # ecosystem will keep current.
+      - name: Upload the visual diffs when they disagree
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-diffs
+          path: e2e/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
   deploy:
     name: Release and publish to gh-pages
     # golden-master-guard is pull_request-only (see its own `if:` above), so

@@ -7,7 +7,8 @@
     "setup": "./setup.sh",
     "test": "playwright test",
     "capture": "playwright test --project=capture",
-    "replay": "playwright test --project=replay"
+    "replay": "playwright test --project=replay",
+    "visual": "playwright test --project=visual-assert"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0",

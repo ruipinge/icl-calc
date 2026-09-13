@@ -1,0 +1,180 @@
+- navigation:
+  - link "ICL Size Calc":
+    - /url: /icl-calc/
+  - button "Reset"
+- list:
+  - listitem:
+    - link "Patient":
+      - /url: "#/"
+  - listitem:
+    - link "Biometric Normality":
+      - /url: "#/normality"
+  - listitem:
+    - link "Floating Matrix":
+      - /url: "#/matrix"
+  - listitem:
+    - link "Regression":
+      - /url: "#/regression"
+- separator
+- table:
+  - rowgroup:
+    - row /Lens Size \d+\.\d+ mm \d+\.\d+ mm \d+\.\d+ mm/:
+      - columnheader "Lens Size"
+      - columnheader /\d+\.\d+ mm/
+      - columnheader /\d+\.\d+ mm/
+      - columnheader /\d+\.\d+ mm/
+    - row "Myopia Low Moderate High Low Moderate High Low Moderate High":
+      - columnheader "Myopia"
+      - columnheader "Low"
+      - columnheader "Moderate"
+      - columnheader "High"
+      - columnheader "Low"
+      - columnheader "Moderate"
+      - columnheader "High"
+      - columnheader "Low"
+      - columnheader "Moderate"
+      - columnheader "High"
+  - rowgroup:
+    - row "Number of Eyes 0 0 0 0 0 0 0 0 0":
+      - rowheader "Number of Eyes"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+    - row:
+      - cell
+    - row "Average Vault (μm) 0 0 0 0 0 0 0 0 0":
+      - rowheader "Average Vault (μm)"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+    - row "Minimum Vault (μm) 0 0 0 0 0 0 0 0 0":
+      - rowheader "Minimum Vault (μm)"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+    - row "Maximum Vault (μm) 0 0 0 0 0 0 0 0 0":
+      - rowheader "Maximum Vault (μm)"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+    - row:
+      - cell
+    - row /% Vault < \d+ \(μm\) 0 0 0 0 0 0 0 0 0/:
+      - rowheader /% Vault < \d+ \(μm\)/
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+    - row /% \d+ < Vault < \d+ \(μm\) 0 0 0 0 0 0 0 0 0/:
+      - rowheader /% \d+ < Vault < \d+ \(μm\)/
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+    - row /% \d+ < Vault < \d+ \(μm\) 0 0 0 0 0 0 0 0 0/:
+      - rowheader /% \d+ < Vault < \d+ \(μm\)/
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+    - row /% \d+ < Vault < \d+ \(μm\) 0 0 0 0 0 0 0 0 0/:
+      - rowheader /% \d+ < Vault < \d+ \(μm\)/
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+    - row /% \d+ < Vault \(μm\) 0 0 0 0 0 0 0 0 0/:
+      - rowheader /% \d+ < Vault \(μm\)/
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+- list:
+  - listitem:
+    - strong: "Angle to Angle (AtA):"
+    - text: 0 mm.
+  - listitem:
+    - strong: "Crystaline Lens Rise (CLR):"
+    - text: 0 mm.
+  - listitem:
+    - strong: "Number of matching Eyes:"
+    - text: /0\/\d+\./
+- contentinfo:
+  - list:
+    - listitem:
+      - link "v0.0.0":
+        - /url: https://github.com/ruipinge/icl-calc/releases/tag/v0.0.0
+      - link /\(\d+\)/:
+        - /url: https://github.com/ruipinge/icl-calc/commit/0000000
+    - listitem:
+      - link "Instructions":
+        - /url: https://github.com/ruipinge/icl-calc/blob/main/README.md#instructions
+    - listitem:
+      - link "Data":
+        - /url: https://github.com/ruipinge/icl-calc/blob/main/README.md#data
+    - listitem:
+      - link "GitHub":
+        - /url: https://github.com/ruipinge/icl-calc
+  - paragraph:
+    - text: Designed and built with love by
+    - link "Pedro Serra":
+      - /url: https://www.linkedin.com/in/pedro-serra-44697321/
+    - text: and
+    - link "Rui Pinge":
+      - /url: https://ruipinge.github.io/resume
+    - text: .
+  - paragraph:
+    - text: Available under the
+    - link "MIT License":
+      - /url: https://github.com/ruipinge/icl-calc/blob/main/LICENSE
+    - text: without any kind of warranty.
+  - paragraph: The authors cannot be held responsible for any consequense of its usage.

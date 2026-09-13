@@ -1,0 +1,121 @@
+- navigation:
+  - link "ICL Size Calc":
+    - /url: /icl-calc/
+  - button "Reset"
+- list:
+  - listitem:
+    - link "Patient":
+      - /url: "#/"
+  - listitem:
+    - link "Biometric Normality":
+      - /url: "#/normality"
+  - listitem:
+    - link "Floating Matrix":
+      - /url: "#/matrix"
+  - listitem:
+    - link "Regression":
+      - /url: "#/regression"
+- separator
+- heading "Information" [level=4]
+- text: Name
+- textbox "Name":
+  - /placeholder: enter patient name
+- text: Date of Birth
+- textbox "Date of Birth":
+  - /placeholder: yyyy-mm-dd
+- text: Age
+- textbox "Age" [disabled]: "0"
+- text: years Eye
+- combobox "Eye":
+  - option "Select..."
+  - option "Left" [selected]
+  - option "Right"
+- separator
+- heading "Biometry" [level=4]
+- text: Angle to Angle (AtA)
+- spinbutton "Angle to Angle (AtA)": "0"
+- text: mm White to White (WtW)
+- spinbutton "White to White (WtW)": "0"
+- text: mm Crystaline Lens Rise (CLR)
+- spinbutton "Crystaline Lens Rise (CLR)": "0"
+- text: μm Internal Anterior Chamber Depth (ACD)
+- spinbutton "Internal Anterior Chamber Depth (ACD)": "0"
+- text: mm Anterior Chamber Angle nasal (ACAn)
+- spinbutton "Anterior Chamber Angle nasal (ACAn)": "0"
+- text: º Anterior Chamber Angle temporal (ACAt)
+- spinbutton "Anterior Chamber Angle temporal (ACAt)": "0"
+- text: º
+- heading "Cornea Profile" [level=4]
+- text: Anterior Keratometry Flat (KAntFlt)
+- spinbutton "Anterior Keratometry Flat (KAntFlt)": "0"
+- text: dpt @
+- spinbutton "@": "0"
+- text: º Anterior Keratometry Steep (KAntStp)
+- spinbutton "Anterior Keratometry Steep (KAntStp)": "0"
+- text: dpt @
+- spinbutton "@": "0"
+- text: º Posterior Keratometry Flat (KPostFlt)
+- spinbutton "Posterior Keratometry Flat (KPostFlt)": "0"
+- text: dpt @
+- spinbutton "@": "0"
+- text: º Posterior Keratometry Steep (KPostStp)
+- spinbutton "Posterior Keratometry Steep (KPostStp)": "0"
+- text: dpt @
+- spinbutton "@": "0"
+- text: º Central Corneal Thickness (CCT)
+- spinbutton "Central Corneal Thickness (CCT)": "0"
+- text: μm Previous Corneal Refractive Surgery
+- combobox "Previous Corneal Refractive Surgery":
+  - option "None" [selected]
+  - option "Myopia"
+  - option "Hyperopia"
+- heading "Spectacle Refraction" [level=4]
+- text: Sphere
+- spinbutton "Sphere": "0"
+- text: dpt Cylindre
+- spinbutton "Cylindre": "0"
+- text: dpt Axis
+- spinbutton "Axis": "0"
+- text: º Vertex
+- spinbutton "Vertex": "0"
+- text: mm
+- heading "ICL Power" [level=4]
+- text: Sphere
+- textbox "Sphere" [disabled]: "0"
+- text: dpt Cylindre
+- textbox "Cylindre" [disabled]: "0"
+- text: dpt Axis
+- textbox "Axis" [disabled]: /\d+/
+- text: º Spherical Equivalent (SE)
+- textbox "Spherical Equivalent (SE)" [disabled]: "0"
+- text: dpt
+- contentinfo:
+  - list:
+    - listitem:
+      - link "v0.0.0":
+        - /url: https://github.com/ruipinge/icl-calc/releases/tag/v0.0.0
+      - link /\(\d+\)/:
+        - /url: https://github.com/ruipinge/icl-calc/commit/0000000
+    - listitem:
+      - link "Instructions":
+        - /url: https://github.com/ruipinge/icl-calc/blob/main/README.md#instructions
+    - listitem:
+      - link "Data":
+        - /url: https://github.com/ruipinge/icl-calc/blob/main/README.md#data
+    - listitem:
+      - link "GitHub":
+        - /url: https://github.com/ruipinge/icl-calc
+  - paragraph:
+    - text: Designed and built with love by
+    - link "Pedro Serra":
+      - /url: https://www.linkedin.com/in/pedro-serra-44697321/
+    - text: and
+    - link "Rui Pinge":
+      - /url: https://ruipinge.github.io/resume
+    - text: .
+  - paragraph:
+    - text: Available under the
+    - link "MIT License":
+      - /url: https://github.com/ruipinge/icl-calc/blob/main/LICENSE
+    - text: without any kind of warranty.
+  - paragraph: The authors cannot be held responsible for any consequense of its usage.

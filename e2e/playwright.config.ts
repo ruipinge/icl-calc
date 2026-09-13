@@ -71,6 +71,23 @@ export default defineConfig({
       use: { baseURL: `http://127.0.0.1:${SUBJECT_PORT}/icl-calc/` }
     },
     {
+      // Visual and structural coverage for all four routes plus the shell,
+      // at two viewports (#121). Unlike `visual` above, this one asserts and
+      // DOES run in CI - it is the gate that did not exist before.
+      //
+      // Runs against the subject build, like `replay`, and therefore shares
+      // its port. Never run the two concurrently: `reuseExistingServer` means
+      // the second silently validates the first's build.
+      name: 'visual-assert',
+      // Anchored to the path separator and the end of the name. An unanchored
+      // /visual\.spec\.ts/ also matches histogram-visual.spec.ts, which would
+      // pull the capture tool into this asserting project and into CI - the
+      // one thing its own header says must not happen. It did, until this
+      // was anchored: the capture tool ran and wrote PNGs into the worktree.
+      testMatch: /[\\/]visual\.spec\.ts$/,
+      use: { baseURL: `http://127.0.0.1:${SUBJECT_PORT}/icl-calc/` }
+    },
+    {
       name: 'smoke',
       testMatch: /smoke\.spec\.ts/,
       use: { baseURL: `http://127.0.0.1:${ORACLE_PORT}/icl-calc/` }
