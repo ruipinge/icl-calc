@@ -50,8 +50,12 @@ export const openApp = async (page: Page) => {
 export const gotoTab = async (page: Page, label: TabLabel) => {
   const link = page.getByRole('link', { name: label, exact: true });
   await link.click();
-  // NavLink gets activeClassName="active" only once the route actually matches.
-  await expect(link).toHaveClass(/\bactive\b/);
+  // NavLink sets aria-current="page" only once the route actually matches.
+  // Asserted rather than the `active` class: the class is presentational and
+  // #122 replaces it, where aria-current is the semantic the tab strip must
+  // keep whatever it looks like. src/misc/TabLinks.test.tsx pins the same
+  // attribute at the unit level.
+  await expect(link).toHaveAttribute('aria-current', 'page');
 };
 
 const setNumber = async (page: Page, name: string, value: number) => {
@@ -136,8 +140,14 @@ export const readAll = async (page: Page): Promise<Capture> => {
   await gotoTab(page, 'Floating Matrix');
   await expect(page.locator('table')).toHaveCount(1);
   const matrixRows = await tableRows(page, 0);
+  // Addressed by test hook, not by `ul.list-inline`: that is a Bootstrap
+  // class and #122 deletes it, at which point this read would silently
+  // return [] and the capture would differ from expected.json for a
+  // presentational reason. The list has no accessible name and no stable
+  // position (the ledger pattern wraps the table in a scroll container),
+  // so a hook is the honest handle.
   const footer = await page
-    .locator('ul.list-inline li')
+    .locator('[data-testid="matrix-summary"] li')
     .evaluateAll((ls) => ls.map((l) => (l.textContent ?? '').trim()));
 
   // --- Regression tab
@@ -152,7 +162,19 @@ export const readAll = async (page: Page): Promise<Capture> => {
   // and meaningful captured value. amCharts also renders SVG, hence the scope
   // to the gauge container's inline margin-left.
   await gotoTab(page, 'Biometric Normality');
-  const gauges = page.locator('div[style*="margin-left: 71px"]');
+  // Addressed by test hook, not by the container's inline pixel margin.
+  // That margin is presentation - it exists to align the gauge with the
+  // histogram above it - and keying the oracle to it means any restyle of
+  // the charts fails L2 for a reason that has nothing to do with a
+  // clinical value.
+  //
+  // NOTE for #122's chart work: what is read below IS part of the golden
+  // master. The captured string encodes the pointer's `left` percentage
+  // (real arithmetic), `Math.floor(pointer.width / 2)` and `zoneHeight`.
+  // With the defaults those are 4 and 12, giving `top: 12px`. Changing the
+  // band thickness or the pointer size therefore turns L2 red. The gauge
+  // restyle is colour only.
+  const gauges = page.locator('[data-testid="gauge"]');
   await expect(gauges).toHaveCount(6);
   const pointers = await gauges.evaluateAll((els) =>
     els.map((el) => {
