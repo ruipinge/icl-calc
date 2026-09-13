@@ -443,6 +443,19 @@ jade → ember → crimson — and **#138** gives it `role="img"` and an accessi
 stating the value and the band it falls in, so the reading is available as text
 and colour is reinforcement rather than the sole channel.
 
+**The gauge restyle is colour only, and this is a hard constraint.** L2 captures
+the pointer's inline style verbatim — `position: absolute; left: calc(38.0282% -
+2px); top: 12px;` for the first gauge of row `01-baseline`. Reading
+`src/normality/linear-gauge/index.ts`, that string encodes three things: the
+value percentage (real arithmetic), `Math.floor(pointer.width / 2)` from
+`createPointer`, and `zoneHeight` from `pointerSvg.style.setProperty('top', …)`.
+With the defaults those are `4` and `12`.
+
+So changing the band thickness or the pointer size moves a value inside
+`expected.json`, which is frozen and guarded. A thicker band is not worth an
+`oracle/*` branch. PR 6 changes `color` and nothing else about the gauge's
+geometry.
+
 ### 7.1 The `buildZones` refactor (decision 5)
 
 Two options were considered for §2.3.
@@ -555,7 +568,7 @@ publish watched before the next.
 | # | PR | fixtures expected to move |
 |---|---|---|
 | 0 | `docs:` this design | none |
-| 1 | `test:` address the browser gates by role and name, not by class | **none** — zero `src/` diff is the proof |
+| 1 | `test:` address the browser gates by role and hook, not by class | **none** — every fixture byte-identical is the proof (§11.1) |
 | 2 | `fix:` associate regression row labels with their own rows (#137) | `regression.aria.yml` |
 | 3 | `feat:` adopt the Treeye design system and drop Bootstrap | all 14 screenshots; `separator` entries in all four aria fixtures |
 | 4 | `feat:` rebuild the patient form on the measured-row pattern (#136, #139) | patient ×2; ~40 lines of `patient.aria.yml` |
@@ -565,10 +578,24 @@ publish watched before the next.
 
 ### 11.1 Why the harness is decoupled first
 
-§2.2. PR 1 touches no file under `src/`, so **L2 green plus fourteen
-byte-identical screenshots is the evidence that it changed nothing** — the change
-proves itself. Every PR after it then runs against a harness that measures values
-rather than class names.
+§2.2. Every PR after it runs against a harness that measures values rather than
+class names.
+
+An earlier draft of this section claimed PR 1 touches no file under `src/`, and
+that writing the implementation plan is what disproved it. Three of the five
+handles repoint cleanly — the tab assertion moves to `aria-current`, which
+`NavLink` already emits and `TabLinks.test.tsx` already asserts, and the shell
+screenshot moves to the header's implicit role. The other two have no stable
+role, name or structural position that survives the reskin: the matrix summary
+list is unnamed, and wrapping the table in the ledger's scroll container destroys
+any sibling-based path to it. Those two get a `data-testid` each — the same
+handle, for the same reason, that `Histogram.tsx` has carried since #51.
+
+The proof is therefore not diff inspection but the gates, which is stronger.
+`data-testid` reaches neither the rendered pixels nor the accessibility tree, so
+PR 1 is inert by construction and the evidence is **L2 green, all 14 screenshots
+byte-identical, all 4 aria fixtures byte-identical, and coverage unmoved**. If
+any fixture moves, the attribute reached the output somehow and that is a stop.
 
 ### 11.2 Why Bootstrap leaves in PR 3, not last
 
@@ -584,8 +611,21 @@ The alternative — drop Bootstrap first and leave regions unstyled until their 
 So PR 3 lands tokens, the reset, the fonts and a **base element layer** together:
 bare `input`, `select`, `button`, `table`, `th`, `td` styled in the Treeye idiom.
 No route is ever unstyled or hybrid, every later PR is additive refinement of one
-region, and Bootstrap's removal is a single self-contained diff. Its production
-surface is only four files plus `package.json`; the bulk is one new stylesheet.
+region, and Bootstrap's removal is a single self-contained diff.
+
+**And a temporary grid shim, which writing the plan showed is unavoidable.**
+Bootstrap supplies every *layout* primitive this application uses, not only its
+controls — `container`, `row`, `form-row`, `col-4`, `col-sm-6`,
+`col-md-{2,3,4,5,6}`, `offset-md-1`. Deleting it with only a base *element* layer
+collapses the Patient tab's three columns and the Normality tab's six-graph grid
+into a single stacked column, which is exactly the hybrid-intermediate state this
+ordering exists to avoid.
+
+PR 3 therefore carries about forty lines reimplementing precisely those classes,
+each block commented with the PR that deletes it, reaching **zero by the end of
+PR 6**. A shim block still present after PR 6 means a region kept a
+Bootstrap-shaped layout. The alternative — rewriting every layout wrapper in
+PR 3 — makes PR 3 the whole reskin and defeats the sequencing.
 
 ### 11.3 Why #65 is last and separate
 
@@ -639,6 +679,8 @@ footer".
 | Aria fixtures moving more than expected | per-PR fixture accounting; unexpected movement stops the PR (§10) |
 | Screenshots regenerated on the wrong platform | container only; image tag tracks `@playwright/test` in `e2e/package-lock.json` |
 | Two Playwright projects at once | never; both bind 4022 and the second goes silently green (§10) |
+| Gauge geometry is in the frozen oracle | PR 6 changes colour only; `zoneHeight` and `pointer.width` stay at 12 and 4 (§7) |
+| The grid shim outliving its welcome | every block names the PR that deletes it; the section must be empty after PR 6 (§11.2) |
 | `#41`, `#123`, `#124`, `#126`, `#127` drifting in | out of scope; the TODO in `src/formulas.ts` (line 46 today — #122's brief says 45) is not deleted, and `sonarjs/todo-tag` is `'off'` in `eslint.config.mjs` precisely so CI cannot pressure anyone into removing the marker instead of implementing the clinical warning it marks |
 
 ---
