@@ -351,7 +351,7 @@ Add to `src/regression/index.test.tsx`:
  * attribute faithfully for years and asserted nothing about it.
  */
 it('marks each lens-size cell as its row header, not a column header', () => {
-  render(<Regression {...VALUES} />);
+  renderRegression();
 
   const rowHeaders = screen.getAllByRole('rowheader');
 
@@ -367,6 +367,29 @@ it('marks each lens-size cell as its row header, not a column header', () => {
 ```
 
 `getAllByRole('rowheader')` is the point: a `<th scope="col">` inside a `<tbody>` row exposes role `columnheader`, so this query finds nothing until the fix lands.
+
+Use the file's existing `renderRegression()` helper — it renders `<Regression {...RI} />` with `RI` imported from `./formulas.test`. Do not introduce a new fixture.
+
+**The file's docblock must be updated in the same commit.** Phase 0 left this paragraph in `src/regression/index.test.tsx`, and the fix makes it false:
+
+> Note the row labels in both tbody sections are scope="col", so they expose
+> the columnheader role rather than rowheader. That is a pre-existing
+> mis-scoping, not something this phase changes […] but it is why readRows
+> finds them as headers either way.
+
+Replace it with:
+
+```
+ * The row labels in both tbody sections are scope="row" as of #137. They
+ * were scope="col" when this file was written, which exposed them as
+ * columnheader; readRows collects both roles, so its assertions read the
+ * same either way and did not have to change.
+```
+
+Leaving the old paragraph would document a defect that no longer exists, in the
+one file a future reader would check to find out whether it still does.
+
+`readRows` itself needs no change — verified: `src/matrix/components.test.tsx:17-30` queries `rowheader` *and* `columnheader` and concatenates them.
 
 - [ ] **Step 2: Run it and watch it fail**
 
