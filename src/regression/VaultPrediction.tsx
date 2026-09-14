@@ -27,7 +27,7 @@ export const VaultPrediction = (values: RegressionInfo) => (
       <tbody>
         {LENS_SIZES.map((size) => (
           <tr key={size.id}>
-            <th scope="col" className="col-4">
+            <th scope="row" className="col-4">
               {size.label}
             </th>
             <td className="col-4 text-right">
