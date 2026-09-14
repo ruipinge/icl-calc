@@ -10,7 +10,7 @@
     "replay": "playwright test --project=replay"
   },
   "devDependencies": {
-    "@playwright/test": "^1.56.0",
+    "@playwright/test": "^1.63.0",
     "http-server": "^14.1.1"
   }
 }
