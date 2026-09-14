@@ -25,16 +25,10 @@ const LINKS: Link[] = [
 ];
 
 export const TabLinks = () => (
-  <ul className="nav nav-pills" style={{ marginBottom: '1rem' }}>
+  <ul className="tabs">
     {LINKS.map((link, index) => (
-      <li className="nav-item" key={index}>
-        <NavLink
-          end={true}
-          className={({ isActive }) =>
-            isActive ? 'nav-link active' : 'nav-link'
-          }
-          to={link.to}
-        >
+      <li key={index}>
+        <NavLink end={true} to={link.to}>
           {link.label}
         </NavLink>
       </li>

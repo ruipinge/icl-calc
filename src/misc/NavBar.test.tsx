@@ -32,3 +32,17 @@ it('resets the form when the Reset button is clicked', () => {
 
   expect(resets).toBe(1);
 });
+
+/*
+ * The mark is the only route back to the group's site while the calculator
+ * is hosted apart from it (#122 owner decision; #123 moves it under the
+ * Treeye origin and adds real cross-site nav).
+ */
+it('links the Treeye mark at the group site', () => {
+  render(<NavBar resetForm={() => {}} />);
+
+  expect(screen.getByRole('link', { name: 'Treeye' })).toHaveAttribute(
+    'href',
+    'https://treeye.science/'
+  );
+});

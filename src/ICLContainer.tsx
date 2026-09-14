@@ -97,7 +97,7 @@ const FormContent = ({
   return (
     <>
       <NavBar resetForm={resetForm} />
-      <div className="container">
+      <div className="wrap">
         {/*
           Hash routing, not BrowserRouter: this deploys to GitHub Pages, which
           serves no SPA fallback, so a real path would 404 on reload. v7 dropped
@@ -109,7 +109,6 @@ const FormContent = ({
         */}
         <Router>
           <TabLinks />
-          <hr />
           <TabContent
             values={values}
             errors={errors}
