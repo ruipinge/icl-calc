@@ -1,4 +1,4 @@
-import './App.scss';
+import './App.css';
 
 import * as Sentry from '@sentry/react';
 
