@@ -97,7 +97,7 @@ const FormContent = ({
   return (
     <>
       <NavBar resetForm={resetForm} />
-      <div className="container">
+      <div className="wrap">
         {/*
           Hash routing, not BrowserRouter: this deploys to GitHub Pages, which
           serves no SPA fallback, so a real path would 404 on reload. v7 dropped
@@ -107,9 +107,14 @@ const FormContent = ({
           the next click. See src/ICLContainer.test.tsx for the tests that hold
           that guarantee.
         */}
+        {/*
+          No <hr> between the tabs and the content: the chrome band's own
+          spectrum rule closes the shell, and the element rendered a
+          `separator` entry in all four aria fixtures for a purely decorative
+          line.
+        */}
         <Router>
           <TabLinks />
-          <hr />
           <TabContent
             values={values}
             errors={errors}

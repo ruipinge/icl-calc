@@ -23,6 +23,22 @@ it('points the brand link at the configured base path', () => {
   );
 });
 
+/*
+ * The mark is the only route back to the group's site while the calculator is
+ * hosted apart from it (#122 owner decision; #123 moves it under the Treeye
+ * origin and adds real cross-site nav). It is a second link rather than a
+ * relabelling of the first, because the first one's href is the base-path
+ * guard asserted above and must not move.
+ */
+it('links the Treeye mark at the group site', () => {
+  render(<NavBar resetForm={() => {}} />);
+
+  expect(screen.getByRole('link', { name: 'Treeye' })).toHaveAttribute(
+    'href',
+    'https://treeye.science/'
+  );
+});
+
 it('resets the form when the Reset button is clicked', () => {
   let resets = 0;
 

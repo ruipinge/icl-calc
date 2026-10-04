@@ -24,17 +24,17 @@ const LINKS: Link[] = [
   }
 ];
 
+/*
+ * The active tab is marked by aria-current="page", which NavLink sets on its
+ * own - the `active` class this used to carry was presentational, and the
+ * browser gates were repointed off it before this reskin began. TabLinks.test
+ * asserts aria-current directly.
+ */
 export const TabLinks = () => (
-  <ul className="nav nav-pills" style={{ marginBottom: '1rem' }}>
+  <ul className="tabs">
     {LINKS.map((link, index) => (
-      <li className="nav-item" key={index}>
-        <NavLink
-          end={true}
-          className={({ isActive }) =>
-            isActive ? 'nav-link active' : 'nav-link'
-          }
-          to={link.to}
-        >
+      <li key={index}>
+        <NavLink end={true} to={link.to}>
           {link.label}
         </NavLink>
       </li>
