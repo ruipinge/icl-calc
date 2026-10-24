@@ -144,11 +144,21 @@ have.
 
 ### Shell
 
-Node version is pinned in `.nvmrc` (`e2e/.nvmrc` is inert). The shell is
-**zsh**: `${PIPESTATUS[0]}` is empty, so check exit codes with a standalone
-`echo $?` on its own line, never through a pipe. Run `npm install`/`npm ci` in
-the background and poll — a foreground npm command that goes quiet can be
-killed by a stall watchdog.
+Node version is pinned in `.nvmrc` (`e2e/.nvmrc` is inert).
+
+**Do not read an exit code through a pipe.** `${PIPESTATUS[0]}` is a bash
+feature and is empty under zsh, which this project has been developed on — so
+it is not portable between a maintainer's macOS shell and a Linux server or CI
+runner. Check with a standalone `echo $?` on its own line, which is correct
+everywhere.
+
+Run `npm install`/`npm ci` in the background and poll rather than in the
+foreground — a command that goes quiet for long enough can be killed by an
+agent stall watchdog.
+
+Paths differ by host: the oracle worktree, any shared-folder mount and the
+worktree layout are all machine-specific. Nothing in this file assumes a
+particular one.
 
 ## Do not "helpfully" fix
 
