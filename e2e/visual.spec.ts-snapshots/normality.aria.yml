@@ -1,4 +1,6 @@
 - navigation:
+  - link "Treeye":
+    - /url: https://treeye.science/
   - link "ICL Size Calc":
     - /url: /icl-calc/
   - button "Reset"
@@ -15,7 +17,6 @@
   - listitem:
     - link "Regression":
       - /url: "#/regression"
-- separator
 - img "Histogram of Angle to Angle - AtA (mm)": /Angle to Angle - AtA \(mm\) 0 \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
 - img "Histogram of Crystalline Lens Rise - CLR (μm)": /Crystalline Lens Rise - CLR \(μm\) 0 \d+ \d+ \d+ Number of Eyes -\d+ -\d+ \d+ \d+ \d+/
 - img
