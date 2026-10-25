@@ -553,3 +553,16 @@ input[type='number']::-webkit-outer-spin-button {
 .pl-0 {
   padding-left: 0;
 }
+
+/* deleted by PR 6 — the charts read Bootstrap's theme colours by name at
+ * runtime (Gauge.tsx for the RAG zones, Histogram.tsx for bar fill and
+ * stroke). Without these the zones render transparent and the bars black.
+ * Bootstrap 4.6.2's values, so the charts look as they did until PR 6
+ * moves them onto Treeye tokens. */
+:root {
+  --secondary: #6c757d;
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --dark: #343a40;
+}
