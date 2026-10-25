@@ -25,15 +25,15 @@
       - columnheader "Corneal Endothelium to ICL (mm)"
   - rowgroup:
     - row /\d+\.\d+ mm \d+\.\d+ -\d+\.\d+/:
-      - columnheader /\d+\.\d+ mm/
+      - rowheader /\d+\.\d+ mm/
       - cell /\d+\.\d+/
       - cell /-\d+\.\d+/
     - row /\d+\.\d+ mm \d+\.\d+ -\d+\.\d+/:
-      - columnheader /\d+\.\d+ mm/
+      - rowheader /\d+\.\d+ mm/
       - cell /\d+\.\d+/
       - cell /-\d+\.\d+/
     - row /\d+\.\d+ mm \d+\.\d+ -\d+\.\d+/:
-      - columnheader /\d+\.\d+ mm/
+      - rowheader /\d+\.\d+ mm/
       - cell /\d+\.\d+/
       - cell /-\d+\.\d+/
 - separator
@@ -45,13 +45,13 @@
       - columnheader "Probability (%)"
   - rowgroup:
     - row /\d+\.\d+ mm 0/:
-      - columnheader /\d+\.\d+ mm/
+      - rowheader /\d+\.\d+ mm/
       - cell "0"
     - row /\d+\.\d+ mm 0/:
-      - columnheader /\d+\.\d+ mm/
+      - rowheader /\d+\.\d+ mm/
       - cell "0"
     - row /\d+\.\d+ mm 0/:
-      - columnheader /\d+\.\d+ mm/
+      - rowheader /\d+\.\d+ mm/
       - cell "0"
 - contentinfo:
   - list:

@@ -15,11 +15,10 @@ import { readRows } from '../matrix/components.test';
  * formulas themselves are covered by regression/formulas.test.ts and by the
  * golden master.
  *
- * Note the row labels in both tbody sections are scope="col", so they expose
- * the columnheader role rather than rowheader. That is a pre-existing
- * mis-scoping, not something this phase changes - it renders nothing
- * differently and #121 touches no markup - but it is why readRows finds them
- * as headers either way.
+ * The row labels in both tbody sections are scope="row" as of #137. They
+ * were scope="col" when this file was written, which exposed them as
+ * columnheader; readRows collects both roles, so its assertions read the
+ * same either way and did not have to change.
  */
 const renderRegression = () => render(<Regression {...RI} />);
 
@@ -55,5 +54,27 @@ it('gives the probability of a vault in range for each lens size', () => {
     ['12.6 mm', '83.8'],
     ['13.2 mm', '77.7'],
     ['13.7 mm', '11.2']
+  ]);
+});
+
+/*
+ * #137. Both tables marked their tbody row labels scope="col", so a screen
+ * reader associated every vault figure with the wrong header axis - the
+ * lens size was announced as a column heading for the columns beside it
+ * rather than as the row's own label. The DOM snapshots recorded the broken
+ * attribute faithfully for years and asserted nothing about it.
+ */
+it('marks each lens-size cell as its row header, not a column header', () => {
+  renderRegression();
+
+  const rowHeaders = screen.getAllByRole('rowheader');
+
+  expect(rowHeaders.map((h) => h.textContent)).toEqual([
+    '12.6 mm',
+    '13.2 mm',
+    '13.7 mm',
+    '12.6 mm',
+    '13.2 mm',
+    '13.7 mm'
   ]);
 });
