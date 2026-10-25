@@ -135,6 +135,7 @@ export const Gauge = ({
     // Insets shared with the histogram above - see plot-inset.ts for why
     // these two must agree.
     <div
+      data-testid="gauge"
       style={{
         marginLeft: `${PLOT_INSET_LEFT}px`,
         marginRight: `${PLOT_INSET_RIGHT}px`

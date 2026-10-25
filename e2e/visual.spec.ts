@@ -130,7 +130,10 @@ for (const viewport of VIEWPORTS) {
     test('the shell looks right', async ({ page }) => {
       await open(page, null);
 
-      await expect(page.locator('nav.navbar')).toHaveScreenshot(
+      // By role, not `.navbar`: that is a Bootstrap class #122 deletes.
+      // The header is the only <nav> on any route, so the implicit
+      // navigation role addresses it uniquely.
+      await expect(page.getByRole('navigation')).toHaveScreenshot(
         `shell-navbar-${viewport.name}.png`
       );
       // The tab strip is the first list on the page; the footer's link list

@@ -69,7 +69,7 @@ export const Matrix = (filter: MatrixFilter) => (
         <VaultDistributionRows {...filter} />
       </tbody>
     </table>
-    <ul className="list-inline">
+    <ul className="list-inline" data-testid="matrix-summary">
       <li className="list-inline-item">
         <strong>Angle to Angle (AtA): </strong>
         {filter.ata} mm.
