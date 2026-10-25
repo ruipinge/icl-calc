@@ -78,6 +78,10 @@ is **`/icl-calc/` everywhere** — production, preview, and
 `import.meta.env.BASE_URL` in the navbar brand link, and `test.env.BASE_URL` all
 stay exactly as they are. The single exception is §7.1's gh-pages stopgap.
 
+> **Retired (#171, 2026-10-25).** The §7.1 stopgap no longer exists, so this
+> exception no longer applies: `/icl-calc/` is now the base everywhere, with no
+> exception.
+
 ---
 
 ## 3. Non-goals
@@ -358,6 +362,12 @@ placement.
 Both, and they are not equals. Decided by the owner on 2026-09-10.
 
 ### 7.1 gh-pages under `preview/` — first, because it needs no secrets
+
+> **Retired (#171, 2026-10-25).** The `preview-gh-pages` job has been removed
+> from `main.yml` now that the §7.2 Cloudflare preview is up
+> (<https://main.icl-calc-preview.pages.dev/icl-calc/>). The text below is kept
+> as the record of what was built and why. One part outlives it: `keep_files:
+> true` on the production deploy stays, by the owner's decision in #171.
 
 Publishes the integration branch via the existing `peaceiris/actions-gh-pages`
 action's `destination_dir: preview`.
