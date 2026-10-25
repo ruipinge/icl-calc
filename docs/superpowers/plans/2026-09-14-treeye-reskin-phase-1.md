@@ -45,7 +45,7 @@ Visual assertion, separately and never concurrently with the above:
 ```sh
 docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
   -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-  mcr.microsoft.com/playwright:v1.62.1-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --project=visual-assert
 ```
 
@@ -257,7 +257,7 @@ echo $?
 # (d) navbar screenshot — temporarily remove the <nav> wrapper
 docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
   -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-  mcr.microsoft.com/playwright:v1.62.1-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --project=visual-assert   # expect FAIL: locator resolved to 0
 ```
 
@@ -277,7 +277,7 @@ Then, separately:
 ```sh
 docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
   -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-  mcr.microsoft.com/playwright:v1.62.1-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --project=visual-assert
 echo $?
 git status --porcelain e2e/visual.spec.ts-snapshots/
@@ -434,7 +434,7 @@ Revert one of the two files to `scope="col"`, re-run, confirm the expectation fa
 npm run build && bash e2e/setup.sh --subject-only
 docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
   -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-  mcr.microsoft.com/playwright:v1.62.1-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --project=visual-assert --update-snapshots
 git status --porcelain e2e/visual.spec.ts-snapshots/
 ```
@@ -1274,7 +1274,7 @@ Deliberately run the assertion, not the update, so Playwright writes the expecte
 npm run build && bash e2e/setup.sh --subject-only
 docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
   -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-  mcr.microsoft.com/playwright:v1.62.1-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --project=visual-assert
 ls e2e/test-results/
 ```
@@ -1299,7 +1299,7 @@ The header stays `- navigation:` in every fixture. If it became `- banner:`, the
 ```sh
 docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
   -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-  mcr.microsoft.com/playwright:v1.62.1-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --project=visual-assert --update-snapshots
 echo $?
 git status --porcelain e2e/visual.spec.ts-snapshots/

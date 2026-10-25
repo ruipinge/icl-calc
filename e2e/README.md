@@ -45,12 +45,12 @@ identical pixels:
 
 # assert against the committed baselines - the same command CI runs
 docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-  mcr.microsoft.com/playwright:v1.62.1-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --project=visual-assert
 
 # regenerate them, after a deliberate visual change
 docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-  mcr.microsoft.com/playwright:v1.62.1-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --project=visual-assert --update-snapshots
 ```
 

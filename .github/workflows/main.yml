@@ -359,7 +359,7 @@ jobs:
         run: |
           docker run --rm \
             -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-            mcr.microsoft.com/playwright:v1.62.1-noble \
+            mcr.microsoft.com/playwright:v1.64.1-noble \
             npx playwright test --project=visual-assert
 
       # On a disagreement Playwright writes three images per failure:
