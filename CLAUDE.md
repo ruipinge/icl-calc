@@ -50,7 +50,7 @@ npm run build
 bash e2e/setup.sh --subject-only
 docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
   -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
-  mcr.microsoft.com/playwright:v1.62.1-noble \
+  mcr.microsoft.com/playwright:v1.64.1-noble \
   npx playwright test --project=visual-assert
 ```
 
