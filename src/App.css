@@ -1,0 +1,568 @@
+/*
+ * The Treeye design system, adopted for the calculator (#122).
+ *
+ * Tokens, both typefaces and the component patterns are read from the live
+ * site at https://preview.treeye.pages.dev/ - not from treeye.science, which
+ * is a placeholder (see #120's correction). Everything above the "additions"
+ * block is verbatim from that stylesheet.
+ *
+ * Plain CSS, no framework: Bootstrap left in this commit and the Treeye
+ * system is custom properties all the way down.
+ */
+
+/* --------------------------------------------------------------- fonts
+ * Self-hosted latin subsets, byte-identical to what the site serves. The
+ * site states it makes no third-party requests; matching that is deliberate,
+ * so these must never become a CDN link.
+ *
+ * NOTE: both Poppins subsets were built with every OpenType feature
+ * stripped and have PROPORTIONAL digits - `1` is less than half the width
+ * of `6`, and font-variant-numeric: tabular-nums is inert on them. Every
+ * numeral in this application is therefore set in Newsreader, whose subset
+ * does carry tnum. See spec section 2.1.
+ */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('./fonts/poppins-300-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./fonts/poppins-500-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/newsreader-400-latin.woff2') format('woff2');
+}
+
+/* -------------------------------------------------------------- tokens */
+:root {
+  --violet: #421655;
+  --ink: #2a2230;
+  --leaf-purple: #532284;
+  --leaf-indigo: #51499e;
+  --leaf-blue: #3a62a8;
+  --leaf-teal: #0d8d9c;
+  --leaf-jade: #328d65;
+  --leaf-green: #659748;
+  --leaf-lime: #83b04b;
+  --leaf-yellow: #f5bf39;
+  --leaf-orange: #e98834;
+  --leaf-ember: #db7338;
+  --leaf-red: #b02b3f;
+  --leaf-crimson: #9d1842;
+
+  --muted: #6a6072;
+  --faint: #8e8598;
+  --rule: #e8e3ec;
+  --paper: #ffffff;
+  --wash: #faf8fb;
+
+  --display: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+  --prose: 'Newsreader', Georgia, 'Times New Roman', serif;
+
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+  --measure: 68rem;
+
+  --spectrum: linear-gradient(
+    90deg,
+    var(--leaf-purple),
+    var(--leaf-indigo),
+    var(--leaf-blue),
+    var(--leaf-teal),
+    var(--leaf-jade),
+    var(--leaf-green),
+    var(--leaf-lime),
+    var(--leaf-yellow),
+    var(--leaf-orange),
+    var(--leaf-ember),
+    var(--leaf-red),
+    var(--leaf-crimson)
+  );
+
+  /* Additions this phase makes, and no others - see spec section 4.2. */
+  --chrome: #f6f2f7;
+  --field: #faf8fb;
+  --lens-small: var(--leaf-indigo);
+  --lens-medium: var(--leaf-teal);
+  --lens-large: var(--leaf-jade);
+}
+
+/* --------------------------------------------------------------- reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--prose);
+  font-size: 1rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--display);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--violet);
+}
+
+h4 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin: 0 0 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+h4::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+a {
+  color: var(--violet);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 2px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 1.6rem 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.wrap {
+  width: min(100% - var(--gutter) * 2, var(--measure));
+  margin-inline: auto;
+}
+
+/* ------------------------------------------------------ base element layer
+ * Bare controls, styled so that no route is unstyled between here and the
+ * PR that gives its region a pattern. PR 4 replaces the form treatment and
+ * PR 5 the table treatment; what stays here afterwards is the fallback for
+ * anything not explicitly patterned.
+ */
+input,
+select,
+button,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+input,
+select {
+  font-family: var(--prose);
+  font-variant-numeric: tabular-nums;
+  background: var(--field);
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 3px 3px 0 0;
+  padding: 0.24rem 0.5rem;
+  width: 100%;
+}
+
+select {
+  font-family: var(--display);
+  font-weight: 300;
+}
+
+input:focus-visible,
+select:focus-visible {
+  border-bottom-color: var(--violet);
+}
+
+input:disabled {
+  background: transparent;
+  border-bottom-style: dotted;
+  color: var(--muted);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  padding: 0.42rem 0.7rem;
+  text-align: right;
+  vertical-align: baseline;
+}
+
+thead th {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  border-bottom: 1px solid var(--rule);
+}
+
+tbody th[scope='row'] {
+  text-align: left;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: 0.84rem;
+  color: var(--ink);
+}
+
+tbody td {
+  font-family: var(--prose);
+  font-variant-numeric: tabular-nums;
+}
+
+.btn-ghost {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: var(--violet);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.4em 1.1em;
+  cursor: pointer;
+  width: auto;
+}
+.btn-ghost:hover {
+  border-color: var(--violet);
+}
+
+/* -------------------------------------------------------------- chrome
+ * The header and the tab strip share one tinted band closed by the leaf
+ * spectrum: `.section.tint` applied to the chrome rather than a new device.
+ * The chrome block is the tool; the paper below it is the work.
+ */
+.chrome {
+  background: var(--chrome);
+  border-bottom: 2px solid transparent;
+  border-image: var(--spectrum) 1;
+}
+
+.chrome-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 3.4rem;
+  padding-block: 0.7rem;
+}
+
+.chrome .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+.chrome .brand svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  display: block;
+}
+.chrome .wordmark {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--violet);
+}
+.chrome .toolname {
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: 0.94rem;
+  color: var(--ink);
+  text-decoration: none;
+  padding-left: 0.7rem;
+  border-left: 1px solid var(--rule);
+}
+.chrome .btn-ghost {
+  margin-left: auto;
+}
+
+.tabs {
+  display: flex;
+  gap: clamp(0.7rem, 2.4vw, 1.6rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+}
+.tabs a {
+  display: block;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: 0.86rem;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 0.7rem 0 0.6rem;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.tabs a[aria-current='page'] {
+  color: var(--violet);
+  font-weight: 500;
+  border-bottom-color: currentColor;
+}
+
+/* -------------------------------------------------------------- footer */
+.site-footer {
+  border-top: 1px solid var(--rule);
+  margin-top: clamp(2rem, 6vw, 3.5rem);
+  padding-block: clamp(2rem, 5vw, 3rem);
+  font-size: 0.88rem;
+  color: var(--faint);
+}
+.site-footer .rule {
+  height: 2px;
+  border: 0;
+  background: var(--spectrum);
+  opacity: 0.9;
+  margin: 0 0 1.6rem;
+}
+.site-footer ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+.site-footer a {
+  color: var(--muted);
+  text-decoration: none;
+  display: inline-block;
+  padding-block: 0.3rem;
+}
+.site-footer a:hover {
+  color: var(--violet);
+}
+.site-footer p {
+  margin: 0 0 0.3rem;
+  max-width: 62ch;
+}
+
+/* ------------------------------------------------------- Chrome spinners
+ * Carried over from App.scss unchanged: number inputs are right-aligned
+ * clinical values and the spin buttons overlap them.
+ */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ======================================================================
+ * TEMPORARY GRID SHIM
+ *
+ * Bootstrap supplied every layout primitive this application uses, not just
+ * its controls. These rules reimplement exactly the classes in use so that
+ * no route collapses between this commit and the PR that gives its region a
+ * Treeye-native layout. Each block names the PR that deletes it. This
+ * section must be EMPTY by the end of PR 6; if it is not, something was
+ * skipped.
+ *
+ * Deliberately minimal: no breakpoint system, no gutters config, no
+ * generated class set. Only what `grep -rho 'className="[^"]*"' src` finds.
+ * ====================================================================== */
+
+/* deleted by PR 4 (patient form) and PR 5 (tables) */
+.row,
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+}
+
+/* deleted by PR 4 */
+.form-group {
+  margin-bottom: 1rem;
+}
+.section-form {
+  margin-bottom: 2rem;
+}
+
+/* deleted by PR 4 (patient, cornea, refraction, power) and PR 6 (normality) */
+.col-4 {
+  flex: 0 0 auto;
+  width: calc(33.333% - 1rem);
+}
+.col-sm-6 {
+  flex: 0 0 auto;
+  width: calc(50% - 0.75rem);
+}
+.col-md-2 {
+  flex: 0 0 auto;
+  width: calc(16.666% - 1.25rem);
+}
+.col-md-3 {
+  flex: 0 0 auto;
+  width: calc(25% - 1.125rem);
+}
+.col-md-4 {
+  flex: 0 0 auto;
+  width: calc(33.333% - 1rem);
+}
+.col-md-5 {
+  flex: 0 0 auto;
+  width: calc(41.666% - 0.875rem);
+}
+.col-md-6 {
+  flex: 0 0 auto;
+  width: calc(50% - 0.75rem);
+}
+.offset-md-1 {
+  margin-left: 8.333%;
+}
+
+@media (max-width: 48rem) {
+  .col-4,
+  .col-sm-6,
+  .col-md-2,
+  .col-md-3,
+  .col-md-4,
+  .col-md-5,
+  .col-md-6 {
+    width: 100%;
+  }
+  .offset-md-1 {
+    margin-left: 0;
+  }
+}
+
+/* deleted by PR 4 — the unit suffix becomes part of the measured row */
+.input-group {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+.input-group-append .input-group-text {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+}
+
+/* deleted by PR 4 — validation moves to the measured row's underline */
+.is-invalid {
+  border-bottom: 2px solid var(--leaf-crimson);
+}
+.invalid-feedback {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--leaf-crimson);
+}
+
+/*
+ * `.table-bordered` and `.table-hover` are deliberately NOT defined. They
+ * appear on four elements today and are inert here: the base table layer
+ * above already carries the hairline treatment, and PR 5 removes the
+ * attributes. An empty ruleset would only look like an oversight.
+ */
+
+/* deleted by PR 5 — the matrix summary becomes a definition row */
+.list-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+/* utility classes used inline; deleted alongside their components */
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.d-inline-block {
+  display: inline-block;
+}
+.mb-0 {
+  margin-bottom: 0;
+}
+.mb-3 {
+  margin-bottom: 1rem;
+}
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+.ml-3 {
+  margin-left: 1rem;
+}
+.mt-5 {
+  margin-top: 3rem;
+}
+.pl-0 {
+  padding-left: 0;
+}
+
+/* deleted by PR 6 — the charts read Bootstrap's theme colours by name at
+ * runtime (Gauge.tsx for the RAG zones, Histogram.tsx for bar fill and
+ * stroke). Without these the zones render transparent and the bars black.
+ * Bootstrap 4.6.2's values, so the charts look as they did until PR 6
+ * moves them onto Treeye tokens. */
+:root {
+  --secondary: #6c757d;
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --dark: #343a40;
+}

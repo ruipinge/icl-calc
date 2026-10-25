@@ -1,4 +1,6 @@
 - navigation:
+  - link "Treeye":
+    - /url: https://treeye.science/
   - link "ICL Size Calc":
     - /url: /icl-calc/
   - button "Reset"
@@ -15,7 +17,6 @@
   - listitem:
     - link "Regression":
       - /url: "#/regression"
-- separator
 - heading "Vault Prediction" [level=4]
 - table:
   - rowgroup:
