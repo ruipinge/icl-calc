@@ -108,8 +108,8 @@ const FormContent = ({
           that guarantee.
         */}
         {/*
-          No <hr> between the tabs and the content: the chrome band's own
-          spectrum rule closes the shell, and the element rendered a
+          No <hr> between the tabs and the content: the header's own bottom
+          rule closes the shell, and the element rendered a
           `separator` entry in all four aria fixtures for a purely decorative
           line.
         */}

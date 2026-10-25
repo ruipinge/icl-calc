@@ -15,33 +15,24 @@
  * landmark, but it swaps `navigation` for `banner` in all four aria fixtures
  * and moves the shell screenshot locator - a semantic change wearing a
  * restyle's clothes. Worth doing deliberately later, not here.
+ *
+ * Inside it, the Treeye link is the treeye.science header's home link (#172):
+ * the site's own symbol and wordmark, inlined from the files in
+ * treeye-header/ (see SOURCE.md there for the commit they were copied from),
+ * so no request leaves the origin. Its accessible name stays "Treeye", which
+ * the four aria fixtures pin, rather than the site's "Treeye — home". The
+ * wrapping spans are `display: contents`, so the SVGs lay out as direct
+ * children of the link, as they do on the site.
  */
-const TreeyeMark = () => (
-  <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-    <circle
-      cx="16"
-      cy="16"
-      r="15"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-    />
-    <path
-      d="M16 25V13"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-    />
-    <circle cx="16" cy="11" r="4.4" fill="currentColor" />
-  </svg>
-);
+import icon from './treeye-header/icon.svg?raw';
+import wordmark from './treeye-header/wordmark.svg?raw';
 
 export const NavBar = ({ resetForm }: { resetForm: (a?: any) => void }) => (
   <nav className="chrome">
     <div className="chrome-bar wrap">
-      <a className="brand" href="https://treeye.science/">
-        <TreeyeMark />
-        <span className="wordmark">Treeye</span>
+      <a className="home" href="https://treeye.science/" aria-label="Treeye">
+        <span dangerouslySetInnerHTML={{ __html: icon }} />
+        <span dangerouslySetInnerHTML={{ __html: wordmark }} />
       </a>
       <a className="toolname" href={import.meta.env.BASE_URL}>
         ICL Size Calc
