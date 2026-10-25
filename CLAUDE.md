@@ -48,10 +48,17 @@ asserted inside the official Playwright container:
 ```sh
 npm run build
 bash e2e/setup.sh --subject-only
-docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
+docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
+  -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
   mcr.microsoft.com/playwright:v1.62.1-noble \
   npx playwright test --project=visual-assert
 ```
+
+Run the container as yourself, as above. The image runs as root by default,
+so on a Linux host every file it writes — diff images, and with
+`--update-snapshots` the tracked fixtures under `e2e/visual.spec.ts-snapshots/`
+— ends up root-owned. `HOME=/tmp` because your UID has no home inside the
+image and Playwright needs a writable one.
 
 Drop `--update-snapshots` to assert, add it to regenerate. **The image tag
 tracks `@playwright/test` in `e2e/package-lock.json`** — bump them together, or

@@ -19,7 +19,7 @@
 - **`import.meta.env.BASE_URL` stays `/icl-calc/`**, in `vite.config.ts` `base`, in `test.env`, and rendered into the brand link. Spec §9.
 - **The brand link's accessible name must remain exactly `ICL Size Calc`** pointing at `/icl-calc/` — `src/misc/NavBar.test.tsx` pins it, and it is the base-path guard.
 - **Every new or changed test must be proven capable of failing**: break the thing it checks, see red, restore, see green, report both, mutating each assertion individually. Spec §10.
-- **Check exit codes with a standalone `echo $?`, never through a pipe.** This shell is zsh; `${PIPESTATUS[0]}` is empty.
+- **Check exit codes with a standalone `echo $?`, never through a pipe.** `${PIPESTATUS[0]}` is a bash feature and is empty under zsh, so it is not portable between hosts.
 - **Run `npm install`/`npm ci` in the background and poll.** A foreground npm command that goes quiet is killed by a stall watchdog.
 - **Use `gh ... --body-file`, never `--body` with markup.**
 - Worktree per PR, branched from `treeye-reskin`. Never work in the primary checkout.
@@ -43,7 +43,8 @@ SUBJECT_ONLY=1 npm --prefix e2e run replay
 Visual assertion, separately and never concurrently with the above:
 
 ```sh
-docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
+docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
+  -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
   mcr.microsoft.com/playwright:v1.62.1-noble \
   npx playwright test --project=visual-assert
 ```
@@ -254,7 +255,8 @@ SUBJECT_ONLY=1 npm --prefix e2e run replay     # expect FAIL: toHaveCount(6)
 echo $?
 
 # (d) navbar screenshot — temporarily remove the <nav> wrapper
-docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
+docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
+  -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
   mcr.microsoft.com/playwright:v1.62.1-noble \
   npx playwright test --project=visual-assert   # expect FAIL: locator resolved to 0
 ```
@@ -273,7 +275,8 @@ echo $?
 Then, separately:
 
 ```sh
-docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
+docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
+  -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
   mcr.microsoft.com/playwright:v1.62.1-noble \
   npx playwright test --project=visual-assert
 echo $?
@@ -429,7 +432,8 @@ Revert one of the two files to `scope="col"`, re-run, confirm the expectation fa
 
 ```sh
 npm run build && bash e2e/setup.sh --subject-only
-docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
+docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
+  -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
   mcr.microsoft.com/playwright:v1.62.1-noble \
   npx playwright test --project=visual-assert --update-snapshots
 git status --porcelain e2e/visual.spec.ts-snapshots/
@@ -1268,7 +1272,8 @@ Deliberately run the assertion, not the update, so Playwright writes the expecte
 
 ```sh
 npm run build && bash e2e/setup.sh --subject-only
-docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
+docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
+  -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
   mcr.microsoft.com/playwright:v1.62.1-noble \
   npx playwright test --project=visual-assert
 ls e2e/test-results/
@@ -1292,7 +1297,8 @@ The header stays `- navigation:` in every fixture. If it became `- banner:`, the
 - [ ] **Step 3: Regenerate**
 
 ```sh
-docker run --rm -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
+docker run --rm -u "$(id -u):$(id -g)" -e HOME=/tmp \
+  -v "$PWD":/work -w /work/e2e -e SUBJECT_ONLY=1 \
   mcr.microsoft.com/playwright:v1.62.1-noble \
   npx playwright test --project=visual-assert --update-snapshots
 echo $?
