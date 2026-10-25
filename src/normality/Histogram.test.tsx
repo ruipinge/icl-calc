@@ -1,5 +1,5 @@
 import { PLOT_INSET_LEFT, PLOT_INSET_RIGHT } from './plot-inset';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
 import { HISTOGRAM_DATA } from '../db';
 import { Histogram } from './Histogram';
@@ -92,4 +92,88 @@ it('labels every other bin along the x axis', () => {
 
   expect(screen.queryByText('11.004')).not.toBeInTheDocument();
   expect(screen.queryByText('11.572')).not.toBeInTheDocument();
+});
+
+/*
+ * The production path. In a browser the histogram is drawn at its measured
+ * width and re-measured by a ResizeObserver whenever its column changes, which
+ * is what holds the gauge alignment above at every viewport rather than only
+ * at first paint. jsdom has no ResizeObserver and reports every width as 0, so
+ * every test above runs on FALLBACK_WIDTH, and until this one nothing
+ * exercised the measuring path at all.
+ *
+ * Both are stubbed here: a ResizeObserver whose callback the test fires by
+ * hand, and getBoundingClientRect reporting a width the test controls.
+ */
+describe('in a browser that has ResizeObserver', () => {
+  class FakeResizeObserver {
+    static readonly instances: FakeResizeObserver[] = [];
+    observe = vi.fn();
+    disconnect = vi.fn();
+    constructor(readonly callback: ResizeObserverCallback) {
+      FakeResizeObserver.instances.push(this);
+    }
+    resize() {
+      this.callback([], this as unknown as ResizeObserver);
+    }
+  }
+
+  let containerWidth: number;
+  // Every element the component asked for its size, so the test can check
+  // that the element it observes is the one it measures.
+  let measured: Element[];
+
+  beforeEach(() => {
+    FakeResizeObserver.instances.length = 0;
+    containerWidth = 500;
+    measured = [];
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function (this: HTMLElement) {
+        measured.push(this);
+        return { width: containerWidth } as DOMRect;
+      }
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it('observes its own container, and draws at the measured width', () => {
+    render(<Histogram title="Age (years)" data={HISTOGRAM_DATA.age} />);
+
+    const svg = screen.getByTestId('histogram');
+    expect(FakeResizeObserver.instances).toHaveLength(1);
+    expect(measured[0]).toContainElement(svg);
+    expect(FakeResizeObserver.instances[0].observe).toHaveBeenCalledWith(
+      measured[0]
+    );
+    expect(Number(svg.getAttribute('width'))).toBe(500);
+  });
+
+  it('re-measures on resize and keeps the gauge alignment', () => {
+    render(<Histogram title="Age (years)" data={HISTOGRAM_DATA.age} />);
+
+    containerWidth = 720;
+    act(() => FakeResizeObserver.instances[0].resize());
+
+    const svg = screen.getByTestId('histogram');
+    const gridline = screen.getAllByTestId('gridline')[0];
+    expect(Number(svg.getAttribute('width'))).toBe(720);
+    expect(Number(gridline.getAttribute('x2'))).toBe(720 - PLOT_INSET_RIGHT);
+  });
+
+  it('disconnects the observer on unmount', () => {
+    const { unmount } = render(
+      <Histogram title="Age (years)" data={HISTOGRAM_DATA.age} />
+    );
+    const observer = FakeResizeObserver.instances[0];
+    expect(observer.disconnect).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(observer.disconnect).toHaveBeenCalledTimes(1);
+  });
 });

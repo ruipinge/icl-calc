@@ -106,8 +106,11 @@ export default defineConfig(({ mode }) => ({
       // 2026-09-05, after #51 brought the Normality tab under test for the
       // first time.
       //
-      // Not 100: src/index.tsx is excluded below, and the ResizeObserver
-      // path in Histogram.tsx is unreachable under jsdom.
+      // Not 100: src/index.tsx is excluded below, and useMeasuredWidth's
+      // `element === null` guard in Histogram.tsx cannot be reached - the
+      // ref is always attached by the time a layout effect runs. Its
+      // ResizeObserver path is covered by stubbing the observer
+      // (Histogram.test.tsx).
       thresholds: coverageThresholds,
       // Scopes coverage to the app. Without this, Vitest measures every
       // file it can reach - including e2e/playwright.config.ts and
