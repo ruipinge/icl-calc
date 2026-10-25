@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-
 import { NavBar } from './NavBar';
+import { createHash } from 'node:crypto';
+import icon from './treeye-header/icon.svg?raw';
+import wordmark from './treeye-header/wordmark.svg?raw';
 
 /*
  * Replaces an asFragment() snapshot (#121). The snapshot recorded this
@@ -37,6 +39,48 @@ it('links the Treeye mark at the group site', () => {
     'href',
     'https://treeye.science/'
   );
+});
+
+/*
+ * The header must match the treeye.science one exactly (#172), so the symbol
+ * and the wordmark are the site's own artwork, not a lookalike. These hashes
+ * were taken of the two <svg> lines of the site's built public/index.html at
+ * the commit recorded in treeye-header/SOURCE.md. A failure here means the
+ * artwork was edited by hand; recopy it from the site instead, and update
+ * both the hashes and SOURCE.md.
+ */
+it('keeps the Treeye artwork byte for byte as the site builds it', () => {
+  const sha256 = (s: string) => createHash('sha256').update(s).digest('hex');
+
+  expect(sha256(icon)).toBe(
+    '5b100380f57b46ed15c52e33835a9f6151ba27b81b458ae94e719001b48fae4c'
+  );
+  expect(sha256(wordmark)).toBe(
+    '2270991db1855754c87c405d040200f737a2ed8c96f156573e9be44a2e19f251'
+  );
+});
+
+// toContainHTML normalises both sides through the same parser, so this holds
+// the rendered link to the verbatim files rather than to a retyped copy.
+it('renders the site symbol and wordmark inside the Treeye link', () => {
+  render(<NavBar resetForm={() => {}} />);
+
+  const home = screen.getByRole('link', { name: 'Treeye' });
+
+  expect(home).toContainHTML(icon);
+  expect(home).toContainHTML(wordmark);
+});
+
+// The tool name sits immediately after the logo: it is the page the user is
+// on, and the site is its context (#172, difference 2).
+it('places the tool name immediately after the Treeye link', () => {
+  render(<NavBar resetForm={() => {}} />);
+
+  const links = screen.getAllByRole('link');
+
+  expect(links).toHaveLength(2);
+  expect(links[0]).toHaveAccessibleName('Treeye');
+  expect(links[1]).toHaveAccessibleName('ICL Size Calc');
 });
 
 it('resets the form when the Reset button is clicked', () => {
