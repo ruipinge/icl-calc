@@ -1,29 +1,25 @@
+import { LENS_CLASSES, LENS_SIZES } from '../matrix/data';
 import { RegressionInfo, probability } from './formulas';
 
-import { LENS_SIZES } from '../matrix/data';
 import { round } from '../formulas';
 
 export const VaultProbability = (values: RegressionInfo) => (
   <>
     <h4>{'Probability of 250 < Vault < 1000 (μm)'}</h4>
-    <table className="table table-bordered table-hover">
+    <table className="ledger compact">
       <thead>
         <tr>
-          <th scope="col" className="col-4">
-            Lens Size
-          </th>
-          <th scope="col" className="col-4 text-right">
-            Probability (%)
-          </th>
+          <th scope="col">Lens Size</th>
+          <th scope="col">Probability (%)</th>
         </tr>
       </thead>
       <tbody>
-        {LENS_SIZES.map((size) => (
+        {LENS_SIZES.map((size, index) => (
           <tr key={size.id}>
-            <th scope="row" className="col-4">
+            <th scope="row" className={LENS_CLASSES[index]}>
               {size.label}
             </th>
-            <td className="col-4 text-right">
+            <td>
               {round(
                 probability({
                   ri: values,

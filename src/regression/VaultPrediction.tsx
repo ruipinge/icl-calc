@@ -1,36 +1,30 @@
+import { LENS_CLASSES, LENS_SIZES } from '../matrix/data';
 import {
   RegressionInfo,
   cornea2endothelium,
   vaultPrediction
 } from './formulas';
 
-import { LENS_SIZES } from '../matrix/data';
 import { round } from '../formulas';
 
 export const VaultPrediction = (values: RegressionInfo) => (
   <>
     <h4>Vault Prediction</h4>
-    <table className="table table-bordered table-hover">
+    <table className="ledger compact">
       <thead>
         <tr>
-          <th scope="col" className="col-4">
-            Lens Size
-          </th>
-          <th scope="col" className="col-4 text-right">
-            Vault (μm)
-          </th>
-          <th scope="col" className="col-4 text-right">
-            Corneal Endothelium to ICL (mm)
-          </th>
+          <th scope="col">Lens Size</th>
+          <th scope="col">Vault (μm)</th>
+          <th scope="col">Corneal Endothelium to ICL (mm)</th>
         </tr>
       </thead>
       <tbody>
-        {LENS_SIZES.map((size) => (
+        {LENS_SIZES.map((size, index) => (
           <tr key={size.id}>
-            <th scope="row" className="col-4">
+            <th scope="row" className={LENS_CLASSES[index]}>
               {size.label}
             </th>
-            <td className="col-4 text-right">
+            <td>
               {round(
                 vaultPrediction({
                   ri: values,
@@ -38,7 +32,7 @@ export const VaultPrediction = (values: RegressionInfo) => (
                 })
               )}
             </td>
-            <td className="col-4 text-right">
+            <td>
               {round(
                 cornea2endothelium({
                   ri: values,
