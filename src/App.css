@@ -461,6 +461,18 @@ input[type='number']::-webkit-outer-spin-button {
   gap: 0 1.5rem;
 }
 
+/* Two columns until three can hold the longest histogram title. Measured in
+   Chromium: "Internal Anterior Chamber Depth - ACD (mm)" sets 334px wide in
+   14px Poppins, and three columns only reach that at a ~1146px viewport (at
+   1024 it overran both edges of its column by 20px, at 800 by 55px). Above
+   75rem .wrap has reached its 68rem measure (at 1184px), so three columns
+   never appear narrower than they are on the desktop. */
+@media (max-width: 75rem) {
+  .chart-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 48rem) {
   .chart-grid {
     grid-template-columns: minmax(0, 1fr);
