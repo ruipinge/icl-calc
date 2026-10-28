@@ -11,6 +11,7 @@
     "visual": "playwright test --project=visual-assert"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.1",
     "http-server": "^14.1.1"
   }

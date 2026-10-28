@@ -88,6 +88,17 @@ export default defineConfig({
       use: { baseURL: `http://127.0.0.1:${SUBJECT_PORT}/icl-calc/` }
     },
     {
+      // A colour-contrast report (axe-core) for every route at two viewports
+      // (#173). Asserts, but its CI job is non-blocking and not a required
+      // check. Anchored like `visual-assert`'s match, for the same reason.
+      //
+      // Runs against the subject build, so it shares port 4022 with `replay`
+      // and `visual-assert`. Never run them concurrently.
+      name: 'contrast',
+      testMatch: /[\\/]contrast\.spec\.ts$/,
+      use: { baseURL: `http://127.0.0.1:${SUBJECT_PORT}/icl-calc/` }
+    },
+    {
       name: 'smoke',
       testMatch: /smoke\.spec\.ts/,
       use: { baseURL: `http://127.0.0.1:${ORACLE_PORT}/icl-calc/` }
