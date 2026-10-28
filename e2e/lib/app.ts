@@ -140,10 +140,10 @@ export const readAll = async (page: Page): Promise<Capture> => {
   await gotoTab(page, 'Floating Matrix');
   await expect(page.locator('table')).toHaveCount(1);
   const matrixRows = await tableRows(page, 0);
-  // Addressed by test hook, not by `ul.list-inline`: that is a Bootstrap
-  // class and #122 deletes it, at which point this read would silently
-  // return [] and the capture would differ from expected.json for a
-  // presentational reason. The list has no accessible name and no stable
+  // Addressed by test hook, not by `ul.list-inline`: that was a Bootstrap
+  // class and #122 deleted it, at which point a read by it would silently
+  // have returned [] and the capture would have differed from expected.json
+  // for a presentational reason. The list has no accessible name and no stable
   // position (the ledger pattern wraps the table in a scroll container),
   // so a hook is the honest handle.
   const footer = await page

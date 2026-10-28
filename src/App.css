@@ -736,6 +736,22 @@ input[type='number']::-webkit-outer-spin-button {
   color: var(--ink);
 }
 
+/*
+ * Units keep their case: text-transform: uppercase folds the micro sign in
+ * "(μm)" to a capital Mu, so micrometres read as millimetres. Colour is
+ * restated so this rule, which the contrast pin reads, carries it too.
+ */
+.ledger thead th {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.regression-block h4 {
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
 .ledger th:first-child {
   position: sticky;
   left: 0;
