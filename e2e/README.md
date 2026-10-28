@@ -3,7 +3,7 @@
 A deliberately separate workspace with its own `package.json` and lockfile, so
 Playwright is never a dependency of the application.
 
-Five Playwright projects live here. Two run in CI and three do not, and the
+Six Playwright projects live here. Three run in CI and three do not, and the
 difference matters:
 
 | project | asserts? | runs in CI? | what it is |
@@ -11,6 +11,7 @@ difference matters:
 | `capture` | — | no | writes `src/golden/expected.json` from the frozen 2021 oracle. Run once. |
 | `replay` | yes | **yes** | L2. Drives a real Chromium against a production build and compares every rendered clinical value to the golden master. |
 | `visual-assert` | yes | **yes** | Screenshots and accessibility-tree snapshots for all four routes plus the shell, at two viewports. |
+| `contrast` | yes | **yes**, non-blocking | axe-core colour-contrast report for all four routes at two viewports (#173). Its CI job is `continue-on-error` and not a required check; findings are uploaded as the `contrast-report` artifact. |
 | `visual` | no | no | a **capture tool** for the six Normality histograms (#51). Produces images for review by eye; asserts nothing. |
 | `smoke` | yes | no | sanity checks against the oracle build. |
 
@@ -27,7 +28,7 @@ bash e2e/setup.sh --subject-only
 SUBJECT_ONLY=1 npm --prefix e2e run replay
 ```
 
-**Never run two of these at once.** `replay` and `visual-assert` both serve the
+**Never run two of these at once.** `replay`, `visual-assert` and `contrast` all serve the
 subject build on port **4022** with `reuseExistingServer: true`, so a second
 run finds the first one's server still up and silently validates *its* build
 instead. That failure is invisible: the run goes green.

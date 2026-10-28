@@ -133,10 +133,10 @@ h6 {
 h4 {
   font-family: var(--display);
   font-weight: 500;
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--muted);
   margin: 0 0 0.9rem;
   display: flex;
   align-items: center;
@@ -203,10 +203,15 @@ select {
   font-variant-numeric: tabular-nums;
   background: var(--field);
   border: 0;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--faint);
   border-radius: 3px 3px 0 0;
-  padding: 0.24rem 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 0.5rem;
   width: 100%;
+}
+
+input::placeholder {
+  color: var(--muted);
 }
 
 select {
@@ -222,7 +227,8 @@ select:focus-visible {
 input:disabled {
   background: transparent;
   border-bottom-style: dotted;
-  color: var(--muted);
+  border-bottom-color: var(--faint);
+  color: var(--ink);
 }
 
 table {
@@ -240,17 +246,17 @@ td {
 thead th {
   font-family: var(--display);
   font-weight: 500;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--ink);
   border-bottom: 1px solid var(--rule);
 }
 
 tbody th[scope='row'] {
   text-align: left;
   font-family: var(--display);
-  font-weight: 300;
+  font-weight: 500;
   font-size: 0.84rem;
   color: var(--ink);
 }
@@ -270,6 +276,7 @@ tbody td {
   border: 1px solid var(--rule);
   border-radius: 999px;
   padding: 0.4em 1.1em;
+  min-height: 2.75rem;
   cursor: pointer;
   width: auto;
 }
@@ -356,6 +363,7 @@ tbody td {
   color: var(--ink);
   text-decoration: none;
   padding: 0.7rem 0 0.6rem;
+  min-height: 2.75rem;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
 }
@@ -397,7 +405,7 @@ tbody td {
   margin-top: clamp(2rem, 6vw, 3.5rem);
   padding-block: clamp(2rem, 5vw, 3rem);
   font-size: 0.88rem;
-  color: var(--faint);
+  color: var(--muted);
 }
 .site-footer .rule {
   height: 2px;
@@ -416,7 +424,8 @@ tbody td {
 }
 .site-footer a {
   color: var(--muted);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
   display: inline-block;
   padding-block: 0.3rem;
 }
@@ -528,9 +537,9 @@ input[type='number']::-webkit-outer-spin-button {
 .input-group-append .input-group-text {
   font-family: var(--display);
   font-weight: 500;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   letter-spacing: 0.1em;
-  color: var(--faint);
+  color: var(--ink);
 }
 
 /* deleted by PR 4 — validation moves to the measured row's underline */
@@ -540,7 +549,7 @@ input[type='number']::-webkit-outer-spin-button {
 .invalid-feedback {
   font-family: var(--display);
   font-weight: 500;
-  font-size: 0.68rem;
+  font-size: 0.8rem;
   letter-spacing: 0.06em;
   color: var(--leaf-crimson);
 }

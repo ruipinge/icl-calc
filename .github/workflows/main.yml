@@ -388,6 +388,75 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  # Deliberately non-blocking, and NOT a required check: `continue-on-error`
+  # keeps a violation from failing the workflow, and the job is not in
+  # branch protection or in any other job's `needs`. It reports axe-core's
+  # colour-contrast findings for every route (#173) so the reskin can be
+  # watched without being held up by it. Consider promoting it to a required
+  # check once it has run clean across PRs 4-7.
+  #
+  # A job of its own rather than a step in e2e-replay: it must be able to
+  # fail without turning that required job red. It runs on its own runner,
+  # so it does not share port 4022 with the L2 and visual steps.
+  contrast:
+    name: Contrast report (non-blocking)
+    runs-on: ubuntu-latest
+    needs: ['test']
+    continue-on-error: true
+    steps:
+      - name: Check out the branch under test
+        uses: actions/checkout@v7
+
+      # Same single Node version as e2e-replay; see the NOTE in the `test`
+      # job above.
+      - name: Set up the Node version pinned in .nvmrc
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            e2e/package-lock.json
+
+      # No --legacy-peer-deps: see the comment on the `test` job's install
+      # step above.
+      - name: Install locked dependencies (peer conflicts fail here)
+        run: npm ci --prefer-offline
+
+      - name: Build the production bundle the report runs against
+        run: npm run build
+
+      - name: Install the e2e harness's own locked dependencies
+        run: npm ci --prefer-offline
+        working-directory: e2e
+
+      - name: Install the Chromium build Playwright drives
+        run: npx playwright install --with-deps chromium
+        working-directory: e2e
+
+      # Subject-only: there is no oracle worktree on a runner, and this
+      # project only measures the subject build.
+      - name: Prepare the e2e harness (subject build only, no oracle worktree)
+        run: ./setup.sh --subject-only
+        working-directory: e2e
+
+      - name: Report colour contrast on every route
+        env:
+          SUBJECT_ONLY: '1'
+        run: npx playwright test --project=contrast
+        working-directory: e2e
+
+      # always(): the attachments are the point of the report, and they are
+      # most useful on exactly the runs where the step above failed.
+      - name: Upload the contrast findings
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: contrast-report
+          path: e2e/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
   deploy:
     name: Release and publish to gh-pages
     # golden-master-guard is pull_request-only (see its own `if:` above), so
