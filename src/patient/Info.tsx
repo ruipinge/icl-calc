@@ -41,7 +41,8 @@ export const Info = ({
         </div>
         <div className="idcell">
           <label htmlFor="fieldAge">
-            Age<span className="sr-only">, years</span>
+            <span aria-hidden="true">Age</span>
+            <span className="sr-only">Age, years</span>
           </label>
           <div className="idvalue">
             <input

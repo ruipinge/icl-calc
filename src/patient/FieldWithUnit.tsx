@@ -46,12 +46,16 @@ export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
   return (
     <div className={axisOf ? 'mrow axis' : 'mrow'}>
       <label htmlFor={id}>
-        <span aria-hidden={srLabel ? 'true' : undefined}>{label}</span>
-        {/* a leading space inside the sr-only span is trimmed from the name */}
-        {qualifier && ' '}
+        {/*
+         * The whole name lives in the sr-only span and the visible text is
+         * hidden. Chromium pads an absolutely positioned span with spaces when
+         * it joins label text, so a name split across the two spans read
+         * "(AtA) , millimetres".
+         */}
+        <span aria-hidden="true">{label}</span>
         <span className="sr-only">
-          {srLabel}
-          {qualifier?.trimStart()}, {UNITS.get(unit)}
+          {srLabel ?? label}
+          {qualifier}, {UNITS.get(unit)}
         </span>
       </label>
       {disabled ? (

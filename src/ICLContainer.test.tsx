@@ -191,9 +191,14 @@ it('resets every entered value when Reset is clicked', async () => {
   fireEvent.change(screen.getByLabelText('Name'), {
     target: { value: 'Blake' }
   });
-  fireEvent.change(screen.getByLabelText('Angle to Angle (AtA), millimetres'), {
-    target: { value: '12.3' }
-  });
+  fireEvent.change(
+    screen.getByRole('spinbutton', {
+      name: 'Angle to Angle (AtA), millimetres'
+    }),
+    {
+      target: { value: '12.3' }
+    }
+  );
 
   // The fireEvent calls above are synchronous DOM events; the waitFor below
   // only asserts (testing-library/no-wait-for-side-effects forbids firing
@@ -208,7 +213,9 @@ it('resets every entered value when Reset is clicked', async () => {
     expect(screen.getByLabelText('Name')).toHaveValue('Blake');
   });
   expect(
-    screen.getByLabelText('Angle to Angle (AtA), millimetres')
+    screen.getByRole('spinbutton', {
+      name: 'Angle to Angle (AtA), millimetres'
+    })
   ).toHaveValue(12.3);
 
   fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
@@ -217,7 +224,9 @@ it('resets every entered value when Reset is clicked', async () => {
     expect(screen.getByLabelText('Name')).toHaveValue('');
   });
   expect(
-    screen.getByLabelText('Angle to Angle (AtA), millimetres')
+    screen.getByRole('spinbutton', {
+      name: 'Angle to Angle (AtA), millimetres'
+    })
   ).toHaveValue(0);
 });
 

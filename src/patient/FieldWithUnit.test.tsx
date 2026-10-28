@@ -35,8 +35,10 @@ const renderField = (
 it('associates the label with the editable input', () => {
   renderField();
 
+  // getByLabelText matches the label's textContent, which also carries the
+  // aria-hidden visible copy, so this anchors on the sr-only name's tail.
   expect(
-    screen.getByLabelText('Angle to Angle (AtA), millimetres')
+    screen.getByLabelText(/Angle to Angle \(AtA\), millimetres$/)
   ).toHaveValue(11.7);
 });
 
@@ -65,8 +67,8 @@ it('associates the label with the disabled input', () => {
     value: -8.5
   });
 
-  expect(screen.getByLabelText('ICL Sphere, dioptres')).toHaveValue('-8.5');
-  expect(screen.getByLabelText('ICL Sphere, dioptres')).toBeDisabled();
+  expect(screen.getByLabelText(/ICL Sphere, dioptres$/)).toHaveValue('-8.5');
+  expect(screen.getByLabelText(/ICL Sphere, dioptres$/)).toBeDisabled();
 });
 
 it('names the control with its unit, and hides the visible unit from the tree', () => {
