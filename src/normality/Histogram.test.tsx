@@ -177,3 +177,71 @@ describe('in a browser that has ResizeObserver', () => {
     expect(observer.disconnect).toHaveBeenCalledTimes(1);
   });
 });
+
+/*
+ * Spec §7: the histogram is set in Treeye tokens - indigo bars on a --rule
+ * grid, axis labels in --muted, the title in Poppins 500 and every axis
+ * numeral in Newsreader (--prose; Poppins' served subsets have proportional
+ * digits). Each is written as a var() reference rather than resolved, so the
+ * page's tokens are the single source and nothing is read at render time.
+ */
+describe('in Treeye tokens', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('fills every bar with indigo', () => {
+    render(
+      <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
+    );
+    screen.getAllByTestId('bar').forEach((bar) => {
+      expect(bar.style.fill).toBe('var(--leaf-indigo)');
+    });
+  });
+
+  it('draws the gridlines in --rule', () => {
+    render(
+      <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
+    );
+    // The horizontal gridlines and the vertical ones at each labelled bin.
+    [
+      ...screen.getAllByTestId('gridline'),
+      ...screen.getAllByTestId('bin-gridline')
+    ].forEach((line) => {
+      expect(line.style.stroke).toBe('var(--rule)');
+    });
+  });
+
+  it('sets the axis text in --muted, numerals in --prose', () => {
+    render(
+      <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
+    );
+    // A y-axis tick, an x-axis bin boundary, and the rotated axis title.
+    ['150', '10.72', 'Number of Eyes'].forEach((label) => {
+      expect(screen.getByText(label).style.fill).toBe('var(--muted)');
+    });
+    ['150', '10.72'].forEach((numeral) => {
+      expect(screen.getByText(numeral).style.fontFamily).toBe('var(--prose)');
+    });
+    expect(screen.getByText('Number of Eyes').style.fontFamily).toBe(
+      'var(--display)'
+    );
+  });
+
+  it('sets the title in Poppins 500', () => {
+    render(
+      <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
+    );
+    const title = screen.getByText('Angle to Angle - AtA (mm)');
+    expect(title.style.fontFamily).toBe('var(--display)');
+    expect(title.style.fontWeight).toBe('500');
+  });
+
+  it('reads no computed style while rendering', () => {
+    const spy = vi.spyOn(window, 'getComputedStyle');
+    render(
+      <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
+    );
+    expect(spy).not.toHaveBeenCalled();
+  });
+});

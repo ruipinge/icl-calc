@@ -73,7 +73,10 @@ const renderGauge = (value: number): HTMLElement => {
   new LinearGauge(el).setOptions({
     divisions: 5,
     subDivisions: 2,
-    zones: buildZones({ values: DATASET }),
+    zones: buildZones({ values: DATASET }).map((band) => ({
+      ...band,
+      color: 'grey'
+    })),
     value
   });
   return el;

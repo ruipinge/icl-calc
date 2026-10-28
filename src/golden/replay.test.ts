@@ -200,10 +200,8 @@ describe('golden master L1', () => {
   // pins the 2.5/25/75/97.5 percentile boundaries computed by buildZones over
   // the real 542-eye dataset, for all six gauge variables.
   //
-  // Zone colours come back '' under jsdom - Gauge.tsx reads Bootstrap CSS
-  // custom properties via getComputedStyle(document.body) at module scope,
-  // which jsdom never populates - so only the min/max boundaries are the
-  // point here; colours are not asserted.
+  // buildZones returns geometry only - colour is the view's concern - so the
+  // snapshot records just the min/max boundaries, which are the point here.
   //
   // This test and the HISTOGRAM_DATA snapshot above read the same shared
   // VALUES.* arrays from src/db.ts, and they can coexist in either order
