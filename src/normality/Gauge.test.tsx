@@ -44,11 +44,11 @@ it('leaves the caller array untouched when building zones', () => {
 
 it('builds default zones correctly', () => {
   expect(buildZones({ values: DATASET })).toEqual([
-    { min: 1, max: 1.675, color: '' },
-    { min: 1.675, max: 4, color: '' },
-    { min: 4, max: 6.25, color: '' },
-    { min: 6.25, max: 7, color: '' },
-    { min: 7, max: 7, color: '' }
+    { min: 1, max: 1.675 },
+    { min: 1.675, max: 4 },
+    { min: 4, max: 6.25 },
+    { min: 6.25, max: 7 },
+    { min: 7, max: 7 }
   ]);
 });
 
@@ -56,25 +56,12 @@ it('builds zones correctly', () => {
   expect(
     buildZones({
       values: DATASET,
-      quantiles: [
-        {
-          value: 0.2,
-          color: 'red'
-        },
-        {
-          value: 0.8,
-          color: 'green'
-        },
-        {
-          value: 1.0,
-          color: 'red'
-        }
-      ]
+      quantiles: [0.2, 0.8, 1.0]
     })
   ).toEqual([
-    { min: 1, max: 3.4000000000000004, color: 'red' },
-    { min: 3.4000000000000004, max: 7, color: 'green' },
-    { min: 7, max: 7, color: 'red' }
+    { min: 1, max: 3.4000000000000004 },
+    { min: 3.4000000000000004, max: 7 },
+    { min: 7, max: 7 }
   ]);
 });
 

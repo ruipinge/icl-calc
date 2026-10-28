@@ -47,61 +47,39 @@ const quantileOfSorted = (sorted: number[], quantile: number) => {
 export const quantile = (values: number[], quantile: number) =>
   quantileOfSorted(sortedCopy(values), quantile);
 
-export type Quantile = {
-  readonly value: number;
-  readonly color: string;
-};
+export type Band = { readonly min: number; readonly max: number };
 
-const QUANTILES: Quantile[] = [
-  {
-    value: 0.025,
-    color: getComputedStyle(document.body).getPropertyValue('--danger')
-  },
-  {
-    value: 0.25,
-    color: getComputedStyle(document.body).getPropertyValue('--warning')
-  },
-  {
-    value: 0.75,
-    color: getComputedStyle(document.body).getPropertyValue('--success')
-  },
-  {
-    value: 0.975,
-    color: getComputedStyle(document.body).getPropertyValue('--warning')
-  },
-  {
-    value: 1.0,
-    color: getComputedStyle(document.body).getPropertyValue('--danger')
-  }
-];
+export const QUANTILES: readonly number[] = [0.025, 0.25, 0.75, 0.975, 1.0];
 
+/**
+ * Band geometry only: colour is the view's concern.
+ */
 export const buildZones = ({
   values,
   quantiles = QUANTILES
 }: {
   values: number[];
-  quantiles?: Quantile[];
-}): Zone[] => {
+  quantiles?: readonly number[];
+}): Band[] => {
   // Sorted once here rather than once inside each quantile() call: this runs
   // from a useLayoutEffect with no dependency array, over the 542-element
   // shared arrays, for six gauges. `values` itself is left untouched.
   const sorted = sortedCopy(values);
-  const qq = quantiles.map((q) => quantileOfSorted(sorted, q.value));
-  return quantiles.map((q, index) => {
-    if (index === 0) {
-      return {
-        min: Math.min(...values),
-        max: qq[0],
-        color: q.color
-      };
-    }
-    return {
-      min: qq[index - 1],
-      max: qq[index],
-      color: q.color
-    };
-  });
+  const qq = quantiles.map((q) => quantileOfSorted(sorted, q));
+  return qq.map((max, index) => ({
+    min: index === 0 ? Math.min(...values) : qq[index - 1],
+    max
+  }));
 };
+
+// Interim: Task 10 replaces this with the design system's zone colours.
+const BAND_COLOURS = [
+  'var(--danger)',
+  'var(--warning)',
+  'var(--success)',
+  'var(--warning)',
+  'var(--danger)'
+];
 
 export const Gauge = ({
   value,
@@ -122,7 +100,10 @@ export const Gauge = ({
     x.setOptions({
       divisions: 5,
       subDivisions: 2,
-      zones: buildZones({ values: values }),
+      zones: buildZones({ values: values }).map((band, index): Zone => ({
+        ...band,
+        color: BAND_COLOURS[index]
+      })),
       value: value
     });
 
