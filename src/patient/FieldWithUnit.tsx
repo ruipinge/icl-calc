@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { UnitMark, fieldValidity } from './validity';
 
 import { Field } from 'formik';
 
@@ -40,11 +41,7 @@ export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
   disabled
 }) => {
   const id = name + 'field';
-  const errorId = `${name}-error`;
-  const showError = Boolean(error && touched);
-  const validity = showError
-    ? { 'aria-invalid': true, 'aria-describedby': errorId }
-    : {};
+  const { props: validity, message } = fieldValidity(name, error, touched);
 
   return (
     <div className={axisOf ? 'mrow axis' : 'mrow'}>
@@ -69,14 +66,8 @@ export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
           {...validity}
         />
       )}
-      <span className="unit" aria-hidden="true">
-        {unit}
-      </span>
-      {showError && (
-        <div id={errorId} className="mrow-error">
-          {error}
-        </div>
-      )}
+      <UnitMark>{unit}</UnitMark>
+      {message}
     </div>
   );
 };

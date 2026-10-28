@@ -82,8 +82,27 @@ const COMPUTED_FIELDS = [
  * found by these accessible names, in this order. A missing, renamed,
  * duplicated or reordered field all fail.
  */
-const byName = (role: 'spinbutton' | 'textbox' | 'combobox', names: string[]) =>
-  names.map((name) => screen.getByRole(role, { name }));
+/*
+ * Pairs each element of `role`, in document order, with the one found by the
+ * name expected at that position. A missing, extra, renamed or reordered field
+ * leaves a pair that is not the same node. Callers assert identity per pair.
+ */
+const inOrder = (
+  role: 'spinbutton' | 'textbox' | 'combobox',
+  names: string[]
+) => {
+  const found = screen.getAllByRole(role);
+
+  return Array.from(
+    { length: Math.max(found.length, names.length) },
+    (_, i) => [
+      found[i],
+      names[i] === undefined
+        ? undefined
+        : screen.getByRole(role, { name: names[i] })
+    ]
+  );
+};
 
 it('lays the Patient tab out in five sections, in order', () => {
   renderWithHash();
@@ -96,8 +115,8 @@ it('lays the Patient tab out in five sections, in order', () => {
 it('renders every entered measurement, in order', () => {
   renderWithHash();
 
-  expect(screen.getAllByRole('spinbutton')).toEqual(
-    byName('spinbutton', MEASURED_FIELDS)
+  inOrder('spinbutton', MEASURED_FIELDS).forEach(([actual, expected]) =>
+    expect(actual).toBe(expected)
   );
 });
 
@@ -110,8 +129,8 @@ it('renders every entered measurement, in order', () => {
 it('renders the computed outputs after the free-text fields, all disabled', () => {
   renderWithHash();
 
-  expect(screen.getAllByRole('textbox')).toEqual(
-    byName('textbox', ['Name', 'Date of Birth', ...COMPUTED_FIELDS])
+  inOrder('textbox', ['Name', 'Date of Birth', ...COMPUTED_FIELDS]).forEach(
+    ([actual, expected]) => expect(actual).toBe(expected)
   );
 
   // Name and Date of Birth are entered; everything after them is derived.
@@ -124,8 +143,8 @@ it('renders the computed outputs after the free-text fields, all disabled', () =
 it('offers the eye and previous-surgery choices as selects', () => {
   renderWithHash();
 
-  expect(screen.getAllByRole('combobox')).toEqual(
-    byName('combobox', ['Eye', 'Previous Corneal Refractive Surgery'])
+  inOrder('combobox', ['Eye', 'Previous Corneal Refractive Surgery']).forEach(
+    ([actual, expected]) => expect(actual).toBe(expected)
   );
 });
 

@@ -64,8 +64,11 @@ const NINE_FIELDS = [
 it('renders the nine fields in flat/axis, steep/axis order, ending with CCT', () => {
   renderCorneaProfile();
 
-  expect(screen.getAllByRole('spinbutton')).toEqual(
-    NINE_FIELDS.map((name) => screen.getByRole('spinbutton', { name }))
+  const found = screen.getAllByRole('spinbutton');
+
+  expect(found).toHaveLength(NINE_FIELDS.length);
+  NINE_FIELDS.forEach((name, i) =>
+    expect(found[i]).toBe(screen.getByRole('spinbutton', { name }))
   );
 });
 

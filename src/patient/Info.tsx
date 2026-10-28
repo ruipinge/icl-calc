@@ -1,4 +1,5 @@
 import { Field, FormikState } from 'formik';
+import { UnitMark, fieldValidity } from './validity';
 
 import { ICLInputs } from '../types';
 
@@ -7,8 +8,11 @@ export const Info = ({
   values,
   touched
 }: FormikState<Pick<ICLInputs, 'patient'>>) => {
-  const dobError = errors.patient?.dateOfBirth;
-  const showDobError = Boolean(dobError && touched.patient?.dateOfBirth);
+  const { props: dobValidity, message: dobMessage } = fieldValidity(
+    'patient.dateOfBirth',
+    errors.patient?.dateOfBirth,
+    touched.patient?.dateOfBirth
+  );
 
   return (
     <section className="fieldgroup-section">
@@ -31,16 +35,9 @@ export const Info = ({
             placeholder="yyyy-mm-dd"
             autoComplete="off"
             maxLength={10}
-            {...(showDobError && {
-              'aria-invalid': true,
-              'aria-describedby': 'patient.dateOfBirth-error'
-            })}
+            {...dobValidity}
           />
-          {showDobError && (
-            <div id="patient.dateOfBirth-error" className="mrow-error">
-              {dobError}
-            </div>
-          )}
+          {dobMessage}
         </div>
         <div className="idcell">
           <label htmlFor="fieldAge">
@@ -53,9 +50,7 @@ export const Info = ({
               disabled={true}
               value={values.patient.age()}
             />
-            <span className="unit" aria-hidden="true">
-              years
-            </span>
+            <UnitMark>years</UnitMark>
           </div>
         </div>
         <div className="idcell">
