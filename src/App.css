@@ -450,6 +450,64 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
+/* ------------------------------------------------------ the measured row
+ * One grid per field group; each row is display: contents, so labels, inputs
+ * and units align across the whole group. See spec 5.2 to 5.4.
+ */
+.fieldgroup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7.5rem 3.4rem;
+  align-items: baseline;
+  margin-bottom: 2rem;
+}
+
+.mrow {
+  display: contents;
+}
+
+.mrow > :not(.mrow-error) {
+  border-top: 1px solid var(--rule);
+}
+
+.mrow.axis > :not(.mrow-error) {
+  border-top: 0;
+}
+
+.mrow > label {
+  padding: 0.6rem 0.7rem 0.6rem 0;
+}
+
+.mrow.axis > label {
+  text-align: right;
+}
+
+.mrow > input {
+  text-align: right;
+}
+
+.mrow > input[aria-invalid='true'] {
+  border-bottom: 2px solid var(--leaf-crimson);
+}
+
+.mrow > .unit {
+  padding: 0.6rem 0 0.6rem 0.4rem;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.mrow-error {
+  grid-column: 1 / -1;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--leaf-crimson);
+  padding-bottom: 0.4rem;
+}
+
 /* ======================================================================
  * TEMPORARY GRID SHIM
  *

@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import { ErrorMessage, Field } from 'formik';
-import { getClassName } from '../util';
+import { Field } from 'formik';
 
 type Unit = 'mm' | 'nm' | 'º' | 'dpt' | 'μm';
 
@@ -17,6 +16,9 @@ interface FieldWithUnitProps {
   label: string;
   name: string;
   unit: Unit;
+  srLabel?: string;
+  qualifier?: string;
+  axisOf?: boolean;
   touched?: boolean;
   placeholder?: string;
   error?: string;
@@ -24,61 +26,57 @@ interface FieldWithUnitProps {
   disabled?: boolean;
 }
 
-const UnitSufix = ({ unit }: { unit: Unit }) => (
-  <div className="input-group-append">
-    <span className="input-group-text" title={UNITS.get(unit)}>
-      {unit}
-    </span>
-  </div>
-);
-
 export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
   label,
   name,
   unit,
+  srLabel,
+  qualifier,
+  axisOf,
   placeholder,
   error,
   touched,
   value,
   disabled
 }) => {
+  const id = name + 'field';
+  const errorId = `${name}-error`;
+  const showError = Boolean(error && touched);
+  const validity = showError
+    ? { 'aria-invalid': true, 'aria-describedby': errorId }
+    : {};
+
   return (
-    <div className={'form-group row'}>
-      <label htmlFor={name + 'field'} className="col-sm-6 col-form-label">
-        {label}
+    <div className={axisOf ? 'mrow axis' : 'mrow'}>
+      <label htmlFor={id}>
+        <span aria-hidden={srLabel ? 'true' : undefined}>{label}</span>
+        {/* a leading space inside the sr-only span is trimmed from the name */}
+        {qualifier && ' '}
+        <span className="sr-only">
+          {srLabel}
+          {qualifier?.trimStart()}, {UNITS.get(unit)}
+        </span>
       </label>
-      <div className="col-sm-6">
-        <div className="input-group">
-          {disabled ? (
-            <input
-              id={name + 'field'}
-              name={name}
-              value={value}
-              className="form-control text-right"
-              disabled={true}
-            />
-          ) : (
-            <Field
-              type="number"
-              id={name + 'field'}
-              name={name}
-              className={getClassName({
-                error: error,
-                touched: touched,
-                base: ['form-control', 'text-right']
-              })}
-              placeholder={placeholder}
-              autoComplete="off"
-            />
-          )}
-          <UnitSufix unit={unit} />
-          <ErrorMessage
-            name={name}
-            component="div"
-            className="invalid-feedback"
-          />
+      {disabled ? (
+        <input id={id} name={name} value={value} disabled={true} />
+      ) : (
+        <Field
+          type="number"
+          id={id}
+          name={name}
+          placeholder={placeholder}
+          autoComplete="off"
+          {...validity}
+        />
+      )}
+      <span className="unit" aria-hidden="true">
+        {unit}
+      </span>
+      {showError && (
+        <div id={errorId} className="mrow-error">
+          {error}
         </div>
-      </div>
+      )}
     </div>
   );
 };
