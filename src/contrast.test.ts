@@ -80,6 +80,7 @@ const USES: [selector: string, declaration: RegExp][] = [
   ['.btn-ghost', /min-height:\s*2\.75rem\s*;/],
   // Case-folding turns μ into Μ, so micrometres would read as millimetres.
   ['.ledger thead th', /(?:^|[;\s])text-transform:\s*none\s*;/],
+  ['.regression-block h4', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['.regression-block h4', /(?:^|[;\s])text-transform:\s*none\s*;/]
 ];
 it.each(USES)('%s uses the token its role is measured with', (sel, decl) =>
