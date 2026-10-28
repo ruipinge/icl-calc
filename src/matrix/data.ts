@@ -39,6 +39,12 @@ export const LENS_SIZES: LensSize[] = [
   LENS_SIZE_LARGE
 ];
 
+/*
+ * The ledger's size accent, derived from LENS_SIZES order so no caller
+ * re-lists the mapping. Matches the .lens-* classes in App.css.
+ */
+export const LENS_CLASSES = LENS_SIZES.map((size) => `lens-${size.id}`);
+
 type LensSizesType = {
   [key in LensSizeId]: LensSize;
 };
