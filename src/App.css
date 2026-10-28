@@ -684,6 +684,23 @@ input[type='number']::-webkit-outer-spin-button {
   }
 }
 
+/* --------------------------------------------------------- chart grid
+ * The six Normality charts: three columns on desktop, one on a phone. Each
+ * cell is a histogram above its gauge; the histogram measures its own width,
+ * so the gauge beneath stays on the same axis at any column width.
+ */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 1.5rem;
+}
+
+@media (max-width: 48rem) {
+  .chart-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* ======================================================================
  * TEMPORARY GRID SHIM
  *
@@ -705,7 +722,7 @@ input[type='number']::-webkit-outer-spin-button {
   gap: 0 1.5rem;
 }
 
-/* deleted by PR 4 (patient, cornea, refraction, power) and PR 6 (normality) */
+/* deleted by PR 4 (patient, cornea, refraction, power) and PR 5 (regression) */
 .col-4 {
   flex: 0 0 auto;
   width: calc(33.333% - 1rem);
@@ -753,40 +770,6 @@ input[type='number']::-webkit-outer-spin-button {
 .text-right {
   text-align: right;
 }
-.text-center {
-  text-align: center;
-}
-.d-inline-block {
-  display: inline-block;
-}
-.mb-0 {
-  margin-bottom: 0;
-}
-.mb-3 {
-  margin-bottom: 1rem;
-}
 .mb-4 {
   margin-bottom: 1.5rem;
-}
-.ml-3 {
-  margin-left: 1rem;
-}
-.mt-5 {
-  margin-top: 3rem;
-}
-.pl-0 {
-  padding-left: 0;
-}
-
-/* deleted by PR 6 — the charts read Bootstrap's theme colours by name at
- * runtime (Gauge.tsx for the RAG zones, Histogram.tsx for bar fill and
- * stroke). Without these the zones render transparent and the bars black.
- * Bootstrap 4.6.2's values, so the charts look as they did until PR 6
- * moves them onto Treeye tokens. */
-:root {
-  --secondary: #6c757d;
-  --success: #28a745;
-  --warning: #ffc107;
-  --danger: #dc3545;
-  --dark: #343a40;
 }

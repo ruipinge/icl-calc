@@ -60,7 +60,9 @@ test('capture the six normality histograms', async ({ page }) => {
   // golden master's, so the two cannot drift apart.
   await gotoTab(page, 'Biometric Normality');
 
-  const columns = page.locator('.row > .col-md-4');
+  // `.chart-grid` since the Treeye reskin (#138); `.row > .col-md-4` before
+  // it, kept so the "before" images stay regenerable from an older commit.
+  const columns = page.locator('.chart-grid > div, .row > .col-md-4');
   await expect(columns).toHaveCount(METRICS.length);
 
   for (const [index, metric] of METRICS.entries()) {

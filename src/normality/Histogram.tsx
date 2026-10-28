@@ -37,6 +37,19 @@ const BAR_WIDTH_RATIO = 0.88;
 // now - without a ResizeObserver polyfill in setupTests.
 const FALLBACK_WIDTH = 340;
 
+// Spec §7: indigo bars on a --rule grid, the title in Poppins 500, and every
+// axis numeral in Newsreader - Poppins' served subsets have proportional
+// digits, Newsreader's are tabular. The axis title is a label, so Poppins
+// too. The bars carry no outline. These are var() references, not values read
+// with getComputedStyle: the page's tokens stay the one source, and nothing
+// about the chart's appearance is resolved during render.
+const BAR_STYLE = { fill: 'var(--leaf-indigo)' };
+const GRIDLINE_STYLE = { stroke: 'var(--rule)' };
+const TITLE_STYLE = { fontFamily: 'var(--display)', fontWeight: 500 };
+const AXIS_TEXT = { fill: 'var(--muted)' };
+const NUMERAL_STYLE = { ...AXIS_TEXT, fontFamily: 'var(--prose)' };
+const AXIS_LABEL_STYLE = { ...AXIS_TEXT, fontFamily: 'var(--display)' };
+
 /**
  * Tracks the rendered width of the returned ref's element.
  */
@@ -87,16 +100,6 @@ export const Histogram = ({
   const plotRight = Math.max(plotLeft + 1, width - PLOT_INSET_RIGHT);
   const plotWidth = plotRight - plotLeft;
 
-  // Read Bootstrap's theme colours at render time (not hardcoded, not
-  // module scope) so a Bootstrap theme change still flows through, matching
-  // the pattern already used in Gauge.tsx / linear-gauge.
-  const fill = getComputedStyle(document.body)
-    .getPropertyValue('--secondary')
-    .trim();
-  const stroke = getComputedStyle(document.body)
-    .getPropertyValue('--dark')
-    .trim();
-
   // amCharts set valueAxis.max to this value but only ever treated it as a
   // hint: it rounded the rendered axis up to the nearest "nice" number. The
   // reference captures in docs/histogram-reference/ show every axis stepping
@@ -132,13 +135,16 @@ export const Histogram = ({
             plot is inset 71px on the left to line up with the gauge, and
             centring on that inset area pushes the longer titles -
             "Internal Anterior Chamber Depth - ACD (mm)" - off the right
-            edge. amCharts centred on the full width too. */}
+            edge. amCharts centred on the full width too. 14px, not the
+            16px it had in Newsreader: Poppins sets wider, and at 16px the
+            ACD title overran both edges of its column at both viewports. */}
         <text
           x={width / 2}
           y={18}
           textAnchor="middle"
-          fontSize={16}
+          fontSize={14}
           fill="currentColor"
+          style={TITLE_STYLE}
         >
           {title}
         </text>
@@ -154,8 +160,8 @@ export const Histogram = ({
                 x2={plotRight}
                 y1={y}
                 y2={y}
-                stroke="#dee2e6"
                 strokeWidth={1}
+                style={GRIDLINE_STYLE}
               />
               <text
                 x={plotLeft - 8}
@@ -163,7 +169,7 @@ export const Histogram = ({
                 textAnchor="end"
                 dominantBaseline="middle"
                 fontSize={11}
-                fill="#495057"
+                style={NUMERAL_STYLE}
               >
                 {tick}
               </text>
@@ -175,7 +181,7 @@ export const Histogram = ({
           y={(PLOT_TOP + PLOT_BOTTOM) / 2}
           textAnchor="middle"
           fontSize={12}
-          fill="#495057"
+          style={AXIS_LABEL_STYLE}
           transform={`rotate(-90 20 ${(PLOT_TOP + PLOT_BOTTOM) / 2})`}
         >
           Number of Eyes
@@ -191,19 +197,20 @@ export const Histogram = ({
           return (
             <g key={bin.from}>
               <line
+                data-testid="bin-gridline"
                 x1={x}
                 x2={x}
                 y1={PLOT_TOP}
                 y2={PLOT_BOTTOM}
-                stroke="#dee2e6"
                 strokeWidth={1}
+                style={GRIDLINE_STYLE}
               />
               <text
                 x={x}
                 y={PLOT_BOTTOM + 16}
                 textAnchor="middle"
                 fontSize={11}
-                fill="#495057"
+                style={NUMERAL_STYLE}
               >
                 {formatAxisNumber(bin.from)}
               </text>
@@ -227,8 +234,7 @@ export const Histogram = ({
               y={y}
               width={barWidth}
               height={barHeight}
-              fill={fill}
-              stroke={stroke}
+              style={BAR_STYLE}
             >
               <title>
                 {`Interval: [${bin.from}, ${bin.to}[\nNumber of Eyes: ${bin.count}`}
