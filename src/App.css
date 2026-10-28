@@ -228,7 +228,7 @@ input:disabled {
   background: transparent;
   border-bottom-style: dotted;
   border-bottom-color: var(--faint);
-  color: var(--muted);
+  color: var(--ink);
 }
 
 table {
@@ -424,7 +424,8 @@ tbody td {
 }
 .site-footer a {
   color: var(--muted);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
   display: inline-block;
   padding-block: 0.3rem;
 }

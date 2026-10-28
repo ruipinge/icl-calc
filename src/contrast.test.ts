@@ -71,6 +71,8 @@ const USES: [selector: string, declaration: RegExp][] = [
   ['h4', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['.site-footer', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['input::placeholder', /(?:^|[;\s])color:\s*var\(--muted\)/],
+  ['input:disabled', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  ['.site-footer a', /text-decoration:\s*underline\s*;/],
   ['input, select', /border-bottom:\s*1px solid var\(--faint\)/]
 ];
 it.each(USES)('%s uses the token its role is measured with', (sel, decl) =>
