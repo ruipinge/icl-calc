@@ -61,9 +61,10 @@ export const buildZones = ({
   values: number[];
   quantiles?: readonly number[];
 }): Band[] => {
-  // Sorted once here rather than once inside each quantile() call: this runs
-  // from a useLayoutEffect with no dependency array, over the 542-element
-  // shared arrays, for six gauges. `values` itself is left untouched.
+  // Sorted once here rather than once inside each quantile() call: Gauge
+  // memoises this on `values`, so it runs once per gauge per dataset, over
+  // the 542-element shared arrays, for six gauges. `values` itself is left
+  // untouched.
   const sorted = sortedCopy(values);
   const qq = quantiles.map((q) => quantileOfSorted(sorted, q));
   return qq.map((max, index) => ({
@@ -94,7 +95,8 @@ const BAND_NAMES = [
 
 /**
  * Names the band a value falls in, for the gauge's accessible name. Bands are
- * half-open `[min, max)` except the last, which is closed.
+ * half-open `[min, max)` except the last, which is closed. A value no band
+ * holds (NaN included) is outside the range, never `undefined`.
  *
  * @param {number} value - The measurement
  * @param {Band[]} bands - From `buildZones`
@@ -108,8 +110,25 @@ export const describeBand = (value: number, bands: Band[]): string => {
   const index = bands.findIndex(
     (band, i) => value < band.max || (i === last && value <= band.max)
   );
-  return BAND_NAMES[index];
+  return index === -1 ? 'outside the range of the dataset' : BAND_NAMES[index];
 };
+
+/**
+ * The gauge's accessible name. A cleared form field reaches the gauge as `''`
+ * (Formik), untyped, so anything that is not a finite number is named as
+ * missing rather than given a band. The value is read to 12 significant
+ * digits so float artefacts of derived values (ACA is a mean) are not spoken.
+ * Only the name: what the gauge draws is untouched.
+ *
+ * @param {string} title - The metric
+ * @param {unknown} value - The measurement, as it reached the component
+ * @param {Band[]} bands - From `buildZones`
+ * @returns {string}
+ */
+const gaugeName = (title: string, value: unknown, bands: Band[]): string =>
+  typeof value !== 'number' || !Number.isFinite(value)
+    ? `${title}: no value entered`
+    : `${title}: ${Number(value.toPrecision(12))}, ${describeBand(value, bands)}`;
 
 export const Gauge = ({
   title,
@@ -152,7 +171,7 @@ export const Gauge = ({
     <div
       data-testid="gauge"
       role="img"
-      aria-label={`${title}: ${value}, ${describeBand(value, bands)}`}
+      aria-label={gaugeName(title, value, bands)}
       style={{
         marginLeft: `${PLOT_INSET_LEFT}px`,
         marginRight: `${PLOT_INSET_RIGHT}px`

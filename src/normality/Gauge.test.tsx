@@ -101,7 +101,8 @@ it.each([
   [B[4].min, 'above the 97.5th percentile'],
   [B[4].max, 'above the 97.5th percentile'],
   [0, 'outside the range of the dataset'],
-  [B[4].max + 1, 'outside the range of the dataset']
+  [B[4].max + 1, 'outside the range of the dataset'],
+  [NaN, 'outside the range of the dataset']
 ])('describes %s as %s', (v, s) => expect(describeBand(v, B)).toBe(s));
 
 it('is an image named by its metric, value and band', () => {
@@ -118,6 +119,35 @@ it('is an image named by its metric, value and band', () => {
       name: /^Angle to Angle - AtA \(mm\): \d+(\.\d+)?, between the 25th and 75th percentiles$/
     })
   ).toHaveAttribute('data-testid', 'gauge');
+});
+
+// A cleared field reaches the gauge as '' (Formik), untyped through
+// Normality({...args}); the name must never claim a band for it, end blank, or
+// read "undefined".
+it.each([
+  ['an empty string', '' as unknown as number],
+  ['NaN', NaN],
+  ['undefined', undefined as unknown as number]
+])('names a gauge whose value is %s as having no value', (_, value) => {
+  render(<Gauge title="CLR" value={value} values={[1, 2, 3, 4, 5, 6, 7]} />);
+
+  expect(screen.getByTestId('gauge')).toHaveAccessibleName(
+    'CLR: no value entered'
+  );
+});
+
+it('reads a derived value without its float artefact', () => {
+  render(
+    <Gauge
+      title="ACA"
+      value={30.700000000000003}
+      values={[10, 20, 30, 40, 50]}
+    />
+  );
+
+  expect(screen.getByTestId('gauge')).toHaveAccessibleName(
+    'ACA: 30.7, between the 25th and 75th percentiles'
+  );
 });
 
 it('colours the tails crimson, the shoulders ember and the middle jade', () => {
