@@ -73,7 +73,10 @@ const USES: [selector: string, declaration: RegExp][] = [
   ['input::placeholder', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['input:disabled', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['.site-footer a', /text-decoration:\s*underline\s*;/],
-  ['input, select', /border-bottom:\s*1px solid var\(--faint\)/]
+  ['input, select', /border-bottom:\s*1px solid var\(--faint\)/],
+  ['input, select', /min-height:\s*2\.75rem\s*;/],
+  ['.tabs a', /min-height:\s*2\.75rem\s*;/],
+  ['.btn-ghost', /min-height:\s*2\.75rem\s*;/]
 ];
 it.each(USES)('%s uses the token its role is measured with', (sel, decl) =>
   expect(body(sel)).toMatch(decl)

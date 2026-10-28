@@ -45,14 +45,34 @@ for (const viewport of VIEWPORTS) {
           await gotoTab(page, route.tab);
         }
 
-        const { violations } = await new AxeBuilder({ page })
+        const results = await new AxeBuilder({ page })
           .withRules(['color-contrast'])
           .analyze();
+        const { violations } = results;
+        // Nodes axe could not decide (text over an image or gradient) are
+        // neither passes nor violations, so keep them visible in the report.
+        const incomplete = results.incomplete.filter(
+          (r) => r.id === 'color-contrast'
+        );
 
         await testInfo.attach(`contrast-${route.name}-${viewport.name}.json`, {
           body: JSON.stringify(violations, null, 2),
           contentType: 'application/json'
         });
+        await testInfo.attach(
+          `contrast-${route.name}-${viewport.name}-incomplete.json`,
+          {
+            body: JSON.stringify(incomplete, null, 2),
+            contentType: 'application/json'
+          }
+        );
+
+        // Non-vacuity: a blank or unmeasured page has no violations either.
+        // Require the rule to have actually passed on at least one node.
+        const passed = results.passes
+          .filter((r) => r.id === 'color-contrast')
+          .flatMap((r) => r.nodes);
+        expect(passed.length).toBeGreaterThan(0);
 
         // Summarised so a red run names the nodes and the measured ratio
         // instead of printing axe's full result objects.
