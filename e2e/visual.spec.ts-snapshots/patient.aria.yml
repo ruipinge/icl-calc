@@ -24,72 +24,69 @@
 - text: Date of Birth
 - textbox "Date of Birth":
   - /placeholder: yyyy-mm-dd
-- text: Age
-- textbox "Age" [disabled]: "0"
-- text: years Eye
+- text: Age, years
+- textbox "Age, years" [disabled]: "0"
+- text: Eye
 - combobox "Eye":
   - option "Select..."
   - option "Left" [selected]
   - option "Right"
 - separator
 - heading "Biometry" [level=4]
-- text: Angle to Angle (AtA)
-- spinbutton "Angle to Angle (AtA)": "0"
-- text: mm White to White (WtW)
-- spinbutton "White to White (WtW)": "0"
-- text: mm Crystaline Lens Rise (CLR)
-- spinbutton "Crystaline Lens Rise (CLR)": "0"
-- text: μm Internal Anterior Chamber Depth (ACD)
-- spinbutton "Internal Anterior Chamber Depth (ACD)": "0"
-- text: mm Anterior Chamber Angle nasal (ACAn)
-- spinbutton "Anterior Chamber Angle nasal (ACAn)": "0"
-- text: º Anterior Chamber Angle temporal (ACAt)
-- spinbutton "Anterior Chamber Angle temporal (ACAt)": "0"
-- text: º
+- text: Angle to Angle (AtA), millimetres
+- spinbutton "Angle to Angle (AtA), millimetres": "0"
+- text: White to White (WtW), millimetres
+- spinbutton "White to White (WtW), millimetres": "0"
+- text: Crystaline Lens Rise (CLR), micrometres
+- spinbutton "Crystaline Lens Rise (CLR), micrometres": "0"
+- text: Internal Anterior Chamber Depth (ACD), millimetres
+- spinbutton "Internal Anterior Chamber Depth (ACD), millimetres": "0"
+- text: Anterior Chamber Angle nasal (ACAn), degrees
+- spinbutton "Anterior Chamber Angle nasal (ACAn), degrees": "0"
+- text: Anterior Chamber Angle temporal (ACAt), degrees
+- spinbutton "Anterior Chamber Angle temporal (ACAt), degrees": "0"
 - heading "Cornea Profile" [level=4]
-- text: Anterior Keratometry Flat (KAntFlt)
-- spinbutton "Anterior Keratometry Flat (KAntFlt)": "0"
-- text: dpt @
-- spinbutton "@": "0"
-- text: º Anterior Keratometry Steep (KAntStp)
-- spinbutton "Anterior Keratometry Steep (KAntStp)": "0"
-- text: dpt @
-- spinbutton "@": "0"
-- text: º Posterior Keratometry Flat (KPostFlt)
-- spinbutton "Posterior Keratometry Flat (KPostFlt)": "0"
-- text: dpt @
-- spinbutton "@": "0"
-- text: º Posterior Keratometry Steep (KPostStp)
-- spinbutton "Posterior Keratometry Steep (KPostStp)": "0"
-- text: dpt @
-- spinbutton "@": "0"
-- text: º Central Corneal Thickness (CCT)
-- spinbutton "Central Corneal Thickness (CCT)": "0"
-- text: μm Previous Corneal Refractive Surgery
+- text: Anterior Keratometry Flat (KAntFlt), dioptres
+- spinbutton "Anterior Keratometry Flat (KAntFlt), dioptres": "0"
+- text: Anterior Keratometry Flat axis, degrees
+- spinbutton "Anterior Keratometry Flat axis, degrees": "0"
+- text: Anterior Keratometry Steep (KAntStp), dioptres
+- spinbutton "Anterior Keratometry Steep (KAntStp), dioptres": "0"
+- text: Anterior Keratometry Steep axis, degrees
+- spinbutton "Anterior Keratometry Steep axis, degrees": "0"
+- text: Posterior Keratometry Flat (KPostFlt), dioptres
+- spinbutton "Posterior Keratometry Flat (KPostFlt), dioptres": "0"
+- text: Posterior Keratometry Flat axis, degrees
+- spinbutton "Posterior Keratometry Flat axis, degrees": "0"
+- text: Posterior Keratometry Steep (KPostStp), dioptres
+- spinbutton "Posterior Keratometry Steep (KPostStp), dioptres": "0"
+- text: Posterior Keratometry Steep axis, degrees
+- spinbutton "Posterior Keratometry Steep axis, degrees": "0"
+- text: Central Corneal Thickness (CCT), micrometres
+- spinbutton "Central Corneal Thickness (CCT), micrometres": "0"
+- text: Previous Corneal Refractive Surgery
 - combobox "Previous Corneal Refractive Surgery":
   - option "None" [selected]
   - option "Myopia"
   - option "Hyperopia"
 - heading "Spectacle Refraction" [level=4]
-- text: Sphere
-- spinbutton "Sphere": "0"
-- text: dpt Cylindre
-- spinbutton "Cylindre": "0"
-- text: dpt Axis
-- spinbutton "Axis": "0"
-- text: º Vertex
-- spinbutton "Vertex": "0"
-- text: mm
+- text: Sphere (spectacle refraction), dioptres
+- spinbutton "Sphere (spectacle refraction), dioptres": "0"
+- text: Cylindre (spectacle refraction), dioptres
+- spinbutton "Cylindre (spectacle refraction), dioptres": "0"
+- text: Axis (spectacle refraction), degrees
+- spinbutton "Axis (spectacle refraction), degrees": "0"
+- text: Vertex, millimetres
+- spinbutton "Vertex, millimetres": "0"
 - heading "ICL Power" [level=4]
-- text: Sphere
-- textbox "Sphere" [disabled]: "0"
-- text: dpt Cylindre
-- textbox "Cylindre" [disabled]: "0"
-- text: dpt Axis
-- textbox "Axis" [disabled]: /\d+/
-- text: º Spherical Equivalent (SE)
-- textbox "Spherical Equivalent (SE)" [disabled]: "0"
-- text: dpt
+- text: Sphere (ICL power), dioptres
+- textbox "Sphere (ICL power), dioptres" [disabled]: "0"
+- text: Cylindre (ICL power), dioptres
+- textbox "Cylindre (ICL power), dioptres" [disabled]: "0"
+- text: Axis (ICL power), degrees
+- textbox "Axis (ICL power), degrees" [disabled]: /\d+/
+- text: Spherical Equivalent (SE), dioptres
+- textbox "Spherical Equivalent (SE), dioptres" [disabled]: "0"
 - contentinfo:
   - list:
     - listitem:

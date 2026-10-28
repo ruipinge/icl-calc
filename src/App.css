@@ -489,13 +489,17 @@ input[type='number']::-webkit-outer-spin-button {
   border-bottom: 2px solid var(--leaf-crimson);
 }
 
-.mrow > .unit {
-  padding: 0.6rem 0 0.6rem 0.4rem;
+/* the unit column, shared by the measured row and the identity row */
+.unit {
   font-family: var(--display);
   font-weight: 500;
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   color: var(--ink);
+}
+
+.mrow > .unit {
+  padding: 0.6rem 0 0.6rem 0.4rem;
 }
 
 .mrow-error {
@@ -548,20 +552,20 @@ input[type='number']::-webkit-outer-spin-button {
   text-align: right;
 }
 
-.idvalue > .unit {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  color: var(--ink);
-}
-
 .idcell > input[aria-invalid='true'] {
   border-bottom: 2px solid var(--leaf-crimson);
 }
 
+/* The patient form: Biometry | Cornea Profile | Refraction + ICL Power. */
+.patient-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(1.5rem, 4vw, 3rem);
+}
+
 @media (max-width: 48rem) {
-  .idgroup {
+  .idgroup,
+  .patient-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -588,30 +592,10 @@ input[type='number']::-webkit-outer-spin-button {
   gap: 0 1.5rem;
 }
 
-/* deleted by PR 4 */
-.form-group {
-  margin-bottom: 1rem;
-}
-.section-form {
-  margin-bottom: 2rem;
-}
-
 /* deleted by PR 4 (patient, cornea, refraction, power) and PR 6 (normality) */
 .col-4 {
   flex: 0 0 auto;
   width: calc(33.333% - 1rem);
-}
-.col-sm-6 {
-  flex: 0 0 auto;
-  width: calc(50% - 0.75rem);
-}
-.col-md-2 {
-  flex: 0 0 auto;
-  width: calc(16.666% - 1.25rem);
-}
-.col-md-3 {
-  flex: 0 0 auto;
-  width: calc(25% - 1.125rem);
 }
 .col-md-4 {
   flex: 0 0 auto;
@@ -625,49 +609,14 @@ input[type='number']::-webkit-outer-spin-button {
   flex: 0 0 auto;
   width: calc(50% - 0.75rem);
 }
-.offset-md-1 {
-  margin-left: 8.333%;
-}
 
 @media (max-width: 48rem) {
   .col-4,
-  .col-sm-6,
-  .col-md-2,
-  .col-md-3,
   .col-md-4,
   .col-md-5,
   .col-md-6 {
     width: 100%;
   }
-  .offset-md-1 {
-    margin-left: 0;
-  }
-}
-
-/* deleted by PR 4 — the unit suffix becomes part of the measured row */
-.input-group {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
-}
-.input-group-append .input-group-text {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  color: var(--ink);
-}
-
-/* deleted by PR 4 — validation moves to the measured row's underline */
-.is-invalid {
-  border-bottom: 2px solid var(--leaf-crimson);
-}
-.invalid-feedback {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  color: var(--leaf-crimson);
 }
 
 /*
