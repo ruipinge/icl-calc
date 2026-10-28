@@ -450,6 +450,133 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
+/* ------------------------------------------------------ the measured row
+ * One grid per field group; each row is display: contents, so labels, inputs
+ * and units align across the whole group. See spec 5.2 to 5.4.
+ */
+.fieldgroup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7.5rem 3.4rem;
+  align-items: baseline;
+  margin-bottom: 2rem;
+}
+
+.mrow {
+  display: contents;
+}
+
+.mrow > :not(.mrow-error) {
+  border-top: 1px solid var(--rule);
+}
+
+.mrow.axis > :not(.mrow-error) {
+  border-top: 0;
+}
+
+.mrow > label {
+  padding: 0.6rem 0.7rem 0.6rem 0;
+}
+
+.mrow.axis > label {
+  text-align: right;
+}
+
+.mrow > input {
+  text-align: right;
+}
+
+.mrow > input[aria-invalid='true'] {
+  border-bottom: 2px solid var(--leaf-crimson);
+}
+
+/* the unit column, shared by the measured row and the identity row */
+.unit {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.mrow > .unit {
+  padding: 0.6rem 0 0.6rem 0.4rem;
+}
+
+.mrow-error {
+  grid-column: 1 / -1;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--leaf-crimson);
+  padding-bottom: 0.4rem;
+}
+
+.fieldgroup-section > h4 {
+  margin: 0 0 0.6rem;
+}
+
+/* Previous surgery: the label, then a select spanning control and unit. */
+.mrow-select > select {
+  grid-column: 2 / -1;
+  min-width: 0;
+}
+
+/* Information: four cells in a row, stacked under 48rem. */
+.idgroup {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.idcell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.idvalue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.idvalue > input {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+}
+
+.idcell > input[aria-invalid='true'] {
+  border-bottom: 2px solid var(--leaf-crimson);
+}
+
+/*
+ * The patient form: Biometry | Cornea Profile | Refraction + ICL Power.
+ * Each group's control and unit tracks are fixed (10.9rem), so the label
+ * track is what narrows; below 75rem three columns leave it too little room
+ * for words like "Keratometry", which then run under the input.
+ */
+.patient-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+@media (max-width: 75rem) {
+  .patient-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 48rem) {
+  .idgroup,
+  .patient-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* ======================================================================
  * TEMPORARY GRID SHIM
  *
@@ -472,30 +599,10 @@ input[type='number']::-webkit-outer-spin-button {
   gap: 0 1.5rem;
 }
 
-/* deleted by PR 4 */
-.form-group {
-  margin-bottom: 1rem;
-}
-.section-form {
-  margin-bottom: 2rem;
-}
-
 /* deleted by PR 4 (patient, cornea, refraction, power) and PR 6 (normality) */
 .col-4 {
   flex: 0 0 auto;
   width: calc(33.333% - 1rem);
-}
-.col-sm-6 {
-  flex: 0 0 auto;
-  width: calc(50% - 0.75rem);
-}
-.col-md-2 {
-  flex: 0 0 auto;
-  width: calc(16.666% - 1.25rem);
-}
-.col-md-3 {
-  flex: 0 0 auto;
-  width: calc(25% - 1.125rem);
 }
 .col-md-4 {
   flex: 0 0 auto;
@@ -509,49 +616,14 @@ input[type='number']::-webkit-outer-spin-button {
   flex: 0 0 auto;
   width: calc(50% - 0.75rem);
 }
-.offset-md-1 {
-  margin-left: 8.333%;
-}
 
 @media (max-width: 48rem) {
   .col-4,
-  .col-sm-6,
-  .col-md-2,
-  .col-md-3,
   .col-md-4,
   .col-md-5,
   .col-md-6 {
     width: 100%;
   }
-  .offset-md-1 {
-    margin-left: 0;
-  }
-}
-
-/* deleted by PR 4 — the unit suffix becomes part of the measured row */
-.input-group {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
-}
-.input-group-append .input-group-text {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  color: var(--ink);
-}
-
-/* deleted by PR 4 — validation moves to the measured row's underline */
-.is-invalid {
-  border-bottom: 2px solid var(--leaf-crimson);
-}
-.invalid-feedback {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  color: var(--leaf-crimson);
 }
 
 /*

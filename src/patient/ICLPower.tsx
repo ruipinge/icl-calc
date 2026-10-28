@@ -14,35 +14,40 @@ export const ICLPower = ({
   touched,
   values
 }: FormikState<ICLInputs>) => (
-  <div>
+  <section className="fieldgroup-section">
     <h4>ICL Power</h4>
-    <FieldWithUnit
-      label="Sphere"
-      name="iclSphere"
-      value={calcICLSphere(values)}
-      unit="dpt"
-      disabled={true}
-    />
-    <FieldWithUnit
-      label="Cylindre"
-      name="iclCylindre"
-      value={calcICLCylindre(values)}
-      unit="dpt"
-      disabled={true}
-    />
-    <FieldWithUnit
-      label="Axis"
-      name="iclAxis"
-      value={calcICLAxis(values.spectacleRefraction.axis)}
-      unit="º"
-      disabled={true}
-    />
-    <FieldWithUnit
-      label="Spherical Equivalent (SE)"
-      value={calcICLSphericalEquivalent(values)}
-      name="iclSphericalEquivalent"
-      unit="dpt"
-      disabled={true}
-    />
-  </div>
+    <div className="fieldgroup">
+      <FieldWithUnit
+        label="Sphere"
+        qualifier=" (ICL power)"
+        name="iclSphere"
+        value={calcICLSphere(values)}
+        unit="dpt"
+        disabled={true}
+      />
+      <FieldWithUnit
+        label="Cylindre"
+        qualifier=" (ICL power)"
+        name="iclCylindre"
+        value={calcICLCylindre(values)}
+        unit="dpt"
+        disabled={true}
+      />
+      <FieldWithUnit
+        label="Axis"
+        qualifier=" (ICL power)"
+        name="iclAxis"
+        value={calcICLAxis(values.spectacleRefraction.axis)}
+        unit="º"
+        disabled={true}
+      />
+      <FieldWithUnit
+        label="Spherical Equivalent (SE)"
+        value={calcICLSphericalEquivalent(values)}
+        name="iclSphericalEquivalent"
+        unit="dpt"
+        disabled={true}
+      />
+    </div>
+  </section>
 );

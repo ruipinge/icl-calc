@@ -11,7 +11,10 @@ import { PatientInfo } from '../types';
  * order and labels, which it must not. Only the second kind is asserted here,
  * so a restyled input passes and a reordered form fails.
  */
-const renderInfo = () => {
+const renderInfo = (
+  shownErrors: Record<string, unknown> = {},
+  shownTouched: Record<string, unknown> = {}
+) => {
   // 2020-07-01, so the 2000-07-01 date of birth below is exactly 20.
   const spy = vi.spyOn(Date, 'now').mockImplementation(() => 1593561600000);
 
@@ -28,7 +31,12 @@ const renderInfo = () => {
       onSubmit={() => {}}
     >
       {({ errors, touched, values, resetForm, ...otherProps }) => (
-        <Info errors={{}} values={values} touched={{}} {...otherProps} />
+        <Info
+          errors={shownErrors}
+          values={values}
+          touched={shownTouched}
+          {...otherProps}
+        />
       )}
     </Formik>
   );
@@ -52,7 +60,7 @@ it('renders Name, Date of Birth and Age in that order', () => {
   expect(inputs).toHaveLength(3);
   expect(inputs[0]).toBe(screen.getByLabelText('Name'));
   expect(inputs[1]).toBe(screen.getByLabelText('Date of Birth'));
-  expect(inputs[2]).toBe(screen.getByLabelText('Age'));
+  expect(inputs[2]).toBe(screen.getByRole('textbox', { name: 'Age, years' }));
 });
 
 it('shows the values it was given', () => {
@@ -70,9 +78,17 @@ it('shows the values it was given', () => {
 it('derives Age from the date of birth and disables it', () => {
   renderInfo();
 
-  expect(screen.getByLabelText('Age')).toHaveValue('20');
-  expect(screen.getByLabelText('Age')).toBeDisabled();
-  expect(screen.getByTitle('years')).toHaveTextContent('years');
+  const age = screen.getByRole('textbox', { name: 'Age, years' });
+
+  expect(age).toHaveValue('20');
+  expect(age).toBeDisabled();
+});
+
+/* The visible unit stays out of the tree; "years" is already in the name. */
+it('hides the visible Age unit from the accessibility tree', () => {
+  renderInfo();
+
+  expect(screen.getByText('years')).toHaveAttribute('aria-hidden', 'true');
 });
 
 /*
@@ -88,4 +104,29 @@ it('offers both eyes and selects the one it was given', () => {
   expect(
     screen.getAllByRole('option').map((option) => option.textContent)
   ).toEqual(['Select...', 'Left', 'Right']);
+});
+
+/*
+ * An invalid date of birth is announced, not just coloured: aria-invalid on
+ * the control, tied by aria-describedby to the message. Both halves of
+ * "error and touched" are required, so an untouched field stays quiet.
+ */
+const DOB_ERROR = { patient: { dateOfBirth: 'Invalid date' } };
+
+it('marks a touched, invalid date of birth and describes it by its error', () => {
+  renderInfo(DOB_ERROR, { patient: { dateOfBirth: true } });
+
+  const dob = screen.getByRole('textbox', { name: 'Date of Birth' });
+
+  expect(dob).toHaveAttribute('aria-invalid', 'true');
+  expect(dob).toHaveAccessibleDescription('Invalid date');
+});
+
+it('does not mark an invalid date of birth that has not been touched', () => {
+  renderInfo(DOB_ERROR, {});
+
+  const dob = screen.getByRole('textbox', { name: 'Date of Birth' });
+
+  expect(dob).not.toHaveAttribute('aria-invalid');
+  expect(screen.queryByText('Invalid date')).toBeNull();
 });

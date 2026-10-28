@@ -67,7 +67,7 @@ it.each(PAIRS)('%s: %s on %s is at least %d:1', (_, fg, bg, min) =>
 
 const USES: [selector: string, declaration: RegExp][] = [
   ['thead th', /(?:^|[;\s])color:\s*var\(--ink\)/],
-  ['.input-group-append .input-group-text', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  ['.unit', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['h4', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['.site-footer', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['input::placeholder', /(?:^|[;\s])color:\s*var\(--muted\)/],
