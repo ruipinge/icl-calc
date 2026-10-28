@@ -1,5 +1,6 @@
 import { DividerRow, MatrixRow } from './components';
 import {
+  LENS_CLASSES,
   LENS_SIZES,
   MYOPIA_LEVELS,
   MatrixFilter,
@@ -14,8 +15,14 @@ import { VaultStatRows } from './VaultStatRows';
 export const getNumEyes = (filter: MatrixFilter): number[] =>
   filterFlatRows(filter).map((rows: DataPoint[]) => rows.length);
 
-const LensHeaderCol = ({ label }: { label: string }) => (
-  <th scope="col" colSpan={MYOPIA_LEVELS.length} className="text-right">
+const LensHeaderCol = ({
+  label,
+  className
+}: {
+  label: string;
+  className: string;
+}) => (
+  <th scope="col" colSpan={MYOPIA_LEVELS.length} className={className}>
     {label}
   </th>
 );
@@ -27,7 +34,7 @@ const MyopiaHeaderCol = ({
   label: string;
   title: string;
 }) => (
-  <th scope="col" className="text-right" title={title}>
+  <th scope="col" title={title}>
     {label}
   </th>
 );
@@ -42,43 +49,49 @@ const MyopiaHeaderColGroup = () => (
 
 export const Matrix = (filter: MatrixFilter) => (
   <>
-    <table className="table table-bordered table-hover">
-      <thead>
-        <tr>
-          <th scope="col">Lens Size</th>
-          {LENS_SIZES.map((size) => (
-            <LensHeaderCol label={size.label} key={size.id} />
-          ))}
-        </tr>
-        <tr>
-          <th scope="col">Myopia</th>
-          {LENS_SIZES.map((size) => (
-            <MyopiaHeaderColGroup key={size.id} />
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        <MatrixRow
-          label="Number of Eyes"
-          title="Number of Eyes matching the column criteria"
-          values={getNumEyes(filter)}
-        />
-        <DividerRow />
-        <VaultStatRows {...filter} />
-        <DividerRow />
-        <VaultDistributionRows {...filter} />
-      </tbody>
-    </table>
-    <ul className="list-inline" data-testid="matrix-summary">
-      <li className="list-inline-item">
+    <div className="ledger-scroll">
+      <table className="ledger">
+        <thead>
+          <tr>
+            <th scope="col">Lens Size</th>
+            {LENS_SIZES.map((size, index) => (
+              <LensHeaderCol
+                label={size.label}
+                className={LENS_CLASSES[index]}
+                key={size.id}
+              />
+            ))}
+          </tr>
+          <tr>
+            <th scope="col">Myopia</th>
+            {LENS_SIZES.map((size) => (
+              <MyopiaHeaderColGroup key={size.id} />
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <MatrixRow
+            label="Number of Eyes"
+            title="Number of Eyes matching the column criteria"
+            values={getNumEyes(filter)}
+          />
+          <DividerRow />
+          <VaultStatRows {...filter} />
+          <DividerRow />
+          <VaultDistributionRows {...filter} />
+        </tbody>
+      </table>
+    </div>
+    <ul className="ledger-summary" data-testid="matrix-summary">
+      <li>
         <strong>Angle to Angle (AtA): </strong>
         {filter.ata} mm.
       </li>
-      <li className="list-inline-item">
+      <li>
         <strong>Crystaline Lens Rise (CLR): </strong>
         {filter.clr * 0.001} mm.
       </li>
-      <li className="list-inline-item">
+      <li>
         <strong>Number of matching Eyes: </strong>
         {getNumEyes(filter).reduce((acc, a) => acc + a, 0)}/{NUM_DATA_POINTS}.
       </li>

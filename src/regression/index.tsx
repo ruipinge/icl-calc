@@ -4,16 +4,12 @@ import { VaultProbability } from './VaultProbability';
 
 export const Regression = (values: RegressionInfo) => (
   <>
-    <div className="row">
-      <div className="col-md-6">
-        <VaultPrediction {...values} />
-      </div>
-    </div>
+    <section className="regression-block">
+      <VaultPrediction {...values} />
+    </section>
     <hr />
-    <div className="row">
-      <div className="col-md-5">
-        <VaultProbability {...values} />
-      </div>
-    </div>
+    <section className="regression-block">
+      <VaultProbability {...values} />
+    </section>
   </>
 );

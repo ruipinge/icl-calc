@@ -578,6 +578,163 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /* ======================================================================
+ * Pattern two: the ledger (Floating Matrix)
+ *
+ * A horizontally scrolling region holds the table so the page itself never
+ * scrolls at phone width; the label column stays put while the nine value
+ * columns move. Zero cells are ordinary --ink: nothing de-emphasises a zero.
+ * Column headers keep the base `thead th` colour (--ink), pinned in
+ * contrast.test.ts; nothing below sets a colour on a header.
+ * ====================================================================== */
+.ledger-scroll {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.ledger {
+  min-width: 52rem;
+}
+
+.ledger td {
+  color: var(--ink);
+}
+
+/*
+ * Units keep their case: text-transform: uppercase folds the micro sign in
+ * "(μm)" to a capital Mu, so micrometres read as millimetres. Colour is
+ * restated so this rule, which the contrast pin reads, carries it too.
+ */
+.ledger thead th {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.regression-block h4 {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+/* each lens group is named where it starts, not where it ends */
+.ledger th[colspan] {
+  text-align: left;
+}
+
+/*
+ * Phone width: cap the sticky label column so labels wrap and about three
+ * value columns stay in view beside it. .ledger.compact is excluded: it has
+ * no sticky column and its own sizing.
+ */
+@media (max-width: 48rem) {
+  .ledger:not(.compact) th:first-child {
+    width: 9rem;
+    min-width: 9rem;
+    white-space: normal;
+  }
+}
+
+.ledger th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--paper);
+  text-align: left;
+}
+
+.ledger tbody tr:not(.ledger-divider):hover > * {
+  background: var(--wash);
+}
+
+.ledger .lens-small {
+  box-shadow: inset 0 -3px 0 var(--lens-small);
+}
+
+.ledger .lens-medium {
+  box-shadow: inset 0 -3px 0 var(--lens-medium);
+}
+
+.ledger .lens-large {
+  box-shadow: inset 0 -3px 0 var(--lens-large);
+}
+
+.ledger .ledger-divider td {
+  padding: 0.35rem 0 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ledger-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  font-family: var(--prose);
+  color: var(--ink);
+}
+
+.ledger-summary strong {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.84rem;
+}
+
+/*
+ * The compact variant (Regression): the same ledger without the scroll
+ * region, the sticky column or the size accent bar. Each row header gets a
+ * small dot in its size colour instead; a pseudo-element, so the header's
+ * text is exactly the size label.
+ */
+.regression-block {
+  max-width: 40rem;
+}
+
+.ledger.compact {
+  min-width: 0;
+}
+
+.ledger.compact th:first-child {
+  position: static;
+  z-index: auto;
+  background: transparent;
+}
+
+/* a size label wraps to "12.6 / mm" at phone width otherwise */
+.ledger.compact tbody th {
+  white-space: nowrap;
+}
+
+.ledger.compact .lens-small,
+.ledger.compact .lens-medium,
+.ledger.compact .lens-large {
+  box-shadow: none;
+}
+
+.ledger.compact th[class*='lens-']::before {
+  content: '';
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.55rem;
+  border-radius: 50%;
+  background: var(--dot);
+}
+
+.ledger.compact .lens-small {
+  --dot: var(--lens-small);
+}
+
+.ledger.compact .lens-medium {
+  --dot: var(--lens-medium);
+}
+
+.ledger.compact .lens-large {
+  --dot: var(--lens-large);
+}
+
+/* ======================================================================
  * TEMPORARY GRID SHIM
  *
  * Bootstrap supplied every layout primitive this application uses, not just
@@ -591,85 +748,23 @@ input[type='number']::-webkit-outer-spin-button {
  * generated class set. Only what `grep -rho 'className="[^"]*"' src` finds.
  * ====================================================================== */
 
-/* deleted by PR 4 (patient form) and PR 5 (tables) */
-.row,
-.form-row {
+/* deleted by PR 6 (normality) */
+.row {
   display: flex;
   flex-wrap: wrap;
   gap: 0 1.5rem;
 }
 
-/* deleted by PR 4 (patient, cornea, refraction, power) and PR 6 (normality) */
-.col-4 {
-  flex: 0 0 auto;
-  width: calc(33.333% - 1rem);
-}
+/* deleted by PR 6 (normality) */
 .col-md-4 {
   flex: 0 0 auto;
   width: calc(33.333% - 1rem);
 }
-.col-md-5 {
-  flex: 0 0 auto;
-  width: calc(41.666% - 0.875rem);
-}
-.col-md-6 {
-  flex: 0 0 auto;
-  width: calc(50% - 0.75rem);
-}
 
 @media (max-width: 48rem) {
-  .col-4,
-  .col-md-4,
-  .col-md-5,
-  .col-md-6 {
+  .col-md-4 {
     width: 100%;
   }
-}
-
-/*
- * `.table-bordered` and `.table-hover` are deliberately NOT defined. They
- * appear on four elements today and are inert here: the base table layer
- * above already carries the hairline treatment, and PR 5 removes the
- * attributes. An empty ruleset would only look like an oversight.
- */
-
-/* deleted by PR 5 — the matrix summary becomes a definition row */
-.list-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.5rem;
-  list-style: none;
-  margin: 1rem 0 0;
-  padding: 0;
-}
-
-/* utility classes used inline; deleted alongside their components */
-.text-right {
-  text-align: right;
-}
-.text-center {
-  text-align: center;
-}
-.d-inline-block {
-  display: inline-block;
-}
-.mb-0 {
-  margin-bottom: 0;
-}
-.mb-3 {
-  margin-bottom: 1rem;
-}
-.mb-4 {
-  margin-bottom: 1.5rem;
-}
-.ml-3 {
-  margin-left: 1rem;
-}
-.mt-5 {
-  margin-top: 3rem;
-}
-.pl-0 {
-  padding-left: 0;
 }
 
 /* deleted by PR 6 — the charts read Bootstrap's theme colours by name at
