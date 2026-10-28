@@ -31,12 +31,11 @@ const renderWithHash = (route: string = '#') => {
  * reskin. An accidental reordering in #122 fails here; a restyled control
  * does not.
  *
- * Fields are pinned by id rather than by label because the Patient tab
- * carries duplicate accessible names - Sphere, Cylindre and Axis appear in
- * both Spectacle Refraction and ICL Power, and the four Cornea Profile axis
- * fields are all labelled "@" - so labels alone cannot address them
- * unambiguously. The ids are `${formikName}field`, so pinning them also pins
- * the Formik binding, and they are not presentational.
+ * Fields are pinned by accessible name, which is what a clinician (or a
+ * screen reader) addresses them by. Sphere, Cylindre and Axis appear in both
+ * Spectacle Refraction and ICL Power, and the four Cornea Profile axis
+ * fields used to share one label, so each carries a qualifier or a
+ * "<field> axis" name that makes it unique (#136, #139).
  */
 const PATIENT_SECTIONS = [
   'Information',
@@ -48,38 +47,43 @@ const PATIENT_SECTIONS = [
 
 /* Entered by the clinician: every one is a number input. */
 const MEASURED_FIELDS = [
-  'biometry.atafield',
-  'biometry.wtwfield',
-  'biometry.clrfield',
-  'biometry.acdfield',
-  'biometry.acanfield',
-  'biometry.acatfield',
-  'corneaProfile.kaffield',
-  'corneaProfile.axisaffield',
-  'corneaProfile.kasfield',
-  'corneaProfile.axisasfield',
-  'corneaProfile.kpffield',
-  'corneaProfile.axispffield',
-  'corneaProfile.kpsfield',
-  'corneaProfile.axispsfield',
-  'corneaProfile.cctfield',
-  'spectacleRefraction.spherefield',
-  'spectacleRefraction.cylindrefield',
-  'spectacleRefraction.axisfield',
-  'spectacleRefraction.vertexfield'
+  'Angle to Angle (AtA), millimetres',
+  'White to White (WtW), millimetres',
+  'Crystaline Lens Rise (CLR), micrometres',
+  'Internal Anterior Chamber Depth (ACD), millimetres',
+  'Anterior Chamber Angle nasal (ACAn), degrees',
+  'Anterior Chamber Angle temporal (ACAt), degrees',
+  'Anterior Keratometry Flat (KAntFlt), dioptres',
+  'Anterior Keratometry Flat axis, degrees',
+  'Anterior Keratometry Steep (KAntStp), dioptres',
+  'Anterior Keratometry Steep axis, degrees',
+  'Posterior Keratometry Flat (KPostFlt), dioptres',
+  'Posterior Keratometry Flat axis, degrees',
+  'Posterior Keratometry Steep (KPostStp), dioptres',
+  'Posterior Keratometry Steep axis, degrees',
+  'Central Corneal Thickness (CCT), micrometres',
+  'Sphere (spectacle refraction), dioptres',
+  'Cylindre (spectacle refraction), dioptres',
+  'Axis (spectacle refraction), degrees',
+  'Vertex, millimetres'
 ];
 
 /* Computed by the calculator: Age, then the four ICL Power outputs. */
 const COMPUTED_FIELDS = [
-  'fieldAge',
-  'iclSpherefield',
-  'iclCylindrefield',
-  'iclAxisfield',
-  'iclSphericalEquivalentfield'
+  'Age, years',
+  'Sphere (ICL power), dioptres',
+  'Cylindre (ICL power), dioptres',
+  'Axis (ICL power), degrees',
+  'Spherical Equivalent (SE), dioptres'
 ];
 
-const ids = (role: string) =>
-  screen.getAllByRole(role).map((element) => element.getAttribute('id'));
+/*
+ * Every element of `role`, in document order, must be exactly the elements
+ * found by these accessible names, in this order. A missing, renamed,
+ * duplicated or reordered field all fail.
+ */
+const byName = (role: 'spinbutton' | 'textbox' | 'combobox', names: string[]) =>
+  names.map((name) => screen.getByRole(role, { name }));
 
 it('lays the Patient tab out in five sections, in order', () => {
   renderWithHash();
@@ -92,7 +96,9 @@ it('lays the Patient tab out in five sections, in order', () => {
 it('renders every entered measurement, in order', () => {
   renderWithHash();
 
-  expect(ids('spinbutton')).toEqual(MEASURED_FIELDS);
+  expect(screen.getAllByRole('spinbutton')).toEqual(
+    byName('spinbutton', MEASURED_FIELDS)
+  );
 });
 
 /*
@@ -104,28 +110,23 @@ it('renders every entered measurement, in order', () => {
 it('renders the computed outputs after the free-text fields, all disabled', () => {
   renderWithHash();
 
-  const textboxes = screen.getAllByRole('textbox');
-
-  expect(textboxes.map((element) => element.getAttribute('id'))).toEqual([
-    'fieldName',
-    'fieldDateOfBirth',
-    ...COMPUTED_FIELDS
-  ]);
+  expect(screen.getAllByRole('textbox')).toEqual(
+    byName('textbox', ['Name', 'Date of Birth', ...COMPUTED_FIELDS])
+  );
 
   // Name and Date of Birth are entered; everything after them is derived.
-  // Queried positionally rather than by accessible name because ICL Power
-  // repeats Sphere, Cylindre and Axis from Spectacle Refraction.
+  const textboxes = screen.getAllByRole('textbox');
   textboxes.slice(2).forEach((element) => expect(element).toBeDisabled());
   expect(textboxes[0]).toBeEnabled();
+  expect(textboxes[1]).toBeEnabled();
 });
 
 it('offers the eye and previous-surgery choices as selects', () => {
   renderWithHash();
 
-  expect(ids('combobox')).toEqual([
-    'fieldEye',
-    'corneaProfile.previousSurgery'
-  ]);
+  expect(screen.getAllByRole('combobox')).toEqual(
+    byName('combobox', ['Eye', 'Previous Corneal Refractive Surgery'])
+  );
 });
 
 it('shows the six normality charts on their route', () => {
@@ -171,7 +172,7 @@ it('resets every entered value when Reset is clicked', async () => {
   fireEvent.change(screen.getByLabelText('Name'), {
     target: { value: 'Blake' }
   });
-  fireEvent.change(screen.getByLabelText('Angle to Angle (AtA)'), {
+  fireEvent.change(screen.getByLabelText('Angle to Angle (AtA), millimetres'), {
     target: { value: '12.3' }
   });
 
@@ -187,14 +188,18 @@ it('resets every entered value when Reset is clicked', async () => {
   await waitFor(() => {
     expect(screen.getByLabelText('Name')).toHaveValue('Blake');
   });
-  expect(screen.getByLabelText('Angle to Angle (AtA)')).toHaveValue(12.3);
+  expect(
+    screen.getByLabelText('Angle to Angle (AtA), millimetres')
+  ).toHaveValue(12.3);
 
   fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
 
   await waitFor(() => {
     expect(screen.getByLabelText('Name')).toHaveValue('');
   });
-  expect(screen.getByLabelText('Angle to Angle (AtA)')).toHaveValue(0);
+  expect(
+    screen.getByLabelText('Angle to Angle (AtA), millimetres')
+  ).toHaveValue(0);
 });
 
 it('switches to Biometric Normality tab when clicked', async () => {

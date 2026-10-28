@@ -508,6 +508,64 @@ input[type='number']::-webkit-outer-spin-button {
   padding-bottom: 0.4rem;
 }
 
+.fieldgroup-section > h4 {
+  margin: 0 0 0.6rem;
+}
+
+/* Previous surgery: the label, then a select spanning control and unit. */
+.mrow-select > select {
+  grid-column: 2 / -1;
+  min-width: 0;
+}
+
+/* Information: four cells in a row, stacked under 48rem. */
+.idgroup {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.idcell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.idcell > .mrow-error {
+  grid-column: auto;
+}
+
+.idvalue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.idvalue > input {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+}
+
+.idvalue > .unit {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.idcell > input[aria-invalid='true'] {
+  border-bottom: 2px solid var(--leaf-crimson);
+}
+
+@media (max-width: 48rem) {
+  .idgroup {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* ======================================================================
  * TEMPORARY GRID SHIM
  *

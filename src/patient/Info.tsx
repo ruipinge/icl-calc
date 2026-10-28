@@ -1,75 +1,72 @@
-import { ErrorMessage, Field, FormikState } from 'formik';
+import { Field, FormikState } from 'formik';
 
 import { ICLInputs } from '../types';
-import { getClassName } from '../util';
 
 export const Info = ({
   errors,
   values,
   touched
-}: FormikState<Pick<ICLInputs, 'patient'>>) => (
-  <>
-    <h4>Information</h4>
-    <div className="form-row">
-      <div className="form-group col-md-4">
-        <label htmlFor="fieldName">Name</label>
-        <Field
-          name="patient.name"
-          className="form-control"
-          id="fieldName"
-          placeholder="enter patient name"
-          autoComplete="off"
-        />
-      </div>
-      <div className="form-group col-md-2 offset-md-1">
-        <label htmlFor="fieldDateOfBirth">Date of Birth</label>
-        <Field
-          name="patient.dateOfBirth"
-          className={getClassName({
-            error: errors.patient?.dateOfBirth,
-            touched: touched.patient?.dateOfBirth
-          })}
-          id="fieldDateOfBirth"
-          placeholder="yyyy-mm-dd"
-          autoComplete="off"
-          maxLength={10}
-        />
-        <ErrorMessage
-          name="patient.dateOfBirth"
-          component="div"
-          className="invalid-feedback"
-        />
-      </div>
-      <div className="form-group col-md-2">
-        <label htmlFor="fieldAge">Age</label>
-        <div className="input-group">
-          <input
-            name="age"
-            className="form-control text-right"
-            id="fieldAge"
-            disabled={true}
-            value={values.patient.age()}
+}: FormikState<Pick<ICLInputs, 'patient'>>) => {
+  const dobError = errors.patient?.dateOfBirth;
+  const showDobError = Boolean(dobError && touched.patient?.dateOfBirth);
+
+  return (
+    <section className="fieldgroup-section">
+      <h4>Information</h4>
+      <div className="idgroup">
+        <div className="idcell">
+          <label htmlFor="fieldName">Name</label>
+          <Field
+            name="patient.name"
+            id="fieldName"
+            placeholder="enter patient name"
+            autoComplete="off"
           />
-          <div className="input-group-append">
-            <span className="input-group-text" title="years">
+        </div>
+        <div className="idcell">
+          <label htmlFor="fieldDateOfBirth">Date of Birth</label>
+          <Field
+            name="patient.dateOfBirth"
+            id="fieldDateOfBirth"
+            placeholder="yyyy-mm-dd"
+            autoComplete="off"
+            maxLength={10}
+            {...(showDobError && {
+              'aria-invalid': true,
+              'aria-describedby': 'patient.dateOfBirth-error'
+            })}
+          />
+          {showDobError && (
+            <div id="patient.dateOfBirth-error" className="mrow-error">
+              {dobError}
+            </div>
+          )}
+        </div>
+        <div className="idcell">
+          <label htmlFor="fieldAge">
+            Age<span className="sr-only">, years</span>
+          </label>
+          <div className="idvalue">
+            <input
+              name="age"
+              id="fieldAge"
+              disabled={true}
+              value={values.patient.age()}
+            />
+            <span className="unit" aria-hidden="true">
               years
             </span>
           </div>
         </div>
+        <div className="idcell">
+          <label htmlFor="fieldEye">Eye</label>
+          <Field as="select" name="patient.eye" id="fieldEye">
+            <option value="">Select...</option>
+            <option value="left">Left</option>
+            <option value="right">Right</option>
+          </Field>
+        </div>
       </div>
-      <div className="form-group col-md-2 offset-md-1">
-        <label htmlFor="fieldEye">Eye</label>
-        <Field
-          as="select"
-          name="patient.eye"
-          className="form-control"
-          id="fieldEye"
-        >
-          <option value="">Select...</option>
-          <option value="left">Left</option>
-          <option value="right">Right</option>
-        </Field>
-      </div>
-    </div>
-  </>
-);
+    </section>
+  );
+};

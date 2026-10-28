@@ -42,45 +42,30 @@ const renderCorneaProfile = (
 
 /*
  * Replaces an asFragment() snapshot (#121). Field order and grouping are the
- * part of this form the reskin must not change, so they are asserted here
- * rather than left implied by a serialised DOM that also encodes every
- * Bootstrap class the reskin will move.
+ * part of this form the reskin must not change, so they are asserted here.
  *
- * The four axis fields all carry the label "@", so they are not individually
- * addressable by accessible name - four controls sharing one name is a real
- * weakness, but it is pre-existing and out of scope here (#121 changes no
- * rendering). They are reached positionally instead, which is why this test
- * pins the interleaved flat/axis/steep/axis order explicitly: that
- * arrangement is what makes "@" legible on screen, and it is exactly what a
- * reskin could rearrange without any other test noticing.
+ * The four axis fields used to share the label "@" and had to be reached by
+ * position. Each is now "<field> axis" (#136), so all nine are addressed by
+ * accessible name and the interleaved flat/axis/steep/axis order is pinned by
+ * comparing the document order of the spinbuttons against those names.
  */
+const NINE_FIELDS = [
+  'Anterior Keratometry Flat (KAntFlt), dioptres',
+  'Anterior Keratometry Flat axis, degrees',
+  'Anterior Keratometry Steep (KAntStp), dioptres',
+  'Anterior Keratometry Steep axis, degrees',
+  'Posterior Keratometry Flat (KPostFlt), dioptres',
+  'Posterior Keratometry Flat axis, degrees',
+  'Posterior Keratometry Steep (KPostStp), dioptres',
+  'Posterior Keratometry Steep axis, degrees',
+  'Central Corneal Thickness (CCT), micrometres'
+];
+
 it('renders the nine fields in flat/axis, steep/axis order, ending with CCT', () => {
   renderCorneaProfile();
 
-  const inputs = screen.getAllByRole('spinbutton');
-  const axes = screen.getAllByLabelText('@');
-
-  expect(inputs).toHaveLength(9);
-  expect(axes).toHaveLength(4);
-
-  expect(inputs[0]).toBe(
-    screen.getByLabelText('Anterior Keratometry Flat (KAntFlt)')
-  );
-  expect(inputs[1]).toBe(axes[0]);
-  expect(inputs[2]).toBe(
-    screen.getByLabelText('Anterior Keratometry Steep (KAntStp)')
-  );
-  expect(inputs[3]).toBe(axes[1]);
-  expect(inputs[4]).toBe(
-    screen.getByLabelText('Posterior Keratometry Flat (KPostFlt)')
-  );
-  expect(inputs[5]).toBe(axes[2]);
-  expect(inputs[6]).toBe(
-    screen.getByLabelText('Posterior Keratometry Steep (KPostStp)')
-  );
-  expect(inputs[7]).toBe(axes[3]);
-  expect(inputs[8]).toBe(
-    screen.getByLabelText('Central Corneal Thickness (CCT)')
+  expect(screen.getAllByRole('spinbutton')).toEqual(
+    NINE_FIELDS.map((name) => screen.getByRole('spinbutton', { name }))
   );
 });
 
@@ -105,15 +90,23 @@ it('shows the values it was given', () => {
 /*
  * The units are clinical meaning, not decoration: a keratometry value in
  * dioptres and one in millimetres are different numbers for the same cornea.
- * The suffix carries the full unit name as its title for the abbreviation
- * shown on screen.
+ * The abbreviation on screen is aria-hidden; the full unit is part of each
+ * field's accessible name, asserted for all nine in the order test above and
+ * here for the abbreviation a sighted clinician reads.
  */
-it('labels each value with its unit', () => {
+it('shows the unit abbreviation beside each value', () => {
   renderCorneaProfile();
 
-  expect(screen.getAllByTitle('dioptres')).toHaveLength(4);
-  expect(screen.getAllByTitle('degrees')).toHaveLength(4);
-  expect(screen.getByTitle('micrometres')).toHaveTextContent('μm');
+  const dioptres = screen.getAllByText('dpt');
+  const degrees = screen.getAllByText('º');
+  const micrometres = screen.getAllByText('μm');
+
+  expect(dioptres).toHaveLength(4);
+  expect(degrees).toHaveLength(4);
+  expect(micrometres).toHaveLength(1);
+  [...dioptres, ...degrees, ...micrometres].forEach((unit) =>
+    expect(unit).toHaveAttribute('aria-hidden', 'true')
+  );
 });
 
 /*
