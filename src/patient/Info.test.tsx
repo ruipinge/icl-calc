@@ -84,6 +84,13 @@ it('derives Age from the date of birth and disables it', () => {
   expect(age).toBeDisabled();
 });
 
+/* The visible unit stays out of the tree; "years" is already in the name. */
+it('hides the visible Age unit from the accessibility tree', () => {
+  renderInfo();
+
+  expect(screen.getByText('years')).toHaveAttribute('aria-hidden', 'true');
+});
+
 /*
  * asFragment() serialised markup only; React sets a <select>'s selection as a
  * DOM property, so left/right correctness was unverified at every layer (see

@@ -78,11 +78,6 @@ const COMPUTED_FIELDS = [
 ];
 
 /*
- * Every element of `role`, in document order, must be exactly the elements
- * found by these accessible names, in this order. A missing, renamed,
- * duplicated or reordered field all fail.
- */
-/*
  * Pairs each element of `role`, in document order, with the one found by the
  * name expected at that position. A missing, extra, renamed or reordered field
  * leaves a pair that is not the same node. Callers assert identity per pair.
