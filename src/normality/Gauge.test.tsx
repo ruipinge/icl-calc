@@ -1,5 +1,11 @@
-import { Gauge, buildZones, quantile } from './Gauge';
-import { render } from '@testing-library/react';
+import {
+  Gauge,
+  ZONE_COLOURS,
+  buildZones,
+  describeBand,
+  quantile
+} from './Gauge';
+import { render, screen } from '@testing-library/react';
 
 const DATASET = [
   1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7,
@@ -68,10 +74,9 @@ it('builds zones correctly', () => {
 /*
  * Replaces an asFragment() snapshot (#121).
  *
- * The gauge is the one component in this suite with no text, no roles and no
- * accessible names - it is styled divs and one SVG pointer - so there is
- * nothing here for the text-and-roles strategy to assert, and nothing any
- * testing-library query can reach. Its geometry is asserted instead, in
+ * The gauge draws no text - it is styled divs and one SVG pointer - so its
+ * only accessible surface is the name on the container (#138, asserted
+ * below). Its geometry is asserted instead, in
  * linear-gauge/index.test.ts, driven through buildZones exactly as this
  * component drives it; see the tests there for the band widths and pointer
  * placement this snapshot used to record.
@@ -81,7 +86,46 @@ it('builds zones correctly', () => {
  * because it mutated the live childNodes list while iterating it.
  */
 it('mounts and disposes cleanly', () => {
-  const view = render(<Gauge value={4} values={DATASET} />);
+  const view = render(<Gauge title="Test" value={4} values={DATASET} />);
 
   expect(() => view.unmount()).not.toThrow();
+});
+
+const B = buildZones({ values: [1, 2, 3, 4, 5, 6, 7] });
+
+it.each([
+  [B[0].min, 'below the 2.5th percentile'],
+  [B[1].min, 'between the 2.5th and 25th percentiles'],
+  [B[2].min, 'between the 25th and 75th percentiles'],
+  [B[3].min, 'between the 75th and 97.5th percentiles'],
+  [B[4].min, 'above the 97.5th percentile'],
+  [B[4].max, 'above the 97.5th percentile'],
+  [0, 'outside the range of the dataset'],
+  [B[4].max + 1, 'outside the range of the dataset']
+])('describes %s as %s', (v, s) => expect(describeBand(v, B)).toBe(s));
+
+it('is an image named by its metric, value and band', () => {
+  render(
+    <Gauge
+      title="Angle to Angle - AtA (mm)"
+      value={B[2].min}
+      values={[1, 2, 3, 4, 5, 6, 7]}
+    />
+  );
+
+  expect(
+    screen.getByRole('img', {
+      name: /^Angle to Angle - AtA \(mm\): \d+(\.\d+)?, between the 25th and 75th percentiles$/
+    })
+  ).toHaveAttribute('data-testid', 'gauge');
+});
+
+it('colours the tails crimson, the shoulders ember and the middle jade', () => {
+  expect(ZONE_COLOURS).toEqual([
+    'var(--leaf-crimson)',
+    'var(--leaf-ember)',
+    'var(--leaf-jade)',
+    'var(--leaf-ember)',
+    'var(--leaf-crimson)'
+  ]);
 });

@@ -1,6 +1,6 @@
 import { LinearGauge, Zone } from './linear-gauge';
 import { PLOT_INSET_LEFT, PLOT_INSET_RIGHT } from './plot-inset';
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 
 /**
  * Ascending numeric sort of a *copy*. `Array.prototype.sort` sorts in place,
@@ -72,23 +72,57 @@ export const buildZones = ({
   }));
 };
 
-// Interim: Task 10 replaces this with the design system's zone colours.
-const BAND_COLOURS = [
-  'var(--danger)',
-  'var(--warning)',
-  'var(--success)',
-  'var(--warning)',
-  'var(--danger)'
-];
+/**
+ * One colour per band, in band order: the tails are crimson, the shoulders
+ * ember, the middle jade. Tokens come from the Treeye palette in App.css.
+ */
+export const ZONE_COLOURS = [
+  'var(--leaf-crimson)',
+  'var(--leaf-ember)',
+  'var(--leaf-jade)',
+  'var(--leaf-ember)',
+  'var(--leaf-crimson)'
+] as const;
+
+const BAND_NAMES = [
+  'below the 2.5th percentile',
+  'between the 2.5th and 25th percentiles',
+  'between the 25th and 75th percentiles',
+  'between the 75th and 97.5th percentiles',
+  'above the 97.5th percentile'
+] as const;
+
+/**
+ * Names the band a value falls in, for the gauge's accessible name. Bands are
+ * half-open `[min, max)` except the last, which is closed.
+ *
+ * @param {number} value - The measurement
+ * @param {Band[]} bands - From `buildZones`
+ * @returns {string}
+ */
+export const describeBand = (value: number, bands: Band[]): string => {
+  const last = bands.length - 1;
+  if (last < 0 || value < bands[0].min || value > bands[last].max) {
+    return 'outside the range of the dataset';
+  }
+  const index = bands.findIndex(
+    (band, i) => value < band.max || (i === last && value <= band.max)
+  );
+  return BAND_NAMES[index];
+};
 
 export const Gauge = ({
+  title,
   value,
   values
 }: {
+  title: string;
   value: number;
   values: number[];
 }) => {
   const container = useRef<HTMLDivElement>(null);
+  // The name and the drawing share these bands, so they cannot disagree.
+  const bands = useMemo(() => buildZones({ values }), [values]);
 
   /* istanbul ignore next */
   useLayoutEffect(() => {
@@ -100,9 +134,9 @@ export const Gauge = ({
     x.setOptions({
       divisions: 5,
       subDivisions: 2,
-      zones: buildZones({ values: values }).map((band, index): Zone => ({
+      zones: bands.map((band, index): Zone => ({
         ...band,
-        color: BAND_COLOURS[index]
+        color: ZONE_COLOURS[index]
       })),
       value: value
     });
@@ -117,6 +151,8 @@ export const Gauge = ({
     // these two must agree.
     <div
       data-testid="gauge"
+      role="img"
+      aria-label={`${title}: ${value}, ${describeBand(value, bands)}`}
       style={{
         marginLeft: `${PLOT_INSET_LEFT}px`,
         marginRight: `${PLOT_INSET_RIGHT}px`
