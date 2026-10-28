@@ -646,6 +646,59 @@ input[type='number']::-webkit-outer-spin-button {
   font-size: 0.84rem;
 }
 
+/*
+ * The compact variant (Regression): the same ledger without the scroll
+ * region, the sticky column or the size accent bar. Each row header gets a
+ * small dot in its size colour instead; a pseudo-element, so the header's
+ * text is exactly the size label.
+ */
+.regression-block {
+  max-width: 40rem;
+}
+
+.ledger.compact {
+  min-width: 0;
+}
+
+.ledger.compact th:first-child {
+  position: static;
+  z-index: auto;
+  background: transparent;
+}
+
+/* a size label wraps to "12.6 / mm" at phone width otherwise */
+.ledger.compact tbody th {
+  white-space: nowrap;
+}
+
+.ledger.compact .lens-small,
+.ledger.compact .lens-medium,
+.ledger.compact .lens-large {
+  box-shadow: none;
+}
+
+.ledger.compact th[class*='lens-']::before {
+  content: '';
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.55rem;
+  border-radius: 50%;
+  background: var(--dot);
+}
+
+.ledger.compact .lens-small {
+  --dot: var(--lens-small);
+}
+
+.ledger.compact .lens-medium {
+  --dot: var(--lens-medium);
+}
+
+.ledger.compact .lens-large {
+  --dot: var(--lens-large);
+}
+
 /* ======================================================================
  * TEMPORARY GRID SHIM
  *
@@ -660,62 +713,26 @@ input[type='number']::-webkit-outer-spin-button {
  * generated class set. Only what `grep -rho 'className="[^"]*"' src` finds.
  * ====================================================================== */
 
-/* deleted by PR 4 (patient form) and PR 5 (tables) */
-.row,
-.form-row {
+/* deleted by PR 6 (normality) */
+.row {
   display: flex;
   flex-wrap: wrap;
   gap: 0 1.5rem;
 }
 
-/* deleted by PR 4 (patient, cornea, refraction, power) and PR 6 (normality) */
-.col-4 {
-  flex: 0 0 auto;
-  width: calc(33.333% - 1rem);
-}
+/* deleted by PR 6 (normality) */
 .col-md-4 {
   flex: 0 0 auto;
   width: calc(33.333% - 1rem);
 }
-.col-md-5 {
-  flex: 0 0 auto;
-  width: calc(41.666% - 0.875rem);
-}
-.col-md-6 {
-  flex: 0 0 auto;
-  width: calc(50% - 0.75rem);
-}
 
 @media (max-width: 48rem) {
-  .col-4,
-  .col-md-4,
-  .col-md-5,
-  .col-md-6 {
+  .col-md-4 {
     width: 100%;
   }
 }
 
-/*
- * `.table-bordered` and `.table-hover` are deliberately NOT defined. They
- * appear on four elements today and are inert here: the base table layer
- * above already carries the hairline treatment, and PR 5 removes the
- * attributes. An empty ruleset would only look like an oversight.
- */
-
-/* deleted by PR 5 — the matrix summary becomes a definition row */
-.list-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.5rem;
-  list-style: none;
-  margin: 1rem 0 0;
-  padding: 0;
-}
-
 /* utility classes used inline; deleted alongside their components */
-.text-right {
-  text-align: right;
-}
 .text-center {
   text-align: center;
 }
@@ -727,9 +744,6 @@ input[type='number']::-webkit-outer-spin-button {
 }
 .mb-3 {
   margin-bottom: 1rem;
-}
-.mb-4 {
-  margin-bottom: 1.5rem;
 }
 .ml-3 {
   margin-left: 1rem;
