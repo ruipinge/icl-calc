@@ -17,7 +17,7 @@ const Graph = ({
   <>
     <div className="col-md-4">
       <Histogram title={title} data={histogramSeries} />
-      <Gauge value={value} values={gaugeValues} />
+      <Gauge title={title} value={value} values={gaugeValues} />
     </div>
   </>
 );
