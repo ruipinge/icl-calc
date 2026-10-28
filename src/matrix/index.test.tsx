@@ -136,13 +136,21 @@ it('marks each lens column group with its size accent', () => {
 it('renders an empty lens column as legible zeros with no de-emphasis', () => {
   // Golden row 08-large-lens-bin: 12.6 mm is empty.
   render(<Matrix ata={12.7} clr={200} />);
-  const eyes = within(screen.getByRole('row', { name: /^Number of Eyes/ }))
-    .getAllByRole('cell')
-    .slice(0, 3);
-  expect(eyes).toHaveLength(3);
-  eyes.forEach((c) => {
-    expect(c).toHaveTextContent(/^0$/);
-    expect(c.className).toBe('');
+  const labels = screen
+    .getAllByRole('rowheader')
+    .map((h) => h.textContent ?? '');
+  expect(labels).toHaveLength(9);
+  labels.forEach((label) => {
+    const cells = within(
+      screen.getByRole('row', { name: (name) => name.startsWith(`${label} `) })
+    )
+      .getAllByRole('cell')
+      .slice(0, 3);
+    expect(cells).toHaveLength(3);
+    cells.forEach((c) => {
+      expect(c).toHaveTextContent(/^0$/);
+      expect(c.className).toBe('');
+    });
   });
 });
 

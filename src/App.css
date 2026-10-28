@@ -750,6 +750,25 @@ input[type='number']::-webkit-outer-spin-button {
 .regression-block h4 {
   text-transform: none;
   letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+/* each lens group is named where it starts, not where it ends */
+.ledger th[colspan] {
+  text-align: left;
+}
+
+/*
+ * Phone width: cap the sticky label column so labels wrap and about three
+ * value columns stay in view beside it. .ledger.compact is excluded: it has
+ * no sticky column and its own sizing.
+ */
+@media (max-width: 48rem) {
+  .ledger:not(.compact) th:first-child {
+    width: 9rem;
+    min-width: 9rem;
+    white-space: normal;
+  }
 }
 
 .ledger th:first-child {
