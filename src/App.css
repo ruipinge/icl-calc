@@ -536,10 +536,6 @@ input[type='number']::-webkit-outer-spin-button {
   min-width: 0;
 }
 
-.idcell > .mrow-error {
-  grid-column: auto;
-}
-
 .idvalue {
   display: flex;
   align-items: baseline;
@@ -556,11 +552,22 @@ input[type='number']::-webkit-outer-spin-button {
   border-bottom: 2px solid var(--leaf-crimson);
 }
 
-/* The patient form: Biometry | Cornea Profile | Refraction + ICL Power. */
+/*
+ * The patient form: Biometry | Cornea Profile | Refraction + ICL Power.
+ * Each group's control and unit tracks are fixed (10.9rem), so the label
+ * track is what narrows; below 75rem three columns leave it too little room
+ * for words like "Keratometry", which then run under the input.
+ */
 .patient-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+@media (max-width: 75rem) {
+  .patient-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 48rem) {
