@@ -14,15 +14,13 @@ export const MatrixRow = ({
       {label}
     </th>
     {values.map((val, index) => (
-      <td key={index} className="text-right">
-        {val}
-      </td>
+      <td key={index}>{val}</td>
     ))}
   </tr>
 );
 
 export const DividerRow = () => (
-  <tr className="table-bordered">
+  <tr className="ledger-divider">
     <td colSpan={LENS_SIZES.length * MYOPIA_LEVELS.length + 1} />
   </tr>
 );

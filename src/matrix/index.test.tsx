@@ -1,5 +1,5 @@
 import { Matrix, getNumEyes } from '.';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 
 import { FILTER as filter } from './data.test';
 import { readRows } from './components.test';
@@ -109,4 +109,46 @@ it('reports the filter it was given and the matching share of the dataset', () =
 it('calculates number of eyes', () => {
   const eyes = getNumEyes(filter);
   expect(eyes).toEqual([3, 3, 3, 3, 3, 3, 3, 3, 3]);
+});
+
+it('wraps the one table in a horizontal scroll region', () => {
+  renderMatrix();
+  const table = screen.getByRole('table');
+  expect(table).toHaveClass('ledger');
+  // The wrapper has no role to query by; the parent is the assertion.
+  // eslint-disable-next-line testing-library/no-node-access
+  expect(table.parentElement).toHaveClass('ledger-scroll');
+});
+
+it('marks each lens column group with its size accent', () => {
+  renderMatrix();
+  expect(screen.getByRole('columnheader', { name: '12.6 mm' })).toHaveClass(
+    'lens-small'
+  );
+  expect(screen.getByRole('columnheader', { name: '13.2 mm' })).toHaveClass(
+    'lens-medium'
+  );
+  expect(screen.getByRole('columnheader', { name: '13.7 mm' })).toHaveClass(
+    'lens-large'
+  );
+});
+
+it('renders an empty lens column as legible zeros with no de-emphasis', () => {
+  // Golden row 08-large-lens-bin: 12.6 mm is empty.
+  render(<Matrix ata={12.7} clr={200} />);
+  const eyes = within(screen.getByRole('row', { name: /^Number of Eyes/ }))
+    .getAllByRole('cell')
+    .slice(0, 3);
+  expect(eyes).toHaveLength(3);
+  eyes.forEach((c) => {
+    expect(c).toHaveTextContent(/^0$/);
+    expect(c.className).toBe('');
+  });
+});
+
+it('keeps the summary list L2 reads', () => {
+  renderMatrix();
+  expect(
+    within(screen.getByTestId('matrix-summary')).getAllByRole('listitem')
+  ).toHaveLength(3);
 });

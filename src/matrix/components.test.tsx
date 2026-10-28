@@ -75,3 +75,11 @@ it('spans the divider across the full width of the matrix', () => {
     String(LENS_SIZES.length * MYOPIA_LEVELS.length + 1)
   );
 });
+
+it('styles the divider as the ledger spacer, not a bordered row', () => {
+  renderInTable(<DividerRow />);
+
+  const row = screen.getByRole('row');
+  expect(row).toHaveClass('ledger-divider');
+  expect(row).not.toHaveClass('table-bordered');
+});
