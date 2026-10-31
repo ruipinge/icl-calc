@@ -59,7 +59,8 @@ const PAIRS: [role: string, fg: string, bg: string, min: number][] = [
   ['placeholder', '--muted', '--field', 4.5],
   ['input boundary', '--faint', '--field', 3],
   ['tool name on the header', '--violet', '--chrome', 7],
-  ['validation message', '--leaf-crimson', '--paper', 4.5]
+  // it quotes the valid range of a clinical value, so it is held to 7:1
+  ['validation message', '--leaf-crimson', '--paper', 7]
 ];
 it.each(PAIRS)('%s: %s on %s is at least %d:1', (_, fg, bg, min) =>
   expect(contrast(token(fg), token(bg))).toBeGreaterThanOrEqual(min)
@@ -67,11 +68,13 @@ it.each(PAIRS)('%s: %s on %s is at least %d:1', (_, fg, bg, min) =>
 
 const USES: [selector: string, declaration: RegExp][] = [
   ['thead th', /(?:^|[;\s])color:\s*var\(--ink\)/],
-  ['.input-group-append .input-group-text', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  ['.unit', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['h4', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['.site-footer', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['input::placeholder', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['input:disabled', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  ['.mrow-error', /(?:^|[;\s])color:\s*var\(--leaf-crimson\)/],
+  ['.mrow-error', /font-family:\s*var\(--prose\)\s*;/],
   ['.site-footer a', /text-decoration:\s*underline\s*;/],
   ['input, select', /border-bottom:\s*1px solid var\(--faint\)/],
   ['input, select', /min-height:\s*2\.75rem\s*;/],

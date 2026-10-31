@@ -28,14 +28,16 @@ L2.
 
 ## Browser gates
 
-Five Playwright projects live in `e2e/`, documented in `e2e/README.md`. Two
-assert in CI: `replay` (L2) and `visual-assert`.
+Six Playwright projects live in `e2e/`, documented in `e2e/README.md`. Three
+run in CI: `replay` (L2), `visual-assert`, and `contrast` (non-blocking: its
+job is `continue-on-error` and not a required check).
 
-**Never run two of them at once.** Both serve the build under test on port
-**4022** with `reuseExistingServer: true`, so the second finds the first one's
-server still up and silently validates *that* build instead. It passes, and
-nothing in the output says which build was measured. This is the most likely
-way to get a false green, especially across parallel worktrees.
+**Never run two of them at once.** `replay`, `visual-assert` and `contrast` all
+serve the build under test on port **4022** with `reuseExistingServer: true`,
+so the second finds the first one's server still up and silently validates
+*that* build instead. It passes, and nothing in the output says which build was
+measured. This is the most likely way to get a false green, especially across
+parallel worktrees.
 
 `visual-assert` is **not a separate CI job** — it is a step inside *L2 browser
 replay of the golden master* (`.github/workflows/main.yml`), placed there for

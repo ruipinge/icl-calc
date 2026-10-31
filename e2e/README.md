@@ -10,7 +10,7 @@ difference matters:
 |---|---|---|---|
 | `capture` | — | no | writes `src/golden/expected.json` from the frozen 2021 oracle. Run once. |
 | `replay` | yes | **yes** | L2. Drives a real Chromium against a production build and compares every rendered clinical value to the golden master. |
-| `visual-assert` | yes | **yes** | Screenshots and accessibility-tree snapshots for all four routes plus the shell, at two viewports. |
+| `visual-assert` | yes | **yes** | Screenshots and accessibility-tree snapshots for all four routes plus the shell, at two viewports, and the patient form at 360px with a keratometry reading in error (the only fixture under 24rem). |
 | `contrast` | yes | **yes**, non-blocking | axe-core colour-contrast report for all four routes at two viewports (#173). Its CI job is `continue-on-error` and not a required check; findings are uploaded as the `contrast-report` artifact. |
 | `visual` | no | no | a **capture tool** for the six Normality histograms (#51). Produces images for review by eye; asserts nothing. |
 | `smoke` | yes | no | sanity checks against the oracle build. |

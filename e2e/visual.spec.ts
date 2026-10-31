@@ -61,9 +61,11 @@ const ROUTES = [
  * around the masked box. Normalising the text is what makes both fixture
  * kinds independent of who produced the build.
  *
- * This is the only DOM the visual tests touch, and it is deliberately narrow:
- * two anchors' text and href, nothing else. Their real content is asserted by
- * src/misc/Footer.test.tsx, which is where it belongs.
+ * This is the only DOM the visual tests rewrite, and it is deliberately
+ * narrow: two anchors' text and href, nothing else. (The narrow patient
+ * test below fills two inputs as a user would; it rewrites nothing.) Their
+ * real content is asserted by src/misc/Footer.test.tsx, which is where it
+ * belongs.
  */
 const PINNED_VERSION = '0.0.0';
 const PINNED_COMMIT = '0000000';
@@ -95,7 +97,8 @@ const pinBuildStamp = async (page: Page) => {
  * That is the deterministic state - every rendered number is then derived
  * from constants or from src/data.csv, which does not change - and it is also
  * the state that shows the most structure, since no validation styling is
- * triggered. The clock is pinned by openApp regardless, because
+ * triggered (the one exception, the narrow patient test, triggers it on
+ * purpose). The clock is pinned by openApp regardless, because
  * PatientInfo.age() reads Date.now().
  */
 const open = async (page: Page, tab: string | null) => {
@@ -148,6 +151,42 @@ for (const viewport of VIEWPORTS) {
     });
   });
 }
+
+/*
+ * Under 24rem (384px) a keratometry reading's "@ Y º" wraps onto a second
+ * line under its K value - a layout neither viewport above reaches, since
+ * the mobile one is 390px. Pinned at 360px with one reading's value and axis
+ * both invalid, so the shot holds the wrap and both messages under their own
+ * controls.
+ */
+test.describe('narrow (360x780)', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test('patient with a keratometry reading in error looks right', async ({
+    page
+  }) => {
+    await open(page, null);
+    for (const [name, value] of [
+      ['Anterior Keratometry Flat (KAntFlt), dioptres', '99'],
+      ['Anterior Keratometry Flat axis, degrees', '400']
+    ]) {
+      const field = page.getByRole('spinbutton', { name });
+      await field.fill(value);
+      await field.blur();
+      await expect(field).toHaveAttribute('aria-invalid', 'true');
+    }
+    // filling scrolled the page; a full-page shot from there would paint the
+    // sticky header over the form
+    await page.evaluate(() => window.scrollTo(0, 0));
+
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(360);
+    await expect(page).toHaveScreenshot('patient-error-narrow.png', {
+      fullPage: true
+    });
+  });
+});
 
 /*
  * Structure, asserted once per route rather than once per viewport. This

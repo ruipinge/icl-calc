@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { UnitMark, fieldValidity } from './validity';
 
-import { ErrorMessage, Field } from 'formik';
-import { getClassName } from '../util';
+import { Field } from 'formik';
 
 type Unit = 'mm' | 'nm' | 'º' | 'dpt' | 'μm';
 
@@ -13,10 +13,13 @@ const UNITS: Map<Unit, string> = new Map([
   ['dpt', 'dioptres']
 ]);
 
-interface FieldWithUnitProps {
+export interface FieldWithUnitProps {
   label: string;
   name: string;
   unit: Unit;
+  srLabel?: string;
+  qualifier?: string;
+  labelClassName?: string;
   touched?: boolean;
   placeholder?: string;
   error?: string;
@@ -24,61 +27,64 @@ interface FieldWithUnitProps {
   disabled?: boolean;
 }
 
-const UnitSufix = ({ unit }: { unit: Unit }) => (
-  <div className="input-group-append">
-    <span className="input-group-text" title={UNITS.get(unit)}>
-      {unit}
-    </span>
-  </div>
-);
-
-export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
+/*
+ * One measured field as two grid cells: its label, and its value - the
+ * control, its unit and, while it is shown, its message. The value spans the
+ * control and unit tracks as a subgrid, so the message sits directly under
+ * its own control, and a row holding two fields (a keratometry reading and
+ * its axis) keeps both on one line with each message under its own input.
+ */
+export const measuredCells = ({
   label,
   name,
   unit,
+  srLabel,
+  qualifier,
+  labelClassName,
   placeholder,
   error,
   touched,
   value,
   disabled
-}) => {
+}: FieldWithUnitProps): React.ReactNode => {
+  const id = name + 'field';
+  const { props: validity, message } = fieldValidity(name, error, touched);
+
   return (
-    <div className={'form-group row'}>
-      <label htmlFor={name + 'field'} className="col-sm-6 col-form-label">
-        {label}
+    <>
+      <label htmlFor={id} className={labelClassName}>
+        {/*
+         * The whole name lives in the sr-only span and the visible text is
+         * hidden. Chromium pads an absolutely positioned span with spaces
+         * when it joins label text, so a name split across the two spans
+         * read "(AtA) , millimetres".
+         */}
+        <span aria-hidden="true">{label}</span>
+        <span className="sr-only">
+          {srLabel ?? label}
+          {qualifier}, {UNITS.get(unit)}
+        </span>
       </label>
-      <div className="col-sm-6">
-        <div className="input-group">
-          {disabled ? (
-            <input
-              id={name + 'field'}
-              name={name}
-              value={value}
-              className="form-control text-right"
-              disabled={true}
-            />
-          ) : (
-            <Field
-              type="number"
-              id={name + 'field'}
-              name={name}
-              className={getClassName({
-                error: error,
-                touched: touched,
-                base: ['form-control', 'text-right']
-              })}
-              placeholder={placeholder}
-              autoComplete="off"
-            />
-          )}
-          <UnitSufix unit={unit} />
-          <ErrorMessage
+      <div className="mvalue">
+        {disabled ? (
+          <input id={id} name={name} value={value} disabled={true} />
+        ) : (
+          <Field
+            type="number"
+            id={id}
             name={name}
-            component="div"
-            className="invalid-feedback"
+            placeholder={placeholder}
+            autoComplete="off"
+            {...validity}
           />
-        </div>
+        )}
+        <UnitMark>{unit}</UnitMark>
+        {message}
       </div>
-    </div>
+    </>
   );
 };
+
+export const FieldWithUnit: React.FC<FieldWithUnitProps> = (props) => (
+  <div className="mrow">{measuredCells(props)}</div>
+);

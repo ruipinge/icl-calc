@@ -35,14 +35,20 @@ const renderField = (
 it('associates the label with the editable input', () => {
   renderField();
 
-  expect(screen.getByLabelText('Angle to Angle (AtA)')).toHaveValue(11.7);
+  // getByLabelText matches the label's textContent, which also carries the
+  // aria-hidden visible copy, so this anchors on the sr-only name's tail.
+  expect(
+    screen.getByLabelText(/Angle to Angle \(AtA\), millimetres$/)
+  ).toHaveValue(11.7);
 });
 
 it('gives the editable input an accessible name', () => {
   renderField();
 
   expect(
-    screen.getByRole('spinbutton', { name: 'Angle to Angle (AtA)' })
+    screen.getByRole('spinbutton', {
+      name: 'Angle to Angle (AtA), millimetres'
+    })
   ).toHaveValue(11.7);
 });
 
@@ -61,20 +67,124 @@ it('associates the label with the disabled input', () => {
     value: -8.5
   });
 
-  expect(screen.getByLabelText('ICL Sphere')).toHaveValue('-8.5');
-  expect(screen.getByLabelText('ICL Sphere')).toBeDisabled();
+  expect(screen.getByLabelText(/ICL Sphere, dioptres$/)).toHaveValue('-8.5');
+  expect(screen.getByLabelText(/ICL Sphere, dioptres$/)).toBeDisabled();
+});
+
+it('names the control with its unit, and hides the visible unit from the tree', () => {
+  renderField({
+    label: 'White to White (WtW)',
+    name: 'biometry.wtw',
+    unit: 'mm'
+  });
+  expect(
+    screen.getByRole('spinbutton', {
+      name: 'White to White (WtW), millimetres'
+    })
+  ).toBeInTheDocument();
+  expect(screen.getByText('mm')).toHaveAttribute('aria-hidden', 'true');
+});
+
+it('uses srLabel in place of the visible label', () => {
+  renderField({
+    label: '@',
+    srLabel: 'Anterior Keratometry Flat axis',
+    name: 'corneaProfile.axisaf',
+    unit: 'º'
+  });
+  expect(
+    screen.getByRole('spinbutton', {
+      name: 'Anterior Keratometry Flat axis, degrees'
+    })
+  ).toBeInTheDocument();
+  expect(screen.queryByRole('spinbutton', { name: /^@/ })).toBeNull();
+});
+
+it('appends the qualifier to the name only', () => {
+  renderField({
+    label: 'Sphere',
+    qualifier: ' (ICL power)',
+    name: 'iclSphere',
+    unit: 'dpt',
+    disabled: true,
+    value: -8.5
+  });
+  expect(
+    screen.getByRole('textbox', { name: 'Sphere (ICL power), dioptres' })
+  ).toBeDisabled();
+  expect(screen.getByText('Sphere')).toBeVisible();
+});
+
+it('marks an invalid, touched field and points at its message', () => {
+  renderField({
+    label: 'AtA',
+    name: 'biometry.ata',
+    unit: 'mm',
+    error: 'Too small',
+    touched: true
+  });
+  const input = screen.getByRole('spinbutton');
+  expect(input).toHaveAttribute('aria-invalid', 'true');
+  expect(input).toHaveAccessibleDescription('Too small');
+});
+
+it('references no message when there is no error', () => {
+  renderField({ label: 'AtA', name: 'biometry.ata', unit: 'mm' });
+  const input = screen.getByRole('spinbutton');
+  expect(input).not.toHaveAttribute('aria-describedby');
+  expect(input).not.toHaveAttribute('aria-invalid');
+});
+
+it('keeps the name attribute L2 addresses', () => {
+  renderField({ label: 'AtA', name: 'biometry.ata', unit: 'mm' });
+  expect(screen.getByRole('spinbutton')).toHaveAttribute(
+    'name',
+    'biometry.ata'
+  );
+});
+
+it('keeps the id the label points at', () => {
+  renderField({ label: 'AtA', name: 'biometry.ata', unit: 'mm' });
+  expect(screen.getByRole('spinbutton')).toHaveAttribute(
+    'id',
+    'biometry.atafield'
+  );
+});
+
+it('puts labelClassName on the label', () => {
+  const { container } = renderField({
+    label: '@',
+    srLabel: 'Axis',
+    name: 'a',
+    unit: 'º',
+    labelClassName: 'kat'
+  });
+  // the label's class is the only hook the stylesheet has; no role exposes it
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  expect(container.querySelector('label')).toHaveClass('kat');
+});
+
+it('leaves a plain label without a class', () => {
+  const { container } = renderField();
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  expect(container.querySelector('label')).not.toHaveAttribute('class');
+});
+
+it('shows no message for an untouched field', () => {
+  renderField({ label: 'AtA', name: 'biometry.ata', unit: 'mm', error: 'Bad' });
+  expect(screen.queryByText('Bad')).toBeNull();
 });
 
 /*
- * The unit suffix is a separate element from the input, so the accessible
- * name must not silently absorb it - "Angle to Angle (AtA) mm" would be a
- * different name and would break any caller matching on the label text.
+ * A message wraps to the width of its control and unit; the stylesheet keeps
+ * a range from breaking inside its brackets by holding it in its own span.
+ * The description a screen reader announces is the message, unchanged.
  */
-it('keeps the unit suffix out of the accessible name', () => {
-  renderField();
+it('keeps a range whole in its own element, and the description unchanged', () => {
+  renderField({ error: 'Invalid value. [30, 55]', touched: true });
 
-  expect(
-    screen.queryByRole('spinbutton', { name: /mm/ })
-  ).not.toBeInTheDocument();
-  expect(screen.getByTitle('millimetres')).toHaveTextContent('mm');
+  expect(screen.getByRole('spinbutton')).toHaveAccessibleDescription(
+    'Invalid value. [30, 55]'
+  );
+  expect(screen.getByText('[30, 55]').tagName).toBe('SPAN');
 });

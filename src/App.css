@@ -450,6 +450,240 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 0;
 }
 
+/* ------------------------------------------------------ the measured row
+ * One grid per field group; each row is display: contents, so labels, inputs
+ * and units align across the whole group. See spec 5.2 to 5.4.
+ */
+.fieldgroup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7.5rem 3.4rem;
+  align-items: baseline;
+  margin-bottom: 2rem;
+}
+
+.mrow {
+  display: contents;
+}
+
+.mrow > * {
+  border-top: 1px solid var(--rule);
+}
+
+.mrow > label {
+  padding: 0.6rem 0.7rem 0.6rem 0;
+}
+
+/*
+ * A field's value: its control, its unit and, while shown, its message. It
+ * spans the control and unit tracks as a subgrid, so the control and unit
+ * keep the group's columns and the message has a line of its own directly
+ * under the control, starting at its left edge. The message is as wide as
+ * control and unit together and wraps within them: the tracks are fixed, so
+ * it can neither push a neighbouring column sideways nor run into one.
+ */
+.mvalue {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+}
+
+.mvalue > input {
+  text-align: right;
+}
+
+/*
+ * Every row closes with the same 0.6rem under its tallest cell. The label
+ * and unit carry it as padding; the control as a margin, so its fill still
+ * meets the row's hairline. Controls sit on the label's first line (the
+ * grid aligns on baselines), so a label that wraps grows the row downwards
+ * and leaves room under the control - where its message will go - while a
+ * one-line row no longer lets its control touch the next row's.
+ */
+.mvalue > input,
+.mrow > select {
+  margin-bottom: 0.6rem;
+}
+
+/*
+ * aria-invalid is set exactly while the message is shown, so an invalid
+ * control hands its 0.6rem to the message: the message sits snug under the
+ * control and the row's breathing room follows the message.
+ */
+.mvalue > input[aria-invalid='true'] {
+  border-bottom: 2px solid var(--leaf-crimson);
+  margin-bottom: 0;
+}
+
+/* the unit column, shared by the measured row and the identity row */
+.unit {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.mvalue > .unit {
+  padding: 0.6rem 0 0.6rem 0.4rem;
+}
+
+/*
+ * A validation message, here and under the date of birth. It quotes the
+ * valid range, so it is set in Newsreader like every other numeral.
+ *
+ * A keratometry reading shows two messages side by side, one under its K
+ * value and one under its axis. Each hangs from a crimson rule at its own
+ * control's left edge, and the K value's message stops 0.5rem short of the
+ * "@" column, so the two read as two notes, not as one sentence across
+ * the row. A message in the last column has no neighbour and keeps its width.
+ */
+.mrow-error {
+  grid-column: 1 / -1;
+  font-family: var(--prose);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  color: var(--leaf-crimson);
+  border-left: 2px solid var(--leaf-crimson);
+  margin: 0.2rem 0 0.6rem;
+  padding: 0 0 0 0.35rem;
+}
+
+.krow > .mvalue:not(:last-child) > .mrow-error {
+  margin-right: 0.5rem;
+}
+
+.mrow-error > span {
+  white-space: nowrap;
+}
+
+.fieldgroup-section > h4 {
+  margin: 0 0 0.6rem;
+}
+
+/*
+ * Cornea Profile: a keratometry reading and its axis share one row, read
+ * "X dpt at Y º" - label | K | dpt | @ | axis | º. The tracks right of the
+ * label total 12.6rem (10.9rem in the other groups); the two inputs are
+ * narrowed to what a K ("-6.25", "42.25") and an axis ("180") need, so the
+ * label track loses only 1.7rem. Each input has its own track, so a message
+ * can sit under either one.
+ */
+.kgroup {
+  grid-template-columns: minmax(0, 1fr) 4.25rem 2.4rem 1.5rem 3.25rem 1.2rem;
+}
+
+/* plain rows (CCT): the value carries the row's rule to the edge */
+.kgroup > .mrow:not(.krow) > .mvalue {
+  grid-column: 2 / -1;
+}
+
+.mrow > label.kat {
+  padding: 0.6rem 0.25rem;
+  text-align: center;
+}
+
+/*
+ * Under 24rem the label track would fall below the width of "Keratometry",
+ * so "@ Y º" wraps onto a second line under the K value: the K input spans
+ * the "@" and axis tracks, so the two inputs share a right edge and the
+ * axis reads as the continuation of that reading, not as a row of its own.
+ */
+@media (max-width: 24rem) {
+  .kgroup {
+    grid-template-columns: minmax(0, 1fr) 1.5rem 2.75rem 2.4rem;
+  }
+
+  .kgroup > .mrow > label:not(.kat) + .mvalue {
+    grid-column: 2 / -1;
+  }
+
+  .kgroup > .mrow > label:not(.kat) + .mvalue > input {
+    grid-column: 1 / 3;
+  }
+
+  .krow > label:first-child {
+    grid-row: span 2;
+  }
+
+  .krow > label.kat {
+    grid-column: 2;
+  }
+
+  .krow > label.kat,
+  .krow > label.kat + .mvalue {
+    border-top: 0;
+  }
+
+  /* the axis has wrapped below, so the K message has no neighbour either */
+  .krow > .mvalue:not(:last-child) > .mrow-error {
+    margin-right: 0;
+  }
+}
+
+/* Previous surgery: the label, then a select spanning control and unit. */
+.mrow-select > select {
+  grid-column: 2 / -1;
+  min-width: 0;
+}
+
+/* Information: four cells in a row, stacked under 48rem. */
+.idgroup {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.idcell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.idvalue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.idvalue > input {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+}
+
+.idcell > input[aria-invalid='true'] {
+  border-bottom: 2px solid var(--leaf-crimson);
+}
+
+/*
+ * The patient form: Biometry | Cornea Profile | Refraction + ICL Power.
+ * Each group's control and unit tracks are fixed (10.9rem; 12.6rem in Cornea
+ * Profile, whose rows carry an axis as well), so the label
+ * track is what narrows; below 75rem three columns leave it too little room
+ * for words like "Keratometry", which then run under the input.
+ */
+.patient-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+@media (max-width: 75rem) {
+  .patient-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 48rem) {
+  .idgroup,
+  .patient-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* ======================================================================
  * TEMPORARY GRID SHIM
  *
@@ -464,38 +698,17 @@ input[type='number']::-webkit-outer-spin-button {
  * generated class set. Only what `grep -rho 'className="[^"]*"' src` finds.
  * ====================================================================== */
 
-/* deleted by PR 4 (patient form) and PR 5 (tables) */
-.row,
-.form-row {
+/* deleted by PR 5 (tables) and PR 6 (normality) */
+.row {
   display: flex;
   flex-wrap: wrap;
   gap: 0 1.5rem;
-}
-
-/* deleted by PR 4 */
-.form-group {
-  margin-bottom: 1rem;
-}
-.section-form {
-  margin-bottom: 2rem;
 }
 
 /* deleted by PR 4 (patient, cornea, refraction, power) and PR 6 (normality) */
 .col-4 {
   flex: 0 0 auto;
   width: calc(33.333% - 1rem);
-}
-.col-sm-6 {
-  flex: 0 0 auto;
-  width: calc(50% - 0.75rem);
-}
-.col-md-2 {
-  flex: 0 0 auto;
-  width: calc(16.666% - 1.25rem);
-}
-.col-md-3 {
-  flex: 0 0 auto;
-  width: calc(25% - 1.125rem);
 }
 .col-md-4 {
   flex: 0 0 auto;
@@ -509,49 +722,14 @@ input[type='number']::-webkit-outer-spin-button {
   flex: 0 0 auto;
   width: calc(50% - 0.75rem);
 }
-.offset-md-1 {
-  margin-left: 8.333%;
-}
 
 @media (max-width: 48rem) {
   .col-4,
-  .col-sm-6,
-  .col-md-2,
-  .col-md-3,
   .col-md-4,
   .col-md-5,
   .col-md-6 {
     width: 100%;
   }
-  .offset-md-1 {
-    margin-left: 0;
-  }
-}
-
-/* deleted by PR 4 — the unit suffix becomes part of the measured row */
-.input-group {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
-}
-.input-group-append .input-group-text {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  color: var(--ink);
-}
-
-/* deleted by PR 4 — validation moves to the measured row's underline */
-.is-invalid {
-  border-bottom: 2px solid var(--leaf-crimson);
-}
-.invalid-feedback {
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  color: var(--leaf-crimson);
 }
 
 /*
