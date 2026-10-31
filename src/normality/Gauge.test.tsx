@@ -3,6 +3,7 @@ import {
   ZONE_COLOURS,
   buildZones,
   describeBand,
+  gaugeBand,
   gaugeOptions,
   quantile
 } from './Gauge';
@@ -75,9 +76,10 @@ it('builds zones correctly', () => {
 /*
  * Replaces an asFragment() snapshot (#121).
  *
- * The gauge draws no text - it is styled divs and one SVG pointer - so its
- * only accessible surface is the name on the container (#138, asserted
- * below). Its geometry is asserted instead, in
+ * The gauge itself draws no text - it is styled divs and one SVG pointer -
+ * so its accessible surface is the name on the container (#138), and its
+ * band is shown beside it as an aria-hidden caption (#194); both are asserted
+ * below. Its geometry is asserted instead, in
  * linear-gauge/index.test.ts, driven through buildZones exactly as this
  * component drives it; see the tests there for the band widths and pointer
  * placement this snapshot used to record.
@@ -101,10 +103,75 @@ it.each([
   [B[3].min, 'between the 75th and 97.5th percentiles'],
   [B[4].min, 'above the 97.5th percentile'],
   [B[4].max, 'above the 97.5th percentile'],
-  [0, 'outside the range of the dataset'],
-  [B[4].max + 1, 'outside the range of the dataset'],
+  [0, 'below the range of the dataset'],
+  [B[4].max + 1, 'above the range of the dataset'],
   [NaN, 'outside the range of the dataset']
 ])('describes %s as %s', (v, s) => expect(describeBand(v, B)).toBe(s));
+
+it.each([0, 4, NaN])('describes %s as outside an empty range', (v) =>
+  expect(describeBand(v, [])).toBe('outside the range of the dataset')
+);
+
+it.each([
+  [undefined, 'no value entered'],
+  [B[2].min, 'between the 25th and 75th percentiles'],
+  [0, 'below the range of the dataset'],
+  [B[4].max + 1, 'above the range of the dataset']
+])('captions %s as %s', (v, s) => expect(gaugeBand(v, B)).toBe(s));
+
+const captionOf = (value: number | undefined) => {
+  render(<Gauge title="CLR" value={value} values={[1, 2, 3, 4, 5, 6, 7]} />);
+  const gauge = screen.getByTestId('gauge');
+  // the caption is aria-hidden, so no role query reaches it; it is the
+  // gauge's next sibling by design (asserted below)
+  // eslint-disable-next-line testing-library/no-node-access
+  const caption = gauge.nextElementSibling as HTMLElement;
+  return { gauge, caption };
+};
+
+// The caption shows exactly what the name speaks after the metric (and value).
+it.each([
+  ['in range', B[2].min, 'between the 25th and 75th percentiles'],
+  ['below the range', 0, 'below the range of the dataset'],
+  ['above the range', B[4].max + 1, 'above the range of the dataset'],
+  ['an empty string', '' as unknown as number, 'no value entered'],
+  ['NaN', NaN, 'no value entered'],
+  ['undefined', undefined, 'no value entered']
+])('captions a gauge whose value is %s with its band', (_, value, band) => {
+  const { gauge, caption } = captionOf(value);
+
+  expect(caption).toHaveClass('gauge-band');
+  expect(caption.textContent).toBe(band);
+  expect(gauge.getAttribute('aria-label')).toMatch(
+    new RegExp(`^CLR: (?:[^,]+, )?${band.replace(/\./g, '\\.')}$`)
+  );
+});
+
+it('hides the caption from assistive technology, which hears the name', () =>
+  expect(captionOf(4).caption).toHaveAttribute('aria-hidden', 'true'));
+
+// LinearGauge owns the gauge's children, and the L2 replay reads its first
+// svg: the caption must sit beside it, never inside it.
+it('places the caption after the gauge, not inside it', () => {
+  render(<Gauge title="CLR" value={4} values={[1, 2, 3, 4, 5, 6, 7]} />);
+  const gauge = screen.getByTestId('gauge');
+  // found by its text, independently of where it sits
+  const caption = screen.getByText('between the 25th and 75th percentiles');
+
+  expect(caption.tagName).toBe('P');
+  expect(gauge.contains(caption)).toBe(false);
+  // eslint-disable-next-line testing-library/no-node-access
+  expect(gauge.nextElementSibling).toBe(caption);
+  // nothing before the gauge either: the replay reads it as rendered
+  // eslint-disable-next-line testing-library/no-node-access
+  expect(gauge.previousElementSibling).toBeNull();
+});
+
+it('aligns the caption with the bar', () => {
+  const { gauge, caption } = captionOf(4);
+
+  expect(caption.getAttribute('style')).toBe(gauge.getAttribute('style'));
+});
 
 it('is an image named by its metric, value and band', () => {
   render(

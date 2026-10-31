@@ -63,6 +63,8 @@ const PAIRS: [role: string, fg: string, bg: string, min: number][] = [
   ['tool name on the header', '--violet', '--chrome', 7],
   // it quotes the valid range of a clinical value, so it is held to 7:1
   ['validation message', '--leaf-crimson', '--paper', 7],
+  // it qualifies a clinical value, so it is held to 7:1
+  ['gauge band caption', '--ink', '--paper', 7],
   ['gauge zone against its paper gap', '--leaf-crimson', '--paper', 3],
   ['gauge zone against its paper gap', '--leaf-ember', '--paper', 3],
   ['gauge zone against its paper gap', '--leaf-jade', '--paper', 3]
@@ -83,6 +85,11 @@ const USES: [selector: string, declaration: RegExp][] = [
   ['input:disabled', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['.mrow-error', /(?:^|[;\s])color:\s*var\(--leaf-crimson\)/],
   ['.mrow-error', /font-family:\s*var\(--prose\)\s*;/],
+  ['.gauge-band', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  // it carries numerals ("2.5th"), and every numeral is Newsreader
+  ['.gauge-band', /font-family:\s*var\(--prose\)\s*;/],
+  // at least 0.8rem, legible at clinical distance (#173)
+  ['.gauge-band', /font-size:\s*0\.875rem\s*;/],
   ['.site-footer a', /text-decoration:\s*underline\s*;/],
   ['input, select', /border-bottom:\s*1px solid var\(--faint\)/],
   ['input, select', /min-height:\s*2\.75rem\s*;/],
