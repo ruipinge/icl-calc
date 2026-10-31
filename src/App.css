@@ -681,9 +681,8 @@ input[type='number']::-webkit-outer-spin-button {
  * generated class set. Only what `grep -rho 'className="[^"]*"' src` finds.
  * ====================================================================== */
 
-/* deleted by PR 4 (patient form) and PR 5 (tables) */
-.row,
-.form-row {
+/* deleted by PR 5 (tables) and PR 6 (normality) */
+.row {
   display: flex;
   flex-wrap: wrap;
   gap: 0 1.5rem;
