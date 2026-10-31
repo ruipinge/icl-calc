@@ -20,8 +20,7 @@
 - img "Histogram of Angle to Angle - AtA (mm)": /Angle to Angle - AtA \(mm\) 0 \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
 - 'img "Angle to Angle - AtA (mm): 0, outside the range of the dataset"'
 - img "Histogram of Crystalline Lens Rise - CLR (μm)": /Crystalline Lens Rise - CLR \(μm\) 0 \d+ \d+ \d+ Number of Eyes -\d+ -\d+ \d+ \d+ \d+/
-- 'img "Crystalline Lens Rise - CLR (μm): 0, between the 25th and 75th percentiles"':
-  - img
+- 'img "Crystalline Lens Rise - CLR (μm): 0, between the 25th and 75th percentiles"'
 - img "Histogram of Internal Anterior Chamber Depth - ACD (mm)": /Internal Anterior Chamber Depth - ACD \(mm\) 0 \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
 - 'img "Internal Anterior Chamber Depth - ACD (mm): 0, outside the range of the dataset"'
 - img "Histogram of Average Anterior Chamber Angle - ACA (º)": /Average Anterior Chamber Angle - ACA \(º\) 0 \d+ \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
@@ -29,7 +28,7 @@
 - img "Histogram of White to White - WtW (mm)": /White to White - WtW \(mm\) 0 \d+ \d+ \d+ Number of Eyes 9\.8 \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
 - 'img "White to White - WtW (mm): 0, outside the range of the dataset"'
 - img "Histogram of Age (years)": /Age \(years\) 0 \d+ \d+ \d+ Number of Eyes \d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
-- 'img "Age (years): 0, outside the range of the dataset"'
+- 'img "Age (years): no value entered"'
 - contentinfo:
   - list:
     - listitem:
