@@ -726,6 +726,8 @@ input[type='number']::-webkit-outer-spin-button {
   max-width: 100%;
   min-width: 0;
   overflow-x: auto;
+  container-type: inline-size;
+  scroll-snap-type: x mandatory;
 }
 
 .ledger {
@@ -759,15 +761,91 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /*
- * Phone width: cap the sticky label column so labels wrap and about three
- * value columns stay in view beside it. .ledger.compact is excluded: it has
- * no sticky column and its own sizing.
+ * Whenever the matrix scrolls, it pages by whole lens group, so a lens size
+ * is never cut by the sticky label column (a clipped "12.6 mm" reads
+ * "2.6 mm", a real lens).
+ *
+ *   - Every group is exactly --ledger-group wide.
+ *   - The label column takes the rest of the scroller after as many whole
+ *     groups as fit beside a column of at least --ledger-label-min, so the
+ *     window right of it is always a whole number of groups.
+ *   - Snapping parks each group's start on the label column's edge. With the
+ *     window a whole number of groups, the furthest scroll lands on a group
+ *     start too, so at rest no group is ever partly in view.
+ *
+ * --ledger-label is the one width both the column and the snap offset use.
+ * 100cqi is the scroller's width (it is the size container). The `3` is the
+ * number of lens groups in LENS_SIZES. .ledger.compact is excluded: it has no
+ * sticky column and its own sizing. A browser without mod() keeps the 9rem
+ * phone cap below and scrolls freely.
  */
 @media (max-width: 48rem) {
   .ledger:not(.compact) th:first-child {
     width: 9rem;
     min-width: 9rem;
     white-space: normal;
+  }
+}
+
+@supports (width: mod(1px, 1px)) {
+  @container (width < 52rem) {
+    .ledger:not(.compact) {
+      --ledger-group: 12.5rem;
+      --ledger-label-min: 9rem;
+      --ledger-label: max(
+        5rem,
+        min(
+          var(--ledger-label-min) +
+            mod(100cqi - var(--ledger-label-min), var(--ledger-group)),
+          100cqi - var(--ledger-group)
+        )
+      );
+      width: calc(var(--ledger-label) + 3 * var(--ledger-group));
+      min-width: 0;
+    }
+
+    .ledger:not(.compact) th:first-child {
+      width: var(--ledger-label);
+      min-width: var(--ledger-label);
+      max-width: var(--ledger-label);
+      white-space: normal;
+    }
+
+    .ledger:not(.compact) th[colspan] {
+      width: var(--ledger-group);
+      scroll-snap-align: start;
+      scroll-margin-left: var(--ledger-label);
+      /*
+       * Mid-scroll, before a snap settles, a group is briefly part in view.
+       * Its label is then made transparent from the moment it would touch
+       * either edge of the window: entering at the right until 4.5rem (its
+       * padded text is 4.1rem) is in view, and leaving at the left once its
+       * start is 0.5rem (less than its 0.7rem padding) under the label
+       * column. Scroll-driven; where unsupported it has no effect at all.
+       */
+      view-timeline: --ledger-lens x;
+      view-timeline-inset: var(--ledger-label) 0;
+      animation-name: ledger-lens-hidden, ledger-lens-hidden;
+      animation-timing-function: linear;
+      animation-timeline: --ledger-lens;
+      animation-range:
+        entry 0% entry 4.5rem,
+        exit 0.5rem exit 100%;
+    }
+
+    /* room for "Moderate" and four digits in a 12.5rem group of three */
+    .ledger:not(.compact) td,
+    .ledger:not(.compact) tr + tr > th:not(:first-child) {
+      padding-left: 0.45rem;
+      padding-right: 0.45rem;
+    }
+  }
+}
+
+@keyframes ledger-lens-hidden {
+  from,
+  to {
+    color: transparent;
   }
 }
 

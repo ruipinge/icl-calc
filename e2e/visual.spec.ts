@@ -209,6 +209,149 @@ for (const route of ROUTES) {
   });
 }
 
+/*
+ * The Floating Matrix scrolls sideways under a sticky label column, and a lens
+ * size that slides half under it reads as a different, real lens: "12.6 mm"
+ * clipped to "2.6 mm". So a lens label is either whole - right of the sticky
+ * column and inside the scroller - or not shown at all, at every scroll
+ * position; and once scrolling settles, every lens group with any column in
+ * view shows its label whole.
+ *
+ * Geometry, not pixels: each label's text box is measured against the sticky
+ * column's right edge and the scroller's visible box. "Not shown" means the
+ * text box is entirely outside that region, or its colour is fully
+ * transparent.
+ *
+ * 360 and 390 are phones, where one lens group is in view at a time; 600 is
+ * a small tablet; 800 sits between 48rem and 54rem, above the phone cap on
+ * the label column, with two groups in view.
+ */
+const MATRIX_SCROLL_VIEWPORTS = [
+  { width: 360, height: 780 },
+  { width: 390, height: 844 },
+  { width: 600, height: 900 },
+  { width: 800, height: 900 }
+] as const;
+
+/** Returns one line per lens label that breaks the rule; [] when none does. */
+const lensLabelViolations = (page: Page, requireWhole: boolean) =>
+  page.evaluate((requireWhole) => {
+    // Sub-pixel slack for rounding in getBoundingClientRect.
+    const EPS = 0.5;
+    const scroller = document.querySelector<HTMLElement>('.ledger-scroll')!;
+    const port = scroller.getBoundingClientRect();
+    const portLeft = port.left + scroller.clientLeft;
+    const portRight = portLeft + scroller.clientWidth;
+    const stickyRight = scroller
+      .querySelector('thead th:first-child')!
+      .getBoundingClientRect().right;
+
+    const out: string[] = [];
+    for (const th of scroller.querySelectorAll<HTMLElement>(
+      'thead th[colspan]'
+    )) {
+      const range = document.createRange();
+      range.selectNodeContents(th);
+      const text = range.getBoundingClientRect();
+      const cell = th.getBoundingClientRect();
+      const where =
+        `"${th.textContent}" at scrollLeft=${scroller.scrollLeft}: text ` +
+        `[${text.left.toFixed(1)}, ${text.right.toFixed(1)}], visible region ` +
+        `[${stickyRight.toFixed(1)}, ${portRight.toFixed(1)}]`;
+
+      const transparent = /^rgba\(.*,\s*0\)$|^transparent$/.test(
+        getComputedStyle(th).color
+      );
+      const outside =
+        text.right <= stickyRight + EPS || text.left >= portRight - EPS;
+      const whole =
+        text.left >= stickyRight - EPS && text.right <= portRight + EPS;
+
+      if (!transparent && !outside && !whole) {
+        out.push(`partly visible: ${where}`);
+      }
+      if (requireWhole) {
+        const groupInView =
+          Math.min(cell.right, portRight) - Math.max(cell.left, stickyRight) >
+          EPS;
+        if (groupInView && !(whole && !transparent)) {
+          out.push(`group in view without its whole label: ${where}`);
+        }
+      }
+    }
+    return out;
+  }, requireWhole);
+
+/** Lets the scroll settle (snapping included) and scroll timelines catch up. */
+const settle = (page: Page) =>
+  page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        const scroller = document.querySelector<HTMLElement>('.ledger-scroll')!;
+        let last = -1;
+        let still = 0;
+        const tick = () => {
+          still = scroller.scrollLeft === last ? still + 1 : 0;
+          last = scroller.scrollLeft;
+          if (still >= 3) resolve();
+          else requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      })
+  );
+
+const scrollMatrixTo = async (page: Page, left: number) => {
+  await page
+    .locator('.ledger-scroll')
+    .evaluate((el, x) => el.scrollTo({ left: x, behavior: 'instant' }), left);
+  await settle(page);
+};
+
+const maxMatrixScroll = (page: Page) =>
+  page
+    .locator('.ledger-scroll')
+    .evaluate((el) => el.scrollWidth - el.clientWidth);
+
+for (const viewport of MATRIX_SCROLL_VIEWPORTS) {
+  test.describe(`matrix at ${viewport.width}x${viewport.height}`, () => {
+    test.use({ viewport });
+
+    test('a lens label is whole for every group in view once scrolling settles', async ({
+      page
+    }) => {
+      await open(page, 'Floating Matrix');
+      const max = await maxMatrixScroll(page);
+      // Proves the case under test exists: the table really scrolls here.
+      expect(max).toBeGreaterThan(0);
+
+      for (const left of [0, 20, 60, Math.round(max / 2), max]) {
+        await scrollMatrixTo(page, left);
+        expect(await lensLabelViolations(page, true)).toEqual([]);
+      }
+    });
+
+    test('no lens label is ever partly visible mid-scroll', async ({
+      page
+    }) => {
+      await open(page, 'Floating Matrix');
+      // Snapping would carry every position below back to a resting one;
+      // turned off, the sweep stands in for the frames of a scroll in flight.
+      await page
+        .locator('.ledger-scroll')
+        .evaluate((el) => (el.style.scrollSnapType = 'none'));
+      const max = await maxMatrixScroll(page);
+      expect(max).toBeGreaterThan(0);
+
+      const violations: string[] = [];
+      for (let left = 0; left <= max + 4; left += 4) {
+        await scrollMatrixTo(page, Math.min(left, max));
+        violations.push(...(await lensLabelViolations(page, false)));
+      }
+      expect(violations).toEqual([]);
+    });
+  });
+}
+
 test('the accessibility tree does not change with viewport', async ({
   page
 }) => {
