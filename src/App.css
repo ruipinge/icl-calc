@@ -477,6 +477,19 @@ input[type='number']::-webkit-outer-spin-button {
   text-align: right;
 }
 
+/*
+ * Every row closes with the same 0.6rem under its tallest cell. The label
+ * and unit carry it as padding; the control as a margin, so its fill still
+ * meets the row's hairline. Controls sit on the label's first line (the
+ * grid aligns on baselines), so a label that wraps grows the row downwards
+ * and leaves room under the control - where its message will go - while a
+ * one-line row no longer lets its control touch the next row's.
+ */
+.mrow > input,
+.mrow > select {
+  margin-bottom: 0.6rem;
+}
+
 .mrow > input[aria-invalid='true'] {
   border-bottom: 2px solid var(--leaf-crimson);
 }
@@ -574,7 +587,7 @@ input[type='number']::-webkit-outer-spin-button {
 .idgroup {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0 1.5rem;
+  gap: 0.6rem 1.5rem;
   margin-bottom: 2rem;
 }
 
