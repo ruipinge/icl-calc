@@ -91,15 +91,21 @@ it.each(USES)('%s uses the token its role is measured with', (sel, decl) =>
 
 // The chart grid's columns live in App.css hunks other work also edits, and no
 // visual fixture covers 769-1200px, so a lost merge hunk would go unseen.
-// `inMedia` returns what sits inside one @media block (closed by a `}` at
-// column 0); `outsideMedia` is the stylesheet with every such block removed,
-// so the top-level rule cannot be satisfied by a nested one.
+// `inMedia` returns what sits inside every @media block for one query (each
+// closed by a `}` at column 0), since several blocks may share a breakpoint;
+// `outsideMedia` is the stylesheet with every such block removed, so the
+// top-level rule cannot be satisfied by a nested one.
 const inMedia = (query: string): string => {
-  const match = new RegExp(
-    `@media \\(${query.replace(/[().]/g, '\\$&')}\\)\\s*\\{([\\s\\S]*?)\\n\\}`
-  ).exec(css);
-  if (!match) throw new Error(`no @media (${query})`);
-  return match[1];
+  const blocks = [
+    ...css.matchAll(
+      new RegExp(
+        `@media \\(${query.replace(/[().]/g, '\\$&')}\\)\\s*\\{([\\s\\S]*?)\\n\\}`,
+        'g'
+      )
+    )
+  ].map((match) => match[1]);
+  if (blocks.length === 0) throw new Error(`no @media (${query})`);
+  return blocks.join('\n');
 };
 const outsideMedia = css.replace(/@media[^{]*\{[\s\S]*?\n\}/g, '');
 const chartGrid = (scope: string): string => {
