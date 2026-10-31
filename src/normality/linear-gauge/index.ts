@@ -128,6 +128,7 @@ const createPointer = (pointer: Pointer): SVGElement => {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('width', `${pointer.width}`);
   svg.setAttribute('height', `${pointer.height}`);
+  svg.setAttribute('aria-hidden', 'true');
   svg.style.setProperty('position', 'absolute');
 
   const triangle = document.createElementNS(

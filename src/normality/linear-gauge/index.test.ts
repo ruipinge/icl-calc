@@ -159,3 +159,21 @@ it('draws a pointer for an in-range value, including 0', () => {
     'calc(100% - 2px)'
   );
 });
+
+/*
+ * The gauge container carries the accessible name, so the pointer inside it
+ * is decoration and must not surface as an unnamed child image (#138). The
+ * inline style is what the L2 replay captures verbatim, so it is pinned too:
+ * hiding the pointer must not move it.
+ */
+it('hides the pointer svg from assistive technology', () => {
+  expect(renderGauge(4).querySelector('svg')?.getAttribute('aria-hidden')).toBe(
+    'true'
+  );
+});
+
+it('keeps the pointer inline style byte-identical', () => {
+  expect(renderGauge(4).querySelector('svg')?.getAttribute('style')).toBe(
+    'position: absolute; left: calc(50% - 2px); top: 12px;'
+  );
+});
