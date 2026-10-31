@@ -189,3 +189,57 @@ it('shows a validation error for a negative posterior keratometry', async () => 
     })
   ).toBeInTheDocument();
 });
+
+/*
+ * Each reading carries two controls with near-identical wiring, so a slip
+ * that hands one control another's error or touched state renders cleanly
+ * and fails nothing else. For every K value and every axis on its own: make
+ * that field alone invalid and touched, then require its message inside its
+ * own value cell, described by it, and no other control marked invalid.
+ */
+const INVALID = [
+  ['kaf', 100, 'Anterior Keratometry Flat (KAntFlt), dioptres'],
+  ['axisaf', 200, 'Anterior Keratometry Flat axis, degrees'],
+  ['kas', 100, 'Anterior Keratometry Steep (KAntStp), dioptres'],
+  ['axisas', 200, 'Anterior Keratometry Steep axis, degrees'],
+  ['kpf', -6.2, 'Posterior Keratometry Flat (KPostFlt), dioptres'],
+  ['axispf', 200, 'Posterior Keratometry Flat axis, degrees'],
+  ['kps', -6.5, 'Posterior Keratometry Steep (KPostStp), dioptres'],
+  ['axisps', 200, 'Posterior Keratometry Steep axis, degrees']
+] as const;
+
+it.each(INVALID)(
+  'binds an invalid %s to its own control and no other',
+  async (field, value, name) => {
+    renderCorneaProfile(
+      { ...VALUES, [field]: value },
+      {
+        initialTouched: { corneaProfile: { [field]: true } },
+        validateOnMount: true
+      }
+    );
+
+    const target = await screen.findByRole('spinbutton', {
+      name,
+      description: /Invalid value\./
+    });
+    expect(target).toHaveAttribute('aria-invalid', 'true');
+
+    // the stylesheet places a message under its control only by this nesting
+    // eslint-disable-next-line testing-library/no-node-access
+    const cell = target.closest('.mvalue');
+    // eslint-disable-next-line testing-library/no-node-access
+    const message = document.getElementById(`corneaProfile.${field}-error`);
+    expect(cell).toContainElement(message);
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(document.querySelectorAll('.mrow-error')).toHaveLength(1);
+
+    screen
+      .getAllByRole('spinbutton')
+      .filter((other) => other !== target)
+      .forEach((other) => {
+        expect(other).not.toHaveAttribute('aria-invalid');
+        expect(other).not.toHaveAccessibleDescription();
+      });
+  }
+);
