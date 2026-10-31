@@ -233,6 +233,39 @@ const MATRIX_SCROLL_VIEWPORTS = [
   { width: 800, height: 900 }
 ] as const;
 
+/*
+ * LENS_SIZES.length in src/matrix/data.ts. Not imported: that module pulls
+ * in the dataset. Asserted so a selector that matches nothing cannot pass.
+ */
+const LENS_GROUPS = 3;
+
+/**
+ * The rendered width of every lens group, and the width --ledger-group asks
+ * for. Whole-group paging assumes they agree: content that widens a group
+ * breaks it without failing any position the at-rest test happens to visit.
+ */
+const lensGroupWidths = (page: Page) =>
+  page.evaluate(() => {
+    const table = document.querySelector<HTMLElement>('.ledger-scroll table')!;
+    const declared = getComputedStyle(table)
+      .getPropertyValue('--ledger-group')
+      .trim();
+    const rootPx = parseFloat(
+      getComputedStyle(document.documentElement).fontSize
+    );
+    const expected = declared.endsWith('rem')
+      ? parseFloat(declared) * rootPx
+      : parseFloat(declared);
+    const widths = Array.from(
+      table.querySelectorAll<HTMLElement>('thead th[colspan]'),
+      (th) => th.getBoundingClientRect().width
+    );
+    return { declared, expected, widths };
+  });
+
+const lensLabelCount = (page: Page) =>
+  page.locator('.ledger-scroll thead th[colspan]').count();
+
 /** Returns one line per lens label that breaks the rule; [] when none does. */
 const lensLabelViolations = (page: Page, requireWhole: boolean) =>
   page.evaluate((requireWhole) => {
@@ -323,6 +356,19 @@ for (const viewport of MATRIX_SCROLL_VIEWPORTS) {
       const max = await maxMatrixScroll(page);
       // Proves the case under test exists: the table really scrolls here.
       expect(max).toBeGreaterThan(0);
+      expect(await lensLabelCount(page)).toBe(LENS_GROUPS);
+
+      const groups = await lensGroupWidths(page);
+      expect(
+        groups.expected,
+        `--ledger-group is "${groups.declared}"`
+      ).toBeGreaterThan(0);
+      for (const width of groups.widths) {
+        expect(
+          Math.abs(width - groups.expected),
+          `a lens group is ${width}px wide, --ledger-group is ${groups.expected}px`
+        ).toBeLessThanOrEqual(0.5);
+      }
 
       for (const left of [0, 20, 60, Math.round(max / 2), max]) {
         await scrollMatrixTo(page, left);
@@ -341,9 +387,12 @@ for (const viewport of MATRIX_SCROLL_VIEWPORTS) {
         .evaluate((el) => (el.style.scrollSnapType = 'none'));
       const max = await maxMatrixScroll(page);
       expect(max).toBeGreaterThan(0);
+      expect(await lensLabelCount(page)).toBe(LENS_GROUPS);
 
+      // Every 2px, so a stretch of 2px or more in which a label is partly
+      // visible cannot fall between two samples.
       const violations: string[] = [];
-      for (let left = 0; left <= max + 4; left += 4) {
+      for (let left = 0; left <= max + 2; left += 2) {
         await scrollMatrixTo(page, Math.min(left, max));
         violations.push(...(await lensLabelViolations(page, false)));
       }

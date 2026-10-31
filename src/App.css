@@ -720,7 +720,8 @@ input[type='number']::-webkit-outer-spin-button {
  * scrolls at phone width; the label column stays put while the nine value
  * columns move. Zero cells are ordinary --ink: nothing de-emphasises a zero.
  * Column headers keep the base `thead th` colour (--ink), pinned in
- * contrast.test.ts; nothing below sets a colour on a header.
+ * contrast.test.ts. The one exception is ledger-lens-hidden below, which
+ * makes a lens label transparent mid-scroll and never at rest.
  * ====================================================================== */
 .ledger-scroll {
   max-width: 100%;
@@ -776,14 +777,41 @@ input[type='number']::-webkit-outer-spin-button {
  * --ledger-label is the one width both the column and the snap offset use.
  * 100cqi is the scroller's width (it is the size container). The `3` is the
  * number of lens groups in LENS_SIZES. .ledger.compact is excluded: it has no
- * sticky column and its own sizing. A browser without mod() keeps the 9rem
- * phone cap below and scrolls freely.
+ * sticky column and its own sizing.
  */
-@media (max-width: 48rem) {
+
+/*
+ * The fallback, ungated, for engines without mod() or container queries
+ * (Chrome/Edge < 125, Firefox < 118, Safari < 16): a fixed 9rem label column
+ * so about three value columns stay in view on a phone, and snapping that
+ * still parks each group's start on its edge. Groups keep their natural
+ * width, so the window is not a whole number of groups there: where the
+ * furthest scroll falls short of the last group's start (tablet widths),
+ * resting there leaves a group part under the label column. Above 54rem
+ * those engines scroll freely. The gated block below overrides all of this
+ * wherever it applies.
+ */
+@media (max-width: 54rem) {
+  .ledger:not(.compact) {
+    --ledger-label: 9rem;
+  }
+
   .ledger:not(.compact) th:first-child {
-    width: 9rem;
-    min-width: 9rem;
+    width: var(--ledger-label);
+    min-width: var(--ledger-label);
     white-space: normal;
+  }
+
+  /*
+   * The snap target is each group's first myopia header (Low; the 3 is
+   * MYOPIA_LEVELS.length), which starts where the group does. Not the group
+   * header itself: a group wider than the window is an oversized snap area,
+   * and Chromium will rest with its far end aligned, the label under the
+   * sticky column.
+   */
+  .ledger:not(.compact) tr + tr > th:nth-child(3n + 2) {
+    scroll-snap-align: start;
+    scroll-margin-left: var(--ledger-label);
   }
 }
 
