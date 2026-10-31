@@ -193,9 +193,12 @@ it('shows a validation error for a negative posterior keratometry', async () => 
 /*
  * Each reading carries two controls with near-identical wiring, so a slip
  * that hands one control another's error or touched state renders cleanly
- * and fails nothing else. For every K value and every axis on its own: make
- * that field alone invalid and touched, then require its message inside its
- * own value cell, described by it, and no other control marked invalid.
+ * and fails nothing else. A control shows its message only when its error
+ * and its touched flag both arrive, so each is varied on its own: every
+ * field touched with only one invalid catches an error reaching the wrong
+ * control, and every field invalid with only one touched catches a touched
+ * flag doing so. Either way exactly one control may answer: the field's
+ * own, with its message inside its own value cell.
  */
 const INVALID = [
   ['kaf', 100, 'Anterior Keratometry Flat (KAntFlt), dioptres'],
@@ -208,16 +211,35 @@ const INVALID = [
   ['axisps', 200, 'Posterior Keratometry Steep axis, degrees']
 ] as const;
 
-it.each(INVALID)(
-  'binds an invalid %s to its own control and no other',
-  async (field, value, name) => {
-    renderCorneaProfile(
-      { ...VALUES, [field]: value },
-      {
-        initialTouched: { corneaProfile: { [field]: true } },
-        validateOnMount: true
-      }
-    );
+const ALL_INVALID = Object.fromEntries(
+  INVALID.map(([field, value]) => [field, value])
+);
+const ALL_TOUCHED = Object.fromEntries(INVALID.map(([field]) => [field, true]));
+
+const PASSES = INVALID.flatMap(([field, value, name]) => [
+  {
+    field,
+    name,
+    pass: 'only it invalid, every field touched',
+    values: { ...VALUES, [field]: value },
+    touched: ALL_TOUCHED
+  },
+  {
+    field,
+    name,
+    pass: 'every field invalid, only it touched',
+    values: { ...VALUES, ...ALL_INVALID },
+    touched: { [field]: true }
+  }
+]);
+
+it.each(PASSES)(
+  'binds $field to its own control and no other ($pass)',
+  async ({ field, name, values, touched }) => {
+    renderCorneaProfile(values, {
+      initialTouched: { corneaProfile: touched },
+      validateOnMount: true
+    });
 
     const target = await screen.findByRole('spinbutton', {
       name,
