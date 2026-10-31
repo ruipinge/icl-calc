@@ -73,6 +73,8 @@ it.each(PAIRS)('%s: %s on %s is at least %d:1', (_, fg, bg, min) =>
 const USES: [selector: string, declaration: RegExp][] = [
   ['thead th', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['.ledger thead th', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  // every matrix value, a 0 included, is a clinical value at full ink
+  ['.ledger td', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['.unit', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['h4', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['.site-footer', /(?:^|[;\s])color:\s*var\(--muted\)/],
