@@ -3,7 +3,8 @@ import { readFileSync } from 'node:fs';
 
 const css = readFileSync(join(__dirname, 'App.css'), 'utf8');
 
-// The first :root block holds the Treeye tokens; the second is the Bootstrap shim.
+// The :root block holds the Treeye tokens. It is the only one; the match
+// below takes the first, so a later :root cannot shadow a token here.
 const root = /:root\s*\{([^}]*)\}/.exec(css)?.[1] ?? '';
 
 const token = (name: string): string => {

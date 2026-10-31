@@ -217,21 +217,44 @@ for (const route of ROUTES) {
  * position; and once scrolling settles, every lens group with any column in
  * view shows its label whole.
  *
- * Geometry, not pixels: each label's text box is measured against the sticky
- * column's right edge and the scroller's visible box. "Not shown" means the
- * text box is entirely outside that region, or its colour is fully
- * transparent.
+ * Geometry, not pixels: each label's text box is measured against the
+ * visible region - from the label column's right edge (or the scroller's
+ * left edge, if that column has scrolled away) to the scroller's right edge.
+ * "Not shown" means the text box is entirely outside that region, or its
+ * colour is fully transparent.
  *
  * 360 and 390 are phones, where one lens group is in view at a time; 600 is
  * a small tablet; 800 sits between 48rem and 54rem, above the phone cap on
- * the label column, with two groups in view.
+ * the label column, with two groups in view. The last three are scrollers
+ * narrower than 17.5rem (a label column of 5rem plus one 12.5rem group): a
+ * phone under 320px, a 360px phone at 125% zoom (288px), and a 360px phone
+ * with a 20px root font, as a larger text setting gives.
  */
-const MATRIX_SCROLL_VIEWPORTS = [
+const MATRIX_SCROLL_VIEWPORTS: {
+  width: number;
+  height: number;
+  rootFontPx?: number;
+}[] = [
   { width: 360, height: 780 },
   { width: 390, height: 844 },
   { width: 600, height: 900 },
-  { width: 800, height: 900 }
-] as const;
+  { width: 800, height: 900 },
+  { width: 300, height: 640 },
+  { width: 288, height: 640 },
+  { width: 360, height: 780, rootFontPx: 20 }
+];
+
+/** Opens the matrix, with the root font size overridden if asked. */
+const openMatrix = async (page: Page, rootFontPx?: number) => {
+  await open(page, 'Floating Matrix');
+  if (rootFontPx !== undefined) {
+    await page.addStyleTag({
+      content: `html { font-size: ${rootFontPx}px; }`
+    });
+    // a layout pass, so every measurement below sees the new size
+    await page.evaluate(() => document.body.getBoundingClientRect());
+  }
+};
 
 /*
  * LENS_SIZES.length in src/matrix/data.ts. Not imported: that module pulls
@@ -275,9 +298,13 @@ const lensLabelViolations = (page: Page, requireWhole: boolean) =>
     const port = scroller.getBoundingClientRect();
     const portLeft = port.left + scroller.clientLeft;
     const portRight = portLeft + scroller.clientWidth;
-    const stickyRight = scroller
-      .querySelector('thead th:first-child')!
-      .getBoundingClientRect().right;
+    // The label column's right edge, or the scroller's left edge once that
+    // column has scrolled out of view.
+    const stickyRight = Math.max(
+      portLeft,
+      scroller.querySelector('thead th:first-child')!.getBoundingClientRect()
+        .right
+    );
 
     const out: string[] = [];
     for (const th of scroller.querySelectorAll<HTMLElement>(
@@ -345,14 +372,16 @@ const maxMatrixScroll = (page: Page) =>
     .locator('.ledger-scroll')
     .evaluate((el) => el.scrollWidth - el.clientWidth);
 
-for (const viewport of MATRIX_SCROLL_VIEWPORTS) {
-  test.describe(`matrix at ${viewport.width}x${viewport.height}`, () => {
+for (const { rootFontPx, ...viewport } of MATRIX_SCROLL_VIEWPORTS) {
+  const font =
+    rootFontPx === undefined ? '' : ` with a ${rootFontPx}px root font`;
+  test.describe(`matrix at ${viewport.width}x${viewport.height}${font}`, () => {
     test.use({ viewport });
 
     test('a lens label is whole for every group in view once scrolling settles', async ({
       page
     }) => {
-      await open(page, 'Floating Matrix');
+      await openMatrix(page, rootFontPx);
       const max = await maxMatrixScroll(page);
       // Proves the case under test exists: the table really scrolls here.
       expect(max).toBeGreaterThan(0);
@@ -370,7 +399,15 @@ for (const viewport of MATRIX_SCROLL_VIEWPORTS) {
         ).toBeLessThanOrEqual(0.5);
       }
 
-      for (const left of [0, 20, 60, Math.round(max / 2), max]) {
+      for (const left of [
+        0,
+        20,
+        60,
+        Math.round(max / 4),
+        Math.round(max / 2),
+        Math.round((max * 3) / 4),
+        max
+      ]) {
         await scrollMatrixTo(page, left);
         expect(await lensLabelViolations(page, true)).toEqual([]);
       }
@@ -379,7 +416,9 @@ for (const viewport of MATRIX_SCROLL_VIEWPORTS) {
     test('no lens label is ever partly visible mid-scroll', async ({
       page
     }) => {
-      await open(page, 'Floating Matrix');
+      // up to four scroller-widths at 2px a step, about 30s at the widest
+      test.setTimeout(120_000);
+      await openMatrix(page, rootFontPx);
       // Snapping would carry every position below back to a resting one;
       // turned off, the sweep stands in for the frames of a scroll in flight.
       await page

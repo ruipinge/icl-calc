@@ -778,22 +778,38 @@ input[type='number']::-webkit-outer-spin-button {
  * 100cqi is the scroller's width (it is the size container). The `3` is the
  * number of lens groups in LENS_SIZES. .ledger.compact is excluded: it has no
  * sticky column and its own sizing.
+ *
+ * Registered so it computes to a length: the browser test compares every
+ * group's rendered width with it, which catches content that widens a group.
  */
+@property --ledger-group {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
 
 /*
  * The fallback, ungated, for engines without mod() or container queries
  * (Chrome/Edge < 125, Firefox < 118, Safari < 16): a fixed 9rem label column
  * so about three value columns stay in view on a phone, and snapping that
  * still parks each group's start on its edge. Groups keep their natural
- * width, so the window is not a whole number of groups there: where the
- * furthest scroll falls short of the last group's start (tablet widths),
- * resting there leaves a group part under the label column. Above 54rem
- * those engines scroll freely. The gated block below overrides all of this
+ * width: (52rem - 9rem) / 3, the table being at its min-width wherever it
+ * scrolls. Trailing padding on the scroller lets the furthest scroll reach
+ * the last group's start, so it is a snap position rather than a clamp that
+ * would rest a group part under the label column. What the fallback cannot
+ * do is make the window a whole number of groups, so at some widths a group
+ * entering at the right edge can rest with its label cut by that edge.
+ * 57.75rem is where the table stops scrolling (the scroller is 90% of the
+ * viewport up to 60rem). The gated block below overrides all of this
  * wherever it applies.
  */
-@media (max-width: 54rem) {
-  .ledger:not(.compact) {
+@media (max-width: 57.75rem) {
+  .ledger-scroll {
     --ledger-label: 9rem;
+    padding-right: max(
+      0px,
+      100% - var(--ledger-label) - (52rem - var(--ledger-label)) / 3
+    );
   }
 
   .ledger:not(.compact) th:first-child {
@@ -815,7 +831,12 @@ input[type='number']::-webkit-outer-spin-button {
   }
 }
 
-@supports (width: mod(1px, 1px)) {
+@supports (width: mod(1px, 1px)) and (container-type: inline-size) {
+  /* the gated layout's window is exact; the fallback's trailing room is not wanted */
+  .ledger-scroll {
+    padding-right: 0;
+  }
+
   @container (width < 52rem) {
     .ledger:not(.compact) {
       --ledger-group: 12.5rem;
@@ -866,6 +887,39 @@ input[type='number']::-webkit-outer-spin-button {
     .ledger:not(.compact) tr + tr > th:not(:first-child) {
       padding-left: 0.45rem;
       padding-right: 0.45rem;
+    }
+  }
+
+  /*
+   * Under 17.5rem (a 5rem label column plus one group) the window right of a
+   * sticky column would be narrower than a group, and a group that does not
+   * fit is an oversized snap area the browser may rest anywhere inside, its
+   * label part under the column. This happens under a 320px phone, at phone
+   * zoom past about 113%, or with a larger root font. Below it, nothing is
+   * sticky: the label column and each group are one scroller wide, and the
+   * matrix pages label column, then 12.6, 13.2, 13.7 mm, each start parked
+   * at the scroller's left edge. A group's values are then read without
+   * their row labels in view: the price of never showing a cut lens size.
+   */
+  @container (width < 17.5rem) {
+    .ledger:not(.compact) {
+      --ledger-group: 100cqi;
+      --ledger-label: 100cqi;
+    }
+
+    .ledger:not(.compact) th:first-child {
+      position: static;
+      scroll-snap-align: start;
+      scroll-margin-left: 0;
+    }
+
+    .ledger:not(.compact) th[colspan],
+    .ledger:not(.compact) tr + tr > th:nth-child(3n + 2) {
+      scroll-margin-left: 0;
+    }
+
+    .ledger:not(.compact) th[colspan] {
+      view-timeline-inset: 0 0;
     }
   }
 }
