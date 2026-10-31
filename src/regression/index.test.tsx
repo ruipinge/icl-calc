@@ -78,3 +78,58 @@ it('marks each lens-size cell as its row header, not a column header', () => {
     '13.7 mm'
   ]);
 });
+
+/*
+ * #122 PR 5. Both tables are compact ledgers; each row header carries its
+ * lens-size accent class, in LENS_SIZES order, and the accent is a CSS
+ * pseudo-element so the header's text stays exactly the size label.
+ */
+it('sets both tables as compact ledgers', () => {
+  renderRegression();
+
+  const tables = screen.getAllByRole('table');
+
+  expect(tables).toHaveLength(2);
+  tables.forEach((table) => {
+    expect(table).toHaveClass('ledger');
+    expect(table).toHaveClass('compact');
+  });
+});
+
+it('accents each row header with its lens size, in order', () => {
+  renderRegression();
+
+  const rowHeaders = screen.getAllByRole('rowheader');
+
+  expect(rowHeaders.map((h) => h.className)).toEqual([
+    'lens-small',
+    'lens-medium',
+    'lens-large',
+    'lens-small',
+    'lens-medium',
+    'lens-large'
+  ]);
+});
+
+it('keeps the accent out of the text of the row headers', () => {
+  renderRegression();
+
+  screen.getAllByRole('rowheader').forEach((h) => {
+    expect(h).toHaveTextContent(/^\d+\.\d mm$/);
+    // The dot is a CSS pseudo-element; a child element would add to the DOM.
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(h.children).toHaveLength(0);
+  });
+});
+
+it('wraps each table in a regression-block section', () => {
+  renderRegression();
+
+  screen.getAllByRole('table').forEach((table) => {
+    // The section has no role to query by; the parent is the assertion.
+    // eslint-disable-next-line testing-library/no-node-access
+    const block = table.parentElement;
+    expect(block?.tagName).toBe('SECTION');
+    expect(block).toHaveClass('regression-block');
+  });
+});

@@ -714,66 +714,318 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /* ======================================================================
- * TEMPORARY GRID SHIM
+ * Pattern two: the ledger (Floating Matrix)
  *
- * Bootstrap supplied every layout primitive this application uses, not just
- * its controls. These rules reimplement exactly the classes in use so that
- * no route collapses between this commit and the PR that gives its region a
- * Treeye-native layout. Each block names the PR that deletes it. This
- * section must be EMPTY by the end of PR 6; if it is not, something was
- * skipped.
- *
- * Deliberately minimal: no breakpoint system, no gutters config, no
- * generated class set. Only what `grep -rho 'className="[^"]*"' src` finds.
+ * A horizontally scrolling region holds the table so the page itself never
+ * scrolls at phone width; the label column stays put while the nine value
+ * columns move. Zero cells are ordinary --ink: nothing de-emphasises a zero.
+ * Column headers keep the base `thead th` colour (--ink), pinned in
+ * contrast.test.ts. The one exception is ledger-lens-hidden below, which
+ * makes a lens label transparent mid-scroll and never at rest.
  * ====================================================================== */
-
-/* deleted by PR 5 (regression) */
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 1.5rem;
+.ledger-scroll {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  container-type: inline-size;
+  scroll-snap-type: x mandatory;
 }
 
-/* deleted by PR 5 (regression) */
-.col-4 {
-  flex: 0 0 auto;
-  width: calc(33.333% - 1rem);
-}
-.col-md-5 {
-  flex: 0 0 auto;
-  width: calc(41.666% - 0.875rem);
-}
-.col-md-6 {
-  flex: 0 0 auto;
-  width: calc(50% - 0.75rem);
+.ledger {
+  min-width: 52rem;
 }
 
-@media (max-width: 48rem) {
-  .col-4,
-  .col-md-5,
-  .col-md-6 {
-    width: 100%;
-  }
+.ledger td {
+  color: var(--ink);
 }
 
 /*
- * `.table-bordered` and `.table-hover` are deliberately NOT defined. They
- * appear on four elements today and are inert here: the base table layer
- * above already carries the hairline treatment, and PR 5 removes the
- * attributes. An empty ruleset would only look like an oversight.
+ * Units keep their case: text-transform: uppercase folds the micro sign in
+ * "(μm)" to a capital Mu, so micrometres read as millimetres. Colour is
+ * restated so this rule, which the contrast pin reads, carries it too.
  */
+.ledger thead th {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
 
-/* deleted by PR 5 — the matrix summary becomes a definition row */
-.list-inline {
+.regression-block h4 {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+/* each lens group is named where it starts, not where it ends */
+.ledger th[colspan] {
+  text-align: left;
+}
+
+/*
+ * Whenever the matrix scrolls, it pages by whole lens group, so a lens size
+ * is never cut by the sticky label column (a clipped "12.6 mm" reads
+ * "2.6 mm", a real lens).
+ *
+ *   - Every group is exactly --ledger-group wide.
+ *   - The label column takes the rest of the scroller after as many whole
+ *     groups as fit beside a column of at least --ledger-label-min, so the
+ *     window right of it is always a whole number of groups.
+ *   - Snapping parks each group's start on the label column's edge. With the
+ *     window a whole number of groups, the furthest scroll lands on a group
+ *     start too, so at rest no group is ever partly in view.
+ *
+ * --ledger-label is the one width both the column and the snap offset use.
+ * 100cqi is the scroller's width (it is the size container). The `3` is the
+ * number of lens groups in LENS_SIZES. .ledger.compact is excluded: it has no
+ * sticky column and its own sizing.
+ *
+ * Registered so it computes to a length: the browser test compares every
+ * group's rendered width with it, which catches content that widens a group.
+ */
+@property --ledger-group {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+/*
+ * The fallback, ungated, for engines without mod() or container queries
+ * (Chrome/Edge < 125, Firefox < 118, Safari < 16): a fixed 9rem label column
+ * so about three value columns stay in view on a phone, and snapping that
+ * still parks each group's start on its edge. Groups keep their natural
+ * width: (52rem - 9rem) / 3, the table being at its min-width wherever it
+ * scrolls. Trailing padding on the scroller lets the furthest scroll reach
+ * the last group's start, so it is a snap position rather than a clamp that
+ * would rest a group part under the label column. What the fallback cannot
+ * do is make the window a whole number of groups, so at some widths a group
+ * entering at the right edge can rest with its label cut by that edge.
+ * 57.75rem is where the table stops scrolling (the scroller is 90% of the
+ * viewport up to 60rem). The gated block below overrides all of this
+ * wherever it applies.
+ */
+@media (max-width: 57.75rem) {
+  .ledger-scroll {
+    --ledger-label: 9rem;
+    padding-right: max(
+      0px,
+      100% - var(--ledger-label) - (52rem - var(--ledger-label)) / 3
+    );
+  }
+
+  .ledger:not(.compact) th:first-child {
+    width: var(--ledger-label);
+    min-width: var(--ledger-label);
+    white-space: normal;
+  }
+
+  /*
+   * The snap target is each group's first myopia header (Low; the 3 is
+   * MYOPIA_LEVELS.length), which starts where the group does. Not the group
+   * header itself: a group wider than the window is an oversized snap area,
+   * and Chromium will rest with its far end aligned, the label under the
+   * sticky column.
+   */
+  .ledger:not(.compact) tr + tr > th:nth-child(3n + 2) {
+    scroll-snap-align: start;
+    scroll-margin-left: var(--ledger-label);
+  }
+}
+
+@supports (width: mod(1px, 1px)) and (container-type: inline-size) {
+  /* the gated layout's window is exact; the fallback's trailing room is not wanted */
+  .ledger-scroll {
+    padding-right: 0;
+  }
+
+  @container (width < 52rem) {
+    .ledger:not(.compact) {
+      --ledger-group: 12.5rem;
+      --ledger-label-min: 9rem;
+      --ledger-label: max(
+        5rem,
+        min(
+          var(--ledger-label-min) +
+            mod(100cqi - var(--ledger-label-min), var(--ledger-group)),
+          100cqi - var(--ledger-group)
+        )
+      );
+      width: calc(var(--ledger-label) + 3 * var(--ledger-group));
+      min-width: 0;
+    }
+
+    .ledger:not(.compact) th:first-child {
+      width: var(--ledger-label);
+      min-width: var(--ledger-label);
+      max-width: var(--ledger-label);
+      white-space: normal;
+    }
+
+    .ledger:not(.compact) th[colspan] {
+      width: var(--ledger-group);
+      scroll-snap-align: start;
+      scroll-margin-left: var(--ledger-label);
+      /*
+       * Mid-scroll, before a snap settles, a group is briefly part in view.
+       * Its label is then made transparent from the moment it would touch
+       * either edge of the window: entering at the right until 4.5rem (its
+       * padded text is 4.1rem) is in view, and leaving at the left once its
+       * start is 0.5rem (less than its 0.7rem padding) under the label
+       * column. Scroll-driven; where unsupported it has no effect at all.
+       */
+      view-timeline: --ledger-lens x;
+      view-timeline-inset: var(--ledger-label) 0;
+      animation-name: ledger-lens-hidden, ledger-lens-hidden;
+      animation-timing-function: linear;
+      animation-timeline: --ledger-lens;
+      animation-range:
+        entry 0% entry 4.5rem,
+        exit 0.5rem exit 100%;
+    }
+
+    /* room for "Moderate" and four digits in a 12.5rem group of three */
+    .ledger:not(.compact) td,
+    .ledger:not(.compact) tr + tr > th:not(:first-child) {
+      padding-left: 0.45rem;
+      padding-right: 0.45rem;
+    }
+  }
+
+  /*
+   * Under 17.5rem (a 5rem label column plus one group) the window right of a
+   * sticky column would be narrower than a group, and a group that does not
+   * fit is an oversized snap area the browser may rest anywhere inside, its
+   * label part under the column. This happens under a 320px phone, at phone
+   * zoom past about 113%, or with a larger root font. Below it, nothing is
+   * sticky: the label column and each group are one scroller wide, and the
+   * matrix pages label column, then 12.6, 13.2, 13.7 mm, each start parked
+   * at the scroller's left edge. A group's values are then read without
+   * their row labels in view: the price of never showing a cut lens size.
+   */
+  @container (width < 17.5rem) {
+    .ledger:not(.compact) {
+      --ledger-group: 100cqi;
+      --ledger-label: 100cqi;
+    }
+
+    .ledger:not(.compact) th:first-child {
+      position: static;
+      scroll-snap-align: start;
+      scroll-margin-left: 0;
+    }
+
+    .ledger:not(.compact) th[colspan],
+    .ledger:not(.compact) tr + tr > th:nth-child(3n + 2) {
+      scroll-margin-left: 0;
+    }
+
+    .ledger:not(.compact) th[colspan] {
+      view-timeline-inset: 0 0;
+    }
+  }
+}
+
+@keyframes ledger-lens-hidden {
+  from,
+  to {
+    color: transparent;
+  }
+}
+
+.ledger th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--paper);
+  text-align: left;
+}
+
+.ledger tbody tr:not(.ledger-divider):hover > * {
+  background: var(--wash);
+}
+
+.ledger .lens-small {
+  box-shadow: inset 0 -3px 0 var(--lens-small);
+}
+
+.ledger .lens-medium {
+  box-shadow: inset 0 -3px 0 var(--lens-medium);
+}
+
+.ledger .lens-large {
+  box-shadow: inset 0 -3px 0 var(--lens-large);
+}
+
+.ledger .ledger-divider td {
+  padding: 0.35rem 0 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ledger-summary {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem 1.5rem;
   list-style: none;
   margin: 1rem 0 0;
   padding: 0;
+  font-family: var(--prose);
+  color: var(--ink);
 }
 
-/* utility classes used inline; deleted alongside their components */
-.text-right {
-  text-align: right;
+.ledger-summary strong {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 0.84rem;
+}
+
+/*
+ * The compact variant (Regression): the same ledger without the scroll
+ * region, the sticky column or the size accent bar. Each row header gets a
+ * small dot in its size colour instead; a pseudo-element, so the header's
+ * text is exactly the size label.
+ */
+.regression-block {
+  max-width: 40rem;
+}
+
+.ledger.compact {
+  min-width: 0;
+}
+
+.ledger.compact th:first-child {
+  position: static;
+  z-index: auto;
+  background: transparent;
+}
+
+/* a size label wraps to "12.6 / mm" at phone width otherwise */
+.ledger.compact tbody th {
+  white-space: nowrap;
+}
+
+.ledger.compact .lens-small,
+.ledger.compact .lens-medium,
+.ledger.compact .lens-large {
+  box-shadow: none;
+}
+
+.ledger.compact th[class*='lens-']::before {
+  content: '';
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.55rem;
+  border-radius: 50%;
+  background: var(--dot);
+}
+
+.ledger.compact .lens-small {
+  --dot: var(--lens-small);
+}
+
+.ledger.compact .lens-medium {
+  --dot: var(--lens-medium);
+}
+
+.ledger.compact .lens-large {
+  --dot: var(--lens-large);
 }
