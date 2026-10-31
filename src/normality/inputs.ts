@@ -19,8 +19,9 @@ export const averageAca = (acan: unknown, acat: unknown) => {
 
 /**
  * The age the gauge is given: `undefined` ("missing") where the date of birth
- * is empty (an invalid date too), unparseable or in the future - the three cases in which
- * `PatientInfo.age()` answers 0, which would be drawn as a real age.
+ * is empty or unparseable (both an Invalid Date) or in the future - the three
+ * cases in which `PatientInfo.age()` answers 0, which would be drawn as a real
+ * age.
  *
  * @param {{ dateOfBirth: string, age(): number }} patient
  * @returns {number | undefined}

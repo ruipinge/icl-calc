@@ -10,7 +10,7 @@ const Graph = ({
   gaugeValues
 }: {
   title: string;
-  value: number;
+  value: number | undefined;
   histogramSeries: HistogramEntry[];
   gaugeValues: number[];
 }) => (
