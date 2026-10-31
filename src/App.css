@@ -469,16 +469,8 @@ input[type='number']::-webkit-outer-spin-button {
   border-top: 1px solid var(--rule);
 }
 
-.mrow.axis > :not(.mrow-error) {
-  border-top: 0;
-}
-
 .mrow > label {
   padding: 0.6rem 0.7rem 0.6rem 0;
-}
-
-.mrow.axis > label {
-  text-align: right;
 }
 
 .mrow > input {
@@ -514,6 +506,62 @@ input[type='number']::-webkit-outer-spin-button {
 
 .fieldgroup-section > h4 {
   margin: 0 0 0.6rem;
+}
+
+/*
+ * Cornea Profile: a keratometry reading and its axis share one row, read
+ * "X dpt at Y º" - label | K | dpt | at | axis | º. The tracks right of the
+ * label total 12.6rem (10.9rem in the other groups); the two inputs are
+ * narrowed to what a K ("-6.25", "42.25") and an axis ("180") need, so the
+ * label track loses only 1.7rem. Each input has its own track, so a message
+ * can sit under either one.
+ */
+.kgroup {
+  grid-template-columns: minmax(0, 1fr) 4.25rem 2.4rem 1.5rem 3.25rem 1.2rem;
+}
+
+/* plain rows (CCT): the unit cell carries the row's rule to the edge */
+.kgroup > .mrow:not(.krow) > .unit {
+  grid-column: 3 / -1;
+}
+
+.mrow > label.kat {
+  padding: 0.6rem 0.25rem;
+  text-align: center;
+}
+
+/*
+ * Under 24rem the label track would fall below the width of "Keratometry",
+ * so "at Y º" wraps onto a second line under the K value: the K input spans
+ * the "at" and axis tracks, so the two inputs share a right edge and the
+ * axis reads as the continuation of that reading, not as a row of its own.
+ */
+@media (max-width: 24rem) {
+  .kgroup {
+    grid-template-columns: minmax(0, 1fr) 1.5rem 2.75rem 2.4rem;
+  }
+
+  .kgroup > .mrow > label:not(.kat) + input {
+    grid-column: 2 / 4;
+  }
+
+  .kgroup > .mrow:not(.krow) > .unit {
+    grid-column: 4;
+  }
+
+  .krow > label:first-child {
+    grid-row: span 2;
+  }
+
+  .krow > label.kat {
+    grid-column: 2;
+  }
+
+  .krow > label.kat,
+  .krow > label.kat ~ input,
+  .krow > label.kat ~ .unit {
+    border-top: 0;
+  }
 }
 
 /* Previous surgery: the label, then a select spanning control and unit. */

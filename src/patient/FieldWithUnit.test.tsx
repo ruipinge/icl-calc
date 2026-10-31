@@ -85,20 +85,19 @@ it('names the control with its unit, and hides the visible unit from the tree', 
   expect(screen.getByText('mm')).toHaveAttribute('aria-hidden', 'true');
 });
 
-it('uses srLabel in place of a visible "@"', () => {
+it('uses srLabel in place of the visible label', () => {
   renderField({
-    label: '@',
+    label: 'at',
     srLabel: 'Anterior Keratometry Flat axis',
     name: 'corneaProfile.axisaf',
-    unit: 'º',
-    axisOf: true
+    unit: 'º'
   });
   expect(
     screen.getByRole('spinbutton', {
       name: 'Anterior Keratometry Flat axis, degrees'
     })
   ).toBeInTheDocument();
-  expect(screen.queryByRole('spinbutton', { name: /^@/ })).toBeNull();
+  expect(screen.queryByRole('spinbutton', { name: /^at/ })).toBeNull();
 });
 
 it('appends the qualifier to the name only', () => {
@@ -152,17 +151,23 @@ it('keeps the id the label points at', () => {
   );
 });
 
-it('renders an axis row as a continuation', () => {
+it('puts labelClassName on the label', () => {
   const { container } = renderField({
-    label: '@',
+    label: 'at',
     srLabel: 'Axis',
     name: 'a',
     unit: 'º',
-    axisOf: true
+    labelClassName: 'kat'
   });
-  // the row's class is the only hook the stylesheet has; no role exposes it
+  // the label's class is the only hook the stylesheet has; no role exposes it
   // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-  expect(container.querySelector('.mrow')).toHaveClass('axis');
+  expect(container.querySelector('label')).toHaveClass('kat');
+});
+
+it('leaves a plain label without a class', () => {
+  const { container } = renderField();
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  expect(container.querySelector('label')).not.toHaveAttribute('class');
 });
 
 it('shows no message for an untouched field', () => {

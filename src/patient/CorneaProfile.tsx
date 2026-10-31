@@ -2,6 +2,7 @@ import { Field, FormikState } from 'formik';
 import { ICLInputs, PreviousSurgery } from '../types';
 
 import { FieldWithUnit } from './FieldWithUnit';
+import { KeratometryRow } from './KeratometryRow';
 
 export const CorneaProfile = ({
   errors,
@@ -9,70 +10,46 @@ export const CorneaProfile = ({
 }: FormikState<Pick<ICLInputs, 'corneaProfile'>>) => (
   <section className="fieldgroup-section">
     <h4>Cornea Profile</h4>
-    <div className="fieldgroup">
-      <FieldWithUnit
+    <div className="fieldgroup kgroup">
+      <KeratometryRow
         label="Anterior Keratometry Flat (KAntFlt)"
         name="corneaProfile.kaf"
-        unit="dpt"
+        axisSrLabel="Anterior Keratometry Flat axis"
+        axisName="corneaProfile.axisaf"
         error={errors.corneaProfile?.kaf}
         touched={touched.corneaProfile?.kaf}
+        axisError={errors.corneaProfile?.axisaf}
+        axisTouched={touched.corneaProfile?.axisaf}
       />
-      <FieldWithUnit
-        label="@"
-        srLabel="Anterior Keratometry Flat axis"
-        axisOf
-        name="corneaProfile.axisaf"
-        unit="º"
-        error={errors.corneaProfile?.axisaf}
-        touched={touched.corneaProfile?.axisaf}
-      />
-      <FieldWithUnit
+      <KeratometryRow
         label="Anterior Keratometry Steep (KAntStp)"
         name="corneaProfile.kas"
-        unit="dpt"
+        axisSrLabel="Anterior Keratometry Steep axis"
+        axisName="corneaProfile.axisas"
         error={errors.corneaProfile?.kas}
         touched={touched.corneaProfile?.kas}
+        axisError={errors.corneaProfile?.axisas}
+        axisTouched={touched.corneaProfile?.axisas}
       />
-      <FieldWithUnit
-        label="@"
-        srLabel="Anterior Keratometry Steep axis"
-        axisOf
-        name="corneaProfile.axisas"
-        unit="º"
-        error={errors.corneaProfile?.axisas}
-        touched={touched.corneaProfile?.axisas}
-      />
-      <FieldWithUnit
+      <KeratometryRow
         label="Posterior Keratometry Flat (KPostFlt)"
         name="corneaProfile.kpf"
-        unit="dpt"
+        axisSrLabel="Posterior Keratometry Flat axis"
+        axisName="corneaProfile.axispf"
         error={errors.corneaProfile?.kpf}
         touched={touched.corneaProfile?.kpf}
+        axisError={errors.corneaProfile?.axispf}
+        axisTouched={touched.corneaProfile?.axispf}
       />
-      <FieldWithUnit
-        label="@"
-        srLabel="Posterior Keratometry Flat axis"
-        axisOf
-        name="corneaProfile.axispf"
-        unit="º"
-        error={errors.corneaProfile?.axispf}
-        touched={touched.corneaProfile?.axispf}
-      />
-      <FieldWithUnit
+      <KeratometryRow
         label="Posterior Keratometry Steep (KPostStp)"
         name="corneaProfile.kps"
-        unit="dpt"
+        axisSrLabel="Posterior Keratometry Steep axis"
+        axisName="corneaProfile.axisps"
         error={errors.corneaProfile?.kps}
         touched={touched.corneaProfile?.kps}
-      />
-      <FieldWithUnit
-        label="@"
-        srLabel="Posterior Keratometry Steep axis"
-        axisOf
-        name="corneaProfile.axisps"
-        unit="º"
-        error={errors.corneaProfile?.axisps}
-        touched={touched.corneaProfile?.axisps}
+        axisError={errors.corneaProfile?.axisps}
+        axisTouched={touched.corneaProfile?.axisps}
       />
       <FieldWithUnit
         label="Central Corneal Thickness (CCT)"

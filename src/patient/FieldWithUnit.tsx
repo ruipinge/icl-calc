@@ -13,13 +13,13 @@ const UNITS: Map<Unit, string> = new Map([
   ['dpt', 'dioptres']
 ]);
 
-interface FieldWithUnitProps {
+export interface FieldWithUnitProps {
   label: string;
   name: string;
   unit: Unit;
   srLabel?: string;
   qualifier?: string;
-  axisOf?: boolean;
+  labelClassName?: string;
   touched?: boolean;
   placeholder?: string;
   error?: string;
@@ -27,50 +27,71 @@ interface FieldWithUnitProps {
   disabled?: boolean;
 }
 
-export const FieldWithUnit: React.FC<FieldWithUnitProps> = ({
+/*
+ * One measured field as grid cells - label, control, unit - and its message
+ * kept apart, so a row holding two fields (a keratometry reading and its
+ * axis) can lay out all six cells on one line before either message.
+ */
+export const measuredCells = ({
   label,
   name,
   unit,
   srLabel,
   qualifier,
-  axisOf,
+  labelClassName,
   placeholder,
   error,
   touched,
   value,
   disabled
-}) => {
+}: FieldWithUnitProps): {
+  cells: React.ReactNode;
+  message: React.ReactNode;
+} => {
   const id = name + 'field';
   const { props: validity, message } = fieldValidity(name, error, touched);
 
+  return {
+    cells: (
+      <>
+        <label htmlFor={id} className={labelClassName}>
+          {/*
+           * The whole name lives in the sr-only span and the visible text is
+           * hidden. Chromium pads an absolutely positioned span with spaces
+           * when it joins label text, so a name split across the two spans
+           * read "(AtA) , millimetres".
+           */}
+          <span aria-hidden="true">{label}</span>
+          <span className="sr-only">
+            {srLabel ?? label}
+            {qualifier}, {UNITS.get(unit)}
+          </span>
+        </label>
+        {disabled ? (
+          <input id={id} name={name} value={value} disabled={true} />
+        ) : (
+          <Field
+            type="number"
+            id={id}
+            name={name}
+            placeholder={placeholder}
+            autoComplete="off"
+            {...validity}
+          />
+        )}
+        <UnitMark>{unit}</UnitMark>
+      </>
+    ),
+    message
+  };
+};
+
+export const FieldWithUnit: React.FC<FieldWithUnitProps> = (props) => {
+  const { cells, message } = measuredCells(props);
+
   return (
-    <div className={axisOf ? 'mrow axis' : 'mrow'}>
-      <label htmlFor={id}>
-        {/*
-         * The whole name lives in the sr-only span and the visible text is
-         * hidden. Chromium pads an absolutely positioned span with spaces when
-         * it joins label text, so a name split across the two spans read
-         * "(AtA) , millimetres".
-         */}
-        <span aria-hidden="true">{label}</span>
-        <span className="sr-only">
-          {srLabel ?? label}
-          {qualifier}, {UNITS.get(unit)}
-        </span>
-      </label>
-      {disabled ? (
-        <input id={id} name={name} value={value} disabled={true} />
-      ) : (
-        <Field
-          type="number"
-          id={id}
-          name={name}
-          placeholder={placeholder}
-          autoComplete="off"
-          {...validity}
-        />
-      )}
-      <UnitMark>{unit}</UnitMark>
+    <div className="mrow">
+      {cells}
       {message}
     </div>
   );

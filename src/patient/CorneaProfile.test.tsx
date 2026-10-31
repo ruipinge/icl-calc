@@ -45,7 +45,7 @@ const renderCorneaProfile = (
  * part of this form the reskin must not change, so they are asserted here.
  *
  * The four axis fields used to share the label "@" and had to be reached by
- * position. Each is now "<field> axis" (#136), so all nine are addressed by
+ * position (their visible text is now "at"). Each is now "<field> axis" (#136), so all nine are addressed by
  * accessible name and the interleaved flat/axis/steep/axis order is pinned by
  * comparing the document order of the spinbuttons against those names.
  */
@@ -88,6 +88,45 @@ it('shows the values it was given', () => {
     '180',
     '540'
   ]);
+});
+
+/*
+ * A reading is read as "X dpt at Y º", so each keratometry value shares one
+ * row with its own axis, joined by a visible "at" that is presentation only.
+ */
+const READINGS = [
+  ['Anterior Keratometry Flat (KAntFlt)', 'Anterior Keratometry Flat axis'],
+  ['Anterior Keratometry Steep (KAntStp)', 'Anterior Keratometry Steep axis'],
+  ['Posterior Keratometry Flat (KPostFlt)', 'Posterior Keratometry Flat axis'],
+  ['Posterior Keratometry Steep (KPostStp)', 'Posterior Keratometry Steep axis']
+];
+
+it('puts each keratometry value and its axis on one row', () => {
+  const { container } = renderCorneaProfile();
+
+  // the row is the only hook the stylesheet has; no role exposes it
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  const rows = [...container.querySelectorAll('.krow')];
+  expect(rows).toHaveLength(READINGS.length);
+  READINGS.forEach(([k, axis], i) => {
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(rows[i].querySelectorAll('input')).toHaveLength(2);
+    expect(rows[i]).toContainElement(
+      screen.getByRole('spinbutton', { name: `${k}, dioptres` })
+    );
+    expect(rows[i]).toContainElement(
+      screen.getByRole('spinbutton', { name: `${axis}, degrees` })
+    );
+  });
+});
+
+it('joins each value to its axis with a hidden "at", not "@"', () => {
+  renderCorneaProfile();
+
+  const ats = screen.getAllByText('at');
+  expect(ats).toHaveLength(4);
+  ats.forEach((at) => expect(at).toHaveAttribute('aria-hidden', 'true'));
+  expect(screen.queryByText('@')).toBeNull();
 });
 
 /*
