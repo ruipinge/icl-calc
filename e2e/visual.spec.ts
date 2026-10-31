@@ -150,6 +150,42 @@ for (const viewport of VIEWPORTS) {
 }
 
 /*
+ * Under 24rem (384px) a keratometry reading's "at Y º" wraps onto a second
+ * line under its K value - a layout neither viewport above reaches, since
+ * the mobile one is 390px. Pinned at 360px with one reading's value and axis
+ * both invalid, so the shot holds the wrap and both messages under their own
+ * controls.
+ */
+test.describe('narrow (360x780)', () => {
+  test.use({ viewport: { width: 360, height: 780 } });
+
+  test('patient with a keratometry reading in error looks right', async ({
+    page
+  }) => {
+    await open(page, null);
+    for (const [name, value] of [
+      ['Anterior Keratometry Flat (KAntFlt), dioptres', '99'],
+      ['Anterior Keratometry Flat axis, degrees', '400']
+    ]) {
+      const field = page.getByRole('spinbutton', { name });
+      await field.fill(value);
+      await field.blur();
+      await expect(field).toHaveAttribute('aria-invalid', 'true');
+    }
+    // filling scrolled the page; a full-page shot from there would paint the
+    // sticky header over the form
+    await page.evaluate(() => window.scrollTo(0, 0));
+
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(360);
+    await expect(page).toHaveScreenshot('patient-error-narrow.png', {
+      fullPage: true
+    });
+  });
+});
+
+/*
  * Structure, asserted once per route rather than once per viewport. This
  * application is responsive through CSS alone - no route renders different
  * elements at a different width - so a second copy per viewport would record
