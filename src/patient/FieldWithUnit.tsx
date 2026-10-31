@@ -28,9 +28,11 @@ export interface FieldWithUnitProps {
 }
 
 /*
- * One measured field as grid cells - label, control, unit - and its message
- * kept apart, so a row holding two fields (a keratometry reading and its
- * axis) can lay out all six cells on one line before either message.
+ * One measured field as two grid cells: its label, and its value - the
+ * control, its unit and, while it is shown, its message. The value spans the
+ * control and unit tracks as a subgrid, so the message sits directly under
+ * its own control, and a row holding two fields (a keratometry reading and
+ * its axis) keeps both on one line with each message under its own input.
  */
 export const measuredCells = ({
   label,
@@ -44,29 +46,26 @@ export const measuredCells = ({
   touched,
   value,
   disabled
-}: FieldWithUnitProps): {
-  cells: React.ReactNode;
-  message: React.ReactNode;
-} => {
+}: FieldWithUnitProps): React.ReactNode => {
   const id = name + 'field';
   const { props: validity, message } = fieldValidity(name, error, touched);
 
-  return {
-    cells: (
-      <>
-        <label htmlFor={id} className={labelClassName}>
-          {/*
-           * The whole name lives in the sr-only span and the visible text is
-           * hidden. Chromium pads an absolutely positioned span with spaces
-           * when it joins label text, so a name split across the two spans
-           * read "(AtA) , millimetres".
-           */}
-          <span aria-hidden="true">{label}</span>
-          <span className="sr-only">
-            {srLabel ?? label}
-            {qualifier}, {UNITS.get(unit)}
-          </span>
-        </label>
+  return (
+    <>
+      <label htmlFor={id} className={labelClassName}>
+        {/*
+         * The whole name lives in the sr-only span and the visible text is
+         * hidden. Chromium pads an absolutely positioned span with spaces
+         * when it joins label text, so a name split across the two spans
+         * read "(AtA) , millimetres".
+         */}
+        <span aria-hidden="true">{label}</span>
+        <span className="sr-only">
+          {srLabel ?? label}
+          {qualifier}, {UNITS.get(unit)}
+        </span>
+      </label>
+      <div className="mvalue">
         {disabled ? (
           <input id={id} name={name} value={value} disabled={true} />
         ) : (
@@ -80,19 +79,12 @@ export const measuredCells = ({
           />
         )}
         <UnitMark>{unit}</UnitMark>
-      </>
-    ),
-    message
-  };
-};
-
-export const FieldWithUnit: React.FC<FieldWithUnitProps> = (props) => {
-  const { cells, message } = measuredCells(props);
-
-  return (
-    <div className="mrow">
-      {cells}
-      {message}
-    </div>
+        {message}
+      </div>
+    </>
   );
 };
+
+export const FieldWithUnit: React.FC<FieldWithUnitProps> = (props) => (
+  <div className="mrow">{measuredCells(props)}</div>
+);

@@ -465,7 +465,7 @@ input[type='number']::-webkit-outer-spin-button {
   display: contents;
 }
 
-.mrow > :not(.mrow-error) {
+.mrow > * {
   border-top: 1px solid var(--rule);
 }
 
@@ -473,7 +473,22 @@ input[type='number']::-webkit-outer-spin-button {
   padding: 0.6rem 0.7rem 0.6rem 0;
 }
 
-.mrow > input {
+/*
+ * A field's value: its control, its unit and, while shown, its message. It
+ * spans the control and unit tracks as a subgrid, so the control and unit
+ * keep the group's columns and the message has a line of its own directly
+ * under the control, starting at its left edge. The message is as wide as
+ * control and unit together and wraps within them: the tracks are fixed, so
+ * it can neither push a neighbouring column sideways nor run into one.
+ */
+.mvalue {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+}
+
+.mvalue > input {
   text-align: right;
 }
 
@@ -485,13 +500,19 @@ input[type='number']::-webkit-outer-spin-button {
  * and leaves room under the control - where its message will go - while a
  * one-line row no longer lets its control touch the next row's.
  */
-.mrow > input,
+.mvalue > input,
 .mrow > select {
   margin-bottom: 0.6rem;
 }
 
-.mrow > input[aria-invalid='true'] {
+/*
+ * aria-invalid is set exactly while the message is shown, so an invalid
+ * control hands its 0.6rem to the message: the message sits snug under the
+ * control and the row's breathing room follows the message.
+ */
+.mvalue > input[aria-invalid='true'] {
   border-bottom: 2px solid var(--leaf-crimson);
+  margin-bottom: 0;
 }
 
 /* the unit column, shared by the measured row and the identity row */
@@ -503,18 +524,26 @@ input[type='number']::-webkit-outer-spin-button {
   color: var(--ink);
 }
 
-.mrow > .unit {
+.mvalue > .unit {
   padding: 0.6rem 0 0.6rem 0.4rem;
 }
 
+/*
+ * A validation message, here and under the date of birth. It quotes the
+ * valid range, so it is set in Newsreader like every other numeral.
+ */
 .mrow-error {
   grid-column: 1 / -1;
-  font-family: var(--display);
-  font-weight: 500;
+  font-family: var(--prose);
   font-size: 0.8rem;
-  letter-spacing: 0.06em;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
   color: var(--leaf-crimson);
-  padding-bottom: 0.4rem;
+  padding: 0.2rem 0 0.6rem;
+}
+
+.mrow-error > span {
+  white-space: nowrap;
 }
 
 .fieldgroup-section > h4 {
@@ -533,9 +562,9 @@ input[type='number']::-webkit-outer-spin-button {
   grid-template-columns: minmax(0, 1fr) 4.25rem 2.4rem 1.5rem 3.25rem 1.2rem;
 }
 
-/* plain rows (CCT): the unit cell carries the row's rule to the edge */
-.kgroup > .mrow:not(.krow) > .unit {
-  grid-column: 3 / -1;
+/* plain rows (CCT): the value carries the row's rule to the edge */
+.kgroup > .mrow:not(.krow) > .mvalue {
+  grid-column: 2 / -1;
 }
 
 .mrow > label.kat {
@@ -554,12 +583,12 @@ input[type='number']::-webkit-outer-spin-button {
     grid-template-columns: minmax(0, 1fr) 1.5rem 2.75rem 2.4rem;
   }
 
-  .kgroup > .mrow > label:not(.kat) + input {
-    grid-column: 2 / 4;
+  .kgroup > .mrow > label:not(.kat) + .mvalue {
+    grid-column: 2 / -1;
   }
 
-  .kgroup > .mrow:not(.krow) > .unit {
-    grid-column: 4;
+  .kgroup > .mrow > label:not(.kat) + .mvalue > input {
+    grid-column: 1 / 3;
   }
 
   .krow > label:first-child {
@@ -571,8 +600,7 @@ input[type='number']::-webkit-outer-spin-button {
   }
 
   .krow > label.kat,
-  .krow > label.kat ~ input,
-  .krow > label.kat ~ .unit {
+  .krow > label.kat + .mvalue {
     border-top: 0;
   }
 }

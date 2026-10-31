@@ -180,7 +180,11 @@ it('shows a validation error for a negative posterior keratometry', async () => 
     }
   );
 
+  // by description, not text: the message holds its range in a span of its own
   expect(
-    await screen.findByText('Invalid value. [4, 8] or 0 if not measured.')
+    await screen.findByRole('spinbutton', {
+      name: 'Posterior Keratometry Flat (KPostFlt), dioptres',
+      description: 'Invalid value. [4, 8] or 0 if not measured.'
+    })
   ).toBeInTheDocument();
 });

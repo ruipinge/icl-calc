@@ -57,11 +57,12 @@ it('shows "at" before the axis, hidden from the accessibility tree', () => {
 });
 
 /*
- * The stylesheet places the six cells on one grid line only if they are
- * siblings in reading order: label, K, dpt, at, axis, º. A message between
- * them would span the row and push the axis onto a line of its own.
+ * The stylesheet places the reading on one grid line only if its cells are
+ * siblings in reading order: label, K value, at, axis value. Each value cell
+ * holds its control, its unit and its message, in that order, so a message
+ * sits under the control it belongs to and nowhere else.
  */
-const cellText = (el: Element) => {
+const cellText = (el: Element): string => {
   if (el.tagName === 'INPUT') {
     return `input:${el.getAttribute('name')}`;
   }
@@ -71,7 +72,22 @@ const cellText = (el: Element) => {
   return `${el.tagName.toLowerCase()}:${visible.textContent}`;
 };
 
-it('lays the reading and its axis out as one row, messages last', () => {
+const rowCells = (container: HTMLElement) => {
+  // the row's cell order is the only hook the stylesheet has; no role exposes it
+  // eslint-disable-next-line testing-library/no-node-access
+  const rows = container.querySelectorAll('.mrow');
+  expect(rows).toHaveLength(1);
+  expect(rows[0]).toHaveClass('krow');
+  // eslint-disable-next-line testing-library/no-node-access
+  return [...rows[0].children].map((el) =>
+    el.classList.contains('mvalue')
+      ? // eslint-disable-next-line testing-library/no-node-access
+        [...el.children].map((child) => cellText(child))
+      : cellText(el)
+  );
+};
+
+it('lays the reading and its axis out as one row, each message under its control', () => {
   const { container } = renderRow({
     error: 'Bad K',
     touched: true,
@@ -79,22 +95,22 @@ it('lays the reading and its axis out as one row, messages last', () => {
     axisTouched: true
   });
 
-  // the row's cell order is the only hook the stylesheet has; no role exposes it
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-  const rows = container.querySelectorAll('.mrow');
-  expect(rows).toHaveLength(1);
-  expect(rows[0]).toHaveClass('krow');
-  // eslint-disable-next-line testing-library/no-node-access
-  const cells = [...rows[0].children].map((el) => cellText(el));
-  expect(cells).toEqual([
+  expect(rowCells(container)).toEqual([
     'label:Anterior Keratometry Flat (KAntFlt)',
-    'input:corneaProfile.kaf',
-    'span:dpt',
+    ['input:corneaProfile.kaf', 'span:dpt', 'div:Bad K'],
     'label:at',
-    'input:corneaProfile.axisaf',
-    'span:º',
-    'div:Bad K',
-    'div:Bad axis'
+    ['input:corneaProfile.axisaf', 'span:º', 'div:Bad axis']
+  ]);
+});
+
+it('puts an axis message under the axis alone', () => {
+  const { container } = renderRow({ axisError: 'Bad axis', axisTouched: true });
+
+  expect(rowCells(container)).toEqual([
+    'label:Anterior Keratometry Flat (KAntFlt)',
+    ['input:corneaProfile.kaf', 'span:dpt'],
+    'label:at',
+    ['input:corneaProfile.axisaf', 'span:º', 'div:Bad axis']
   ]);
 });
 

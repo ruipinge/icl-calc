@@ -174,3 +174,17 @@ it('shows no message for an untouched field', () => {
   renderField({ label: 'AtA', name: 'biometry.ata', unit: 'mm', error: 'Bad' });
   expect(screen.queryByText('Bad')).toBeNull();
 });
+
+/*
+ * A message wraps to the width of its control and unit; the stylesheet keeps
+ * a range from breaking inside its brackets by holding it in its own span.
+ * The description a screen reader announces is the message, unchanged.
+ */
+it('keeps a range whole in its own element, and the description unchanged', () => {
+  renderField({ error: 'Invalid value. [30, 55]', touched: true });
+
+  expect(screen.getByRole('spinbutton')).toHaveAccessibleDescription(
+    'Invalid value. [30, 55]'
+  );
+  expect(screen.getByText('[30, 55]').tagName).toBe('SPAN');
+});
