@@ -10,6 +10,16 @@ export type Pointer = {
   readonly width: number;
 };
 
+/**
+ * A paint-only separation between adjacent zones: drawn with inset
+ * box-shadows inside the zones, so their laid-out widths, and so the pointer
+ * and divisions positioned against them, do not move.
+ */
+export type ZoneGap = {
+  readonly width: number;
+  readonly color: string;
+};
+
 export type Options = {
   readonly divisionColor?: string;
   readonly divisions?: number;
@@ -19,6 +29,7 @@ export type Options = {
   readonly subDivisionHeight?: number;
   readonly value?: number;
   readonly zones?: Zone[];
+  readonly zoneGap?: ZoneGap;
   readonly zoneHeight?: number;
 };
 
@@ -108,20 +119,44 @@ const createSubDivision = ({
   });
 };
 
+/**
+ * The inset shadows that paint half of `gap` on each side of an interior
+ * boundary: a zone's left edge unless it is the first, its right edge unless
+ * it is the last. The outer ends get none, so the bar keeps its full extent.
+ */
+const gapShadow = (
+  gap: ZoneGap,
+  index: number,
+  count: number
+): string | undefined => {
+  const half = gap.width / 2;
+  const shadows = [
+    index > 0 ? `inset ${half}px 0 0 0 ${gap.color}` : undefined,
+    index < count - 1 ? `inset -${half}px 0 0 0 ${gap.color}` : undefined
+  ].filter((shadow) => shadow !== undefined);
+  return shadows.length > 0 ? shadows.join(', ') : undefined;
+};
+
 const createZone = ({
   zone,
-  height
+  height,
+  shadow
 }: {
   readonly zone: Zone;
   readonly height: number;
+  readonly shadow?: string;
 }): HTMLElement => {
-  return createDiv({
+  const div = createDiv({
     styles: {
       height: `${height}px`,
       flex: `${zone.max - zone.min}`, // TODO: make sure decimals are not used
       'background-color': zone.color
     }
   });
+  if (shadow !== undefined) {
+    div.style.setProperty('box-shadow', shadow);
+  }
+  return div;
 };
 
 const createPointer = (pointer: Pointer): SVGElement => {
@@ -225,6 +260,7 @@ export class LinearGauge {
     subDivisionHeight = defaultSubDivisionHeight,
     value,
     zones = defaultZones,
+    zoneGap,
     zoneHeight = defaultZoneHeight
   }: Options): LinearGauge {
     const container = createDiv({
@@ -256,7 +292,16 @@ export class LinearGauge {
 
     // Zones
     zones
-      .map((z) => createZone({ zone: z, height: zoneHeight }))
+      .map((z, index) =>
+        createZone({
+          zone: z,
+          height: zoneHeight,
+          shadow:
+            zoneGap === undefined
+              ? undefined
+              : gapShadow(zoneGap, index, zones.length)
+        })
+      )
       .forEach((d) => container.appendChild(d));
 
     this.el.appendChild(container);

@@ -1,4 +1,4 @@
-import { buildZones, measurement } from '../Gauge';
+import { ZONE_COLOURS, buildZones, gaugeOptions, measurement } from '../Gauge';
 import { LinearGauge } from './index';
 
 const makeHost = (children: number): HTMLElement => {
@@ -176,4 +176,58 @@ it('keeps the pointer inline style byte-identical', () => {
   expect(renderGauge(4).querySelector('svg')?.getAttribute('style')).toBe(
     'position: absolute; left: calc(50% - 2px); top: 12px;'
   );
+});
+
+/*
+ * The zones as Gauge draws them, through `gaugeOptions` - the whole options
+ * object Gauge's layout effect passes to setOptions - so these assert the
+ * component's wiring, not a stand-in. Zone divs are the ones carrying a flex
+ * size; divisions and sub-divisions are absolutely positioned and have none.
+ */
+const drawnZones = (value: unknown): HTMLElement[] => {
+  const el = document.createElement('div');
+  new LinearGauge(el).setOptions(
+    gaugeOptions(value, buildZones({ values: DATASET }))
+  );
+  return Array.from(el.querySelectorAll('div')).filter(
+    (div) => div.style.flexGrow !== ''
+  );
+};
+
+it('paints each band in its ZONE_COLOURS colour, in order', () => {
+  expect(drawnZones(4).map((zone) => zone.style.backgroundColor)).toEqual([
+    ...ZONE_COLOURS
+  ]);
+});
+
+/*
+ * A paper gap between neighbours (WCAG 1.4.11), split 1px either side of each
+ * interior boundary and painted inside the zones, so it moves nothing. The
+ * outer ends get none: the bar's extent is the dataset's range.
+ */
+it('paints the paper gap on interior boundaries only', () => {
+  expect(drawnZones(4).map((zone) => zone.style.boxShadow)).toEqual([
+    'inset -1px 0 0 0 var(--paper)',
+    'inset 1px 0 0 0 var(--paper), inset -1px 0 0 0 var(--paper)',
+    'inset 1px 0 0 0 var(--paper), inset -1px 0 0 0 var(--paper)',
+    'inset 1px 0 0 0 var(--paper), inset -1px 0 0 0 var(--paper)',
+    'inset 1px 0 0 0 var(--paper)'
+  ]);
+});
+
+it('leaves the zone sizes as they were without the gap', () => {
+  expect(drawnZones(4).map((zone) => zone.style.flexGrow)).toEqual([
+    '0.675',
+    '2.325',
+    '2.25',
+    '0.75',
+    '0'
+  ]);
+});
+
+it('paints no gap unless asked', () => {
+  const zones = Array.from(renderGauge(4).querySelectorAll('div')).filter(
+    (div) => div.style.flexGrow !== ''
+  );
+  expect(zones.map((zone) => zone.style.boxShadow)).toEqual(Array(5).fill(''));
 });

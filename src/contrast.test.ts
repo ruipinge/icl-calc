@@ -60,7 +60,10 @@ const PAIRS: [role: string, fg: string, bg: string, min: number][] = [
   ['input boundary', '--faint', '--field', 3],
   ['tool name on the header', '--violet', '--chrome', 7],
   // it quotes the valid range of a clinical value, so it is held to 7:1
-  ['validation message', '--leaf-crimson', '--paper', 7]
+  ['validation message', '--leaf-crimson', '--paper', 7],
+  ['gauge zone against its paper gap', '--leaf-crimson', '--paper', 3],
+  ['gauge zone against its paper gap', '--leaf-ember', '--paper', 3],
+  ['gauge zone against its paper gap', '--leaf-jade', '--paper', 3]
 ];
 it.each(PAIRS)('%s: %s on %s is at least %d:1', (_, fg, bg, min) =>
   expect(contrast(token(fg), token(bg))).toBeGreaterThanOrEqual(min)

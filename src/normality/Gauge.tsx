@@ -1,4 +1,4 @@
-import { LinearGauge, Zone } from './linear-gauge';
+import { LinearGauge, Options, Zone } from './linear-gauge';
 import { PLOT_INSET_LEFT, PLOT_INSET_RIGHT } from './plot-inset';
 import { useLayoutEffect, useMemo, useRef } from 'react';
 
@@ -126,6 +126,35 @@ export const measurement = (value: unknown): number | undefined =>
   typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 
 /**
+ * Paper between neighbouring zones, so every band edge is a visible boundary
+ * and does not rest on colour alone (WCAG 1.4.11): ember and jade, and crimson
+ * and ember, are too close for colour-blind readers. Paint only - see
+ * `ZoneGap` - so the pointer still sits over its value.
+ */
+export const ZONE_GAP = { width: 2, color: 'var(--paper)' } as const;
+
+/**
+ * Everything Gauge passes to `LinearGauge.setOptions`, kept out of the
+ * layout effect so it can be asserted: the zones in band order with their
+ * colours, the paper gap, the divisions, and the value through the same
+ * `measurement` rule as the name.
+ *
+ * @param {unknown} value - The measurement, as it reached the component
+ * @param {Band[]} bands - From `buildZones`
+ * @returns {Options}
+ */
+export const gaugeOptions = (value: unknown, bands: Band[]): Options => ({
+  divisions: 5,
+  subDivisions: 2,
+  zones: bands.map((band, index): Zone => ({
+    ...band,
+    color: ZONE_COLOURS[index]
+  })),
+  zoneGap: ZONE_GAP,
+  value: measurement(value)
+});
+
+/**
  * The gauge's accessible name. The value is read to 12 significant digits so
  * float artefacts of derived values (ACA is a mean) are not spoken. Only the
  * name: what the gauge draws is decided by the same `measurement` rule.
@@ -165,15 +194,7 @@ export const Gauge = ({
     }
 
     let x: LinearGauge = new LinearGauge(container.current);
-    x.setOptions({
-      divisions: 5,
-      subDivisions: 2,
-      zones: bands.map((band, index): Zone => ({
-        ...band,
-        color: ZONE_COLOURS[index]
-      })),
-      value: present
-    });
+    x.setOptions(gaugeOptions(value, bands));
 
     return () => {
       x.dispose();

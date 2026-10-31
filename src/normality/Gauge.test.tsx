@@ -3,6 +3,7 @@ import {
   ZONE_COLOURS,
   buildZones,
   describeBand,
+  gaugeOptions,
   measurement,
   quantile
 } from './Gauge';
@@ -176,3 +177,29 @@ it.each([
 it.each([0, 4.1, -208])('passes the number %s through', (value) =>
   expect(measurement(value)).toBe(value)
 );
+
+/*
+ * The whole options object Gauge's layout effect hands to LinearGauge. The
+ * effect itself is istanbul-ignored, so this is where its wiring is asserted:
+ * the value goes through `measurement`, so a missing one draws no pointer.
+ */
+it('configures the drawing with the zones, gap, divisions and value', () => {
+  expect(gaugeOptions(4.1, B)).toEqual({
+    divisions: 5,
+    subDivisions: 2,
+    zones: B.map((band, index) => ({ ...band, color: ZONE_COLOURS[index] })),
+    zoneGap: { width: 2, color: 'var(--paper)' },
+    value: 4.1
+  });
+});
+
+it.each([
+  ['an empty string', ''],
+  ['undefined', undefined],
+  ['NaN', NaN]
+])('passes no value to the drawing where the value is %s', (_, value) =>
+  expect(gaugeOptions(value, B).value).toBeUndefined()
+);
+
+it('passes 0 to the drawing as a value', () =>
+  expect(gaugeOptions(0, B).value).toBe(0));
