@@ -44,10 +44,11 @@ const renderCorneaProfile = (
  * Replaces an asFragment() snapshot (#121). Field order and grouping are the
  * part of this form the reskin must not change, so they are asserted here.
  *
- * The four axis fields used to share the label "@" and had to be reached by
- * position (their visible text is now "at"). Each is now "<field> axis" (#136), so all nine are addressed by
- * accessible name and the interleaved flat/axis/steep/axis order is pinned by
- * comparing the document order of the spinbuttons against those names.
+ * The four axis fields used to share the visible label "@" (now "at") and
+ * had to be reached by position. Each is now "<field> axis" (#136), so all
+ * nine are addressed by accessible name and the interleaved
+ * flat/axis/steep/axis order is pinned by comparing the document order of
+ * the spinbuttons against those names.
  */
 const NINE_FIELDS = [
   'Anterior Keratometry Flat (KAntFlt), dioptres',

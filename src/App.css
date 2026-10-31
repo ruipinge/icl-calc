@@ -643,7 +643,8 @@ input[type='number']::-webkit-outer-spin-button {
 
 /*
  * The patient form: Biometry | Cornea Profile | Refraction + ICL Power.
- * Each group's control and unit tracks are fixed (10.9rem), so the label
+ * Each group's control and unit tracks are fixed (10.9rem; 12.6rem in Cornea
+ * Profile, whose rows carry an axis as well), so the label
  * track is what narrows; below 75rem three columns leave it too little room
  * for words like "Keratometry", which then run under the input.
  */
