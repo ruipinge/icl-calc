@@ -89,6 +89,7 @@ const PercentVaultSizeRow = ({
       label={a.label}
       title={a.title}
       values={getVaultDistribution({ range, filter })}
+      numeric
     />
   );
 };

@@ -17,9 +17,20 @@
  *
  * NOTE: both Poppins subsets were built with every OpenType feature
  * stripped and have PROPORTIONAL digits - `1` is less than half the width
- * of `6`, and font-variant-numeric: tabular-nums is inert on them. Every
- * numeral in this application is therefore set in Newsreader, whose subset
- * does carry tnum. See spec section 2.1.
+ * of `6`, and font-variant-numeric: tabular-nums is inert on them. See spec
+ * section 2.1.
+ *
+ * Numbers are set in Inter (#193): input values and their units, table
+ * cells, row headers that hold numbers, chart numerals and validation
+ * messages. Its subset keeps tnum and ss02 (a slashed 0, an I and an l that
+ * cannot pass for 1); src/fonts/README.md records how it was built. Numbers
+ * inside running prose stay in Newsreader.
+ *
+ * Inter is also second in the other two stacks: it has the Greek mu of
+ * "μm" (U+03BC), which neither the Poppins nor the Newsreader subset has,
+ * so a heading or label holding a unit falls back to it rather than to a
+ * system font. src/fonts.test.ts holds every stack to the characters the
+ * app renders.
  */
 @font-face {
   font-family: 'Poppins';
@@ -41,6 +52,20 @@
   font-weight: 400;
   font-display: swap;
   src: url('./fonts/newsreader-400-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/inter-400-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./fonts/inter-500-latin.woff2') format('woff2');
 }
 
 /* -------------------------------------------------------------- tokens */
@@ -66,8 +91,10 @@
   --paper: #ffffff;
   --wash: #faf8fb;
 
-  --display: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
-  --prose: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --display: 'Poppins', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --prose: 'Newsreader', 'Inter', Georgia, 'Times New Roman', serif;
+  /* #193: an addition after phase 1's, see the fonts note above */
+  --numeric: 'Inter', 'Helvetica Neue', Arial, sans-serif;
 
   --gutter: clamp(1.25rem, 5vw, 3rem);
   --measure: 68rem;
@@ -199,8 +226,9 @@ textarea {
 
 input,
 select {
-  font-family: var(--prose);
+  font-family: var(--numeric);
   font-variant-numeric: tabular-nums;
+  font-feature-settings: 'ss02';
   background: var(--field);
   border: 0;
   border-bottom: 1px solid var(--faint);
@@ -261,9 +289,11 @@ tbody th[scope='row'] {
   color: var(--ink);
 }
 
-tbody td {
-  font-family: var(--prose);
+tbody td,
+tbody th.numeric {
+  font-family: var(--numeric);
   font-variant-numeric: tabular-nums;
+  font-feature-settings: 'ss02';
 }
 
 .btn-ghost {
@@ -517,7 +547,8 @@ input[type='number']::-webkit-outer-spin-button {
 
 /* the unit column, shared by the measured row and the identity row */
 .unit {
-  font-family: var(--display);
+  font-family: var(--numeric);
+  font-feature-settings: 'ss02';
   font-weight: 500;
   font-size: 0.8rem;
   letter-spacing: 0.1em;
@@ -529,8 +560,9 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /*
- * A validation message, here and under the date of birth. It quotes the
- * valid range, so it is set in Newsreader like every other numeral.
+ * A validation message, here and under the date of birth. It is a short
+ * alert read at a glance beside its field, and it quotes the valid range, so
+ * the whole message is set in the numeric face (#193).
  *
  * A keratometry reading shows two messages side by side, one under its K
  * value and one under its axis. Each hangs from a crimson rule at its own
@@ -540,7 +572,9 @@ input[type='number']::-webkit-outer-spin-button {
  */
 .mrow-error {
   grid-column: 1 / -1;
-  font-family: var(--prose);
+  font-family: var(--numeric);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'ss02';
   font-size: 0.8rem;
   line-height: 1.35;
   overflow-wrap: anywhere;
@@ -1038,7 +1072,9 @@ input[type='number']::-webkit-outer-spin-button {
   list-style: none;
   margin: 1rem 0 0;
   padding: 0;
-  font-family: var(--prose);
+  font-family: var(--numeric);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'ss02';
   color: var(--ink);
 }
 

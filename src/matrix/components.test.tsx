@@ -83,3 +83,19 @@ it('styles the divider as the ledger spacer, not a bordered row', () => {
   expect(row).toHaveClass('ledger-divider');
   expect(row).not.toHaveClass('table-bordered');
 });
+
+it('marks a row header numeric only when asked (#193)', () => {
+  renderInTable(
+    <>
+      <MatrixRow label="plain" title="" values={[1]} />
+      <MatrixRow label="% 1 < x" title="" values={[1]} numeric />
+    </>
+  );
+
+  expect(screen.getByRole('rowheader', { name: 'plain' })).not.toHaveAttribute(
+    'class'
+  );
+  expect(screen.getByRole('rowheader', { name: '% 1 < x' })).toHaveClass(
+    'numeric'
+  );
+});

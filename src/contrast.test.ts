@@ -84,9 +84,11 @@ const USES: [selector: string, declaration: RegExp][] = [
   ['input::placeholder', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['input:disabled', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['.mrow-error', /(?:^|[;\s])color:\s*var\(--leaf-crimson\)/],
-  ['.mrow-error', /font-family:\s*var\(--prose\)\s*;/],
+  // #193: the whole message is in the numeric face
+  ['.mrow-error', /font-family:\s*var\(--numeric\)\s*;/],
   ['.gauge-band', /(?:^|[;\s])color:\s*var\(--ink\)/],
-  // it carries numerals ("2.5th"), and every numeral is Newsreader
+  // a prose caption ("2.5th percentile"): numbers in running text stay
+  // in Newsreader (#193)
   ['.gauge-band', /font-family:\s*var\(--prose\)\s*;/],
   // at least 0.8rem, legible at clinical distance (#173)
   ['.gauge-band', /font-size:\s*0\.875rem\s*;/],

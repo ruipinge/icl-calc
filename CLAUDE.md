@@ -115,14 +115,27 @@ branch protection match nothing and silently stop enforcing.
 
 ## Typography
 
-The Treeye design system self-hosts three woff2 subsets and makes no
-third-party requests — do not add a font CDN.
+The app self-hosts its woff2 subsets (`src/fonts/`, documented in its
+`README.md`) and makes no third-party requests — do not add a font CDN.
 
-**Every numeral is set in Newsreader, the serif.** Both Poppins subsets the
-site serves were built with every OpenType feature stripped, so
-`font-variant-numeric: tabular-nums` is inert on them, and their digits are
-proportional — `1` is less than half the width of `6`. Newsreader's subset
-keeps `tnum` and is uniform. Poppins carries labels, headings and micro-caps.
+Three faces, three roles:
+
+- **Inter (`--numeric`) sets the numbers** (#193): input values and their
+  unit marks, `tbody td`, row headers that hold numbers (`th.numeric`),
+  chart numerals, and validation messages — the whole message. Tabular
+  digits plus `ss02` (slashed 0, unambiguous I and l).
+- **Newsreader (`--prose`) sets running text**, numbers inside it included.
+- **Poppins (`--display`) sets labels, headings and micro-caps.** Never
+  numbers: both Poppins subsets the site serves were built with every
+  OpenType feature stripped, so `font-variant-numeric: tabular-nums` is
+  inert on them, and their digits are proportional — `1` is less than half
+  the width of `6`.
+
+Inter is second in the other two stacks because it has the Greek mu of
+"μm" (U+03BC), which neither the Poppins nor the Newsreader subset does.
+`src/fonts.test.ts` reads each subset's `cmap` and fails when a character
+in `src/`'s strings is missing from a stack's self-hosted faces — add a
+character, and you may need to re-subset.
 
 Measured, not assumed. Do not re-litigate it without re-measuring the served
 files.

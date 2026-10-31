@@ -160,3 +160,23 @@ it('keeps the summary list L2 reads', () => {
     within(screen.getByTestId('matrix-summary')).getAllByRole('listitem')
   ).toHaveLength(3);
 });
+
+/*
+ * #193: a row header that holds numbers is set in the numeric face, like the
+ * values beside it. The five vault-range headers do; "Number of Eyes" and the
+ * three vault statistics hold none.
+ */
+it('marks exactly the row headers that hold numbers as numeric', () => {
+  renderMatrix();
+  const numeric = screen
+    .getAllByRole('rowheader')
+    .filter((h) => h.classList.contains('numeric'))
+    .map((h) => h.textContent);
+  expect(numeric).toEqual([
+    '% Vault < 250 (μm)',
+    '% 250 < Vault < 500 (μm)',
+    '% 500 < Vault < 750 (μm)',
+    '% 750 < Vault < 1000 (μm)',
+    '% 1000 < Vault (μm)'
+  ]);
+});

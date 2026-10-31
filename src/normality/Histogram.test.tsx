@@ -181,8 +181,7 @@ describe('in a browser that has ResizeObserver', () => {
 /*
  * Spec §7: the histogram is set in Treeye tokens - indigo bars on a --rule
  * grid, axis labels in --muted, the title in Poppins 500 and every axis
- * numeral in Newsreader (--prose; Poppins' served subsets have proportional
- * digits). Each is written as a var() reference rather than resolved, so the
+ * numeral in the numeric face (--numeric, Inter, tabular with ss02; #193). Each is written as a var() reference rather than resolved, so the
  * page's tokens are the single source and nothing is read at render time.
  */
 describe('in Treeye tokens', () => {
@@ -212,7 +211,7 @@ describe('in Treeye tokens', () => {
     });
   });
 
-  it('sets axis numerals in --ink and --prose, the axis title in --muted', () => {
+  it('sets axis numerals in --ink and --numeric, the axis title in --muted', () => {
     render(
       <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
     );
@@ -222,7 +221,10 @@ describe('in Treeye tokens', () => {
     });
     expect(screen.getByText('Number of Eyes').style.fill).toBe('var(--muted)');
     ['150', '10.72'].forEach((numeral) => {
-      expect(screen.getByText(numeral).style.fontFamily).toBe('var(--prose)');
+      const style = screen.getByText(numeral).style;
+      expect(style.fontFamily).toBe('var(--numeric)');
+      expect(style.fontVariantNumeric).toBe('tabular-nums');
+      expect(style.fontFeatureSettings).toBe('"ss02"');
     });
     expect(screen.getByText('Number of Eyes').style.fontFamily).toBe(
       'var(--display)'
