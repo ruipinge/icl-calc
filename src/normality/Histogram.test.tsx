@@ -212,14 +212,15 @@ describe('in Treeye tokens', () => {
     });
   });
 
-  it('sets the axis text in --muted, numerals in --prose', () => {
+  it('sets axis numerals in --ink and --prose, the axis title in --muted', () => {
     render(
       <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
     );
     // A y-axis tick, an x-axis bin boundary, and the rotated axis title.
-    ['150', '10.72', 'Number of Eyes'].forEach((label) => {
-      expect(screen.getByText(label).style.fill).toBe('var(--muted)');
+    ['150', '10.72'].forEach((numeral) => {
+      expect(screen.getByText(numeral).style.fill).toBe('var(--ink)');
     });
+    expect(screen.getByText('Number of Eyes').style.fill).toBe('var(--muted)');
     ['150', '10.72'].forEach((numeral) => {
       expect(screen.getByText(numeral).style.fontFamily).toBe('var(--prose)');
     });

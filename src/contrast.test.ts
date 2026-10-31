@@ -55,6 +55,7 @@ it('measures contrast as WCAG 2.2 does', () => {
 const PAIRS: [role: string, fg: string, bg: string, min: number][] = [
   ['clinical value', '--ink', '--field', 7],
   ['unit, column and row label', '--ink', '--paper', 7],
+  ['histogram axis numeral', '--ink', '--paper', 7],
   ['section heading, footer', '--muted', '--paper', 4.5],
   ['placeholder', '--muted', '--field', 4.5],
   ['input boundary', '--faint', '--field', 3],

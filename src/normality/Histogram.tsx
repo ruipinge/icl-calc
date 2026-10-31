@@ -46,9 +46,10 @@ const FALLBACK_WIDTH = 340;
 const BAR_STYLE = { fill: 'var(--leaf-indigo)' };
 const GRIDLINE_STYLE = { stroke: 'var(--rule)' };
 const TITLE_STYLE = { fontFamily: 'var(--display)', fontWeight: 500 };
-const AXIS_TEXT = { fill: 'var(--muted)' };
-const NUMERAL_STYLE = { ...AXIS_TEXT, fontFamily: 'var(--prose)' };
-const AXIS_LABEL_STYLE = { ...AXIS_TEXT, fontFamily: 'var(--display)' };
+// Numerals are clinical values, so they sit in --ink (7:1 on paper); the axis
+// title is a label and stays --muted.
+const NUMERAL_STYLE = { fill: 'var(--ink)', fontFamily: 'var(--prose)' };
+const AXIS_LABEL_STYLE = { fill: 'var(--muted)', fontFamily: 'var(--display)' };
 
 /**
  * Tracks the rendered width of the returned ref's element.
