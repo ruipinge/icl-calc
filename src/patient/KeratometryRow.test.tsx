@@ -6,7 +6,7 @@ import { KeratometryRow } from './KeratometryRow';
 /*
  * A keratometry reading is read as "X dpt at Y º": the value and its axis
  * share one row of the Cornea Profile grid. Each control keeps its own
- * accessible name; the visible "at" is presentation only.
+ * accessible name; the visible "@" is presentation only.
  */
 const renderRow = (props: Partial<Parameters<typeof KeratometryRow>[0]> = {}) =>
   render(
@@ -49,16 +49,16 @@ it('keeps the name attributes and ids L2 and the labels address', () => {
   expect(axis).toHaveAttribute('id', 'corneaProfile.axisaffield');
 });
 
-it('shows "at" before the axis, hidden from the accessibility tree', () => {
+it('shows "@" before the axis, hidden from the accessibility tree', () => {
   renderRow();
 
-  expect(screen.getByText('at')).toHaveAttribute('aria-hidden', 'true');
-  expect(screen.queryByText('@')).toBeNull();
+  expect(screen.getByText('@')).toHaveAttribute('aria-hidden', 'true');
+  expect(screen.queryByText('at')).toBeNull();
 });
 
 /*
  * The stylesheet places the reading on one grid line only if its cells are
- * siblings in reading order: label, K value, at, axis value. Each value cell
+ * siblings in reading order: label, K value, @, axis value. Each value cell
  * holds its control, its unit and its message, in that order, so a message
  * sits under the control it belongs to and nowhere else.
  */
@@ -98,7 +98,7 @@ it('lays the reading and its axis out as one row, each message under its control
   expect(rowCells(container)).toEqual([
     'label:Anterior Keratometry Flat (KAntFlt)',
     ['input:corneaProfile.kaf', 'span:dpt', 'div:Bad K'],
-    'label:at',
+    'label:@',
     ['input:corneaProfile.axisaf', 'span:º', 'div:Bad axis']
   ]);
 });
@@ -109,7 +109,7 @@ it('puts an axis message under the axis alone', () => {
   expect(rowCells(container)).toEqual([
     'label:Anterior Keratometry Flat (KAntFlt)',
     ['input:corneaProfile.kaf', 'span:dpt'],
-    'label:at',
+    'label:@',
     ['input:corneaProfile.axisaf', 'span:º', 'div:Bad axis']
   ]);
 });

@@ -44,7 +44,7 @@ const renderCorneaProfile = (
  * Replaces an asFragment() snapshot (#121). Field order and grouping are the
  * part of this form the reskin must not change, so they are asserted here.
  *
- * The four axis fields used to share the visible label "@" (now "at") and
+ * The four axis fields used to share the visible label "@" and
  * had to be reached by position. Each is now "<field> axis" (#136), so all
  * nine are addressed by accessible name and the interleaved
  * flat/axis/steep/axis order is pinned by comparing the document order of
@@ -93,7 +93,7 @@ it('shows the values it was given', () => {
 
 /*
  * A reading is read as "X dpt at Y º", so each keratometry value shares one
- * row with its own axis, joined by a visible "at" that is presentation only.
+ * row with its own axis, joined by a visible "@" that is presentation only.
  */
 const READINGS = [
   ['Anterior Keratometry Flat (KAntFlt)', 'Anterior Keratometry Flat axis'],
@@ -121,13 +121,13 @@ it('puts each keratometry value and its axis on one row', () => {
   });
 });
 
-it('joins each value to its axis with a hidden "at", not "@"', () => {
+it('joins each value to its axis with a hidden "@"', () => {
   renderCorneaProfile();
 
-  const ats = screen.getAllByText('at');
+  const ats = screen.getAllByText('@');
   expect(ats).toHaveLength(4);
   ats.forEach((at) => expect(at).toHaveAttribute('aria-hidden', 'true'));
-  expect(screen.queryByText('@')).toBeNull();
+  expect(screen.queryByText('at')).toBeNull();
 });
 
 /*

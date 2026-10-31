@@ -153,7 +153,7 @@ for (const viewport of VIEWPORTS) {
 }
 
 /*
- * Under 24rem (384px) a keratometry reading's "at Y º" wraps onto a second
+ * Under 24rem (384px) a keratometry reading's "@ Y º" wraps onto a second
  * line under its K value - a layout neither viewport above reaches, since
  * the mobile one is 390px. Pinned at 360px with one reading's value and axis
  * both invalid, so the shot holds the wrap and both messages under their own

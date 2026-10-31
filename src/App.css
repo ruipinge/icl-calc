@@ -535,7 +535,7 @@ input[type='number']::-webkit-outer-spin-button {
  * A keratometry reading shows two messages side by side, one under its K
  * value and one under its axis. Each hangs from a crimson rule at its own
  * control's left edge, and the K value's message stops 0.5rem short of the
- * "at" column, so the two read as two notes, not as one sentence across
+ * "@" column, so the two read as two notes, not as one sentence across
  * the row. A message in the last column has no neighbour and keeps its width.
  */
 .mrow-error {
@@ -564,7 +564,7 @@ input[type='number']::-webkit-outer-spin-button {
 
 /*
  * Cornea Profile: a keratometry reading and its axis share one row, read
- * "X dpt at Y º" - label | K | dpt | at | axis | º. The tracks right of the
+ * "X dpt at Y º" - label | K | dpt | @ | axis | º. The tracks right of the
  * label total 12.6rem (10.9rem in the other groups); the two inputs are
  * narrowed to what a K ("-6.25", "42.25") and an axis ("180") need, so the
  * label track loses only 1.7rem. Each input has its own track, so a message
@@ -586,8 +586,8 @@ input[type='number']::-webkit-outer-spin-button {
 
 /*
  * Under 24rem the label track would fall below the width of "Keratometry",
- * so "at Y º" wraps onto a second line under the K value: the K input spans
- * the "at" and axis tracks, so the two inputs share a right edge and the
+ * so "@ Y º" wraps onto a second line under the K value: the K input spans
+ * the "@" and axis tracks, so the two inputs share a right edge and the
  * axis reads as the continuation of that reading, not as a row of its own.
  */
 @media (max-width: 24rem) {

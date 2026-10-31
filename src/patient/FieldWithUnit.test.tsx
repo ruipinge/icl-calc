@@ -87,7 +87,7 @@ it('names the control with its unit, and hides the visible unit from the tree', 
 
 it('uses srLabel in place of the visible label', () => {
   renderField({
-    label: 'at',
+    label: '@',
     srLabel: 'Anterior Keratometry Flat axis',
     name: 'corneaProfile.axisaf',
     unit: 'º'
@@ -97,7 +97,7 @@ it('uses srLabel in place of the visible label', () => {
       name: 'Anterior Keratometry Flat axis, degrees'
     })
   ).toBeInTheDocument();
-  expect(screen.queryByRole('spinbutton', { name: /^at/ })).toBeNull();
+  expect(screen.queryByRole('spinbutton', { name: /^@/ })).toBeNull();
 });
 
 it('appends the qualifier to the name only', () => {
@@ -153,7 +153,7 @@ it('keeps the id the label points at', () => {
 
 it('puts labelClassName on the label', () => {
   const { container } = renderField({
-    label: 'at',
+    label: '@',
     srLabel: 'Axis',
     name: 'a',
     unit: 'º',
