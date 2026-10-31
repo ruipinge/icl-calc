@@ -294,3 +294,70 @@ it.each(['#', '#/', ''])('resolves %s to the Patient tab', (hash) => {
   renderWithHash(hash || '/');
   expect(screen.getByLabelText('Name')).toBeVisible();
 });
+
+describe('Normality gauges with missing ACA or age inputs (#138)', () => {
+  const ACA = 'Average Anterior Chamber Angle - ACA (º)';
+  const enter = (label: string, value: string) =>
+    fireEvent.change(screen.getByLabelText(label), { target: { value } });
+  const gaugeName = (title: string) =>
+    screen
+      .getAllByRole('img', { name: (name) => name.startsWith(`${title}: `) })
+      .map((el) => el.getAttribute('aria-label'))
+      .at(-1);
+  const goToNormality = () =>
+    fireEvent.click(screen.getByText('Biometric Normality'));
+
+  it('names the mean of a full ACA pair', async () => {
+    renderWithHash();
+    enter('Anterior Chamber Angle nasal (ACAn)', '30');
+    enter('Anterior Chamber Angle temporal (ACAt)', '32');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName(ACA)).toMatch(/^Average .*\(º\): 31, /);
+    });
+  });
+
+  it.each([
+    ['nasal', 'Anterior Chamber Angle temporal (ACAt)'],
+    ['temporal', 'Anterior Chamber Angle nasal (ACAn)']
+  ])('names no ACA when only the %s angle is entered', async (_side, kept) => {
+    renderWithHash();
+    // Untouched fields start at 0, a present value; clear the other side.
+    enter('Anterior Chamber Angle nasal (ACAn)', '');
+    enter('Anterior Chamber Angle temporal (ACAt)', '');
+    enter(kept, '32');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName(ACA)).toBe(`${ACA}: no value entered`);
+    });
+  });
+
+  it('names no ACA when both angles are cleared', async () => {
+    renderWithHash();
+    enter('Anterior Chamber Angle nasal (ACAn)', '');
+    enter('Anterior Chamber Angle temporal (ACAt)', '');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName(ACA)).toBe(`${ACA}: no value entered`);
+    });
+  });
+
+  it('names no age when the date of birth is cleared', async () => {
+    renderWithHash();
+    enter('Date of Birth', '2000-07-01');
+    enter('Date of Birth', '');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName('Age (years)')).toBe('Age (years): no value entered');
+    });
+  });
+
+  it('names an age when the date of birth is valid', async () => {
+    renderWithHash();
+    enter('Date of Birth', '2000-07-01');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName('Age (years)')).toMatch(/^Age \(years\): \d+, /);
+    });
+  });
+});

@@ -1,6 +1,7 @@
 import { Formik, FormikProps, FormikState } from 'formik';
 import { ICLInputs, INITIAL_VALUES } from './types';
 import { Route, HashRouter as Router, Routes } from 'react-router-dom';
+import { averageAca, knownAge } from './normality/inputs';
 
 import { Footer } from './misc/Footer';
 import { ICLSchema } from './ICLSchema';
@@ -36,9 +37,9 @@ const TabContent = ({
             ata={values.biometry.ata}
             clr={values.biometry.clr}
             acd={values.biometry.acd}
-            aca={(values.biometry.acan + values.biometry.acat) / 2.0}
+            aca={averageAca(values.biometry.acan, values.biometry.acat)}
             wtw={values.biometry.wtw}
-            age={values.patient.age()}
+            age={knownAge(values.patient)}
           />
         }
       />
