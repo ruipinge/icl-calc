@@ -534,8 +534,9 @@ input[type='number']::-webkit-outer-spin-button {
  *
  * A keratometry reading shows two messages side by side, one under its K
  * value and one under its axis. Each hangs from a crimson rule at its own
- * control's left edge and stops short of the next column, so the two read
- * as two notes, not as one sentence across the row.
+ * control's left edge, and the K value's message stops 0.5rem short of the
+ * "at" column, so the two read as two notes, not as one sentence across
+ * the row. A message in the last column has no neighbour and keeps its width.
  */
 .mrow-error {
   grid-column: 1 / -1;
@@ -545,8 +546,12 @@ input[type='number']::-webkit-outer-spin-button {
   overflow-wrap: anywhere;
   color: var(--leaf-crimson);
   border-left: 2px solid var(--leaf-crimson);
-  margin: 0.2rem 0.5rem 0.6rem 0;
+  margin: 0.2rem 0 0.6rem;
   padding: 0 0 0 0.35rem;
+}
+
+.krow > .mvalue:not(:last-child) > .mrow-error {
+  margin-right: 0.5rem;
 }
 
 .mrow-error > span {
@@ -609,6 +614,11 @@ input[type='number']::-webkit-outer-spin-button {
   .krow > label.kat,
   .krow > label.kat + .mvalue {
     border-top: 0;
+  }
+
+  /* the axis has wrapped below, so the K message has no neighbour either */
+  .krow > .mvalue:not(:last-child) > .mrow-error {
+    margin-right: 0;
   }
 }
 

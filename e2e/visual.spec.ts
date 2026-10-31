@@ -61,9 +61,11 @@ const ROUTES = [
  * around the masked box. Normalising the text is what makes both fixture
  * kinds independent of who produced the build.
  *
- * This is the only DOM the visual tests touch, and it is deliberately narrow:
- * two anchors' text and href, nothing else. Their real content is asserted by
- * src/misc/Footer.test.tsx, which is where it belongs.
+ * This is the only DOM the visual tests rewrite, and it is deliberately
+ * narrow: two anchors' text and href, nothing else. (The narrow patient
+ * test below fills two inputs as a user would; it rewrites nothing.) Their
+ * real content is asserted by src/misc/Footer.test.tsx, which is where it
+ * belongs.
  */
 const PINNED_VERSION = '0.0.0';
 const PINNED_COMMIT = '0000000';
@@ -95,7 +97,8 @@ const pinBuildStamp = async (page: Page) => {
  * That is the deterministic state - every rendered number is then derived
  * from constants or from src/data.csv, which does not change - and it is also
  * the state that shows the most structure, since no validation styling is
- * triggered. The clock is pinned by openApp regardless, because
+ * triggered (the one exception, the narrow patient test, triggers it on
+ * purpose). The clock is pinned by openApp regardless, because
  * PatientInfo.age() reads Date.now().
  */
 const open = async (page: Page, tab: string | null) => {
