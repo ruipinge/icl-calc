@@ -531,6 +531,11 @@ input[type='number']::-webkit-outer-spin-button {
 /*
  * A validation message, here and under the date of birth. It quotes the
  * valid range, so it is set in Newsreader like every other numeral.
+ *
+ * A keratometry reading shows two messages side by side, one under its K
+ * value and one under its axis. Each hangs from a crimson rule at its own
+ * control's left edge and stops short of the next column, so the two read
+ * as two notes, not as one sentence across the row.
  */
 .mrow-error {
   grid-column: 1 / -1;
@@ -539,7 +544,9 @@ input[type='number']::-webkit-outer-spin-button {
   line-height: 1.35;
   overflow-wrap: anywhere;
   color: var(--leaf-crimson);
-  padding: 0.2rem 0 0.6rem;
+  border-left: 2px solid var(--leaf-crimson);
+  margin: 0.2rem 0.5rem 0.6rem 0;
+  padding: 0 0 0 0.35rem;
 }
 
 .mrow-error > span {
