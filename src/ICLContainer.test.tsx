@@ -299,6 +299,10 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
   const ACA = 'Average Anterior Chamber Angle - ACA (º)';
   const enter = (label: string, value: string) =>
     fireEvent.change(screen.getByLabelText(label), { target: { value } });
+  const enterAngle = (name: string, value: string) =>
+    fireEvent.change(screen.getByRole('spinbutton', { name }), {
+      target: { value }
+    });
   const gaugeName = (title: string) =>
     screen
       .getByRole('img', { name: (name) => name.startsWith(`${title}: `) })
@@ -308,8 +312,8 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
 
   it('names the mean of a full ACA pair', async () => {
     renderWithHash();
-    enter('Anterior Chamber Angle nasal (ACAn)', '30');
-    enter('Anterior Chamber Angle temporal (ACAt)', '32');
+    enterAngle('Anterior Chamber Angle nasal (ACAn), degrees', '30');
+    enterAngle('Anterior Chamber Angle temporal (ACAt), degrees', '32');
     goToNormality();
     await waitFor(() => {
       expect(gaugeName(ACA)).toMatch(/^Average .*\(º\): 31, /);
@@ -317,14 +321,14 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
   });
 
   it.each([
-    ['temporal', 'Anterior Chamber Angle temporal (ACAt)'],
-    ['nasal', 'Anterior Chamber Angle nasal (ACAn)']
+    ['temporal', 'Anterior Chamber Angle temporal (ACAt), degrees'],
+    ['nasal', 'Anterior Chamber Angle nasal (ACAn), degrees']
   ])('names no ACA when only the %s angle is entered', async (_side, kept) => {
     renderWithHash();
     // Untouched fields start at 0, a present value; clear the other side.
-    enter('Anterior Chamber Angle nasal (ACAn)', '');
-    enter('Anterior Chamber Angle temporal (ACAt)', '');
-    enter(kept, '32');
+    enterAngle('Anterior Chamber Angle nasal (ACAn), degrees', '');
+    enterAngle('Anterior Chamber Angle temporal (ACAt), degrees', '');
+    enterAngle(kept, '32');
     goToNormality();
     await waitFor(() => {
       expect(gaugeName(ACA)).toBe(`${ACA}: no value entered`);
@@ -333,8 +337,8 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
 
   it('names no ACA when both angles are cleared', async () => {
     renderWithHash();
-    enter('Anterior Chamber Angle nasal (ACAn)', '');
-    enter('Anterior Chamber Angle temporal (ACAt)', '');
+    enterAngle('Anterior Chamber Angle nasal (ACAn), degrees', '');
+    enterAngle('Anterior Chamber Angle temporal (ACAt), degrees', '');
     goToNormality();
     await waitFor(() => {
       expect(gaugeName(ACA)).toBe(`${ACA}: no value entered`);
