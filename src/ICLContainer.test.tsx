@@ -301,9 +301,8 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
     fireEvent.change(screen.getByLabelText(label), { target: { value } });
   const gaugeName = (title: string) =>
     screen
-      .getAllByRole('img', { name: (name) => name.startsWith(`${title}: `) })
-      .map((el) => el.getAttribute('aria-label'))
-      .at(-1);
+      .getByRole('img', { name: (name) => name.startsWith(`${title}: `) })
+      .getAttribute('aria-label');
   const goToNormality = () =>
     fireEvent.click(screen.getByText('Biometric Normality'));
 
@@ -318,8 +317,8 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
   });
 
   it.each([
-    ['nasal', 'Anterior Chamber Angle temporal (ACAt)'],
-    ['temporal', 'Anterior Chamber Angle nasal (ACAn)']
+    ['temporal', 'Anterior Chamber Angle temporal (ACAt)'],
+    ['nasal', 'Anterior Chamber Angle nasal (ACAn)']
   ])('names no ACA when only the %s angle is entered', async (_side, kept) => {
     renderWithHash();
     // Untouched fields start at 0, a present value; clear the other side.

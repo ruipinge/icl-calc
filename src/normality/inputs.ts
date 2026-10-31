@@ -1,4 +1,3 @@
-import { differenceInYears } from 'date-fns';
 import { measurement } from './Gauge';
 
 /**
@@ -28,10 +27,9 @@ export const averageAca = (acan: unknown, acat: unknown) => {
  */
 export const knownAge = (patient: { dateOfBirth: string; age(): number }) => {
   const born = new Date(patient.dateOfBirth);
-  if (
-    isNaN(born.getTime()) ||
-    differenceInYears(new Date(Date.now()), born) < 0
-  ) {
+  // Compared as instants, not through differenceInYears: that truncates
+  // toward zero, so a date up to a year ahead would give 0, not a negative.
+  if (isNaN(born.getTime()) || born.getTime() > Date.now()) {
     return undefined;
   }
   return patient.age();

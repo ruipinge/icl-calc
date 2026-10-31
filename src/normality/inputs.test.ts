@@ -34,6 +34,15 @@ describe('knownAge', () => {
     expect(knownAge(patient(dob))).toBeUndefined();
   });
 
+  it('is missing for a date of birth a few months ahead', () => {
+    const now = vi.spyOn(Date, 'now').mockReturnValue(Date.UTC(2026, 9, 31));
+    try {
+      expect(knownAge(patient('2027-03-01'))).toBeUndefined();
+    } finally {
+      now.mockRestore();
+    }
+  });
+
   it('is the patient age for a past date of birth', () => {
     const p = patient('2000-07-01');
     expect(knownAge(p)).toBe(p.age());
