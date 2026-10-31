@@ -3,6 +3,7 @@ import {
   ZONE_COLOURS,
   buildZones,
   describeBand,
+  measurement,
   quantile
 } from './Gauge';
 import { render, screen } from '@testing-library/react';
@@ -127,7 +128,7 @@ it('is an image named by its metric, value and band', () => {
 it.each([
   ['an empty string', '' as unknown as number],
   ['NaN', NaN],
-  ['undefined', undefined as unknown as number]
+  ['undefined', undefined]
 ])('names a gauge whose value is %s as having no value', (_, value) => {
   render(<Gauge title="CLR" value={value} values={[1, 2, 3, 4, 5, 6, 7]} />);
 
@@ -159,3 +160,19 @@ it('colours the tails crimson, the shoulders ember and the middle jade', () => {
     'var(--leaf-crimson)'
   ]);
 });
+
+// The single missing-value rule behind both the name and the pointer.
+it.each([
+  ['an empty string', ''],
+  ['undefined', undefined],
+  ['null', null],
+  ['NaN', NaN],
+  ['Infinity', Infinity],
+  ['a numeric string', '4']
+])('treats %s as a missing measurement', (_, value) =>
+  expect(measurement(value)).toBeUndefined()
+);
+
+it.each([0, 4.1, -208])('passes the number %s through', (value) =>
+  expect(measurement(value)).toBe(value)
+);

@@ -1,5 +1,5 @@
+import { buildZones, measurement } from '../Gauge';
 import { LinearGauge } from './index';
-import { buildZones } from '../Gauge';
 
 const makeHost = (children: number): HTMLElement => {
   const el = document.createElement('div');
@@ -121,4 +121,41 @@ it('places the pointer at the value position within the range', () => {
 it('draws no pointer for a value outside the range', () => {
   expect(renderGauge(99).querySelector('svg')).toBeNull();
   expect(renderGauge(0).querySelector('svg')).toBeNull();
+});
+
+/*
+ * The pointer must obey the same missing-value rule as the gauge's name. A
+ * dataset containing 0 is used because LinearGauge coerces '' to 0: on a
+ * dataset that excludes 0 the bug would hide behind the range check. Driven
+ * through `measurement` exactly as Gauge.tsx drives it.
+ */
+const renderMeasured = (value: unknown): HTMLElement => {
+  const el = document.createElement('div');
+  new LinearGauge(el).setOptions({
+    divisions: 5,
+    subDivisions: 2,
+    zones: buildZones({ values: [-5, -3, -1, 0, 1, 3, 5] }).map((band) => ({
+      ...band,
+      color: 'grey'
+    })),
+    value: measurement(value)
+  });
+  return el;
+};
+
+it.each([
+  ['an empty string', ''],
+  ['undefined', undefined],
+  ['NaN', NaN]
+])('draws no pointer where the value is %s', (_, value) => {
+  expect(renderMeasured(value).querySelector('svg')).toBeNull();
+});
+
+it('draws a pointer for an in-range value, including 0', () => {
+  expect(renderMeasured(0).querySelector('svg')?.style.left).toBe(
+    'calc(50% - 2px)'
+  );
+  expect(renderMeasured(5).querySelector('svg')?.style.left).toBe(
+    'calc(100% - 2px)'
+  );
 });

@@ -114,19 +114,33 @@ export const describeBand = (value: number, bands: Band[]): string => {
 };
 
 /**
- * The gauge's accessible name. A cleared form field reaches the gauge as `''`
- * (Formik), untyped, so anything that is not a finite number is named as
- * missing rather than given a band. The value is read to 12 significant
- * digits so float artefacts of derived values (ACA is a mean) are not spoken.
- * Only the name: what the gauge draws is untouched.
+ * The one rule for "no value entered", shared by the gauge's name and its
+ * drawing so they cannot disagree. A cleared form field reaches the gauge as
+ * `''` (Formik), untyped, and `LinearGauge` would coerce that to 0 and draw a
+ * pointer; anything that is not a finite number is missing.
+ *
+ * @param {unknown} value - The measurement, as it reached the component
+ * @returns {number | undefined} the number, or undefined where missing
+ */
+export const measurement = (value: unknown): number | undefined =>
+  typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+
+/**
+ * The gauge's accessible name. The value is read to 12 significant digits so
+ * float artefacts of derived values (ACA is a mean) are not spoken. Only the
+ * name: what the gauge draws is decided by the same `measurement` rule.
  *
  * @param {string} title - The metric
- * @param {unknown} value - The measurement, as it reached the component
+ * @param {number | undefined} value - From `measurement`
  * @param {Band[]} bands - From `buildZones`
  * @returns {string}
  */
-const gaugeName = (title: string, value: unknown, bands: Band[]): string =>
-  typeof value !== 'number' || !Number.isFinite(value)
+const gaugeName = (
+  title: string,
+  value: number | undefined,
+  bands: Band[]
+): string =>
+  value === undefined
     ? `${title}: no value entered`
     : `${title}: ${Number(value.toPrecision(12))}, ${describeBand(value, bands)}`;
 
@@ -136,11 +150,12 @@ export const Gauge = ({
   values
 }: {
   title: string;
-  value: number;
+  value: number | undefined;
   values: number[];
 }) => {
   const container = useRef<HTMLDivElement>(null);
   // The name and the drawing share these bands, so they cannot disagree.
+  const present = measurement(value);
   const bands = useMemo(() => buildZones({ values }), [values]);
 
   /* istanbul ignore next */
@@ -157,7 +172,7 @@ export const Gauge = ({
         ...band,
         color: ZONE_COLOURS[index]
       })),
-      value: value
+      value: present
     });
 
     return () => {
@@ -171,7 +186,7 @@ export const Gauge = ({
     <div
       data-testid="gauge"
       role="img"
-      aria-label={gaugeName(title, value, bands)}
+      aria-label={gaugeName(title, present, bands)}
       style={{
         marginLeft: `${PLOT_INSET_LEFT}px`,
         marginRight: `${PLOT_INSET_RIGHT}px`
