@@ -55,12 +55,16 @@ it('measures contrast as WCAG 2.2 does', () => {
 const PAIRS: [role: string, fg: string, bg: string, min: number][] = [
   ['clinical value', '--ink', '--field', 7],
   ['unit, column and row label', '--ink', '--paper', 7],
+  ['histogram axis numeral', '--ink', '--paper', 7],
   ['section heading, footer', '--muted', '--paper', 4.5],
   ['placeholder', '--muted', '--field', 4.5],
   ['input boundary', '--faint', '--field', 3],
   ['tool name on the header', '--violet', '--chrome', 7],
   // it quotes the valid range of a clinical value, so it is held to 7:1
-  ['validation message', '--leaf-crimson', '--paper', 7]
+  ['validation message', '--leaf-crimson', '--paper', 7],
+  ['gauge zone against its paper gap', '--leaf-crimson', '--paper', 3],
+  ['gauge zone against its paper gap', '--leaf-ember', '--paper', 3],
+  ['gauge zone against its paper gap', '--leaf-jade', '--paper', 3]
 ];
 it.each(PAIRS)('%s: %s on %s is at least %d:1', (_, fg, bg, min) =>
   expect(contrast(token(fg), token(bg))).toBeGreaterThanOrEqual(min)
@@ -84,3 +88,43 @@ const USES: [selector: string, declaration: RegExp][] = [
 it.each(USES)('%s uses the token its role is measured with', (sel, decl) =>
   expect(body(sel)).toMatch(decl)
 );
+
+// The chart grid's columns live in App.css hunks other work also edits, and no
+// visual fixture covers 769-1200px, so a lost merge hunk would go unseen.
+// `inMedia` returns what sits inside every @media block for one query (each
+// closed by a `}` at column 0), since several blocks may share a breakpoint;
+// `outsideMedia` is the stylesheet with every such block removed, so the
+// top-level rule cannot be satisfied by a nested one.
+const inMedia = (query: string): string => {
+  const blocks = [
+    ...css.matchAll(
+      new RegExp(
+        `@media \\(${query.replace(/[().]/g, '\\$&')}\\)\\s*\\{([\\s\\S]*?)\\n\\}`,
+        'g'
+      )
+    )
+  ].map((match) => match[1]);
+  if (blocks.length === 0) throw new Error(`no @media (${query})`);
+  return blocks.join('\n');
+};
+const outsideMedia = css.replace(/@media[^{]*\{[\s\S]*?\n\}/g, '');
+const chartGrid = (scope: string): string => {
+  const match = /^[ \t]*\.chart-grid\s*\{([^}]*)\}/m.exec(scope);
+  if (!match) throw new Error('no .chart-grid rule');
+  return match[1];
+};
+
+describe('the chart grid keeps its columns', () => {
+  it('sets three columns by default', () =>
+    expect(chartGrid(outsideMedia)).toMatch(
+      /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)\s*;/
+    ));
+  it('sets two columns up to 75rem', () =>
+    expect(chartGrid(inMedia('max-width: 75rem'))).toMatch(
+      /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)\s*;/
+    ));
+  it('sets one column up to 48rem', () =>
+    expect(chartGrid(inMedia('max-width: 48rem'))).toMatch(
+      /grid-template-columns:\s*minmax\(0,\s*1fr\)\s*;/
+    ));
+});

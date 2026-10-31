@@ -77,10 +77,8 @@ it('draws each chart from its own series', () => {
  * a truncated or double-counted series would still render, and every other
  * assertion in this file would still pass.
  *
- * The gauge drawn beneath each histogram has no equivalent affordance: it is
- * styled divs with no text, role or label at all, so it is unreachable by
- * any query and invisible to assistive technology. That is a real gap in a
- * clinical tool, recorded here because this phase changes no markup.
+ * The gauge drawn beneath each histogram is named separately (#138); see the
+ * test below.
  */
 it('names every bar with its interval and eye count', () => {
   renderNormality();
@@ -109,4 +107,26 @@ it('accounts for every row of the dataset in each chart', () => {
 
     expect(counts.reduce((total, count) => total + count, 0)).toBe(542);
   });
+});
+
+it('exposes six gauges as images named for their metric, value and band', () => {
+  renderNormality();
+
+  const gauges = screen.getAllByTestId('gauge');
+
+  expect(gauges).toHaveLength(6);
+  gauges.forEach((gauge) => expect(gauge).toHaveAttribute('role', 'img'));
+  expect(gauges.map((gauge) => gauge.getAttribute('aria-label'))).toEqual([
+    'Angle to Angle - AtA (mm): 11.8, between the 2.5th and 25th percentiles',
+    'Crystalline Lens Rise - CLR (μm): 0, between the 25th and 75th percentiles',
+    'Internal Anterior Chamber Depth - ACD (mm): 4.1, above the 97.5th percentile',
+    'Average Anterior Chamber Angle - ACA (º): 31, between the 2.5th and 25th percentiles',
+    'White to White - WtW (mm): 8.6, outside the range of the dataset',
+    'Age (years): 20, below the 2.5th percentile'
+  ]);
+  GRAPHS.forEach(([title]) =>
+    expect(
+      screen.getByRole('img', { name: (name) => name.startsWith(`${title}: `) })
+    ).toHaveAttribute('data-testid', 'gauge')
+  );
 });

@@ -10,16 +10,14 @@ const Graph = ({
   gaugeValues
 }: {
   title: string;
-  value: number;
+  value: number | undefined;
   histogramSeries: HistogramEntry[];
   gaugeValues: number[];
 }) => (
-  <>
-    <div className="col-md-4">
-      <Histogram title={title} data={histogramSeries} />
-      <Gauge value={value} values={gaugeValues} />
-    </div>
-  </>
+  <div>
+    <Histogram title={title} data={histogramSeries} />
+    <Gauge title={title} value={value} values={gaugeValues} />
+  </div>
 );
 
 interface GraphConfig {
@@ -70,7 +68,7 @@ const GRAPH_CONFIGS: GraphConfig[] = [
 
 export const Normality = ({ ...args }) => (
   <>
-    <div className="row">
+    <div className="chart-grid">
       {GRAPH_CONFIGS.map((config) => (
         <Graph
           title={config.title}

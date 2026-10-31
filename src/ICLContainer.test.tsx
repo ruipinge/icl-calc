@@ -294,3 +294,73 @@ it.each(['#', '#/', ''])('resolves %s to the Patient tab', (hash) => {
   renderWithHash(hash || '/');
   expect(screen.getByLabelText('Name')).toBeVisible();
 });
+
+describe('Normality gauges with missing ACA or age inputs (#138)', () => {
+  const ACA = 'Average Anterior Chamber Angle - ACA (º)';
+  const enter = (label: string, value: string) =>
+    fireEvent.change(screen.getByLabelText(label), { target: { value } });
+  const enterAngle = (name: string, value: string) =>
+    fireEvent.change(screen.getByRole('spinbutton', { name }), {
+      target: { value }
+    });
+  const gaugeName = (title: string) =>
+    screen
+      .getByRole('img', { name: (name) => name.startsWith(`${title}: `) })
+      .getAttribute('aria-label');
+  const goToNormality = () =>
+    fireEvent.click(screen.getByText('Biometric Normality'));
+
+  it('names the mean of a full ACA pair', async () => {
+    renderWithHash();
+    enterAngle('Anterior Chamber Angle nasal (ACAn), degrees', '30');
+    enterAngle('Anterior Chamber Angle temporal (ACAt), degrees', '32');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName(ACA)).toMatch(/^Average .*\(º\): 31, /);
+    });
+  });
+
+  it.each([
+    ['temporal', 'Anterior Chamber Angle temporal (ACAt), degrees'],
+    ['nasal', 'Anterior Chamber Angle nasal (ACAn), degrees']
+  ])('names no ACA when only the %s angle is entered', async (_side, kept) => {
+    renderWithHash();
+    // Untouched fields start at 0, a present value; clear the other side.
+    enterAngle('Anterior Chamber Angle nasal (ACAn), degrees', '');
+    enterAngle('Anterior Chamber Angle temporal (ACAt), degrees', '');
+    enterAngle(kept, '32');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName(ACA)).toBe(`${ACA}: no value entered`);
+    });
+  });
+
+  it('names no ACA when both angles are cleared', async () => {
+    renderWithHash();
+    enterAngle('Anterior Chamber Angle nasal (ACAn), degrees', '');
+    enterAngle('Anterior Chamber Angle temporal (ACAt), degrees', '');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName(ACA)).toBe(`${ACA}: no value entered`);
+    });
+  });
+
+  it('names no age when the date of birth is cleared', async () => {
+    renderWithHash();
+    enter('Date of Birth', '2000-07-01');
+    enter('Date of Birth', '');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName('Age (years)')).toBe('Age (years): no value entered');
+    });
+  });
+
+  it('names an age when the date of birth is valid', async () => {
+    renderWithHash();
+    enter('Date of Birth', '2000-07-01');
+    goToNormality();
+    await waitFor(() => {
+      expect(gaugeName('Age (years)')).toMatch(/^Age \(years\): \d+, /);
+    });
+  });
+});

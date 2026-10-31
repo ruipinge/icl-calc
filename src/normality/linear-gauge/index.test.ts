@@ -1,5 +1,5 @@
+import { ZONE_COLOURS, buildZones, gaugeOptions, measurement } from '../Gauge';
 import { LinearGauge } from './index';
-import { buildZones } from '../Gauge';
 
 const makeHost = (children: number): HTMLElement => {
   const el = document.createElement('div');
@@ -73,7 +73,10 @@ const renderGauge = (value: number): HTMLElement => {
   new LinearGauge(el).setOptions({
     divisions: 5,
     subDivisions: 2,
-    zones: buildZones({ values: DATASET }),
+    zones: buildZones({ values: DATASET }).map((band) => ({
+      ...band,
+      color: 'grey'
+    })),
     value
   });
   return el;
@@ -118,4 +121,113 @@ it('places the pointer at the value position within the range', () => {
 it('draws no pointer for a value outside the range', () => {
   expect(renderGauge(99).querySelector('svg')).toBeNull();
   expect(renderGauge(0).querySelector('svg')).toBeNull();
+});
+
+/*
+ * The pointer must obey the same missing-value rule as the gauge's name. A
+ * dataset containing 0 is used because LinearGauge coerces '' to 0: on a
+ * dataset that excludes 0 the bug would hide behind the range check. Driven
+ * through `measurement` exactly as Gauge.tsx drives it.
+ */
+const renderMeasured = (value: unknown): HTMLElement => {
+  const el = document.createElement('div');
+  new LinearGauge(el).setOptions({
+    divisions: 5,
+    subDivisions: 2,
+    zones: buildZones({ values: [-5, -3, -1, 0, 1, 3, 5] }).map((band) => ({
+      ...band,
+      color: 'grey'
+    })),
+    value: measurement(value)
+  });
+  return el;
+};
+
+it.each([
+  ['an empty string', ''],
+  ['undefined', undefined],
+  ['NaN', NaN]
+])('draws no pointer where the value is %s', (_, value) => {
+  expect(renderMeasured(value).querySelector('svg')).toBeNull();
+});
+
+it('draws a pointer for an in-range value, including 0', () => {
+  expect(renderMeasured(0).querySelector('svg')?.style.left).toBe(
+    'calc(50% - 2px)'
+  );
+  expect(renderMeasured(5).querySelector('svg')?.style.left).toBe(
+    'calc(100% - 2px)'
+  );
+});
+
+/*
+ * The gauge container carries the accessible name, so the pointer inside it
+ * is decoration and must not surface as an unnamed child image (#138). The
+ * inline style is what the L2 replay captures verbatim, so it is pinned too:
+ * hiding the pointer must not move it.
+ */
+it('hides the pointer svg from assistive technology', () => {
+  expect(renderGauge(4).querySelector('svg')?.getAttribute('aria-hidden')).toBe(
+    'true'
+  );
+});
+
+it('keeps the pointer inline style byte-identical', () => {
+  expect(renderGauge(4).querySelector('svg')?.getAttribute('style')).toBe(
+    'position: absolute; left: calc(50% - 2px); top: 12px;'
+  );
+});
+
+/*
+ * The zones as Gauge draws them, through `gaugeOptions` - the whole options
+ * object Gauge's layout effect passes to setOptions - so these assert the
+ * component's wiring, not a stand-in. Zone divs are the ones carrying a flex
+ * size; divisions and sub-divisions are absolutely positioned and have none.
+ */
+const drawnZones = (value: unknown): HTMLElement[] => {
+  const el = document.createElement('div');
+  new LinearGauge(el).setOptions(
+    gaugeOptions(value, buildZones({ values: DATASET }))
+  );
+  return Array.from(el.querySelectorAll('div')).filter(
+    (div) => div.style.flexGrow !== ''
+  );
+};
+
+it('paints each band in its ZONE_COLOURS colour, in order', () => {
+  expect(drawnZones(4).map((zone) => zone.style.backgroundColor)).toEqual([
+    ...ZONE_COLOURS
+  ]);
+});
+
+/*
+ * A paper gap between neighbours (WCAG 1.4.11), split 1px either side of each
+ * interior boundary and painted inside the zones, so it moves nothing. The
+ * outer ends get none: the bar's extent is the dataset's range.
+ */
+it('paints the paper gap on interior boundaries only', () => {
+  expect(drawnZones(4).map((zone) => zone.style.boxShadow)).toEqual([
+    'inset -1px 0 0 0 var(--paper)',
+    'inset 1px 0 0 0 var(--paper), inset -1px 0 0 0 var(--paper)',
+    'inset 1px 0 0 0 var(--paper), inset -1px 0 0 0 var(--paper)',
+    'inset 1px 0 0 0 var(--paper), inset -1px 0 0 0 var(--paper)',
+    'inset 1px 0 0 0 var(--paper)'
+  ]);
+});
+
+it('leaves the zone sizes as they were without the gap', () => {
+  expect(drawnZones(4).map((zone) => zone.style.flexGrow)).toEqual([
+    '0.675',
+    '2.325',
+    '2.25',
+    '0.75',
+    '0'
+  ]);
+});
+
+it('paints no gap unless asked', () => {
+  const zones = Array.from(renderGauge(4).querySelectorAll('div')).filter(
+    (div) => div.style.flexGrow !== ''
+  );
+  expect(zones.map((zone) => zone.style.boxShadow)).toEqual(Array(5).fill(''));
 });
