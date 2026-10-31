@@ -88,3 +88,37 @@ const USES: [selector: string, declaration: RegExp][] = [
 it.each(USES)('%s uses the token its role is measured with', (sel, decl) =>
   expect(body(sel)).toMatch(decl)
 );
+
+// The chart grid's columns live in App.css hunks other work also edits, and no
+// visual fixture covers 769-1200px, so a lost merge hunk would go unseen.
+// `inMedia` returns what sits inside one @media block (closed by a `}` at
+// column 0); `outsideMedia` is the stylesheet with every such block removed,
+// so the top-level rule cannot be satisfied by a nested one.
+const inMedia = (query: string): string => {
+  const match = new RegExp(
+    `@media \\(${query.replace(/[().]/g, '\\$&')}\\)\\s*\\{([\\s\\S]*?)\\n\\}`
+  ).exec(css);
+  if (!match) throw new Error(`no @media (${query})`);
+  return match[1];
+};
+const outsideMedia = css.replace(/@media[^{]*\{[\s\S]*?\n\}/g, '');
+const chartGrid = (scope: string): string => {
+  const match = /^[ \t]*\.chart-grid\s*\{([^}]*)\}/m.exec(scope);
+  if (!match) throw new Error('no .chart-grid rule');
+  return match[1];
+};
+
+describe('the chart grid keeps its columns', () => {
+  it('sets three columns by default', () =>
+    expect(chartGrid(outsideMedia)).toMatch(
+      /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)\s*;/
+    ));
+  it('sets two columns up to 75rem', () =>
+    expect(chartGrid(inMedia('max-width: 75rem'))).toMatch(
+      /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)\s*;/
+    ));
+  it('sets one column up to 48rem', () =>
+    expect(chartGrid(inMedia('max-width: 48rem'))).toMatch(
+      /grid-template-columns:\s*minmax\(0,\s*1fr\)\s*;/
+    ));
+});
