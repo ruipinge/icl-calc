@@ -1,3 +1,5 @@
+import * as Yup from 'yup';
+
 import { ICLInputs, PatientInfo, PreviousSurgery } from './types';
 
 import { ICLSchema } from './ICLSchema';
@@ -143,5 +145,79 @@ describe('posterior axis validation', () => {
     await expect(
       ICLSchema.validateAt('corneaProfile.axisps', { corneaProfile: {} })
     ).resolves.toBeUndefined();
+  });
+});
+
+describe('short entry messages for unusable values', () => {
+  const REQUIRED_FIELDS = [
+    ['biometry.ata', 'Enter a value. [0, 20]'],
+    ['corneaProfile.cct', 'Enter a value. [300, 700]'],
+    ['spectacleRefraction.sphere', 'Enter a value. [-25, 0]']
+  ] as const;
+  const bad = ['', NaN, 'abc'];
+
+  const messageAt = async (path: string, value: unknown) => {
+    const [group, field] = path.split('.');
+    try {
+      await ICLSchema.validateAt(path, { [group]: { [field]: value } });
+      return undefined;
+    } catch (e) {
+      return (e as Yup.ValidationError).message;
+    }
+  };
+
+  it.each(REQUIRED_FIELDS)(
+    'required %s says "Enter a value" for undefined, empty, NaN and text',
+    async (path, message) => {
+      expect(await messageAt(path, undefined)).toBe(message);
+      for (const value of bad) {
+        expect(await messageAt(path, value)).toBe(message);
+      }
+    }
+  );
+
+  it.each(['kpf', 'kps'] as const)(
+    'posterior %s says "Enter a value" for NaN and text, but empty is valid',
+    async (field) => {
+      const path = 'corneaProfile.' + field;
+      const message = 'Enter a value. [4, 8] or 0 if not measured.';
+      expect(await messageAt(path, NaN)).toBe(message);
+      expect(await messageAt(path, 'abc')).toBe(message);
+      expect(await messageAt(path, '')).toBeUndefined();
+      expect(await messageAt(path, undefined)).toBeUndefined();
+    }
+  );
+
+  it.each(['axispf', 'axisps'] as const)(
+    'posterior axis %s says "Enter a value" for NaN and text, but empty is valid',
+    async (field) => {
+      const path = 'corneaProfile.' + field;
+      const message = 'Enter a value. [0, 180]';
+      expect(await messageAt(path, NaN)).toBe(message);
+      expect(await messageAt(path, 'abc')).toBe(message);
+      expect(await messageAt(path, '')).toBeUndefined();
+      expect(await messageAt(path, undefined)).toBeUndefined();
+    }
+  );
+
+  it('never leaks Yup\'s long "must be a number" wording', async () => {
+    const paths = [
+      ...REQUIRED_FIELDS.map(([p]) => p),
+      'corneaProfile.kpf',
+      'corneaProfile.axispf'
+    ];
+    for (const path of paths) {
+      for (const value of [...bad, undefined]) {
+        expect((await messageAt(path, value)) ?? '').not.toMatch(/must be a/);
+      }
+    }
+  });
+
+  it('accepts a whole form whose optional posterior fields are empty strings', async () => {
+    await expect(
+      ICLSchema.validate(
+        withCornea({ kpf: '', kps: '', axispf: '', axisps: '' } as never)
+      )
+    ).resolves.toBeTruthy();
   });
 });
