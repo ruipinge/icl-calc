@@ -62,7 +62,10 @@ describe('PRESETS', () => {
   it.each(PRESETS.map((p) => [p.id, p.label] as const))(
     '%s label names no lens size',
     (_id, label) => {
-      expect(label).not.toMatch(/\b1[23](?:[.,]\d+)?\b|mm/i);
+      // a size as 12.6, 13.7 or "126", or in millimetres
+      expect(label).not.toMatch(/\b1[23](?:[.,]?\d+)?\b|\bmm\b/i);
+      // or named in words
+      expect(label).not.toMatch(/\b(?:lens|size|bin|small|large)/i);
     }
   );
 

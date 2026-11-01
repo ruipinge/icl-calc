@@ -22,7 +22,7 @@ export interface Preset {
 export const PRESETS: readonly Preset[] = [
   {
     id: 'typical-myope',
-    label: 'Moderate myopia with astigmatism',
+    label: 'Myopia with astigmatism, average anterior segment',
     values: {
       biometry: {
         ata: 11.8,
@@ -54,7 +54,7 @@ export const PRESETS: readonly Preset[] = [
   },
   {
     id: 'steep-cornea',
-    label: 'Moderate myopia, steep posterior cornea measured',
+    label: 'Myopia with astigmatism, steep posterior cornea measured',
     values: {
       biometry: {
         ata: 11.8,
@@ -150,7 +150,7 @@ export const PRESETS: readonly Preset[] = [
   },
   {
     id: 'smaller-segment',
-    label: 'Smaller, shallower anterior segment',
+    label: 'Shallow anterior chamber, narrow angle',
     values: {
       biometry: {
         ata: 11.9,
@@ -182,7 +182,7 @@ export const PRESETS: readonly Preset[] = [
   },
   {
     id: 'larger-segment',
-    label: 'High myopia, large, deep anterior segment',
+    label: 'High myopia, wide, deep anterior segment',
     values: {
       biometry: {
         ata: 12.7,
