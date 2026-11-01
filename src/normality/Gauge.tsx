@@ -95,9 +95,13 @@ const BAND_NAMES = [
 ] as const;
 
 /**
- * Names the band a value falls in, for the gauge's accessible name. Bands are
- * half-open `[min, max)` except the last, which is closed. A value no band
- * holds (NaN included) is outside the range, never `undefined`.
+ * Names the band a value falls in, for the gauge's accessible name and its
+ * visible caption. Bands are half-open `[min, max)` except the last, which is
+ * closed. A value under the first band is below the range of the dataset, one
+ * over the last band is above it. With no bands, or for NaN (every comparison
+ * with it is false, so no band claims it), the value is outside the range,
+ * never `undefined`; NaN never reaches this from Gauge, since `measurement`
+ * filters it.
  *
  * @param {number} value - The measurement
  * @param {Band[]} bands - From `buildZones`
@@ -105,8 +109,11 @@ const BAND_NAMES = [
  */
 export const describeBand = (value: number, bands: Band[]): string => {
   const last = bands.length - 1;
-  if (last < 0 || value < bands[0].min || value > bands[last].max) {
-    return 'outside the range of the dataset';
+  if (last >= 0 && value < bands[0].min) {
+    return 'below the range of the dataset';
+  }
+  if (last >= 0 && value > bands[last].max) {
+    return 'above the range of the dataset';
   }
   const index = bands.findIndex(
     (band, i) => value < band.max || (i === last && value <= band.max)
@@ -144,6 +151,17 @@ export const gaugeOptions = (value: unknown, bands: Band[]): Options => ({
 });
 
 /**
+ * The band half of the gauge's name, which the gauge also shows as its
+ * caption: one function, so what is spoken and what is seen cannot disagree.
+ *
+ * @param {number | undefined} value - From `measurement`
+ * @param {Band[]} bands - From `buildZones`
+ * @returns {string}
+ */
+export const gaugeBand = (value: number | undefined, bands: Band[]): string =>
+  value === undefined ? 'no value entered' : describeBand(value, bands);
+
+/**
  * The gauge's accessible name. The value is read to 12 significant digits so
  * float artefacts of derived values (ACA is a mean) are not spoken. Only the
  * name: what the gauge draws is decided by the same `measurement` rule.
@@ -159,8 +177,8 @@ const gaugeName = (
   bands: Band[]
 ): string =>
   value === undefined
-    ? `${title}: no value entered`
-    : `${title}: ${Number(value.toPrecision(12))}, ${describeBand(value, bands)}`;
+    ? `${title}: ${gaugeBand(value, bands)}`
+    : `${title}: ${Number(value.toPrecision(12))}, ${gaugeBand(value, bands)}`;
 
 export const Gauge = ({
   title,
@@ -190,18 +208,29 @@ export const Gauge = ({
     };
   });
 
+  // Insets shared with the histogram above - see plot-inset.ts for why
+  // these two must agree. The caption shares them so it aligns with the bar.
+  const inset = {
+    marginLeft: `${PLOT_INSET_LEFT}px`,
+    marginRight: `${PLOT_INSET_RIGHT}px`
+  };
+
   return (
-    // Insets shared with the histogram above - see plot-inset.ts for why
-    // these two must agree.
-    <div
-      data-testid="gauge"
-      role="img"
-      aria-label={gaugeName(title, present, bands)}
-      style={{
-        marginLeft: `${PLOT_INSET_LEFT}px`,
-        marginRight: `${PLOT_INSET_RIGHT}px`
-      }}
-      ref={container}
-    />
+    <>
+      {/* LinearGauge owns and disposes this div's children, and the L2
+          replay reads its first svg and inline style: nothing goes inside
+          or before it. */}
+      <div
+        data-testid="gauge"
+        role="img"
+        aria-label={gaugeName(title, present, bands)}
+        style={inset}
+        ref={container}
+      />
+      {/* aria-hidden: the gauge's name already speaks the band. */}
+      <p className="gauge-band" aria-hidden="true" style={inset}>
+        {gaugeBand(present, bands)}
+      </p>
+    </>
   );
 };

@@ -206,6 +206,39 @@ test.describe('narrow (360x780)', () => {
       fullPage: true
     });
   });
+
+  /*
+   * At INITIAL_VALUES every gauge but one is out of range, so the routes
+   * above show only "below the range" and "no value entered" under the
+   * gauges (#194). Here they land in two inner bands, below the range and
+   * above it, with Age still empty, so the shot holds each kind of caption
+   * - a band, below, above, none - and the longest band name ("between the
+   * 75th and 97.5th percentiles") at the narrowest width.
+   */
+  test('normality with measurements entered looks right', async ({ page }) => {
+    await open(page, null);
+    for (const [name, value] of [
+      ['Angle to Angle (AtA), millimetres', '12'],
+      ['White to White (WtW), millimetres', '15'],
+      ['Crystaline Lens Rise (CLR), micrometres', '300'],
+      ['Internal Anterior Chamber Depth (ACD), millimetres', '1'],
+      ['Anterior Chamber Angle nasal (ACAn), degrees', '40'],
+      ['Anterior Chamber Angle temporal (ACAt), degrees', '40']
+    ]) {
+      const field = page.getByRole('spinbutton', { name });
+      await field.fill(value);
+      await field.blur();
+    }
+    await gotoTab(page, 'Biometric Normality');
+    await page.evaluate(() => window.scrollTo(0, 0));
+
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(360);
+    await expect(page).toHaveScreenshot('normality-measured-narrow.png', {
+      fullPage: true
+    });
+  });
 });
 
 /*
