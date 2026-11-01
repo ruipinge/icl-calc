@@ -10,42 +10,48 @@ export const Biometry = ({
     <h4>Biometry</h4>
     <div className="fieldgroup">
       <FieldWithUnit
-        label="Angle to Angle (AtA)"
+        label="AtA"
+        caption="Angle to Angle"
         name="biometry.ata"
         unit="mm"
         error={errors.biometry?.ata}
         touched={touched.biometry?.ata}
       />
       <FieldWithUnit
-        label="White to White (WtW)"
+        label="WtW"
+        caption="White to White"
         name="biometry.wtw"
         unit="mm"
         error={errors.biometry?.wtw}
         touched={touched.biometry?.wtw}
       />
       <FieldWithUnit
-        label="Crystaline Lens Rise (CLR)"
+        label="CLR"
+        caption="Crystaline Lens Rise"
         name="biometry.clr"
         unit="μm"
         error={errors.biometry?.clr}
         touched={touched.biometry?.clr}
       />
       <FieldWithUnit
-        label="Internal Anterior Chamber Depth (ACD)"
+        label="ACD"
+        caption="Internal Anterior Chamber Depth"
         name="biometry.acd"
         unit="mm"
         error={errors.biometry?.acd}
         touched={touched.biometry?.acd}
       />
       <FieldWithUnit
-        label="Anterior Chamber Angle nasal (ACAn)"
+        label="ACAn"
+        caption="Anterior Chamber Angle nasal"
         name="biometry.acan"
         unit="º"
         error={errors.biometry?.acan}
         touched={touched.biometry?.acan}
       />
       <FieldWithUnit
-        label="Anterior Chamber Angle temporal (ACAt)"
+        label="ACAt"
+        caption="Anterior Chamber Angle temporal"
         name="biometry.acat"
         unit="º"
         error={errors.biometry?.acat}

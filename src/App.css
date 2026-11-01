@@ -481,12 +481,20 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /* ------------------------------------------------------ the measured row
- * One grid per field group; each row is display: contents, so labels, inputs
- * and units align across the whole group. See spec 5.2 to 5.4.
+ * One grid per field group; each row is display: contents, so labels and
+ * controls align across the whole group. See spec 5.2 to 5.4.
+ *
+ * Two tracks: the label, and the value. A field's unit is in its label,
+ * "AtA (mm)", so there is no unit column and the value track holds the
+ * value alone. Its longest valid one is a sphere such as "-24.125", 55px in
+ * Newsreader measured in Chromium ("-1000" for CLR is 42px, an ICL output
+ * like "-13.62" 46px); with the input's 0.5rem paddings that is 71px, so
+ * 4.75rem leaves 5px to spare. visual.spec.ts types the longest value into
+ * every field at four widths and fails if one is clipped.
  */
 .fieldgroup {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 7.5rem 3.4rem;
+  grid-template-columns: minmax(0, 1fr) 4.75rem;
   align-items: baseline;
   margin-bottom: 2rem;
 }
@@ -504,48 +512,39 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 /*
- * A field's value: its control, its unit and, while shown, its message. It
- * spans the control and unit tracks as a subgrid, so the control and unit
- * keep the group's columns and the message has a line of its own directly
- * under the control, starting at its left edge. The message is as wide as
- * control and unit together and wraps within them: the tracks are fixed, so
- * it can neither push a neighbouring column sideways nor run into one.
+ * The full name, spelled out under the short one (#192). It names a clinical
+ * value, so it is held to 7:1 at full ink; it is smaller than the label, so
+ * the short name with its unit still reads first.
  */
-.mvalue {
-  grid-column: span 2;
-  display: grid;
-  grid-template-columns: subgrid;
-  align-items: baseline;
+.mcaption {
+  display: block;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--ink);
 }
 
-.mvalue > input {
+.mrow > input {
+  min-width: 0;
   text-align: right;
 }
 
 /*
  * Every row closes with the same 0.6rem under its tallest cell. The label
- * and unit carry it as padding; the control as a margin, so its fill still
- * meets the row's hairline. Controls sit on the label's first line (the
- * grid aligns on baselines), so a label that wraps grows the row downwards
- * and leaves room under the control - where its message will go - while a
- * one-line row no longer lets its control touch the next row's.
+ * carries it as padding; the control as a margin, so its fill still meets
+ * the row's hairline. Controls sit on the label's first line (the grid
+ * aligns on baselines), so a caption grows the row downwards.
  */
-.mvalue > input,
+.mrow > input,
 .mrow > select {
   margin-bottom: 0.6rem;
 }
 
-/*
- * aria-invalid is set exactly while the message is shown, so an invalid
- * control hands its 0.6rem to the message: the message sits snug under the
- * control and the row's breathing room follows the message.
- */
-.mvalue > input[aria-invalid='true'] {
+/* aria-invalid is set exactly while the message is shown */
+.mrow > input[aria-invalid='true'] {
   border-bottom: 2px solid var(--leaf-crimson);
-  margin-bottom: 0;
 }
 
-/* the unit column, shared by the measured row and the identity row */
+/* a unit after a control whose label does not carry it: a keratometry axis */
 .unit {
   font-family: var(--numeric);
   font-feature-settings: 'ss02';
@@ -555,23 +554,13 @@ input[type='number']::-webkit-outer-spin-button {
   color: var(--ink);
 }
 
-.mvalue > .unit {
-  padding: 0.6rem 0 0.6rem 0.4rem;
-}
-
 /*
  * A validation message, here and under the date of birth. It is a short
  * alert read at a glance beside its field, and it quotes the valid range, so
- * the whole message is set in the numeric face (#193).
- *
- * A keratometry reading shows two messages side by side, one under its K
- * value and one under its axis. Each hangs from a crimson rule at its own
- * control's left edge, and the K value's message stops 0.5rem short of the
- * "@" column, so the two read as two notes, not as one sentence across
- * the row. A message in the last column has no neighbour and keeps its width.
+ * the whole message is set in the numeric face (#193). It hangs from a
+ * crimson rule.
  */
 .mrow-error {
-  grid-column: 1 / -1;
   font-family: var(--numeric);
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'ss02';
@@ -584,11 +573,37 @@ input[type='number']::-webkit-outer-spin-button {
   padding: 0 0 0 0.35rem;
 }
 
-.krow > .mvalue:not(:last-child) > .mrow-error {
-  margin-right: 0.5rem;
+/*
+ * In a measured row a message is a line of its own after the row's cells,
+ * across the whole row, the label's track included (#195): one per invalid
+ * control, K first in a keratometry row. The tracks are fixed, so a message
+ * wraps within the row and cannot move a neighbouring field sideways.
+ */
+.mrow > .mrow-error {
+  grid-column: 1 / -1;
+  border-top: 0;
 }
 
-.mrow-error > span {
+/* two messages in one row read as a pair, so only the last one takes 0.6rem */
+.mrow > .mrow-error:not(:last-child) {
+  margin-bottom: 0;
+}
+
+/*
+ * A row showing a message (React sets data-message) hands its cells' 0.6rem
+ * to the message, every cell and not just the invalid control's: a
+ * keratometry row with only its axis invalid would otherwise keep the K
+ * value's margin, and the message would start 0.6rem below the axis.
+ */
+.mrow[data-message] > label {
+  padding-bottom: 0;
+}
+
+.mrow[data-message] > input {
+  margin-bottom: 0;
+}
+
+.mrow-range {
   white-space: nowrap;
 }
 
@@ -598,18 +613,19 @@ input[type='number']::-webkit-outer-spin-button {
 
 /*
  * Cornea Profile: a keratometry reading and its axis share one row, read
- * "X dpt at Y º" - label | K | dpt | @ | axis | º. The tracks right of the
- * label total 12.6rem (10.9rem in the other groups); the two inputs are
- * narrowed to what a K ("-6.25", "42.25") and an axis ("180") need, so the
- * label track loses only 1.7rem. Each input has its own track, so a message
- * can sit under either one.
+ * "X dpt at Y º" - label | K | @ | axis | º. Measured in Chromium: the K
+ * track holds "54.125" (49px of digits, three decimals as some biometers
+ * report K in eighths of a dioptre; 65px with padding) with 7px to spare,
+ * the axis track "179.5" (40px; 56px with padding, an axis to one decimal
+ * as the ICL axis output is rounded) with 4px, the "@" is 15px and the º
+ * mark 7px after a 0.3rem gap. The tracks right of the label total 10.75rem.
  */
 .kgroup {
-  grid-template-columns: minmax(0, 1fr) 4.25rem 2.4rem 1.5rem 3.25rem 1.2rem;
+  grid-template-columns: minmax(0, 1fr) 4.5rem 1.5rem 3.75rem 1rem;
 }
 
-/* plain rows (CCT): the value carries the row's rule to the edge */
-.kgroup > .mrow:not(.krow) > .mvalue {
+/* plain rows (CCT): the control spans the value area */
+.kgroup > .mrow:not(.krow) > input {
   grid-column: 2 / -1;
 }
 
@@ -618,50 +634,12 @@ input[type='number']::-webkit-outer-spin-button {
   text-align: center;
 }
 
-/*
- * Under 24rem the label track would fall below the width of "Keratometry",
- * so "@ Y º" wraps onto a second line under the K value: the K input spans
- * the "@" and axis tracks, so the two inputs share a right edge and the
- * axis reads as the continuation of that reading, not as a row of its own.
- */
-@media (max-width: 24rem) {
-  /*
-   * The axis track is 3.25rem, as on the wide layout: Inter's tabular digits
-   * (#193) set a three-digit axis 31px wide, which 2.75rem less its padding
-   * (28px) clipped to "18" and a sliver of "0".
-   */
-  .kgroup {
-    grid-template-columns: minmax(0, 1fr) 1.5rem 3.25rem 2.4rem;
-  }
-
-  .kgroup > .mrow > label:not(.kat) + .mvalue {
-    grid-column: 2 / -1;
-  }
-
-  .kgroup > .mrow > label:not(.kat) + .mvalue > input {
-    grid-column: 1 / 3;
-  }
-
-  .krow > label:first-child {
-    grid-row: span 2;
-  }
-
-  .krow > label.kat {
-    grid-column: 2;
-  }
-
-  .krow > label.kat,
-  .krow > label.kat + .mvalue {
-    border-top: 0;
-  }
-
-  /* the axis has wrapped below, so the K message has no neighbour either */
-  .krow > .mvalue:not(:last-child) > .mrow-error {
-    margin-right: 0;
-  }
+/* the axis's unit, after it, on the value's baseline */
+.krow > .unit {
+  padding-left: 0.3rem;
 }
 
-/* Previous surgery: the label, then a select spanning control and unit. */
+/* Previous surgery: the label, then a select spanning the value area. */
 .mrow-select > select {
   grid-column: 2 / -1;
   min-width: 0;
@@ -739,28 +717,19 @@ input[type='number']::-webkit-outer-spin-button {
   min-width: 0;
 }
 
-.idvalue {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
-}
-
-.idvalue > input {
-  flex: 1;
-  min-width: 0;
-  text-align: right;
-}
-
 .idcell > input[aria-invalid='true'] {
   border-bottom: 2px solid var(--leaf-crimson);
 }
 
 /*
  * The patient form: Biometry | Cornea Profile | Refraction + ICL Power.
- * Each group's control and unit tracks are fixed (10.9rem; 12.6rem in Cornea
- * Profile, whose rows carry an axis as well), so the label
- * track is what narrows; below 75rem three columns leave it too little room
- * for words like "Keratometry", which then run under the input.
+ * Each group's value tracks are fixed (4.75rem; 10.75rem in Cornea Profile,
+ * whose rows carry an axis as well), so the label track is what narrows;
+ * below 75rem three columns leave it too little room for the captions,
+ * which then wrap word by word. Measured in Chromium, the Cornea Profile
+ * label track is 148px at a 360px viewport, room for its longest label,
+ * "KPostStp (dpt)" (103px, 114px with its padding), on one line, so a
+ * keratometry row keeps its short name whole at every width down to 360px.
  */
 .patient-grid {
   display: grid;

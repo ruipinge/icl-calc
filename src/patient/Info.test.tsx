@@ -60,7 +60,7 @@ it('renders Name, Date of Birth and Age in that order', () => {
   expect(inputs).toHaveLength(3);
   expect(inputs[0]).toBe(screen.getByLabelText('Name'));
   expect(inputs[1]).toBe(screen.getByLabelText('Date of Birth'));
-  expect(inputs[2]).toBe(screen.getByRole('textbox', { name: 'Age, years' }));
+  expect(inputs[2]).toBe(screen.getByRole('textbox', { name: 'Age (years)' }));
 });
 
 it('shows the values it was given', () => {
@@ -78,17 +78,21 @@ it('shows the values it was given', () => {
 it('derives Age from the date of birth and disables it', () => {
   renderInfo();
 
-  const age = screen.getByRole('textbox', { name: 'Age, years' });
+  const age = screen.getByRole('textbox', { name: 'Age (years)' });
 
   expect(age).toHaveValue('20');
   expect(age).toBeDisabled();
 });
 
-/* The visible unit stays out of the tree; "years" is already in the name. */
-it('hides the visible Age unit from the accessibility tree', () => {
+/*
+ * Like every measured value, Age carries its unit in its label (#192), so
+ * the visible label is the whole name and there is no unit mark after it.
+ */
+it('labels Age with its unit, and marks no unit after it', () => {
   renderInfo();
 
-  expect(screen.getByText('years')).toHaveAttribute('aria-hidden', 'true');
+  expect(screen.getByText('Age (years)').tagName).toBe('LABEL');
+  expect(screen.queryByText('years')).toBeNull();
 });
 
 /*

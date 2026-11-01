@@ -56,6 +56,8 @@ it('measures contrast as WCAG 2.2 does', () => {
 const PAIRS: [role: string, fg: string, bg: string, min: number][] = [
   ['clinical value', '--ink', '--field', 7],
   ['unit, column and row label', '--ink', '--paper', 7],
+  // a field's full name, under its short one (#192); it names a clinical value
+  ['caption under a label', '--ink', '--paper', 7],
   ['histogram axis numeral', '--ink', '--paper', 7],
   ['section heading, footer', '--muted', '--paper', 4.5],
   ['placeholder', '--muted', '--field', 4.5],
@@ -79,6 +81,10 @@ const USES: [selector: string, declaration: RegExp][] = [
   // every matrix value, a 0 included, is a clinical value at full ink
   ['.ledger td', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['.unit', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  ['.unit', /(?:^|[;\s])font-size:\s*0\.8rem\s*;/],
+  ['.mcaption', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  ['.mcaption', /(?:^|[;\s])font-size:\s*0\.8rem\s*;/],
+  ['.mrow-error', /(?:^|[;\s])font-size:\s*0\.8rem\s*;/],
   ['h4', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['.site-footer', /(?:^|[;\s])color:\s*var\(--muted\)/],
   ['input::placeholder', /(?:^|[;\s])color:\s*var\(--muted\)/],
@@ -105,6 +111,37 @@ const USES: [selector: string, declaration: RegExp][] = [
 it.each(USES)('%s uses the token its role is measured with', (sel, decl) =>
   expect(body(sel)).toMatch(decl)
 );
+
+// Case-folding turns μ into Μ, so a unit must never be transformed.
+it('never transforms the case of a unit', () =>
+  expect(body('.unit')).not.toMatch(/text-transform/));
+
+// Nor may any other rule: a transform on `.krow > .unit`, on a label that
+// carries its unit in brackets ("CLR (μm)"), on anything either inherits
+// from, or inside an @media block would case-fold it just the same, and
+// `.unit` alone does not see those rules. So the rules that change case
+// anywhere in App.css are an allowlist: the section heading and the column
+// header, neither of which holds a unit.
+it('changes the case of nothing but the h4 and thead th rules', () => {
+  const code = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  // property names are case-insensitive; `font` sets the caps as well
+  const casings = [
+    /text-transform\s*:(?!\s*none\b)/gi,
+    /font-variant(?:-caps)?\s*:(?!\s*normal\b)/gi,
+    /\bfont\s*:[^;}]*\b(?:all-)?(?:small|petite)-caps\b/gi
+  ];
+  const matches = casings.flatMap((casing) => [...code.matchAll(casing)]);
+  const selectors = matches.map(({ index }) => {
+    const open = code.lastIndexOf('{', index);
+    const before = Math.max(
+      code.lastIndexOf('}', open),
+      code.lastIndexOf('{', open - 1),
+      code.lastIndexOf(';', open)
+    );
+    return code.slice(before + 1, open).trim();
+  });
+  expect(selectors.sort()).toEqual(['h4', 'thead th']);
+});
 
 // The chart grid's columns live in App.css hunks other work also edits, and no
 // visual fixture covers 769-1200px, so a lost merge hunk would go unseen.

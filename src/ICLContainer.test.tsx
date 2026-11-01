@@ -75,34 +75,34 @@ const PATIENT_SECTIONS = [
 
 /* Entered by the clinician: every one is a number input. */
 const MEASURED_FIELDS = [
-  'Angle to Angle (AtA), millimetres',
-  'White to White (WtW), millimetres',
-  'Crystaline Lens Rise (CLR), micrometres',
-  'Internal Anterior Chamber Depth (ACD), millimetres',
-  'Anterior Chamber Angle nasal (ACAn), degrees',
-  'Anterior Chamber Angle temporal (ACAt), degrees',
-  'Anterior Keratometry Flat (KAntFlt), dioptres',
+  'AtA (mm), Angle to Angle, millimetres',
+  'WtW (mm), White to White, millimetres',
+  'CLR (μm), Crystaline Lens Rise, micrometres',
+  'ACD (mm), Internal Anterior Chamber Depth, millimetres',
+  'ACAn (º), Anterior Chamber Angle nasal, degrees',
+  'ACAt (º), Anterior Chamber Angle temporal, degrees',
+  'KAntFlt (dpt), Anterior Keratometry Flat, dioptres',
   'Anterior Keratometry Flat axis, degrees',
-  'Anterior Keratometry Steep (KAntStp), dioptres',
+  'KAntStp (dpt), Anterior Keratometry Steep, dioptres',
   'Anterior Keratometry Steep axis, degrees',
-  'Posterior Keratometry Flat (KPostFlt), dioptres',
+  'KPostFlt (dpt), Posterior Keratometry Flat, dioptres',
   'Posterior Keratometry Flat axis, degrees',
-  'Posterior Keratometry Steep (KPostStp), dioptres',
+  'KPostStp (dpt), Posterior Keratometry Steep, dioptres',
   'Posterior Keratometry Steep axis, degrees',
-  'Central Corneal Thickness (CCT), micrometres',
-  'Sphere (spectacle refraction), dioptres',
-  'Cylindre (spectacle refraction), dioptres',
-  'Axis (spectacle refraction), degrees',
-  'Vertex, millimetres'
+  'CCT (μm), Central Corneal Thickness, micrometres',
+  'Sphere (dpt) (spectacle refraction), dioptres',
+  'Cylindre (dpt) (spectacle refraction), dioptres',
+  'Axis (º) (spectacle refraction), degrees',
+  'Vertex (mm), millimetres'
 ];
 
 /* Computed by the calculator: Age, then the four ICL Power outputs. */
 const COMPUTED_FIELDS = [
-  'Age, years',
-  'Sphere (ICL power), dioptres',
-  'Cylindre (ICL power), dioptres',
-  'Axis (ICL power), degrees',
-  'Spherical Equivalent (SE), dioptres'
+  'Age (years)',
+  'Sphere (dpt) (ICL power), dioptres',
+  'Cylindre (dpt) (ICL power), dioptres',
+  'Axis (º) (ICL power), degrees',
+  'SE (dpt), Spherical Equivalent (ICL power), dioptres'
 ];
 
 /*
@@ -129,15 +129,15 @@ const inOrder = (
 
 /* Every field either result tab needs: the seven ICL power fields, AtA, CLR, a date of birth. */
 const FILL: [string, string][] = [
-  ['Angle to Angle (AtA), millimetres', '11.8'],
-  ['Crystaline Lens Rise (CLR), micrometres', '250'],
-  ['Internal Anterior Chamber Depth (ACD), millimetres', '3.2'],
-  ['Anterior Keratometry Flat (KAntFlt), dioptres', '43'],
-  ['Anterior Keratometry Steep (KAntStp), dioptres', '44.5'],
-  ['Central Corneal Thickness (CCT), micrometres', '540'],
-  ['Sphere (spectacle refraction), dioptres', '-10'],
-  ['Cylindre (spectacle refraction), dioptres', '-2.25'],
-  ['Vertex, millimetres', '12']
+  ['AtA (mm), Angle to Angle, millimetres', '11.8'],
+  ['CLR (μm), Crystaline Lens Rise, micrometres', '250'],
+  ['ACD (mm), Internal Anterior Chamber Depth, millimetres', '3.2'],
+  ['KAntFlt (dpt), Anterior Keratometry Flat, dioptres', '43'],
+  ['KAntStp (dpt), Anterior Keratometry Steep, dioptres', '44.5'],
+  ['CCT (μm), Central Corneal Thickness, micrometres', '540'],
+  ['Sphere (dpt) (spectacle refraction), dioptres', '-10'],
+  ['Cylindre (dpt) (spectacle refraction), dioptres', '-2.25'],
+  ['Vertex (mm), millimetres', '12']
 ];
 /* fillEverything fires ten validated changes; a loaded machine outruns 5s. */
 const FILL_TIMEOUT = 30_000;
@@ -253,7 +253,7 @@ it('resets every entered value when Reset is clicked', async () => {
   });
   fireEvent.change(
     screen.getByRole('spinbutton', {
-      name: 'Angle to Angle (AtA), millimetres'
+      name: 'AtA (mm), Angle to Angle, millimetres'
     }),
     {
       target: { value: '12.3' }
@@ -274,7 +274,7 @@ it('resets every entered value when Reset is clicked', async () => {
   });
   expect(
     screen.getByRole('spinbutton', {
-      name: 'Angle to Angle (AtA), millimetres'
+      name: 'AtA (mm), Angle to Angle, millimetres'
     })
   ).toHaveValue(12.3);
 
@@ -286,7 +286,7 @@ it('resets every entered value when Reset is clicked', async () => {
   // Back to empty, which is where every measured field starts (#196).
   expect(
     screen.getByRole('spinbutton', {
-      name: 'Angle to Angle (AtA), millimetres'
+      name: 'AtA (mm), Angle to Angle, millimetres'
     })
   ).toHaveValue(null);
 });
@@ -385,8 +385,8 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
 
   it('names the mean of a full ACA pair', async () => {
     renderWithHash();
-    enterAngle('Anterior Chamber Angle nasal (ACAn), degrees', '30');
-    enterAngle('Anterior Chamber Angle temporal (ACAt), degrees', '32');
+    enterAngle('ACAn (º), Anterior Chamber Angle nasal, degrees', '30');
+    enterAngle('ACAt (º), Anterior Chamber Angle temporal, degrees', '32');
     goToNormality();
     await waitFor(() => {
       expect(gaugeName(ACA)).toMatch(/^Average .*\(º\): 31, /);
@@ -394,8 +394,8 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
   });
 
   it.each([
-    ['temporal', 'Anterior Chamber Angle temporal (ACAt), degrees'],
-    ['nasal', 'Anterior Chamber Angle nasal (ACAn), degrees']
+    ['temporal', 'ACAt (º), Anterior Chamber Angle temporal, degrees'],
+    ['nasal', 'ACAn (º), Anterior Chamber Angle nasal, degrees']
   ])('names no ACA when only the %s angle is entered', async (_side, kept) => {
     renderWithHash();
     // The other side is untouched, so still empty (#196).
@@ -408,8 +408,8 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
 
   it('names no ACA when both angles are cleared', async () => {
     renderWithHash();
-    enterAngle('Anterior Chamber Angle nasal (ACAn), degrees', '');
-    enterAngle('Anterior Chamber Angle temporal (ACAt), degrees', '');
+    enterAngle('ACAn (º), Anterior Chamber Angle nasal, degrees', '');
+    enterAngle('ACAt (º), Anterior Chamber Angle temporal, degrees', '');
     goToNormality();
     await waitFor(() => {
       expect(gaugeName(ACA)).toBe(`${ACA}: no value entered`);
@@ -443,13 +443,13 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
  */
 describe('a fresh form, and the ICL Power it computes (#196)', () => {
   const ICL_POWER_INPUTS: [string, string][] = [
-    ['Internal Anterior Chamber Depth (ACD), millimetres', '3.2'],
-    ['Anterior Keratometry Flat (KAntFlt), dioptres', '43'],
-    ['Anterior Keratometry Steep (KAntStp), dioptres', '44.5'],
-    ['Central Corneal Thickness (CCT), micrometres', '540'],
-    ['Sphere (spectacle refraction), dioptres', '-10'],
-    ['Cylindre (spectacle refraction), dioptres', '-2.25'],
-    ['Vertex, millimetres', '12']
+    ['ACD (mm), Internal Anterior Chamber Depth, millimetres', '3.2'],
+    ['KAntFlt (dpt), Anterior Keratometry Flat, dioptres', '43'],
+    ['KAntStp (dpt), Anterior Keratometry Steep, dioptres', '44.5'],
+    ['CCT (μm), Central Corneal Thickness, micrometres', '540'],
+    ['Sphere (dpt) (spectacle refraction), dioptres', '-10'],
+    ['Cylindre (dpt) (spectacle refraction), dioptres', '-2.25'],
+    ['Vertex (mm), millimetres', '12']
   ];
 
   /* The same seven numbers, as the formulas take them; the rest 0. */
@@ -471,15 +471,14 @@ describe('a fresh form, and the ICL Power it computes (#196)', () => {
     spectacleRefraction: { sphere: -10, cylindre: -2.25, axis: 0, vertex: 12 }
   };
 
-  const output = (name: string) =>
-    screen.getByRole('textbox', { name: `${name}, dioptres` });
+  const output = (name: string) => screen.getByRole('textbox', { name });
   const outputs = () => [
-    output('Sphere (ICL power)'),
-    output('Cylindre (ICL power)'),
-    output('Spherical Equivalent (SE)')
+    output('Sphere (dpt) (ICL power), dioptres'),
+    output('Cylindre (dpt) (ICL power), dioptres'),
+    output('SE (dpt), Spherical Equivalent (ICL power), dioptres')
   ];
   const axisOutput = () =>
-    screen.getByRole('textbox', { name: 'Axis (ICL power), degrees' });
+    screen.getByRole('textbox', { name: 'Axis (º) (ICL power), degrees' });
   const enter = enterNumber;
   const enterAll = () =>
     ICL_POWER_INPUTS.forEach(([name, value]) => enter(name, value));
@@ -495,7 +494,9 @@ describe('a fresh form, and the ICL Power it computes (#196)', () => {
   it('starts Age and all four ICL Power outputs empty', () => {
     renderWithHash();
 
-    expect(screen.getByRole('textbox', { name: 'Age, years' })).toHaveValue('');
+    expect(screen.getByRole('textbox', { name: 'Age (years)' })).toHaveValue(
+      ''
+    );
     outputs().forEach((element) => expect(element).toHaveValue(''));
     expect(axisOutput()).toHaveValue('');
   });
@@ -505,23 +506,23 @@ describe('a fresh form, and the ICL Power it computes (#196)', () => {
     enterAll();
 
     await waitFor(() => {
-      expect(output('Sphere (ICL power)')).toHaveValue(
+      expect(output('Sphere (dpt) (ICL power), dioptres')).toHaveValue(
         String(calcICLSphere(ENTERED))
       );
     });
-    expect(output('Cylindre (ICL power)')).toHaveValue(
+    expect(output('Cylindre (dpt) (ICL power), dioptres')).toHaveValue(
       String(calcICLCylindre(ENTERED))
     );
-    expect(output('Spherical Equivalent (SE)')).toHaveValue(
-      String(calcICLSphericalEquivalent(ENTERED))
-    );
+    expect(
+      output('SE (dpt), Spherical Equivalent (ICL power), dioptres')
+    ).toHaveValue(String(calcICLSphericalEquivalent(ENTERED)));
     // Axis reads only the refraction axis, which is still empty.
     expect(axisOutput()).toHaveValue('');
   });
 
   it('computes Axis from the refraction axis alone', async () => {
     renderWithHash();
-    enter('Axis (spectacle refraction), degrees', '50');
+    enter('Axis (º) (spectacle refraction), degrees', '50');
 
     await waitFor(() => {
       expect(axisOutput()).toHaveValue(String(calcICLAxis(50)));
@@ -535,7 +536,9 @@ describe('a fresh form, and the ICL Power it computes (#196)', () => {
       renderWithHash();
       enterAll();
       await waitFor(() => {
-        expect(output('Sphere (ICL power)')).not.toHaveValue('');
+        expect(output('Sphere (dpt) (ICL power), dioptres')).not.toHaveValue(
+          ''
+        );
       });
 
       enter(name, '');
@@ -550,9 +553,9 @@ describe('a fresh form, and the ICL Power it computes (#196)', () => {
     renderWithHash();
     // Validates the whole form, so every empty required field now has an
     // error - none touched, so none shown.
-    enter('Angle to Angle (AtA), millimetres', '12');
+    enter('AtA (mm), Angle to Angle, millimetres', '12');
     const wtw = screen.getByRole('spinbutton', {
-      name: 'White to White (WtW), millimetres'
+      name: 'WtW (mm), White to White, millimetres'
     });
     fireEvent.blur(wtw);
 
@@ -681,7 +684,7 @@ describe('Matrix and Regression with missing inputs (#197)', () => {
     async () => {
       renderWithHash();
       fillEverything();
-      enterNumber('Angle to Angle (AtA), millimetres', '');
+      enterNumber('AtA (mm), Angle to Angle, millimetres', '');
       fireEvent.click(screen.getByText('Floating Matrix'));
 
       expect(

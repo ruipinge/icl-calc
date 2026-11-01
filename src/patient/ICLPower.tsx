@@ -49,7 +49,9 @@ export const ICLPower = ({ values }: FormikState<ICLFormValues>) => {
           disabled={true}
         />
         <FieldWithUnit
-          label="Spherical Equivalent (SE)"
+          label="SE"
+          caption="Spherical Equivalent"
+          qualifier=" (ICL power)"
           value={inputs === undefined ? '' : calcICLSphericalEquivalent(inputs)}
           name="iclSphericalEquivalent"
           unit="dpt"

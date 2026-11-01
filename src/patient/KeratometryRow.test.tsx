@@ -15,7 +15,8 @@ const renderRow = (props: Partial<Parameters<typeof KeratometryRow>[0]> = {}) =>
       onSubmit={() => {}}
     >
       <KeratometryRow
-        label="Anterior Keratometry Flat (KAntFlt)"
+        label="KAntFlt"
+        caption="Anterior Keratometry Flat"
         name="corneaProfile.kaf"
         axisSrLabel="Anterior Keratometry Flat axis"
         axisName="corneaProfile.axisaf"
@@ -29,7 +30,7 @@ it('names the reading in dioptres and its axis in degrees', () => {
 
   expect(
     screen.getByRole('spinbutton', {
-      name: 'Anterior Keratometry Flat (KAntFlt), dioptres'
+      name: 'KAntFlt (dpt), Anterior Keratometry Flat, dioptres'
     })
   ).toHaveValue(42);
   expect(
@@ -58,13 +59,21 @@ it('shows "@" before the axis, hidden from the accessibility tree', () => {
 
 /*
  * The stylesheet places the reading on one grid line only if its cells are
- * siblings in reading order: label, K value, @, axis value. Each value cell
- * holds its control, its unit and its message, in that order, so a message
- * sits under the control it belongs to and nowhere else.
+ * siblings in reading order: label, K input, @, axis input, the axis's unit.
+ * The K value's unit is in its label. The messages follow the cells as
+ * siblings of their own, K first, so each takes a line across the whole
+ * row, and each opens with the control it is about.
  */
 const cellText = (el: Element): string => {
   if (el.tagName === 'INPUT') {
     return `input:${el.getAttribute('name')}`;
+  }
+  if (el.classList.contains('mrow-error')) {
+    // the prefix a sighted reader sees, then what the control is described by
+    // eslint-disable-next-line testing-library/no-node-access
+    const prefix = el.querySelector('.mrow-error-field')?.textContent ?? '';
+    // eslint-disable-next-line testing-library/no-node-access
+    return `message:${prefix}|${el.querySelector('[id]')?.textContent}`;
   }
   // a label's visible text is its aria-hidden span; the sr-only name follows
   // eslint-disable-next-line testing-library/no-node-access
@@ -79,15 +88,10 @@ const rowCells = (container: HTMLElement) => {
   expect(rows).toHaveLength(1);
   expect(rows[0]).toHaveClass('krow');
   // eslint-disable-next-line testing-library/no-node-access
-  return [...rows[0].children].map((el) =>
-    el.classList.contains('mvalue')
-      ? // eslint-disable-next-line testing-library/no-node-access
-        [...el.children].map((child) => cellText(child))
-      : cellText(el)
-  );
+  return [...rows[0].children].map((el) => cellText(el));
 };
 
-it('lays the reading and its axis out as one row, each message under its control', () => {
+it('lays the reading and its axis out as one row, then each message, K first', () => {
   const { container } = renderRow({
     error: 'Bad K',
     touched: true,
@@ -96,22 +100,106 @@ it('lays the reading and its axis out as one row, each message under its control
   });
 
   expect(rowCells(container)).toEqual([
-    'label:Anterior Keratometry Flat (KAntFlt)',
-    ['input:corneaProfile.kaf', 'span:dpt', 'div:Bad K'],
+    'label:KAntFlt (dpt)',
+    'input:corneaProfile.kaf',
     'label:@',
-    ['input:corneaProfile.axisaf', 'span:º', 'div:Bad axis']
+    'input:corneaProfile.axisaf',
+    'span:º',
+    'message:K: |Bad K',
+    'message:Axis: |Bad axis'
   ]);
 });
 
-it('puts an axis message under the axis alone', () => {
+it("names an axis message as the axis's alone", () => {
   const { container } = renderRow({ axisError: 'Bad axis', axisTouched: true });
 
   expect(rowCells(container)).toEqual([
-    'label:Anterior Keratometry Flat (KAntFlt)',
-    ['input:corneaProfile.kaf', 'span:dpt'],
+    'label:KAntFlt (dpt)',
+    'input:corneaProfile.kaf',
     'label:@',
-    ['input:corneaProfile.axisaf', 'span:º', 'div:Bad axis']
+    'input:corneaProfile.axisaf',
+    'span:º',
+    'message:Axis: |Bad axis'
   ]);
+});
+
+it("names a K message as the reading's alone", () => {
+  const { container } = renderRow({ error: 'Bad K', touched: true });
+
+  expect(rowCells(container)).toEqual([
+    'label:KAntFlt (dpt)',
+    'input:corneaProfile.kaf',
+    'label:@',
+    'input:corneaProfile.axisaf',
+    'span:º',
+    'message:K: |Bad K'
+  ]);
+});
+
+/*
+ * A screen reader reading the page line by line meets the two messages
+ * without their controls, so the prefix is in the tree and says which is
+ * which. It sits outside the element each control is described by, so the
+ * description stays the message alone: the control's name already says which.
+ */
+it('reads each message prefix in the page, but not in the description', () => {
+  renderRow({
+    error: 'Bad K',
+    touched: true,
+    axisError: 'Bad axis',
+    axisTouched: true
+  });
+
+  expect(screen.getByText('K:')).not.toHaveAttribute('aria-hidden');
+  expect(screen.getByText('Axis:')).not.toHaveAttribute('aria-hidden');
+  const [k, axis] = screen.getAllByRole('spinbutton');
+  expect(k).toHaveAccessibleDescription('Bad K');
+  expect(axis).toHaveAccessibleDescription('Bad axis');
+});
+
+/*
+ * A message spans the whole row, the label's track included, so the label
+ * no longer spans the message lines (#195). The row is flagged while any of
+ * its messages shows, so every cell in it hands its 0.6rem to the messages.
+ */
+it.each([
+  [{}, false],
+  [{ error: 'Bad K', touched: true }, true],
+  [{ axisError: 'Bad axis', axisTouched: true }, true],
+  [
+    { error: 'Bad K', touched: true, axisError: 'Bad axis', axisTouched: true },
+    true
+  ]
+])('flags the row while a message shows (%o)', (props, flagged) => {
+  const { container } = renderRow(props);
+
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  const row = container.querySelector('.krow');
+  expect(row?.hasAttribute('data-message')).toBe(flagged);
+});
+
+/*
+ * The reading's label is its short name with the K unit in brackets, over
+ * the full name as a caption. The axis has only the "@" on screen, so its
+ * unit is a mark after it - hidden, since the axis's name says "degrees".
+ */
+it('labels the reading with its short name and unit, over its full name', () => {
+  renderRow();
+
+  expect(screen.getByText('KAntFlt (dpt)')).toHaveAttribute(
+    'aria-hidden',
+    'true'
+  );
+  expect(screen.getByText('Anterior Keratometry Flat')).toHaveClass('mcaption');
+});
+
+it('marks the axis unit after the axis, hidden from the tree', () => {
+  renderRow();
+
+  const mark = screen.getByText('º');
+  expect(mark).toHaveClass('unit');
+  expect(mark).toHaveAttribute('aria-hidden', 'true');
+  expect(screen.queryByText('@ (º)')).toBeNull();
 });
 
 it('points each invalid, touched control at its own message', () => {

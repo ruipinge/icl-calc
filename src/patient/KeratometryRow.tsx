@@ -1,9 +1,12 @@
 import * as React from 'react';
 
-import { measuredCells } from './FieldWithUnit';
+import { measuredParts, rowMessageFlag } from './FieldWithUnit';
+
+import { UnitMark } from './validity';
 
 interface KeratometryRowProps {
   label: string;
+  caption: string;
   name: string;
   axisSrLabel: string;
   axisName: string;
@@ -15,12 +18,16 @@ interface KeratometryRowProps {
 
 /*
  * A keratometry reading as a clinician says it, "X dpt at Y º", on one row:
- * label | K dpt | @ | axis º. Each control keeps its own label and name, and
- * its message sits under it, inside its own value cell, so a message under
- * the axis can never be read as one about the K value.
+ * label | K | @ | axis | º. The K value's unit is in its label, "KAntFlt
+ * (dpt)"; the axis has no label of its own on screen, only the "@", so its
+ * unit follows it as a mark. Each control keeps its own name. Its message
+ * follows the row's cells on a line of its own, across the whole row, and
+ * opens with which control it is about - "K: " or "Axis: " - so a message
+ * about the axis can never be read as one about the K value.
  */
 export const KeratometryRow: React.FC<KeratometryRowProps> = ({
   label,
+  caption,
   name,
   axisSrLabel,
   axisName,
@@ -29,21 +36,38 @@ export const KeratometryRow: React.FC<KeratometryRowProps> = ({
   axisError,
   axisTouched
 }) => {
-  const k = measuredCells({ label, name, unit: 'dpt', error, touched });
-  const axis = measuredCells({
+  const k = measuredParts({
+    label,
+    caption,
+    name,
+    unit: 'dpt',
+    error,
+    touched,
+    messagePrefix: 'K: '
+  });
+  const axis = measuredParts({
     label: '@',
     srLabel: axisSrLabel,
     labelClassName: 'kat',
     name: axisName,
     unit: 'º',
     error: axisError,
-    touched: axisTouched
+    touched: axisTouched,
+    messagePrefix: 'Axis: '
   });
 
   return (
-    <div className="mrow krow">
-      {k}
-      {axis}
+    <div
+      className="mrow krow"
+      data-message={rowMessageFlag([k.message, axis.message])}
+    >
+      {k.label}
+      {k.control}
+      {axis.label}
+      {axis.control}
+      <UnitMark>º</UnitMark>
+      {k.message}
+      {axis.message}
     </div>
   );
 };

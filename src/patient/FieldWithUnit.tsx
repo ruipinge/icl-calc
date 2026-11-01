@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { UnitMark, fieldValidity } from './validity';
 
 import { Field } from 'formik';
+import { fieldValidity } from './validity';
 
 type Unit = 'mm' | 'nm' | 'º' | 'dpt' | 'μm';
 
@@ -14,9 +14,13 @@ const UNITS: Map<Unit, string> = new Map([
 ]);
 
 export interface FieldWithUnitProps {
+  /* the short name, shown with its unit in brackets: "AtA" reads "AtA (mm)" */
   label: string;
   name: string;
   unit: Unit;
+  /* the full name, shown as a line of its own under the label */
+  caption?: string;
+  /* names the control in place of the label, which is then shown as given */
   srLabel?: string;
   qualifier?: string;
   labelClassName?: string;
@@ -25,19 +29,27 @@ export interface FieldWithUnitProps {
   error?: string;
   value?: number | '';
   disabled?: boolean;
+  /* shown, and read in the page, before the message but outside its
+     description: "K: ", "Axis: " */
+  messagePrefix?: string;
 }
 
 /*
- * One measured field as two grid cells: its label, and its value - the
- * control, its unit and, while it is shown, its message. The value spans the
- * control and unit tracks as a subgrid, so the message sits directly under
- * its own control, and a row holding two fields (a keratometry reading and
- * its axis) keeps both on one line with each message under its own input.
+ * One measured field in parts: its label, its control and, while shown, its
+ * message. The label is the short name with its unit in brackets - "KAntFlt
+ * (dpt)" - over a caption that spells the name out, so the unit is read where
+ * the name is and the full name never needs a hover (#192).
+ *
+ * The accessible name holds the visible label word for word, so speech input
+ * can address the field by what is on screen (WCAG 2.5.3), then the caption,
+ * the qualifier and the unit spelled out: "AtA (mm), Angle to Angle,
+ * millimetres".
  */
-export const measuredCells = ({
+export const measuredParts = ({
   label,
   name,
   unit,
+  caption,
   srLabel,
   qualifier,
   labelClassName,
@@ -45,46 +57,75 @@ export const measuredCells = ({
   error,
   touched,
   value,
-  disabled
-}: FieldWithUnitProps): React.ReactNode => {
+  disabled,
+  messagePrefix
+}: FieldWithUnitProps) => {
   const id = name + 'field';
-  const { props: validity, message } = fieldValidity(name, error, touched);
-
-  return (
-    <>
-      <label htmlFor={id} className={labelClassName}>
-        {/*
-         * The whole name lives in the sr-only span and the visible text is
-         * hidden. Chromium pads an absolutely positioned span with spaces
-         * when it joins label text, so a name split across the two spans
-         * read "(AtA) , millimetres".
-         */}
-        <span aria-hidden="true">{label}</span>
-        <span className="sr-only">
-          {srLabel ?? label}
-          {qualifier}, {UNITS.get(unit)}
-        </span>
-      </label>
-      <div className="mvalue">
-        {disabled ? (
-          <input id={id} name={name} value={value} disabled={true} />
-        ) : (
-          <Field
-            type="number"
-            id={id}
-            name={name}
-            placeholder={placeholder}
-            autoComplete="off"
-            {...validity}
-          />
-        )}
-        <UnitMark>{unit}</UnitMark>
-        {message}
-      </div>
-    </>
+  const { props: validity, message } = fieldValidity(
+    name,
+    error,
+    touched,
+    messagePrefix
   );
+  const shown = srLabel ? label : `${label} (${unit})`;
+  const accessibleName = [
+    srLabel ?? shown,
+    caption && ', ' + caption,
+    qualifier,
+    ', ' + UNITS.get(unit)
+  ].join('');
+
+  const labelCell = (
+    <label htmlFor={id} className={labelClassName}>
+      {/*
+       * The whole name lives in the sr-only span and the visible text is
+       * hidden. Chromium pads an absolutely positioned span with spaces
+       * when it joins label text, so a name split across the two spans
+       * read "(AtA) , millimetres".
+       */}
+      <span aria-hidden="true">{shown}</span>
+      {caption && (
+        <span className="mcaption" aria-hidden="true">
+          {caption}
+        </span>
+      )}
+      <span className="sr-only">{accessibleName}</span>
+    </label>
+  );
+
+  const control = disabled ? (
+    <input id={id} name={name} value={value} disabled={true} />
+  ) : (
+    <Field
+      type="number"
+      id={id}
+      name={name}
+      placeholder={placeholder}
+      autoComplete="off"
+      {...validity}
+    />
+  );
+
+  return { label: labelCell, control, message };
 };
 
-export const FieldWithUnit: React.FC<FieldWithUnitProps> = (props) => (
-  <div className="mrow">{measuredCells(props)}</div>
-);
+/*
+ * The row holds a message, while one shows, as a line of its own across the
+ * whole row. data-message tells the stylesheet so; it is set here, not found
+ * by :has(), so a test can read it.
+ */
+export const rowMessageFlag = (messages: React.ReactNode[]) =>
+  messages.some(Boolean) ? '' : undefined;
+
+/* label | control, then the message on its own line across the row */
+export const FieldWithUnit: React.FC<FieldWithUnitProps> = (props) => {
+  const { label, control, message } = measuredParts(props);
+
+  return (
+    <div className="mrow" data-message={rowMessageFlag([message])}>
+      {label}
+      {control}
+      {message}
+    </div>
+  );
+};
