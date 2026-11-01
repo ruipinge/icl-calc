@@ -51,13 +51,13 @@ const renderCorneaProfile = (
  * the spinbuttons against those names.
  */
 const NINE_FIELDS = [
-  'KAntFlt (dpt), Anterior Keratometry Flat, dioptres',
+  'KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres',
   'Anterior Keratometry Flat axis, degrees',
-  'KAntStp (dpt), Anterior Keratometry Steep, dioptres',
+  'KAntStp (dpt @ º), Anterior Keratometry Steep, dioptres',
   'Anterior Keratometry Steep axis, degrees',
-  'KPostFlt (dpt), Posterior Keratometry Flat, dioptres',
+  'KPostFlt (dpt @ º), Posterior Keratometry Flat, dioptres',
   'Posterior Keratometry Flat axis, degrees',
-  'KPostStp (dpt), Posterior Keratometry Steep, dioptres',
+  'KPostStp (dpt @ º), Posterior Keratometry Steep, dioptres',
   'Posterior Keratometry Steep axis, degrees',
   'CCT (μm), Central Corneal Thickness, micrometres'
 ];
@@ -97,19 +97,19 @@ it('shows the values it was given', () => {
  */
 const READINGS = [
   [
-    'KAntFlt (dpt), Anterior Keratometry Flat',
+    'KAntFlt (dpt @ º), Anterior Keratometry Flat',
     'Anterior Keratometry Flat axis'
   ],
   [
-    'KAntStp (dpt), Anterior Keratometry Steep',
+    'KAntStp (dpt @ º), Anterior Keratometry Steep',
     'Anterior Keratometry Steep axis'
   ],
   [
-    'KPostFlt (dpt), Posterior Keratometry Flat',
+    'KPostFlt (dpt @ º), Posterior Keratometry Flat',
     'Posterior Keratometry Flat axis'
   ],
   [
-    'KPostStp (dpt), Posterior Keratometry Steep',
+    'KPostStp (dpt @ º), Posterior Keratometry Steep',
     'Posterior Keratometry Steep axis'
   ]
 ];
@@ -145,16 +145,17 @@ it('joins each value to its axis with a hidden "@"', () => {
 /*
  * The units are clinical meaning, not decoration: a keratometry value in
  * dioptres and one in millimetres are different numbers for the same cornea.
- * Each is on screen in the field's label, "KAntFlt (dpt)", over the full name
- * as a caption (#192); an axis, labelled only "@", has its unit as a mark
- * after it. All of it is aria-hidden: the full unit is part of each field's
+ * Each is on screen in the field's label over the full name as a caption
+ * (#192); a keratometry label carries its axis's unit too,
+ * "KAntFlt (dpt @ º)", since the axis is labelled only "@". All of it is
+ * aria-hidden: the full unit is part of each field's
  * accessible name, asserted for all nine in the order test above.
  */
 const SHOWN = [
-  ['KAntFlt (dpt)', 'Anterior Keratometry Flat'],
-  ['KAntStp (dpt)', 'Anterior Keratometry Steep'],
-  ['KPostFlt (dpt)', 'Posterior Keratometry Flat'],
-  ['KPostStp (dpt)', 'Posterior Keratometry Steep'],
+  ['KAntFlt (dpt @ º)', 'Anterior Keratometry Flat'],
+  ['KAntStp (dpt @ º)', 'Anterior Keratometry Steep'],
+  ['KPostFlt (dpt @ º)', 'Posterior Keratometry Flat'],
+  ['KPostStp (dpt @ º)', 'Posterior Keratometry Steep'],
   ['CCT (μm)', 'Central Corneal Thickness']
 ];
 
@@ -169,20 +170,10 @@ it('shows each short name with its unit, over its full name', () => {
   });
 });
 
-it('marks the unit after each axis, and nowhere else', () => {
+it('marks no unit beside any input', () => {
   renderCorneaProfile();
 
-  const degrees = screen.getAllByText('º');
-  expect(degrees).toHaveLength(4);
-  degrees.forEach((unit) => {
-    expect(unit).toHaveAttribute('aria-hidden', 'true');
-    // the axis's input is the cell before its unit
-    // eslint-disable-next-line testing-library/no-node-access
-    expect(unit.previousElementSibling).toHaveAttribute(
-      'name',
-      expect.stringMatching(/^corneaProfile\.axis/)
-    );
-  });
+  expect(screen.queryByText('º')).toBeNull();
   expect(screen.queryByText('dpt')).toBeNull();
   expect(screen.queryByText('μm')).toBeNull();
 });
@@ -219,7 +210,7 @@ it('shows a validation error for a negative posterior keratometry', async () => 
   // by description, not text: the message holds its range in a span of its own
   expect(
     await screen.findByRole('spinbutton', {
-      name: 'KPostFlt (dpt), Posterior Keratometry Flat, dioptres',
+      name: 'KPostFlt (dpt @ º), Posterior Keratometry Flat, dioptres',
       description: 'Invalid value. [4, 8] or 0 if not measured.'
     })
   ).toBeInTheDocument();
@@ -237,13 +228,13 @@ it('shows a validation error for a negative posterior keratometry', async () => 
  * control it is about - "K: " for a reading, "Axis: " for its axis.
  */
 const INVALID = [
-  ['kaf', 100, 'KAntFlt (dpt), Anterior Keratometry Flat, dioptres'],
+  ['kaf', 100, 'KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres'],
   ['axisaf', 200, 'Anterior Keratometry Flat axis, degrees'],
-  ['kas', 100, 'KAntStp (dpt), Anterior Keratometry Steep, dioptres'],
+  ['kas', 100, 'KAntStp (dpt @ º), Anterior Keratometry Steep, dioptres'],
   ['axisas', 200, 'Anterior Keratometry Steep axis, degrees'],
-  ['kpf', -6.2, 'KPostFlt (dpt), Posterior Keratometry Flat, dioptres'],
+  ['kpf', -6.2, 'KPostFlt (dpt @ º), Posterior Keratometry Flat, dioptres'],
   ['axispf', 200, 'Posterior Keratometry Flat axis, degrees'],
-  ['kps', -6.5, 'KPostStp (dpt), Posterior Keratometry Steep, dioptres'],
+  ['kps', -6.5, 'KPostStp (dpt @ º), Posterior Keratometry Steep, dioptres'],
   ['axisps', 200, 'Posterior Keratometry Steep axis, degrees']
 ] as const;
 

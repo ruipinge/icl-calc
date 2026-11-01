@@ -80,8 +80,6 @@ const USES: [selector: string, declaration: RegExp][] = [
   ['.ledger thead th', /(?:^|[;\s])color:\s*var\(--ink\)/],
   // every matrix value, a 0 included, is a clinical value at full ink
   ['.ledger td', /(?:^|[;\s])color:\s*var\(--ink\)/],
-  ['.unit', /(?:^|[;\s])color:\s*var\(--ink\)/],
-  ['.unit', /(?:^|[;\s])font-size:\s*0\.8rem\s*;/],
   ['.mcaption', /(?:^|[;\s])color:\s*var\(--ink\)/],
   ['.mcaption', /(?:^|[;\s])font-size:\s*0\.8rem\s*;/],
   ['.mrow-error', /(?:^|[;\s])font-size:\s*0\.8rem\s*;/],
@@ -112,16 +110,12 @@ it.each(USES)('%s uses the token its role is measured with', (sel, decl) =>
   expect(body(sel)).toMatch(decl)
 );
 
-// Case-folding turns μ into Μ, so a unit must never be transformed.
-it('never transforms the case of a unit', () =>
-  expect(body('.unit')).not.toMatch(/text-transform/));
-
-// Nor may any other rule: a transform on `.krow > .unit`, on a label that
-// carries its unit in brackets ("CLR (μm)"), on anything either inherits
-// from, or inside an @media block would case-fold it just the same, and
-// `.unit` alone does not see those rules. So the rules that change case
-// anywhere in App.css are an allowlist: the section heading and the column
-// header, neither of which holds a unit.
+// Case-folding turns μ into Μ, so a unit must never be transformed. Every
+// unit is in a label now, in brackets ("CLR (μm)"), and a transform on the
+// label, on anything it inherits from, or inside an @media block would
+// case-fold it. So the rules that change case anywhere in App.css are an
+// allowlist: the section heading and the column header, neither of which
+// holds a unit.
 it('changes the case of nothing but the h4 and thead th rules', () => {
   const code = css.replace(/\/\*[\s\S]*?\*\//g, '');
   // property names are case-insensitive; `font` sets the caps as well

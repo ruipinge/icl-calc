@@ -48,16 +48,3 @@ export const fieldValidity = (
     )
   };
 };
-
-/*
- * A unit as a sighted clinician reads it, after a control whose label does
- * not carry it - a keratometry axis, labelled only "@". The full word is in
- * the control's name.
- */
-export const UnitMark: React.FC<{ children: React.ReactNode }> = ({
-  children
-}) => (
-  <span className="unit" aria-hidden="true">
-    {children}
-  </span>
-);

@@ -2,8 +2,6 @@ import * as React from 'react';
 
 import { measuredParts, rowMessageFlag } from './FieldWithUnit';
 
-import { UnitMark } from './validity';
-
 interface KeratometryRowProps {
   label: string;
   caption: string;
@@ -18,9 +16,9 @@ interface KeratometryRowProps {
 
 /*
  * A keratometry reading as a clinician says it, "X dpt at Y º", on one row:
- * label | K | @ | axis | º. The K value's unit is in its label, "KAntFlt
- * (dpt)"; the axis has no label of its own on screen, only the "@", so its
- * unit follows it as a mark. Each control keeps its own name. Its message
+ * label | K | @ | axis. The label carries both units in the order the
+ * controls follow it, "KAntFlt (dpt @ º)", so neither input has a mark
+ * beside it. Each control keeps its own name. Its message
  * follows the row's cells on a line of its own, across the whole row, and
  * opens with which control it is about - "K: " or "Axis: " - so a message
  * about the axis can never be read as one about the K value.
@@ -39,6 +37,7 @@ export const KeratometryRow: React.FC<KeratometryRowProps> = ({
   const k = measuredParts({
     label,
     caption,
+    shownUnits: 'dpt @ º',
     name,
     unit: 'dpt',
     error,
@@ -65,7 +64,6 @@ export const KeratometryRow: React.FC<KeratometryRowProps> = ({
       {k.control}
       {axis.label}
       {axis.control}
-      <UnitMark>º</UnitMark>
       {k.message}
       {axis.message}
     </div>

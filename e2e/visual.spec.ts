@@ -186,7 +186,7 @@ test.describe('narrow (360x780)', () => {
   }) => {
     await open(page, null);
     for (const [name, value] of [
-      ['KAntFlt (dpt), Anterior Keratometry Flat, dioptres', '99'],
+      ['KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres', '99'],
       ['Anterior Keratometry Flat axis, degrees', '400']
     ]) {
       const field = page.getByRole('spinbutton', { name });
@@ -290,9 +290,9 @@ for (const width of [360, 390, 800, 1280]) {
 }
 
 /*
- * #192 and #195. Each field's unit is in its label, so its value track holds
- * the value alone; a keratometry axis has only an "@" for a label, so its
- * unit is a mark after it. The tracks are sized to the longest valid values,
+ * #192 and #195. Each field's unit is in its label - a keratometry row's
+ * label carries its axis's too, "KAntFlt (dpt @ º)" - so every value track
+ * holds the value alone. The tracks are sized to the longest valid values,
  * a width a font or track change could silently make too small. So, at
  * every width the form is checked at, with the longest value each field
  * accepts typed in (three decimals where a biometer reports them - K in
@@ -300,8 +300,6 @@ for (const width of [360, 390, 800, 1280]) {
  * rounded, and whole micrometres for CLR):
  *   - no value is clipped (the input does not scroll its own text);
  *   - no label or caption overflows its track or reaches its control;
- *   - each axis's unit mark lies right of its axis input, clear of it, and
- *     on the same line;
  *   - the page does not scroll sideways;
  *   - showing every message moves no input: no field jumps sideways or
  *     changes width when an error appears.
@@ -367,24 +365,8 @@ const labelBoxes = (page: Page) =>
       })
   );
 
-/* Each axis's unit mark against its axis input: right of it, on its line. */
-const axisUnits = (page: Page) =>
-  page.evaluate(() =>
-    [...document.querySelectorAll<HTMLElement>('.krow > .unit')].map((unit) => {
-      const input = unit.previousElementSibling as HTMLInputElement;
-      const box = input.getBoundingClientRect();
-      const mark = unit.getBoundingClientRect();
-      return {
-        name: input.name,
-        text: unit.textContent,
-        clear: mark.left >= box.right - 0.5,
-        onLine: mark.top < box.bottom && mark.bottom > box.top
-      };
-    })
-  );
-
 for (const width of [360, 390, 800, 1280]) {
-  test(`at ${width}px no unit overlaps the longest value, and an error moves no field`, async ({
+  test(`at ${width}px no value or label clips, and an error moves no field`, async ({
     page
   }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -415,20 +397,6 @@ for (const width of [360, 390, 800, 1280]) {
     ]);
     for (const label of labels) {
       expect(label, label.for).toMatchObject({ overflows: false, clear: true });
-    }
-    const units = await axisUnits(page);
-    expect(units.map(({ name }) => name)).toEqual([
-      'corneaProfile.axisaf',
-      'corneaProfile.axisas',
-      'corneaProfile.axispf',
-      'corneaProfile.axisps'
-    ]);
-    for (const unit of units) {
-      expect(unit, unit.name).toMatchObject({
-        text: 'º',
-        clear: true,
-        onLine: true
-      });
     }
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth)

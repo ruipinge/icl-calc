@@ -30,7 +30,7 @@ it('names the reading in dioptres and its axis in degrees', () => {
 
   expect(
     screen.getByRole('spinbutton', {
-      name: 'KAntFlt (dpt), Anterior Keratometry Flat, dioptres'
+      name: 'KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres'
     })
   ).toHaveValue(42);
   expect(
@@ -59,8 +59,8 @@ it('shows "@" before the axis, hidden from the accessibility tree', () => {
 
 /*
  * The stylesheet places the reading on one grid line only if its cells are
- * siblings in reading order: label, K input, @, axis input, the axis's unit.
- * The K value's unit is in its label. The messages follow the cells as
+ * siblings in reading order: label, K input, @, axis input - no unit mark:
+ * both units are in the label. The messages follow the cells as
  * siblings of their own, K first, so each takes a line across the whole
  * row, and each opens with the control it is about.
  */
@@ -100,11 +100,10 @@ it('lays the reading and its axis out as one row, then each message, K first', (
   });
 
   expect(rowCells(container)).toEqual([
-    'label:KAntFlt (dpt)',
+    'label:KAntFlt (dpt @ º)',
     'input:corneaProfile.kaf',
     'label:@',
     'input:corneaProfile.axisaf',
-    'span:º',
     'message:K: |Bad K',
     'message:Axis: |Bad axis'
   ]);
@@ -114,11 +113,10 @@ it("names an axis message as the axis's alone", () => {
   const { container } = renderRow({ axisError: 'Bad axis', axisTouched: true });
 
   expect(rowCells(container)).toEqual([
-    'label:KAntFlt (dpt)',
+    'label:KAntFlt (dpt @ º)',
     'input:corneaProfile.kaf',
     'label:@',
     'input:corneaProfile.axisaf',
-    'span:º',
     'message:Axis: |Bad axis'
   ]);
 });
@@ -127,11 +125,10 @@ it("names a K message as the reading's alone", () => {
   const { container } = renderRow({ error: 'Bad K', touched: true });
 
   expect(rowCells(container)).toEqual([
-    'label:KAntFlt (dpt)',
+    'label:KAntFlt (dpt @ º)',
     'input:corneaProfile.kaf',
     'label:@',
     'input:corneaProfile.axisaf',
-    'span:º',
     'message:K: |Bad K'
   ]);
 });
@@ -179,27 +176,25 @@ it.each([
 });
 
 /*
- * The reading's label is its short name with the K unit in brackets, over
- * the full name as a caption. The axis has only the "@" on screen, so its
- * unit is a mark after it - hidden, since the axis's name says "degrees".
+ * The reading's label is its short name with both units in brackets, in the
+ * order the controls follow - "KAntFlt (dpt @ º)" - over the full name as a
+ * caption. Neither input has a unit mark beside it.
  */
 it('labels the reading with its short name and unit, over its full name', () => {
   renderRow();
 
-  expect(screen.getByText('KAntFlt (dpt)')).toHaveAttribute(
+  expect(screen.getByText('KAntFlt (dpt @ º)')).toHaveAttribute(
     'aria-hidden',
     'true'
   );
   expect(screen.getByText('Anterior Keratometry Flat')).toHaveClass('mcaption');
 });
 
-it('marks the axis unit after the axis, hidden from the tree', () => {
+it('puts no unit mark after either input', () => {
   renderRow();
 
-  const mark = screen.getByText('º');
-  expect(mark).toHaveClass('unit');
-  expect(mark).toHaveAttribute('aria-hidden', 'true');
-  expect(screen.queryByText('@ (º)')).toBeNull();
+  expect(screen.queryByText('º')).toBeNull();
+  expect(screen.queryByText('dpt')).toBeNull();
 });
 
 it('points each invalid, touched control at its own message', () => {

@@ -20,6 +20,11 @@ export interface FieldWithUnitProps {
   unit: Unit;
   /* the full name, shown as a line of its own under the label */
   caption?: string;
+  /*
+   * the units shown in the brackets when the label speaks for more than its
+   * own control: a keratometry row reads "KAntFlt (dpt @ º)", K and axis
+   */
+  shownUnits?: string;
   /* names the control in place of the label, which is then shown as given */
   srLabel?: string;
   qualifier?: string;
@@ -50,6 +55,7 @@ export const measuredParts = ({
   name,
   unit,
   caption,
+  shownUnits,
   srLabel,
   qualifier,
   labelClassName,
@@ -67,7 +73,7 @@ export const measuredParts = ({
     touched,
     messagePrefix
   );
-  const shown = srLabel ? label : `${label} (${unit})`;
+  const shown = srLabel ? label : `${label} (${shownUnits ?? unit})`;
   const accessibleName = [
     srLabel ?? shown,
     caption && ', ' + caption,

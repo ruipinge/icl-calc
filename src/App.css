@@ -544,16 +544,6 @@ input[type='number']::-webkit-outer-spin-button {
   border-bottom: 2px solid var(--leaf-crimson);
 }
 
-/* a unit after a control whose label does not carry it: a keratometry axis */
-.unit {
-  font-family: var(--numeric);
-  font-feature-settings: 'ss02';
-  font-weight: 500;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  color: var(--ink);
-}
-
 /*
  * A validation message, here and under the date of birth. It is a short
  * alert read at a glance beside its field, and it quotes the valid range, so
@@ -613,16 +603,16 @@ input[type='number']::-webkit-outer-spin-button {
 
 /*
  * Cornea Profile: a keratometry reading and its axis share one row, read
- * "X dpt at Y º" - label | K | @ | axis | º. Measured in Chromium: the K
+ * "X dpt at Y º" - label | K | @ | axis, the label carrying both units,
+ * "KAntFlt (dpt @ º)". Measured in Chromium: the K
  * track holds "54.125" in Inter (#193) (57px of digits, three decimals as
  * some biometers report K in eighths of a dioptre; 73px with padding) with
  * 7px to spare, the axis track "179.5" (45px; 61px with padding, an axis
- * to one decimal as the ICL axis output is rounded) with 3px, the "@" is
- * 15px and the º mark 7px after a 0.3rem gap. The tracks right of the label
- * total 11.5rem.
+ * to one decimal as the ICL axis output is rounded) with 3px, and the "@"
+ * is 15px. The tracks right of the label total 10.5rem.
  */
 .kgroup {
-  grid-template-columns: minmax(0, 1fr) 5rem 1.5rem 4rem 1rem;
+  grid-template-columns: minmax(0, 1fr) 5rem 1.5rem 4rem;
 }
 
 /* plain rows (CCT): the control spans the value area */
@@ -633,11 +623,6 @@ input[type='number']::-webkit-outer-spin-button {
 .mrow > label.kat {
   padding: 0.6rem 0.25rem;
   text-align: center;
-}
-
-/* the axis's unit, after it, on the value's baseline */
-.krow > .unit {
-  padding-left: 0.3rem;
 }
 
 /* Previous surgery: the label, then a select spanning the value area. */
@@ -724,13 +709,13 @@ input[type='number']::-webkit-outer-spin-button {
 
 /*
  * The patient form: Biometry | Cornea Profile | Refraction + ICL Power.
- * Each group's value tracks are fixed (5.25rem; 11.5rem in Cornea Profile,
+ * Each group's value tracks are fixed (5.25rem; 10.5rem in Cornea Profile,
  * whose rows carry an axis as well), so the label track is what narrows;
  * below 75rem three columns leave it too little room for the captions,
- * which then wrap word by word. Measured in Chromium, the Cornea Profile
- * label track is 136px at a 360px viewport, room for its longest label,
- * "KPostStp (dpt)" (103px, 114px with its padding), on one line, so a
- * keratometry row keeps its short name whole at every width down to 360px.
+ * which then wrap word by word. The Cornea Profile label track is 152px at
+ * a 360px viewport, and its longest label, "KPostStp (dpt @ º)", sets on
+ * one line there (patient-error-narrow.png); visual.spec.ts fails if any
+ * label overflows its track.
  */
 .patient-grid {
   display: grid;
