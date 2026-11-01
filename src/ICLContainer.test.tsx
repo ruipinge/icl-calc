@@ -1,4 +1,5 @@
 import {
+  ICLFormValues,
   ICLInputs,
   INITIAL_VALUES,
   PatientInfo,
@@ -19,14 +20,9 @@ import {
 } from '@testing-library/react';
 
 import { ICLContainer } from './ICLContainer';
+import { Matrix } from './matrix';
 import { Regression } from './regression';
-import { vi } from 'vitest';
-
-/*
- * Every test renders the whole app, and many fire a dozen changes that each
- * re-validate the form; on a busy machine that outruns the 5s default.
- */
-vi.setConfig({ testTimeout: 30_000 });
+import { iclPowerInputs } from './missing';
 
 /**
  * ICLContainer renders its own <HashRouter>, so this must NOT wrap it in
@@ -143,6 +139,8 @@ const FILL: [string, string][] = [
   ['Cylindre (spectacle refraction), dioptres', '-2.25'],
   ['Vertex, millimetres', '12']
 ];
+/* fillEverything fires ten validated changes; a loaded machine outruns 5s. */
+const FILL_TIMEOUT = 30_000;
 const fillEverything = () => {
   FILL.forEach(([name, value]) => enterNumber(name, value));
   fireEvent.change(screen.getByLabelText('Date of Birth'), {
@@ -201,33 +199,41 @@ it('shows the six normality charts on their route', () => {
   expect(screen.queryByLabelText('Name')).toBeNull();
 });
 
-it('shows the floating matrix on its route', async () => {
-  renderWithHash();
-  fillEverything();
-  fireEvent.click(screen.getByText('Floating Matrix'));
-  await screen.findByRole('rowheader', { name: 'Number of Eyes' });
+it(
+  'shows the floating matrix on its route',
+  async () => {
+    renderWithHash();
+    fillEverything();
+    fireEvent.click(screen.getByText('Floating Matrix'));
+    await screen.findByRole('rowheader', { name: 'Number of Eyes' });
 
-  expect(
-    screen.getByRole('rowheader', { name: 'Number of Eyes' })
-  ).toBeInTheDocument();
-  expect(screen.getAllByRole('row')).toHaveLength(13);
-});
+    expect(
+      screen.getByRole('rowheader', { name: 'Number of Eyes' })
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole('row')).toHaveLength(13);
+  },
+  FILL_TIMEOUT
+);
 
-it('shows both regression tables on their route', async () => {
-  renderWithHash();
-  fillEverything();
-  fireEvent.click(screen.getByText('Regression'));
-  await screen.findByRole('heading', { name: 'Vault Prediction' });
+it(
+  'shows both regression tables on their route',
+  async () => {
+    renderWithHash();
+    fillEverything();
+    fireEvent.click(screen.getByText('Regression'));
+    await screen.findByRole('heading', { name: 'Vault Prediction' });
 
-  expect(
-    screen.getByRole('heading', { name: 'Vault Prediction' })
-  ).toBeInTheDocument();
-  expect(
-    screen.getByRole('heading', {
-      name: 'Probability of 250 < Vault < 1000 (\u03bcm)'
-    })
-  ).toBeInTheDocument();
-});
+    expect(
+      screen.getByRole('heading', { name: 'Vault Prediction' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', {
+        name: 'Probability of 250 < Vault < 1000 (\u03bcm)'
+      })
+    ).toBeInTheDocument();
+  },
+  FILL_TIMEOUT
+);
 
 it('falls back to the Patient tab for an unknown route', () => {
   renderWithHash('#does-not-exist');
@@ -294,30 +300,38 @@ it('switches to Biometric Normality tab when clicked', async () => {
   expect(screen.queryByLabelText('Name')).toBeNull();
 });
 
-it('switches to Floating Matrix tab when clicked', async () => {
-  renderWithHash();
-  fillEverything();
+it(
+  'switches to Floating Matrix tab when clicked',
+  async () => {
+    renderWithHash();
+    fillEverything();
 
-  fireEvent.click(screen.getByText('Floating Matrix'));
+    fireEvent.click(screen.getByText('Floating Matrix'));
 
-  await waitFor(() => {
-    expect(screen.getByText(/Number of Eyes/)).toBeVisible();
-  });
-  expect(screen.queryByLabelText('Name')).toBeNull();
-});
+    await waitFor(() => {
+      expect(screen.getByText(/Number of Eyes/)).toBeVisible();
+    });
+    expect(screen.queryByLabelText('Name')).toBeNull();
+  },
+  FILL_TIMEOUT
+);
 
-it('switches to Regression tab when clicked', async () => {
-  renderWithHash();
-  fillEverything();
+it(
+  'switches to Regression tab when clicked',
+  async () => {
+    renderWithHash();
+    fillEverything();
 
-  fireEvent.click(screen.getByText('Regression'));
+    fireEvent.click(screen.getByText('Regression'));
 
-  await waitFor(() => {
-    expect(screen.getByText(/Vault Prediction/)).toBeVisible();
-  });
-  expect(screen.queryByLabelText('Name')).toBeNull();
-  expect(screen.getByText(/Probability of 250 < Vault < 1000/)).toBeVisible();
-});
+    await waitFor(() => {
+      expect(screen.getByText(/Vault Prediction/)).toBeVisible();
+    });
+    expect(screen.queryByLabelText('Name')).toBeNull();
+    expect(screen.getByText(/Probability of 250 < Vault < 1000/)).toBeVisible();
+  },
+  FILL_TIMEOUT
+);
 
 /*
  * Tab URLs were #matrix / #normality / #regression under router 5's
@@ -557,24 +571,32 @@ describe('a fresh form, and the ICL Power it computes (#196)', () => {
  * nobody entered; each says what to enter instead.
  */
 describe('Matrix and Regression with missing inputs (#197)', () => {
-  /* What fillEverything enters, as the formulas take it. */
-  const INPUTS: ICLInputs = {
-    patient: INITIAL_VALUES.patient,
-    biometry: { ata: 11.8, wtw: 0, clr: 250, acd: 3.2, acan: 0, acat: 0 },
+  /*
+   * What fillEverything enters, as the container hands it to the formulas:
+   * through iclPowerInputs, as the container does.
+   */
+  const FILLED: ICLFormValues = {
+    ...INITIAL_VALUES,
+    patient: new PatientInfo({
+      name: '',
+      dateOfBirth: '2000-07-01',
+      eye: 'left'
+    }),
+    biometry: { ...INITIAL_VALUES.biometry, ata: 11.8, clr: 250, acd: 3.2 },
     corneaProfile: {
+      ...INITIAL_VALUES.corneaProfile,
       kaf: 43,
       kas: 44.5,
-      kpf: 0,
-      kps: 0,
-      axisaf: 0,
-      axisas: 0,
-      axispf: 0,
-      axisps: 0,
-      cct: 540,
-      previousSurgery: PreviousSurgery.none
+      cct: 540
     },
-    spectacleRefraction: { sphere: -10, cylindre: -2.25, axis: 0, vertex: 12 }
+    spectacleRefraction: {
+      ...INITIAL_VALUES.spectacleRefraction,
+      sphere: -10,
+      cylindre: -2.25,
+      vertex: 12
+    }
   };
+  const INPUTS = iclPowerInputs(FILLED) as ICLInputs;
   const NOTE = (list: string, purpose: string) =>
     `Enter ${list} on the Patient tab to see ${purpose}.`;
   const REGRESSION_PURPOSE = 'the vault prediction and its probabilities';
@@ -604,19 +626,23 @@ describe('Matrix and Regression with missing inputs (#197)', () => {
     expect(screen.queryByTestId('matrix-summary')).toBeNull();
   });
 
-  it('shows both tables, 2 on Regression and 1 on Matrix, once all is entered', async () => {
-    renderWithHash();
-    fillEverything();
-    fireEvent.click(screen.getByText('Regression'));
-    await screen.findByRole('heading', { name: 'Vault Prediction' });
-    expect(screen.getAllByRole('table')).toHaveLength(2);
-    expect(screen.queryByText(/on the Patient tab to see/)).toBeNull();
+  it(
+    'shows both tables, 2 on Regression and 1 on Matrix, once all is entered',
+    async () => {
+      renderWithHash();
+      fillEverything();
+      fireEvent.click(screen.getByText('Regression'));
+      await screen.findByRole('heading', { name: 'Vault Prediction' });
+      expect(screen.getAllByRole('table')).toHaveLength(2);
+      expect(screen.queryByText(/on the Patient tab to see/)).toBeNull();
 
-    fireEvent.click(screen.getByText('Floating Matrix'));
-    await screen.findByTestId('matrix-summary');
-    expect(screen.getAllByRole('table')).toHaveLength(1);
-    expect(screen.queryByText(/on the Patient tab to see/)).toBeNull();
-  });
+      fireEvent.click(screen.getByText('Floating Matrix'));
+      await screen.findByTestId('matrix-summary');
+      expect(screen.getAllByRole('table')).toHaveLength(1);
+      expect(screen.queryByText(/on the Patient tab to see/)).toBeNull();
+    },
+    FILL_TIMEOUT
+  );
 
   it.each(['2999-01-01', 'not a date', ''])(
     'asks for the Date of Birth alone when it is %j',
@@ -632,47 +658,66 @@ describe('Matrix and Regression with missing inputs (#197)', () => {
         await screen.findByText(NOTE('Date of Birth', REGRESSION_PURPOSE))
       ).toBeVisible();
       noTables();
-    }
+    },
+    FILL_TIMEOUT
   );
 
-  it('brings the Matrix note back when AtA is cleared', async () => {
-    renderWithHash();
-    fillEverything();
-    enterNumber('Angle to Angle (AtA), millimetres', '');
-    fireEvent.click(screen.getByText('Floating Matrix'));
+  it(
+    'brings the Matrix note back when AtA is cleared',
+    async () => {
+      renderWithHash();
+      fillEverything();
+      enterNumber('Angle to Angle (AtA), millimetres', '');
+      fireEvent.click(screen.getByText('Floating Matrix'));
 
-    expect(
-      await screen.findByText(NOTE('AtA', 'the matching eyes'))
-    ).toBeVisible();
-    noTables();
-  });
+      expect(
+        await screen.findByText(NOTE('AtA', 'the matching eyes'))
+      ).toBeVisible();
+      noTables();
+    },
+    FILL_TIMEOUT
+  );
 
-  it('feeds the components exactly the entered numbers', async () => {
-    renderWithHash();
-    fillEverything();
-    fireEvent.click(screen.getByText('Regression'));
-    await screen.findByRole('heading', { name: 'Vault Prediction' });
-    const view = render(
-      <Regression
-        acd={3.2}
-        ata={11.8}
-        clr={250}
-        se={calcICLSphericalEquivalent(INPUTS)}
-        age={new PatientInfo({
-          name: '',
-          dateOfBirth: '2000-07-01',
-          eye: 'left'
-        }).age()}
-      />
-    );
-    const rows = (tables: HTMLElement[]) =>
-      tables.flatMap((table) =>
-        within(table)
-          .getAllByRole('row')
-          .map((row) => row.textContent)
+  it(
+    'feeds the components exactly the entered numbers',
+    async () => {
+      renderWithHash();
+      fillEverything();
+      fireEvent.click(screen.getByText('Regression'));
+      await screen.findByRole('heading', { name: 'Vault Prediction' });
+      const regressionTables = screen.getAllByRole('table').slice(0, 2);
+      const { container: regressionBox } = render(
+        <Regression
+          acd={3.2}
+          ata={11.8}
+          clr={250}
+          se={calcICLSphericalEquivalent(INPUTS)}
+          age={FILLED.patient.age()}
+        />
       );
-    const shown = rows(screen.getAllByRole('table').slice(0, 2));
-    expect(shown.length).toBeGreaterThan(0);
-    expect(shown).toEqual(rows(within(view.container).getAllByRole('table')));
-  });
+      const rows = (tables: HTMLElement[]) =>
+        tables.flatMap((table) =>
+          within(table)
+            .getAllByRole('row')
+            .map((row) => row.textContent)
+        );
+      const shown = rows(regressionTables);
+      expect(shown.length).toBeGreaterThan(0);
+      expect(shown).toEqual(rows(within(regressionBox).getAllByRole('table')));
+
+      fireEvent.click(screen.getByText('Floating Matrix'));
+      await screen.findByTestId('matrix-summary');
+      const matrixTable = screen.getAllByRole('table')[0];
+      const summary = screen.getByTestId('matrix-summary');
+      const { container: matrixBox } = render(<Matrix ata={11.8} clr={250} />);
+      expect(rows([matrixTable]).length).toBeGreaterThan(1);
+      expect(rows([matrixTable])).toEqual(
+        rows(within(matrixBox).getAllByRole('table'))
+      );
+      expect(summary.textContent).toBe(
+        within(matrixBox).getByTestId('matrix-summary').textContent
+      );
+    },
+    FILL_TIMEOUT
+  );
 });

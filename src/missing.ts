@@ -188,19 +188,18 @@ export const regressionInputs = (
 ): RegressionNumbers | undefined => {
   const power = iclPowerInputs(values);
   const age = knownAge(values.patient);
-  const acd = measurement(values.biometry.acd);
   const ata = measurement(values.biometry.ata);
   const clr = measurement(values.biometry.clr);
   if (
     power === undefined ||
     age === undefined ||
-    acd === undefined ||
     ata === undefined ||
     clr === undefined
   ) {
     return undefined;
   }
-  return { acd, ata, clr, age, power };
+  // ACD is one of ICL_POWER_FIELDS, so `power` already holds it as entered.
+  return { acd: power.biometry.acd, ata, clr, age, power };
 };
 
 /**
