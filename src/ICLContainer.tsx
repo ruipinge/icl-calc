@@ -1,7 +1,6 @@
 import { Formik, FormikProps, FormikState } from 'formik';
-import { ICLInputs, INITIAL_VALUES } from './types';
+import { ICLFormValues, ICLInputs, INITIAL_VALUES } from './types';
 import { Route, HashRouter as Router, Routes } from 'react-router-dom';
-import { averageAca, knownAge } from './normality/inputs';
 
 import { Footer } from './misc/Footer';
 import { ICLSchema } from './ICLSchema';
@@ -11,14 +10,16 @@ import { Normality } from './normality';
 import { Patient } from './patient';
 import { Regression } from './regression';
 import { TabLinks } from './misc/TabLinks';
+import { averageAca } from './normality/inputs';
 import { calcICLSphericalEquivalent } from './formulas';
+import { knownAge } from './missing';
 
 const TabContent = ({
   errors,
   touched,
   values,
   ...otherProps
-}: FormikState<ICLInputs>) => {
+}: FormikState<ICLFormValues>) => {
   const patientTab = (
     <Patient
       values={values}
@@ -45,16 +46,23 @@ const TabContent = ({
       />
       <Route
         path="/matrix"
-        element={<Matrix ata={values.biometry.ata} clr={values.biometry.clr} />}
+        element={
+          // Empty fields reach the matrix and the regression as they always
+          // have; gating both on missing inputs is #197.
+          <Matrix
+            ata={values.biometry.ata as number}
+            clr={values.biometry.clr as number}
+          />
+        }
       />
       <Route
         path="/regression"
         element={
           <Regression
-            acd={values.biometry.acd}
-            ata={values.biometry.ata}
-            clr={values.biometry.clr}
-            se={calcICLSphericalEquivalent(values)}
+            acd={values.biometry.acd as number}
+            ata={values.biometry.ata as number}
+            clr={values.biometry.clr as number}
+            se={calcICLSphericalEquivalent(values as ICLInputs)}
             age={values.patient.age()}
           />
         }
@@ -94,7 +102,7 @@ const FormContent = ({
   values,
   resetForm,
   ...otherProps
-}: FormikProps<ICLInputs>) => {
+}: FormikProps<ICLFormValues>) => {
   return (
     <>
       <NavBar resetForm={resetForm} />

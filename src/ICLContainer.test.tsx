@@ -1,3 +1,10 @@
+import { ICLInputs, INITIAL_VALUES, PreviousSurgery } from './types';
+import {
+  calcICLAxis,
+  calcICLCylindre,
+  calcICLSphere,
+  calcICLSphericalEquivalent
+} from './formulas';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { ICLContainer } from './ICLContainer';
@@ -16,6 +23,12 @@ const renderWithHash = (route: string = '#') => {
   window.history.pushState({}, 'Test page', route);
   return render(<ICLContainer />);
 };
+
+/* Types into the number input with this accessible name. */
+const enterNumber = (name: string, value: string) =>
+  fireEvent.change(screen.getByRole('spinbutton', { name }), {
+    target: { value }
+  });
 
 /*
  * Replaces nine asFragment() snapshots (#121). That fixture was 10,759 lines
@@ -218,11 +231,12 @@ it('resets every entered value when Reset is clicked', async () => {
   await waitFor(() => {
     expect(screen.getByLabelText('Name')).toHaveValue('');
   });
+  // Back to empty, which is where every measured field starts (#196).
   expect(
     screen.getByRole('spinbutton', {
       name: 'Angle to Angle (AtA), millimetres'
     })
-  ).toHaveValue(0);
+  ).toHaveValue(null);
 });
 
 it('switches to Biometric Normality tab when clicked', async () => {
@@ -299,10 +313,7 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
   const ACA = 'Average Anterior Chamber Angle - ACA (º)';
   const enter = (label: string, value: string) =>
     fireEvent.change(screen.getByLabelText(label), { target: { value } });
-  const enterAngle = (name: string, value: string) =>
-    fireEvent.change(screen.getByRole('spinbutton', { name }), {
-      target: { value }
-    });
+  const enterAngle = enterNumber;
   const gaugeName = (title: string) =>
     screen
       .getByRole('img', { name: (name) => name.startsWith(`${title}: `) })
@@ -325,9 +336,7 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
     ['nasal', 'Anterior Chamber Angle nasal (ACAn), degrees']
   ])('names no ACA when only the %s angle is entered', async (_side, kept) => {
     renderWithHash();
-    // Untouched fields start at 0, a present value; clear the other side.
-    enterAngle('Anterior Chamber Angle nasal (ACAn), degrees', '');
-    enterAngle('Anterior Chamber Angle temporal (ACAt), degrees', '');
+    // The other side is untouched, so still empty (#196).
     enterAngle(kept, '32');
     goToNormality();
     await waitFor(() => {
@@ -362,5 +371,137 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
     await waitFor(() => {
       expect(gaugeName('Age (years)')).toMatch(/^Age \(years\): \d+, /);
     });
+  });
+});
+
+/*
+ * #196: a fresh form holds no numbers, so nothing is computed from numbers
+ * nobody entered. Every measured field starts empty, and so does every
+ * output that depends on one.
+ */
+describe('a fresh form, and the ICL Power it computes (#196)', () => {
+  const ICL_POWER_INPUTS: [string, string][] = [
+    ['Internal Anterior Chamber Depth (ACD), millimetres', '3.2'],
+    ['Anterior Keratometry Flat (KAntFlt), dioptres', '43'],
+    ['Anterior Keratometry Steep (KAntStp), dioptres', '44.5'],
+    ['Central Corneal Thickness (CCT), micrometres', '540'],
+    ['Sphere (spectacle refraction), dioptres', '-10'],
+    ['Cylindre (spectacle refraction), dioptres', '-2.25'],
+    ['Vertex, millimetres', '12']
+  ];
+
+  /* The same seven numbers, as the formulas take them; the rest 0. */
+  const ENTERED: ICLInputs = {
+    patient: INITIAL_VALUES.patient,
+    biometry: { ata: 0, wtw: 0, clr: 0, acd: 3.2, acan: 0, acat: 0 },
+    corneaProfile: {
+      kaf: 43,
+      kas: 44.5,
+      kpf: 0,
+      kps: 0,
+      axisaf: 0,
+      axisas: 0,
+      axispf: 0,
+      axisps: 0,
+      cct: 540,
+      previousSurgery: PreviousSurgery.none
+    },
+    spectacleRefraction: { sphere: -10, cylindre: -2.25, axis: 0, vertex: 12 }
+  };
+
+  const output = (name: string) =>
+    screen.getByRole('textbox', { name: `${name}, dioptres` });
+  const outputs = () => [
+    output('Sphere (ICL power)'),
+    output('Cylindre (ICL power)'),
+    output('Spherical Equivalent (SE)')
+  ];
+  const axisOutput = () =>
+    screen.getByRole('textbox', { name: 'Axis (ICL power), degrees' });
+  const enter = enterNumber;
+  const enterAll = () =>
+    ICL_POWER_INPUTS.forEach(([name, value]) => enter(name, value));
+
+  it('starts every measured field empty', () => {
+    renderWithHash();
+
+    MEASURED_FIELDS.forEach((name) =>
+      expect(screen.getByRole('spinbutton', { name })).toHaveValue(null)
+    );
+  });
+
+  it('starts Age and all four ICL Power outputs empty', () => {
+    renderWithHash();
+
+    expect(screen.getByRole('textbox', { name: 'Age, years' })).toHaveValue('');
+    outputs().forEach((element) => expect(element).toHaveValue(''));
+    expect(axisOutput()).toHaveValue('');
+  });
+
+  it('computes Sphere, Cylindre and SE from the seven fields they read', async () => {
+    renderWithHash();
+    enterAll();
+
+    await waitFor(() => {
+      expect(output('Sphere (ICL power)')).toHaveValue(
+        String(calcICLSphere(ENTERED))
+      );
+    });
+    expect(output('Cylindre (ICL power)')).toHaveValue(
+      String(calcICLCylindre(ENTERED))
+    );
+    expect(output('Spherical Equivalent (SE)')).toHaveValue(
+      String(calcICLSphericalEquivalent(ENTERED))
+    );
+    // Axis reads only the refraction axis, which is still empty.
+    expect(axisOutput()).toHaveValue('');
+  });
+
+  it('computes Axis from the refraction axis alone', async () => {
+    renderWithHash();
+    enter('Axis (spectacle refraction), degrees', '50');
+
+    await waitFor(() => {
+      expect(axisOutput()).toHaveValue(String(calcICLAxis(50)));
+    });
+    outputs().forEach((element) => expect(element).toHaveValue(''));
+  });
+
+  it.each(ICL_POWER_INPUTS.map(([name]) => name))(
+    'blanks Sphere, Cylindre and SE when %s is cleared',
+    async (name) => {
+      renderWithHash();
+      enterAll();
+      await waitFor(() => {
+        expect(output('Sphere (ICL power)')).not.toHaveValue('');
+      });
+
+      enter(name, '');
+
+      await waitFor(() => {
+        outputs().forEach((element) => expect(element).toHaveValue(''));
+      });
+    }
+  );
+
+  it('shows no error on an untouched field, only on a touched one', async () => {
+    renderWithHash();
+    // Validates the whole form, so every empty required field now has an
+    // error - none touched, so none shown.
+    enter('Angle to Angle (AtA), millimetres', '12');
+    const wtw = screen.getByRole('spinbutton', {
+      name: 'White to White (WtW), millimetres'
+    });
+    fireEvent.blur(wtw);
+
+    await waitFor(() => {
+      expect(wtw).toHaveAttribute('aria-invalid', 'true');
+    });
+    expect(
+      screen
+        .getAllByRole('spinbutton')
+        .filter((element) => element.hasAttribute('aria-invalid'))
+    ).toEqual([wtw]);
+    expect(screen.getAllByText(/^Enter a value/)).toHaveLength(1);
   });
 });

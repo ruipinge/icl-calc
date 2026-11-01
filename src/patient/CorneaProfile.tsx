@@ -1,5 +1,5 @@
 import { Field, FormikState } from 'formik';
-import { ICLInputs, PreviousSurgery } from '../types';
+import { ICLFormValues, PreviousSurgery } from '../types';
 
 import { FieldWithUnit } from './FieldWithUnit';
 import { KeratometryRow } from './KeratometryRow';
@@ -7,7 +7,7 @@ import { KeratometryRow } from './KeratometryRow';
 export const CorneaProfile = ({
   errors,
   touched
-}: FormikState<Pick<ICLInputs, 'corneaProfile'>>) => (
+}: FormikState<Pick<ICLFormValues, 'corneaProfile'>>) => (
   <section className="fieldgroup-section">
     <h4>Cornea Profile</h4>
     <div className="fieldgroup kgroup">

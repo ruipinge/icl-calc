@@ -1,11 +1,11 @@
 import { FieldWithUnit } from './FieldWithUnit';
 import { FormikState } from 'formik';
-import { ICLInputs } from '../types';
+import { ICLFormValues } from '../types';
 
 export const SpectacleRefraction = ({
   errors,
   touched
-}: FormikState<Pick<ICLInputs, 'spectacleRefraction'>>) => (
+}: FormikState<Pick<ICLFormValues, 'spectacleRefraction'>>) => (
   <section className="fieldgroup-section">
     <h4>Spectacle Refraction</h4>
     <div className="fieldgroup">

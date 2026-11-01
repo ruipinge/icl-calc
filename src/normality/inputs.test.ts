@@ -1,9 +1,4 @@
-import { averageAca, knownAge } from './inputs';
-
-import { PatientInfo } from '../types';
-
-const patient = (dateOfBirth: string) =>
-  new PatientInfo({ name: '', dateOfBirth, eye: 'left' });
+import { averageAca } from './inputs';
 
 describe('averageAca', () => {
   it('is the mean of a full pair', () => {
@@ -22,30 +17,5 @@ describe('averageAca', () => {
 
   it('keeps a genuine 0 as present', () => {
     expect(averageAca(0, 0)).toBe(0);
-  });
-});
-
-describe('knownAge', () => {
-  it.each([
-    ['empty', ''],
-    ['unparseable', 'not a date'],
-    ['in the future', '2999-01-01']
-  ])('is missing for a date of birth that is %s', (_why, dob) => {
-    expect(knownAge(patient(dob))).toBeUndefined();
-  });
-
-  it('is missing for a date of birth a few months ahead', () => {
-    const now = vi.spyOn(Date, 'now').mockReturnValue(Date.UTC(2026, 9, 31));
-    try {
-      expect(knownAge(patient('2027-03-01'))).toBeUndefined();
-    } finally {
-      now.mockRestore();
-    }
-  });
-
-  it('is the patient age for a past date of birth', () => {
-    const p = patient('2000-07-01');
-    expect(knownAge(p)).toBe(p.age());
-    expect(knownAge(p)).toBeGreaterThan(20);
   });
 });

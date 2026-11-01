@@ -1,6 +1,7 @@
 import { LinearGauge, Options, Zone } from './linear-gauge';
 import { PLOT_INSET_LEFT, PLOT_INSET_RIGHT } from './plot-inset';
 import { useLayoutEffect, useMemo, useRef } from 'react';
+import { measurement } from '../missing';
 
 /**
  * Ascending numeric sort of a *copy*. `Array.prototype.sort` sorts in place,
@@ -112,18 +113,6 @@ export const describeBand = (value: number, bands: Band[]): string => {
   );
   return index === -1 ? 'outside the range of the dataset' : BAND_NAMES[index];
 };
-
-/**
- * The one rule for "no value entered", shared by the gauge's name and its
- * drawing so they cannot disagree. A cleared form field reaches the gauge as
- * `''` (Formik), untyped, and `LinearGauge` would coerce that to 0 and draw a
- * pointer; anything that is not a finite number is missing.
- *
- * @param {unknown} value - The measurement, as it reached the component
- * @returns {number | undefined} the number, or undefined where missing
- */
-export const measurement = (value: unknown): number | undefined =>
-  typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 
 /**
  * Paper between neighbouring zones, so every band edge is a visible boundary

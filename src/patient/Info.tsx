@@ -1,13 +1,14 @@
 import { Field, FormikState } from 'formik';
 import { UnitMark, fieldValidity } from './validity';
 
-import { ICLInputs } from '../types';
+import { ICLFormValues } from '../types';
+import { knownAge } from '../missing';
 
 export const Info = ({
   errors,
   values,
   touched
-}: FormikState<Pick<ICLInputs, 'patient'>>) => {
+}: FormikState<Pick<ICLFormValues, 'patient'>>) => {
   const { props: dobValidity, message: dobMessage } = fieldValidity(
     'patient.dateOfBirth',
     errors.patient?.dateOfBirth,
@@ -49,7 +50,7 @@ export const Info = ({
               name="age"
               id="fieldAge"
               disabled={true}
-              value={values.patient.age()}
+              value={knownAge(values.patient) ?? ''}
             />
             <UnitMark>years</UnitMark>
           </div>

@@ -1,7 +1,7 @@
 import { Biometry } from './Biometry';
 import { CorneaProfile } from './CorneaProfile';
 import { FormikState } from 'formik';
-import { ICLInputs } from '../types';
+import { ICLFormValues } from '../types';
 import { ICLPower } from './ICLPower';
 import { Info } from './Info';
 import { SpectacleRefraction } from './SpectacleRefraction';
@@ -11,7 +11,7 @@ export const Patient = ({
   touched,
   values,
   ...otherProps
-}: FormikState<ICLInputs>) => (
+}: FormikState<ICLFormValues>) => (
   <>
     <Info values={values} errors={errors} touched={touched} {...otherProps} />
     <hr />

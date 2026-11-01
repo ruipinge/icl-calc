@@ -1,5 +1,6 @@
 import {
   CorneaProfile,
+  ICLFormValues,
   ICLInputs,
   PatientInfo,
   PreviousSurgery
@@ -12,6 +13,7 @@ import {
   calcRadiusPosterior,
   round
 } from './formulas';
+import { iclPowerInputs } from './missing';
 
 const ICL_VALUES: ICLInputs = {
   patient: new PatientInfo({
@@ -106,4 +108,77 @@ it('calculates ICL Power Cylindre Equivalent', () => {
 it('calculates Radius Posterior Cornea', () => {
   expect(round(calcRadiusPosterior(CORNEA_POSTERIOR), 5)).toEqual(0.02667);
   expect(round(calcRadiusPosterior(CORNEA_PREVIOUS_SURGERY), 5)).toEqual(0.189);
+});
+
+/*
+ * An empty posterior keratometry field reaches the formulas as 0 (see
+ * iclPowerInputs in src/missing.ts). That is safe only because the
+ * `if (kpf && kps)` guard treats '' and 0 alike - both falsy - so neither
+ * a missing reading nor a 0 is ever used as a posterior power. Pinned here
+ * for each previous-surgery branch and each one-of-two case.
+ */
+describe("posterior keratometry: '' and 0 are the same", () => {
+  const empty = '' as unknown as number;
+  const cases: [string, number, number][] = [
+    ['both', 0, 0],
+    ['flat only', 6.1, 0],
+    ['steep only', 0, 6.4]
+  ];
+  const inputs = (
+    previousSurgery: PreviousSurgery,
+    kpf: number,
+    kps: number
+  ): ICLInputs => ({
+    ...ICL_VALUES,
+    biometry: { ...ICL_VALUES.biometry, acd: 3.2 },
+    corneaProfile: {
+      ...ICL_VALUES.corneaProfile,
+      kaf: 43,
+      kas: 44.5,
+      cct: 540,
+      kpf,
+      kps,
+      previousSurgery
+    }
+  });
+  // Blank in the form: each 0 in the case replaced by ''.
+  const blank = (k: number) => (k === 0 ? empty : k);
+
+  describe.each([PreviousSurgery.none, PreviousSurgery.myopia])(
+    'previous surgery %s',
+    (surgery) => {
+      it.each(cases)('missing %s', (_, kpf, kps) => {
+        const zero = inputs(surgery, kpf, kps);
+        const form = inputs(surgery, blank(kpf), blank(kps));
+
+        expect(calcICLSphere(form)).toBe(calcICLSphere(zero));
+        expect(calcICLCylindre(form)).toBe(calcICLCylindre(zero));
+        expect(calcICLSphericalEquivalent(form)).toBe(
+          calcICLSphericalEquivalent(zero)
+        );
+        expect(calcRadiusPosterior(form.corneaProfile)).toBe(
+          calcRadiusPosterior(zero.corneaProfile)
+        );
+        expect(Number.isFinite(calcICLSphere(zero))).toBe(true);
+      });
+    }
+  );
+
+  it('iclPowerInputs turns an empty pair into 0, and ICL Power agrees', () => {
+    const form: ICLFormValues = {
+      ...inputs(PreviousSurgery.none, 0, 0),
+      corneaProfile: {
+        ...inputs(PreviousSurgery.none, 0, 0).corneaProfile,
+        kpf: '',
+        kps: ''
+      }
+    };
+    const normalised = iclPowerInputs(form);
+
+    expect(normalised?.corneaProfile.kpf).toBe(0);
+    expect(normalised?.corneaProfile.kps).toBe(0);
+    expect(normalised && calcICLSphere(normalised)).toBe(
+      calcICLSphere(inputs(PreviousSurgery.none, 0, 0))
+    );
+  });
 });
