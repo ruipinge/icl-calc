@@ -31,6 +31,31 @@ for w in 400:Regular 500:Medium; do
 done
 ```
 
+Then drop the hyphen from `tnum`, in both files:
+
+```py
+from fontTools.ttLib import TTFont
+
+for path in ['inter-400-latin.woff2', 'inter-500-latin.woff2']:
+    font = TTFont(path, recalcTimestamp=False)
+    hyphen = font.getBestCmap()[ord('-')]
+    gsub = font['GSUB'].table
+    for record in gsub.FeatureList.FeatureRecord:
+        if record.FeatureTag == 'tnum':
+            for index in record.Feature.LookupListIndex:
+                for sub in gsub.LookupList.Lookup[index].SubTable:
+                    sub.mapping.pop(hyphen, None)
+    font.flavor = 'woff2'
+    font.save(path)
+```
+
+Inter's `tnum` widens the hyphen-minus to a digit's width, with a third of
+an em of space before it, so "-4.09" read "- 4.09" and the sign looked
+detached from its value. Every column of numbers in the app is
+right-aligned, so the sign is the leftmost character and its width moves no
+digit: the narrow hyphen keeps the columns aligned. The two steps reproduce these files byte
+for byte (sha256 `abbe727d…883944` for 400, `322fa3e1…7693a2` for 500).
+
 - `U+03BC` is the Greek mu that every "μm" in the app uses. Neither the
   Newsreader nor the Poppins subset has it, so before #193 it fell back to a
   system font. Inter is also the fallback for it in the other two stacks.
