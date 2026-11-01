@@ -54,10 +54,11 @@ const formatError = (min: number, max: number) =>
 const formatPosteriorError = (min: number, max: number) =>
   `${formatError(min, max)} or 0 if not measured.`;
 
-// Formik hands Yup `undefined` for a cleared field, but a bare `''` (or NaN,
-// or a non-numeric string) can still reach the schema directly; Yup's default
-// type error for those is a long "must be a `number` type" sentence. Every
-// number schema is built here so each one gets a short, range-bearing message.
+// Formik maps a cleared field's '' to `undefined` before validation, so no UI
+// path reaches the schema with '' or NaN; only direct schema calls do. Yup's
+// default type error for those (and for a non-numeric string) is a long "must
+// be a `number` type" sentence. Every number schema is built here so each one
+// gets a short, range-bearing message.
 const formatEnterError = (min: number, max: number) =>
   `${ENTER_ERROR} [${min}, ${max}]`;
 
@@ -75,16 +76,21 @@ const emptyToUndefined = (value: unknown, original: unknown) =>
 const optionalNumber = (typeError: string) =>
   Yup.number().transform(emptyToUndefined).optional().typeError(typeError);
 
-const formatPosteriorEnterError = (min: number, max: number) =>
-  `${formatEnterError(min, max)} or 0 if not measured.`;
-
 const isUnmeasuredOrInRange =
   (min: number, max: number) => (value: number | undefined) =>
     value === undefined || value === 0 || (value >= min && value <= max);
 
 export const ICLSchema = Yup.object().shape({
   patient: Yup.object().shape({
-    dateOfBirth: Yup.date().optional().typeError('Invalid date. (yyyy-mm-dd)')
+    dateOfBirth: Yup.date()
+      .optional()
+      .typeError('Invalid date. (yyyy-mm-dd)')
+      // Same rule as knownAge (missing.ts), read at validation time.
+      .test(
+        'not-in-the-future',
+        'Date of birth is in the future.',
+        (value) => value === undefined || value.getTime() <= Date.now()
+      )
   }),
   biometry: Yup.object().shape({
     ata: requiredNumber(ATA_MIN, ATA_MAX),
@@ -99,20 +105,20 @@ export const ICLSchema = Yup.object().shape({
     kas: requiredNumber(KA_MIN, KA_MAX),
     axisaf: requiredNumber(AXISA_MIN, AXISA_MAX),
     axisas: requiredNumber(AXISA_MIN, AXISA_MAX),
-    kpf: optionalNumber(formatPosteriorEnterError(KP_MIN, KP_MAX)).test(
+    kpf: optionalNumber(formatPosteriorError(KP_MIN, KP_MAX)).test(
       'posterior-k-or-unmeasured',
       formatPosteriorError(KP_MIN, KP_MAX),
       isUnmeasuredOrInRange(KP_MIN, KP_MAX)
     ),
-    kps: optionalNumber(formatPosteriorEnterError(KP_MIN, KP_MAX)).test(
+    kps: optionalNumber(formatPosteriorError(KP_MIN, KP_MAX)).test(
       'posterior-k-or-unmeasured',
       formatPosteriorError(KP_MIN, KP_MAX),
       isUnmeasuredOrInRange(KP_MIN, KP_MAX)
     ),
-    axispf: optionalNumber(formatEnterError(AXISP_MIN, AXISP_MAX))
+    axispf: optionalNumber(formatError(AXISP_MIN, AXISP_MAX))
       .min(AXISP_MIN, formatError(AXISP_MIN, AXISP_MAX))
       .max(AXISP_MAX, formatError(AXISP_MIN, AXISP_MAX)),
-    axisps: optionalNumber(formatEnterError(AXISP_MIN, AXISP_MAX))
+    axisps: optionalNumber(formatError(AXISP_MIN, AXISP_MAX))
       .min(AXISP_MIN, formatError(AXISP_MIN, AXISP_MAX))
       .max(AXISP_MAX, formatError(AXISP_MIN, AXISP_MAX)),
     cct: requiredNumber(CCT_MIN, CCT_MAX)

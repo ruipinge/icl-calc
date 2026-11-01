@@ -662,6 +662,18 @@ describe('Matrix and Regression with missing inputs (#197)', () => {
     FILL_TIMEOUT
   );
 
+  it('shows why a future Date of Birth is refused once it is touched', async () => {
+    renderWithHash();
+    const dob = screen.getByLabelText('Date of Birth');
+    fireEvent.change(dob, { target: { value: '2999-01-01' } });
+    expect(screen.queryByText('Date of birth is in the future.')).toBeNull();
+    fireEvent.blur(dob);
+
+    expect(
+      await screen.findByText('Date of birth is in the future.')
+    ).toBeVisible();
+  });
+
   it(
     'brings the Matrix note back when AtA is cleared',
     async () => {
