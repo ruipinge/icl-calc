@@ -4,7 +4,6 @@ import {
   buildZones,
   describeBand,
   gaugeOptions,
-  measurement,
   quantile
 } from './Gauge';
 import { render, screen } from '@testing-library/react';
@@ -161,22 +160,6 @@ it('colours the tails crimson, the shoulders ember and the middle jade', () => {
     'var(--leaf-crimson)'
   ]);
 });
-
-// The single missing-value rule behind both the name and the pointer.
-it.each([
-  ['an empty string', ''],
-  ['undefined', undefined],
-  ['null', null],
-  ['NaN', NaN],
-  ['Infinity', Infinity],
-  ['a numeric string', '4']
-])('treats %s as a missing measurement', (_, value) =>
-  expect(measurement(value)).toBeUndefined()
-);
-
-it.each([0, 4.1, -208])('passes the number %s through', (value) =>
-  expect(measurement(value)).toBe(value)
-);
 
 /*
  * The whole options object Gauge's layout effect hands to LinearGauge. The

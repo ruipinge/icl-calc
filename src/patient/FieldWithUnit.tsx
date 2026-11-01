@@ -23,7 +23,7 @@ export interface FieldWithUnitProps {
   touched?: boolean;
   placeholder?: string;
   error?: string;
-  value?: number;
+  value?: number | '';
   disabled?: boolean;
 }
 

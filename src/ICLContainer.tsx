@@ -1,24 +1,65 @@
 import { Formik, FormikProps, FormikState } from 'formik';
-import { ICLInputs, INITIAL_VALUES } from './types';
+import { ICLFormValues, INITIAL_VALUES } from './types';
+import {
+  MATRIX_FIELDS,
+  REGRESSION_FIELDS,
+  knownAge,
+  matrixInputs,
+  missingLabels,
+  regressionInputs
+} from './missing';
 import { Route, HashRouter as Router, Routes } from 'react-router-dom';
-import { averageAca, knownAge } from './normality/inputs';
 
 import { Footer } from './misc/Footer';
 import { ICLSchema } from './ICLSchema';
 import { Matrix } from './matrix';
+import { MissingNote } from './misc/MissingNote';
 import { NavBar } from './misc/NavBar';
 import { Normality } from './normality';
 import { Patient } from './patient';
 import { Regression } from './regression';
 import { TabLinks } from './misc/TabLinks';
+import { averageAca } from './normality/inputs';
 import { calcICLSphericalEquivalent } from './formulas';
+
+// Neither table is drawn from numbers nobody entered (#197): until every
+// input is present the tab says what to enter instead.
+const MatrixTab = ({ values }: { values: ICLFormValues }) => {
+  const inputs = matrixInputs(values);
+  return inputs === undefined ? (
+    <MissingNote
+      missing={missingLabels(values, MATRIX_FIELDS)}
+      purpose="the matching eyes"
+    />
+  ) : (
+    <Matrix ata={inputs.ata} clr={inputs.clr} />
+  );
+};
+
+const RegressionTab = ({ values }: { values: ICLFormValues }) => {
+  const inputs = regressionInputs(values);
+  return inputs === undefined ? (
+    <MissingNote
+      missing={missingLabels(values, REGRESSION_FIELDS)}
+      purpose="the vault prediction and its probabilities"
+    />
+  ) : (
+    <Regression
+      acd={inputs.acd}
+      ata={inputs.ata}
+      clr={inputs.clr}
+      se={calcICLSphericalEquivalent(inputs.power)}
+      age={inputs.age}
+    />
+  );
+};
 
 const TabContent = ({
   errors,
   touched,
   values,
   ...otherProps
-}: FormikState<ICLInputs>) => {
+}: FormikState<ICLFormValues>) => {
   const patientTab = (
     <Patient
       values={values}
@@ -43,22 +84,8 @@ const TabContent = ({
           />
         }
       />
-      <Route
-        path="/matrix"
-        element={<Matrix ata={values.biometry.ata} clr={values.biometry.clr} />}
-      />
-      <Route
-        path="/regression"
-        element={
-          <Regression
-            acd={values.biometry.acd}
-            ata={values.biometry.ata}
-            clr={values.biometry.clr}
-            se={calcICLSphericalEquivalent(values)}
-            age={values.patient.age()}
-          />
-        }
-      />
+      <Route path="/matrix" element={<MatrixTab values={values} />} />
+      <Route path="/regression" element={<RegressionTab values={values} />} />
       {/*
         v5's <Switch> picked the first match and a bare path="/" matched
         everything, so an unknown hash fell through to Patient. v7's <Routes>
@@ -94,7 +121,7 @@ const FormContent = ({
   values,
   resetForm,
   ...otherProps
-}: FormikProps<ICLInputs>) => {
+}: FormikProps<ICLFormValues>) => {
   return (
     <>
       <NavBar resetForm={resetForm} />

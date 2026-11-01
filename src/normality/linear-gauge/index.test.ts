@@ -1,5 +1,6 @@
-import { ZONE_COLOURS, buildZones, gaugeOptions, measurement } from '../Gauge';
+import { ZONE_COLOURS, buildZones, gaugeOptions } from '../Gauge';
 import { LinearGauge } from './index';
+import { measurement } from '../../missing';
 
 const makeHost = (children: number): HTMLElement => {
   const el = document.createElement('div');

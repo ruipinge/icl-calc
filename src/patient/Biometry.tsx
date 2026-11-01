@@ -1,11 +1,11 @@
 import { FieldWithUnit } from './FieldWithUnit';
 import { FormikState } from 'formik';
-import { ICLInputs } from '../types';
+import { ICLFormValues } from '../types';
 
 export const Biometry = ({
   errors,
   touched
-}: FormikState<Pick<ICLInputs, 'biometry'>>) => (
+}: FormikState<Pick<ICLFormValues, 'biometry'>>) => (
   <section className="fieldgroup-section">
     <h4>Biometry</h4>
     <div className="fieldgroup">

@@ -1,3 +1,5 @@
+import * as Yup from 'yup';
+
 import { ICLInputs, PatientInfo, PreviousSurgery } from './types';
 
 import { ICLSchema } from './ICLSchema';
@@ -63,9 +65,9 @@ describe('posterior keratometry validation', () => {
   it.each(['kpf', 'kps'] as const)(
     'accepts %s = 0, the not-supplied sentinel',
     async (field) => {
-      // Every fixture row other than 02, and INITIAL_VALUES itself, encodes
-      // "not measured" as 0; calcRadiusPosterior's `if (kpf && kps)` guard
-      // reads it the same way. A bare `.min(4)` would reject all of them.
+      // Every fixture row other than 02 encodes "not measured" as 0 (the
+      // form itself starts empty); calcRadiusPosterior's `if (kpf && kps)`
+      // guard reads both alike. A bare `.min(4)` would reject all of them.
       await expect(
         ICLSchema.validate(withCornea({ kpf: 0, kps: 0, axispf: 0, axisps: 0 }))
       ).resolves.toBeTruthy();
@@ -143,5 +145,130 @@ describe('posterior axis validation', () => {
     await expect(
       ICLSchema.validateAt('corneaProfile.axisps', { corneaProfile: {} })
     ).resolves.toBeUndefined();
+  });
+});
+
+describe('short entry messages for unusable values', () => {
+  const REQUIRED_FIELDS = [
+    ['biometry.ata', 'Enter a value. [0, 20]'],
+    ['corneaProfile.cct', 'Enter a value. [300, 700]'],
+    ['spectacleRefraction.sphere', 'Enter a value. [-25, 0]']
+  ] as const;
+  const bad = ['', NaN, 'abc'];
+
+  const messageAt = async (path: string, value: unknown) => {
+    const [group, field] = path.split('.');
+    try {
+      await ICLSchema.validateAt(path, { [group]: { [field]: value } });
+      return undefined;
+    } catch (e) {
+      return (e as Yup.ValidationError).message;
+    }
+  };
+
+  it.each(REQUIRED_FIELDS)(
+    'required %s says "Enter a value" for undefined, empty, NaN and text',
+    async (path, message) => {
+      expect(await messageAt(path, undefined)).toBe(message);
+      for (const value of bad) {
+        expect(await messageAt(path, value)).toBe(message);
+      }
+    }
+  );
+
+  it.each(['kpf', 'kps'] as const)(
+    'posterior %s says the range for NaN and text, but empty is valid',
+    async (field) => {
+      const path = 'corneaProfile.' + field;
+      const message = POSTERIOR_K_ERROR;
+      expect(await messageAt(path, NaN)).toBe(message);
+      expect(await messageAt(path, 'abc')).toBe(message);
+      expect(await messageAt(path, '')).toBeUndefined();
+      expect(await messageAt(path, undefined)).toBeUndefined();
+    }
+  );
+
+  it.each(['axispf', 'axisps'] as const)(
+    'posterior axis %s says the range for NaN and text, but empty is valid',
+    async (field) => {
+      const path = 'corneaProfile.' + field;
+      const message = AXIS_ERROR;
+      expect(await messageAt(path, NaN)).toBe(message);
+      expect(await messageAt(path, 'abc')).toBe(message);
+      expect(await messageAt(path, '')).toBeUndefined();
+      expect(await messageAt(path, undefined)).toBeUndefined();
+    }
+  );
+
+  it('never leaks Yup\'s long "must be a number" wording', async () => {
+    const paths = [
+      ...REQUIRED_FIELDS.map(([p]) => p),
+      'corneaProfile.kpf',
+      'corneaProfile.axispf'
+    ];
+    for (const path of paths) {
+      for (const value of [...bad, undefined]) {
+        expect((await messageAt(path, value)) ?? '').not.toMatch(/must be a/);
+      }
+    }
+  });
+
+  it('accepts a whole form whose optional posterior fields are empty strings', async () => {
+    await expect(
+      ICLSchema.validate(
+        withCornea({ kpf: '', kps: '', axispf: '', axisps: '' } as never)
+      )
+    ).resolves.toBeTruthy();
+  });
+});
+
+describe('date of birth validation', () => {
+  const NOW = new Date('2026-11-01T12:00:00Z');
+  const FUTURE = 'Date of birth is in the future.';
+  const dobError = async (dateOfBirth: unknown) => {
+    try {
+      await ICLSchema.validateAt('patient.dateOfBirth', {
+        patient: { dateOfBirth }
+      });
+      return undefined;
+    } catch (e) {
+      return (e as Yup.ValidationError).message;
+    }
+  };
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it.each([
+    ['a far-future date', '2999-01-01'],
+    ['a moment ahead', '2026-11-01T12:00:01Z']
+  ])('rejects %s', async (_name, value) => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    expect(await dobError(value)).toBe(FUTURE);
+  });
+
+  it.each([
+    ['empty', undefined],
+    ['the present instant', '2026-11-01T12:00:00Z'],
+    ['today', '2026-11-01'],
+    ['a past date', '1996-03-15']
+  ])('accepts %s', async (_name, value) => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    expect(await dobError(value)).toBeUndefined();
+  });
+
+  it('reads the clock at validation time, not at module load', async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2030-01-01T00:00:00Z'));
+    expect(await dobError('2029-06-01')).toBeUndefined();
+    vi.setSystemTime(new Date('2020-01-01T00:00:00Z'));
+    expect(await dobError('2029-06-01')).toBe(FUTURE);
+  });
+
+  it('still reports an unparseable date as invalid', async () => {
+    expect(await dobError('not a date')).toBe('Invalid date. (yyyy-mm-dd)');
   });
 });

@@ -83,36 +83,57 @@ export interface ICLInputs {
   spectacleRefraction: SpectacleRefraction;
 }
 
-export const INITIAL_VALUES: ICLInputs = {
+/**
+ * A section as the form holds it: every numeric field may also be `''`,
+ * which is what a Formik number input holds while it is empty. Nothing
+ * reads these as numbers directly - `src/missing.ts` decides what is
+ * present and builds the numeric `ICLInputs` the formulas take.
+ */
+type FormSection<T> = {
+  [K in keyof T]: T[K] extends number ? number | '' : T[K];
+};
+
+export interface ICLFormValues {
+  patient: PatientInfo;
+  biometry: FormSection<Biometry>;
+  corneaProfile: FormSection<CorneaProfile>;
+  spectacleRefraction: FormSection<SpectacleRefraction>;
+}
+
+/*
+ * Every measured field starts empty, not 0: 0 is a value a clinician could
+ * enter, and the calculator used to compute from it as if they had (#196).
+ */
+export const INITIAL_VALUES: ICLFormValues = {
   patient: new PatientInfo({
     name: '',
     dateOfBirth: '',
     eye: 'left'
   }),
   biometry: {
-    ata: 0,
-    wtw: 0,
-    clr: 0,
-    acd: 0,
-    acan: 0,
-    acat: 0
+    ata: '',
+    wtw: '',
+    clr: '',
+    acd: '',
+    acan: '',
+    acat: ''
   },
   corneaProfile: {
-    kaf: 0,
-    kas: 0,
-    kpf: 0,
-    kps: 0,
-    axisaf: 0,
-    axisas: 0,
-    axispf: 0,
-    axisps: 0,
-    cct: 0,
+    kaf: '',
+    kas: '',
+    kpf: '',
+    kps: '',
+    axisaf: '',
+    axisas: '',
+    axispf: '',
+    axisps: '',
+    cct: '',
     previousSurgery: PreviousSurgery.none
   },
   spectacleRefraction: {
-    sphere: 0,
-    cylindre: 0,
-    axis: 0,
-    vertex: 0
+    sphere: '',
+    cylindre: '',
+    axis: '',
+    vertex: ''
   }
 };

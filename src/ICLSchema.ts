@@ -42,17 +42,39 @@ const ATA_MIN = 0,
   VERTEX_MIN = 8,
   VERTEX_MAX = 15,
   INVALID_ERROR = 'Invalid value.',
-  REQUIRED_ERROR = 'Required value.';
+  ENTER_ERROR = 'Enter a value.';
 
 const formatError = (min: number, max: number) =>
   `${INVALID_ERROR} [${min}, ${max}]`;
 
-// Posterior keratometry is optional, and "not measured" is encoded as 0 both
-// by INITIAL_VALUES and by calcRadiusPosterior's `if (kpf && kps)` guard, so
-// a plain min/max cannot express the rule: 0 has to stay valid while every
-// other sub-floor value - a negative above all - must not.
+// Posterior keratometry is optional, and "not measured" is encoded as empty
+// (INITIAL_VALUES) or 0 (calcRadiusPosterior's `if (kpf && kps)` guard reads
+// both alike), so a plain min/max cannot express the rule: 0 has to stay
+// valid while every other sub-floor value - a negative above all - must not.
 const formatPosteriorError = (min: number, max: number) =>
   `${formatError(min, max)} or 0 if not measured.`;
+
+// Formik maps a cleared field's '' to `undefined` before validation, so no UI
+// path reaches the schema with '' or NaN; only direct schema calls do. Yup's
+// default type error for those (and for a non-numeric string) is a long "must
+// be a `number` type" sentence. Every number schema is built here so each one
+// gets a short, range-bearing message.
+const formatEnterError = (min: number, max: number) =>
+  `${ENTER_ERROR} [${min}, ${max}]`;
+
+const requiredNumber = (min: number, max: number) =>
+  Yup.number()
+    .required(formatEnterError(min, max))
+    .typeError(formatEnterError(min, max))
+    .min(min, formatError(min, max))
+    .max(max, formatError(min, max));
+
+// Optional: an empty string means "not entered", same as undefined.
+const emptyToUndefined = (value: unknown, original: unknown) =>
+  original === '' ? undefined : value;
+
+const optionalNumber = (typeError: string) =>
+  Yup.number().transform(emptyToUndefined).optional().typeError(typeError);
 
 const isUnmeasuredOrInRange =
   (min: number, max: number) => (value: number | undefined) =>
@@ -60,94 +82,51 @@ const isUnmeasuredOrInRange =
 
 export const ICLSchema = Yup.object().shape({
   patient: Yup.object().shape({
-    dateOfBirth: Yup.date().optional().typeError('Invalid date. (yyyy-mm-dd)')
+    dateOfBirth: Yup.date()
+      .optional()
+      .typeError('Invalid date. (yyyy-mm-dd)')
+      // Same rule as knownAge (missing.ts), read at validation time.
+      .test(
+        'not-in-the-future',
+        'Date of birth is in the future.',
+        (value) => value === undefined || value.getTime() <= Date.now()
+      )
   }),
   biometry: Yup.object().shape({
-    ata: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(ATA_MIN, formatError(ATA_MIN, ATA_MAX))
-      .max(ATA_MAX, formatError(ATA_MIN, ATA_MAX)),
-    wtw: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(WTW_MIN, formatError(WTW_MIN, WTW_MAX))
-      .max(WTW_MAX, formatError(WTW_MIN, WTW_MAX)),
-    clr: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(CLR_MIN, formatError(CLR_MIN, CLR_MAX))
-      .max(CLR_MAX, formatError(CLR_MIN, CLR_MAX)),
-    acd: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(ACD_MIN, formatError(ACD_MIN, ACD_MAX))
-      .max(ACD_MAX, formatError(ACD_MIN, ACD_MAX)),
-    acan: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(ACA_MIN, formatError(ACA_MIN, ACA_MAX))
-      .max(ACA_MAX, formatError(ACA_MIN, ACA_MAX)),
-    acat: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(ACA_MIN, formatError(ACA_MIN, ACA_MAX))
-      .max(ACA_MAX, formatError(ACA_MIN, ACA_MAX))
+    ata: requiredNumber(ATA_MIN, ATA_MAX),
+    wtw: requiredNumber(WTW_MIN, WTW_MAX),
+    clr: requiredNumber(CLR_MIN, CLR_MAX),
+    acd: requiredNumber(ACD_MIN, ACD_MAX),
+    acan: requiredNumber(ACA_MIN, ACA_MAX),
+    acat: requiredNumber(ACA_MIN, ACA_MAX)
   }),
   corneaProfile: Yup.object().shape({
-    kaf: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(KA_MIN, formatError(KA_MIN, KA_MAX))
-      .max(KA_MAX, formatError(KA_MIN, KA_MAX)),
-    kas: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(KA_MIN, formatError(KA_MIN, KA_MAX))
-      .max(KA_MAX, formatError(KA_MIN, KA_MAX)),
-    axisaf: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(AXISA_MIN, formatError(AXISA_MIN, AXISA_MAX))
-      .max(AXISA_MAX, formatError(AXISA_MIN, AXISA_MAX)),
-    axisas: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(AXISA_MIN, formatError(AXISA_MIN, AXISA_MAX))
-      .max(AXISA_MAX, formatError(AXISA_MIN, AXISA_MAX)),
-    kpf: Yup.number()
-      .optional()
-      .test(
-        'posterior-k-or-unmeasured',
-        formatPosteriorError(KP_MIN, KP_MAX),
-        isUnmeasuredOrInRange(KP_MIN, KP_MAX)
-      ),
-    kps: Yup.number()
-      .optional()
-      .test(
-        'posterior-k-or-unmeasured',
-        formatPosteriorError(KP_MIN, KP_MAX),
-        isUnmeasuredOrInRange(KP_MIN, KP_MAX)
-      ),
-    axispf: Yup.number()
-      .optional()
+    kaf: requiredNumber(KA_MIN, KA_MAX),
+    kas: requiredNumber(KA_MIN, KA_MAX),
+    axisaf: requiredNumber(AXISA_MIN, AXISA_MAX),
+    axisas: requiredNumber(AXISA_MIN, AXISA_MAX),
+    kpf: optionalNumber(formatPosteriorError(KP_MIN, KP_MAX)).test(
+      'posterior-k-or-unmeasured',
+      formatPosteriorError(KP_MIN, KP_MAX),
+      isUnmeasuredOrInRange(KP_MIN, KP_MAX)
+    ),
+    kps: optionalNumber(formatPosteriorError(KP_MIN, KP_MAX)).test(
+      'posterior-k-or-unmeasured',
+      formatPosteriorError(KP_MIN, KP_MAX),
+      isUnmeasuredOrInRange(KP_MIN, KP_MAX)
+    ),
+    axispf: optionalNumber(formatError(AXISP_MIN, AXISP_MAX))
       .min(AXISP_MIN, formatError(AXISP_MIN, AXISP_MAX))
       .max(AXISP_MAX, formatError(AXISP_MIN, AXISP_MAX)),
-    axisps: Yup.number()
-      .optional()
+    axisps: optionalNumber(formatError(AXISP_MIN, AXISP_MAX))
       .min(AXISP_MIN, formatError(AXISP_MIN, AXISP_MAX))
       .max(AXISP_MAX, formatError(AXISP_MIN, AXISP_MAX)),
-    cct: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(CCT_MIN, formatError(CCT_MIN, CCT_MAX))
-      .max(CCT_MAX, formatError(CCT_MIN, CCT_MAX))
+    cct: requiredNumber(CCT_MIN, CCT_MAX)
   }),
   spectacleRefraction: Yup.object().shape({
-    sphere: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(SPHERE_MIN, formatError(SPHERE_MIN, SPHERE_MAX))
-      .max(SPHERE_MAX, formatError(SPHERE_MIN, SPHERE_MAX)),
-    cylindre: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(CYLINDRE_MIN, formatError(CYLINDRE_MIN, CYLINDRE_MAX))
-      .max(CYLINDRE_MAX, formatError(CYLINDRE_MIN, CYLINDRE_MAX)),
-    axis: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(AXIS_MIN, formatError(AXIS_MIN, AXIS_MAX))
-      .max(AXIS_MAX, formatError(AXIS_MIN, AXIS_MAX)),
-    vertex: Yup.number()
-      .required(REQUIRED_ERROR)
-      .min(VERTEX_MIN, formatError(VERTEX_MIN, VERTEX_MAX))
-      .max(VERTEX_MAX, formatError(VERTEX_MIN, VERTEX_MAX))
+    sphere: requiredNumber(SPHERE_MIN, SPHERE_MAX),
+    cylindre: requiredNumber(CYLINDRE_MIN, CYLINDRE_MAX),
+    axis: requiredNumber(AXIS_MIN, AXIS_MAX),
+    vertex: requiredNumber(VERTEX_MIN, VERTEX_MAX)
   })
 });

@@ -36,62 +36,84 @@
       - columnheader "Moderate"
       - columnheader "High"
   - rowgroup:
-    - row "Number of Eyes 0 0 0 0 0 0 0 0 0":
+    - row "Number of Eyes 0 8 3 0 4 2 0 0 0":
       - rowheader "Number of Eyes"
       - cell "0"
+      - cell "8"
+      - cell "3"
       - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
+      - cell "4"
+      - cell "2"
       - cell "0"
       - cell "0"
       - cell "0"
     - row:
       - cell
-    - row "Average Vault (μm) 0 0 0 0 0 0 0 0 0":
+    - row /Average Vault \(μm\) 0 \d+ \d+ 0 \d+ \d+ 0 0 0/:
       - rowheader "Average Vault (μm)"
       - cell "0"
+      - cell /\d+/
+      - cell /\d+/
+      - cell "0"
+      - cell /\d+/
+      - cell /\d+/
       - cell "0"
       - cell "0"
       - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-    - row "Minimum Vault (μm) 0 0 0 0 0 0 0 0 0":
+    - row /Minimum Vault \(μm\) 0 \d+ \d+ 0 \d+ \d+ 0 0 0/:
       - rowheader "Minimum Vault (μm)"
       - cell "0"
+      - cell /\d+/
+      - cell /\d+/
+      - cell "0"
+      - cell /\d+/
+      - cell /\d+/
       - cell "0"
       - cell "0"
       - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-    - row "Maximum Vault (μm) 0 0 0 0 0 0 0 0 0":
+    - row /Maximum Vault \(μm\) 0 \d+ \d+ 0 \d+ \d+ 0 0 0/:
       - rowheader "Maximum Vault (μm)"
       - cell "0"
+      - cell /\d+/
+      - cell /\d+/
       - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
+      - cell /\d+/
+      - cell /\d+/
       - cell "0"
       - cell "0"
       - cell "0"
     - row:
       - cell
-    - row /% Vault < \d+ \(μm\) 0 0 0 0 0 0 0 0 0/:
+    - row /% Vault < \d+ \(μm\) 0 \d+\.\d+ \d+\.\d+ 0 \d+ 0 0 0 0/:
       - rowheader /% Vault < \d+ \(μm\)/
       - cell "0"
+      - cell /\d+\.\d+/
+      - cell /\d+\.\d+/
+      - cell "0"
+      - cell /\d+/
+      - cell "0"
+      - cell "0"
+      - cell "0"
+      - cell "0"
+    - row /% \d+ < Vault < \d+ \(μm\) 0 \d+\.\d+ \d+\.\d+ 0 0 0 0 0 0/:
+      - rowheader /% \d+ < Vault < \d+ \(μm\)/
+      - cell "0"
+      - cell /\d+\.\d+/
+      - cell /\d+\.\d+/
       - cell "0"
       - cell "0"
       - cell "0"
       - cell "0"
       - cell "0"
+      - cell "0"
+    - row /% \d+ < Vault < \d+ \(μm\) 0 \d+ \d+\.\d+ 0 \d+ \d+ 0 0 0/:
+      - rowheader /% \d+ < Vault < \d+ \(μm\)/
+      - cell "0"
+      - cell /\d+/
+      - cell /\d+\.\d+/
+      - cell "0"
+      - cell /\d+/
+      - cell /\d+/
       - cell "0"
       - cell "0"
       - cell "0"
@@ -106,49 +128,27 @@
       - cell "0"
       - cell "0"
       - cell "0"
-    - row /% \d+ < Vault < \d+ \(μm\) 0 0 0 0 0 0 0 0 0/:
-      - rowheader /% \d+ < Vault < \d+ \(μm\)/
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-    - row /% \d+ < Vault < \d+ \(μm\) 0 0 0 0 0 0 0 0 0/:
-      - rowheader /% \d+ < Vault < \d+ \(μm\)/
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-      - cell "0"
-    - row /% \d+ < Vault \(μm\) 0 0 0 0 0 0 0 0 0/:
+    - row /% \d+ < Vault \(μm\) 0 0 0 0 \d+ \d+ 0 0 0/:
       - rowheader /% \d+ < Vault \(μm\)/
       - cell "0"
       - cell "0"
       - cell "0"
       - cell "0"
-      - cell "0"
-      - cell "0"
+      - cell /\d+/
+      - cell /\d+/
       - cell "0"
       - cell "0"
       - cell "0"
 - list:
   - listitem:
     - strong: "Angle to Angle (AtA):"
-    - text: 0 mm.
+    - text: /\d+\.\d+ mm\./
   - listitem:
     - strong: "Crystaline Lens Rise (CLR):"
-    - text: 0 mm.
+    - text: /\d+\.\d+ mm\./
   - listitem:
     - strong: "Number of matching Eyes:"
-    - text: /0\/\d+\./
+    - text: /\d+\/\d+\./
 - contentinfo:
   - list:
     - listitem:
