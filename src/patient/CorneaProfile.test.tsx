@@ -51,15 +51,15 @@ const renderCorneaProfile = (
  * the spinbuttons against those names.
  */
 const NINE_FIELDS = [
-  'Anterior Keratometry Flat (KAntFlt), dioptres',
+  'KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres',
   'Anterior Keratometry Flat axis, degrees',
-  'Anterior Keratometry Steep (KAntStp), dioptres',
+  'KAntStp (dpt @ º), Anterior Keratometry Steep, dioptres',
   'Anterior Keratometry Steep axis, degrees',
-  'Posterior Keratometry Flat (KPostFlt), dioptres',
+  'KPostFlt (dpt @ º), Posterior Keratometry Flat, dioptres',
   'Posterior Keratometry Flat axis, degrees',
-  'Posterior Keratometry Steep (KPostStp), dioptres',
+  'KPostStp (dpt @ º), Posterior Keratometry Steep, dioptres',
   'Posterior Keratometry Steep axis, degrees',
-  'Central Corneal Thickness (CCT), micrometres'
+  'CCT (μm), Central Corneal Thickness, micrometres'
 ];
 
 it('renders the nine fields in flat/axis, steep/axis order, ending with CCT', () => {
@@ -96,10 +96,22 @@ it('shows the values it was given', () => {
  * row with its own axis, joined by a visible "@" that is presentation only.
  */
 const READINGS = [
-  ['Anterior Keratometry Flat (KAntFlt)', 'Anterior Keratometry Flat axis'],
-  ['Anterior Keratometry Steep (KAntStp)', 'Anterior Keratometry Steep axis'],
-  ['Posterior Keratometry Flat (KPostFlt)', 'Posterior Keratometry Flat axis'],
-  ['Posterior Keratometry Steep (KPostStp)', 'Posterior Keratometry Steep axis']
+  [
+    'KAntFlt (dpt @ º), Anterior Keratometry Flat',
+    'Anterior Keratometry Flat axis'
+  ],
+  [
+    'KAntStp (dpt @ º), Anterior Keratometry Steep',
+    'Anterior Keratometry Steep axis'
+  ],
+  [
+    'KPostFlt (dpt @ º), Posterior Keratometry Flat',
+    'Posterior Keratometry Flat axis'
+  ],
+  [
+    'KPostStp (dpt @ º), Posterior Keratometry Steep',
+    'Posterior Keratometry Steep axis'
+  ]
 ];
 
 it('puts each keratometry value and its axis on one row', () => {
@@ -133,23 +145,37 @@ it('joins each value to its axis with a hidden "@"', () => {
 /*
  * The units are clinical meaning, not decoration: a keratometry value in
  * dioptres and one in millimetres are different numbers for the same cornea.
- * The abbreviation on screen is aria-hidden; the full unit is part of each
- * field's accessible name, asserted for all nine in the order test above and
- * here for the abbreviation a sighted clinician reads.
+ * Each is on screen in the field's label over the full name as a caption
+ * (#192); a keratometry label carries its axis's unit too,
+ * "KAntFlt (dpt @ º)", since the axis is labelled only "@". All of it is
+ * aria-hidden: the full unit is part of each field's
+ * accessible name, asserted for all nine in the order test above.
  */
-it('shows the unit abbreviation beside each value', () => {
+const SHOWN = [
+  ['KAntFlt (dpt @ º)', 'Anterior Keratometry Flat'],
+  ['KAntStp (dpt @ º)', 'Anterior Keratometry Steep'],
+  ['KPostFlt (dpt @ º)', 'Posterior Keratometry Flat'],
+  ['KPostStp (dpt @ º)', 'Posterior Keratometry Steep'],
+  ['CCT (μm)', 'Central Corneal Thickness']
+];
+
+it('shows each short name with its unit, over its full name', () => {
   renderCorneaProfile();
 
-  const dioptres = screen.getAllByText('dpt');
-  const degrees = screen.getAllByText('º');
-  const micrometres = screen.getAllByText('μm');
+  SHOWN.forEach(([label, caption]) => {
+    const shown = screen.getByText(label);
+    expect(shown).toHaveAttribute('aria-hidden', 'true');
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(shown.closest('label')).toContainElement(screen.getByText(caption));
+  });
+});
 
-  expect(dioptres).toHaveLength(4);
-  expect(degrees).toHaveLength(4);
-  expect(micrometres).toHaveLength(1);
-  [...dioptres, ...degrees, ...micrometres].forEach((unit) =>
-    expect(unit).toHaveAttribute('aria-hidden', 'true')
-  );
+it('marks no unit beside any input', () => {
+  renderCorneaProfile();
+
+  expect(screen.queryByText('º')).toBeNull();
+  expect(screen.queryByText('dpt')).toBeNull();
+  expect(screen.queryByText('μm')).toBeNull();
 });
 
 /*
@@ -184,7 +210,7 @@ it('shows a validation error for a negative posterior keratometry', async () => 
   // by description, not text: the message holds its range in a span of its own
   expect(
     await screen.findByRole('spinbutton', {
-      name: 'Posterior Keratometry Flat (KPostFlt), dioptres',
+      name: 'KPostFlt (dpt @ º), Posterior Keratometry Flat, dioptres',
       description: 'Invalid value. [4, 8] or 0 if not measured.'
     })
   ).toBeInTheDocument();
@@ -198,16 +224,17 @@ it('shows a validation error for a negative posterior keratometry', async () => 
  * field touched with only one invalid catches an error reaching the wrong
  * control, and every field invalid with only one touched catches a touched
  * flag doing so. Either way exactly one control may answer: the field's
- * own, with its message inside its own value cell.
+ * own, with its message in its own row, opening with the name of the
+ * control it is about - "K: " for a reading, "Axis: " for its axis.
  */
 const INVALID = [
-  ['kaf', 100, 'Anterior Keratometry Flat (KAntFlt), dioptres'],
+  ['kaf', 100, 'KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres'],
   ['axisaf', 200, 'Anterior Keratometry Flat axis, degrees'],
-  ['kas', 100, 'Anterior Keratometry Steep (KAntStp), dioptres'],
+  ['kas', 100, 'KAntStp (dpt @ º), Anterior Keratometry Steep, dioptres'],
   ['axisas', 200, 'Anterior Keratometry Steep axis, degrees'],
-  ['kpf', -6.2, 'Posterior Keratometry Flat (KPostFlt), dioptres'],
+  ['kpf', -6.2, 'KPostFlt (dpt @ º), Posterior Keratometry Flat, dioptres'],
   ['axispf', 200, 'Posterior Keratometry Flat axis, degrees'],
-  ['kps', -6.5, 'Posterior Keratometry Steep (KPostStp), dioptres'],
+  ['kps', -6.5, 'KPostStp (dpt @ º), Posterior Keratometry Steep, dioptres'],
   ['axisps', 200, 'Posterior Keratometry Steep axis, degrees']
 ] as const;
 
@@ -247,14 +274,20 @@ it.each(PASSES)(
     });
     expect(target).toHaveAttribute('aria-invalid', 'true');
 
-    // the stylesheet places a message under its control only by this nesting
+    // the stylesheet places a message under its row only by this nesting
     // eslint-disable-next-line testing-library/no-node-access
-    const cell = target.closest('.mvalue');
+    const row = target.closest('.mrow');
     // eslint-disable-next-line testing-library/no-node-access
     const message = document.getElementById(`corneaProfile.${field}-error`);
-    expect(cell).toContainElement(message);
+    expect(row).toContainElement(message);
     // eslint-disable-next-line testing-library/no-node-access
-    expect(document.querySelectorAll('.mrow-error')).toHaveLength(1);
+    const shown = document.querySelectorAll('.mrow-error');
+    expect(shown).toHaveLength(1);
+    expect(shown[0]).toHaveTextContent(
+      new RegExp(
+        `^${field.startsWith('axis') ? 'Axis' : 'K'}: Invalid value\\.`
+      )
+    );
 
     screen
       .getAllByRole('spinbutton')

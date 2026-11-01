@@ -173,11 +173,10 @@ for (const viewport of VIEWPORTS) {
 }
 
 /*
- * Under 24rem (384px) a keratometry reading's "@ Y º" wraps onto a second
- * line under its K value - a layout neither viewport above reaches, since
- * the mobile one is 390px. Pinned at 360px with one reading's value and axis
- * both invalid, so the shot holds the wrap and both messages under their own
- * controls.
+ * The narrowest phone the form is laid out for, below the mobile viewport
+ * above. Pinned at 360px with one reading's value and axis both invalid, so
+ * the shot holds a keratometry row at its tightest and both its messages,
+ * K first, each across the whole row (#195).
  */
 test.describe('narrow (360x780)', () => {
   test.use({ viewport: { width: 360, height: 780 } });
@@ -187,7 +186,7 @@ test.describe('narrow (360x780)', () => {
   }) => {
     await open(page, null);
     for (const [name, value] of [
-      ['Anterior Keratometry Flat (KAntFlt), dioptres', '99'],
+      ['KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres', '99'],
       ['Anterior Keratometry Flat axis, degrees', '400']
     ]) {
       const field = page.getByRole('spinbutton', { name });
@@ -218,12 +217,12 @@ test.describe('narrow (360x780)', () => {
   test('normality with measurements entered looks right', async ({ page }) => {
     await open(page, null);
     for (const [name, value] of [
-      ['Angle to Angle (AtA), millimetres', '12'],
-      ['White to White (WtW), millimetres', '15'],
-      ['Crystaline Lens Rise (CLR), micrometres', '300'],
-      ['Internal Anterior Chamber Depth (ACD), millimetres', '1'],
-      ['Anterior Chamber Angle nasal (ACAn), degrees', '40'],
-      ['Anterior Chamber Angle temporal (ACAt), degrees', '40']
+      ['AtA (mm), Angle to Angle, millimetres', '12'],
+      ['WtW (mm), White to White, millimetres', '15'],
+      ['CLR (μm), Crystaline Lens Rise, micrometres', '300'],
+      ['ACD (mm), Internal Anterior Chamber Depth, millimetres', '1'],
+      ['ACAn (º), Anterior Chamber Angle nasal, degrees', '40'],
+      ['ACAt (º), Anterior Chamber Angle temporal, degrees', '40']
     ]) {
       const field = page.getByRole('spinbutton', { name });
       await field.fill(value);
@@ -248,9 +247,8 @@ test.describe('narrow (360x780)', () => {
  * every axis). Each input's text must fit inside it, at every viewport the
  * fixtures use plus the 800px tablet. A clipped "180" reads as "18".
  *
- * Not guaranteed, and an owner decision on #193: a third decimal of
- * keratometry ("43.125") or a decimal axis ("176.5") is wider than its
- * input; the decimal axis was already clipped in Newsreader.
+ * The longer values - a third decimal of keratometry, a decimal axis - are
+ * held by the #192/#195 check below, which sizes the tracks for them.
  */
 const LONG_VALUES: [name: string, value: string][] = [
   ['biometry.ata', '12.25'],
@@ -288,6 +286,136 @@ for (const width of [360, 390, 800, 1280]) {
       );
       expect(clipped).toEqual([]);
     });
+  });
+}
+
+/*
+ * #192 and #195. Each field's unit is in its label - a keratometry row's
+ * label carries its axis's too, "KAntFlt (dpt @ º)" - so every value track
+ * holds the value alone. The tracks are sized to the longest valid values,
+ * a width a font or track change could silently make too small. So, at
+ * every width the form is checked at, with the longest value each field
+ * accepts typed in (three decimals where a biometer reports them - K in
+ * eighths of a dioptre - one decimal for an axis, as the ICL axis output is
+ * rounded, and whole micrometres for CLR):
+ *   - no value is clipped (the input does not scroll its own text);
+ *   - no label or caption overflows its track or reaches its control;
+ *   - the page does not scroll sideways;
+ *   - showing every message moves no input: no field jumps sideways or
+ *     changes width when an error appears.
+ */
+const LONGEST_VALID: [name: string, value: string][] = [
+  ['biometry.ata', '19.125'],
+  ['biometry.wtw', '19.125'],
+  ['biometry.clr', '-1000'],
+  ['biometry.acd', '5.125'],
+  ['biometry.acan', '69.25'],
+  ['biometry.acat', '69.25'],
+  ['corneaProfile.kaf', '54.125'],
+  ['corneaProfile.axisaf', '179.5'],
+  ['corneaProfile.kas', '54.125'],
+  ['corneaProfile.axisas', '179.5'],
+  ['corneaProfile.kpf', '7.125'],
+  ['corneaProfile.axispf', '179.5'],
+  ['corneaProfile.kps', '7.125'],
+  ['corneaProfile.axisps', '179.5'],
+  ['corneaProfile.cct', '700'],
+  ['spectacleRefraction.sphere', '-24.125'],
+  ['spectacleRefraction.cylindre', '-7.125'],
+  ['spectacleRefraction.axis', '179.5'],
+  ['spectacleRefraction.vertex', '14.125']
+];
+
+/* The four ICL Power outputs follow from the values above; none may clip. */
+const OUTPUTS = [
+  'iclSphere',
+  'iclCylindre',
+  'iclAxis',
+  'iclSphericalEquivalent'
+];
+
+const inputBoxes = (page: Page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll<HTMLInputElement>('.mrow > input')].map(
+      (input) => {
+        const box = input.getBoundingClientRect();
+        return {
+          name: input.name,
+          value: input.value,
+          left: box.left,
+          width: box.width,
+          clipped: input.scrollWidth > input.clientWidth
+        };
+      }
+    )
+  );
+
+/* Each row's label - short name, unit and caption - against its track. */
+const labelBoxes = (page: Page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll<HTMLLabelElement>('.mrow > label')]
+      .filter((label) => !label.classList.contains('kat'))
+      .map((label) => {
+        const control = label.nextElementSibling!.getBoundingClientRect();
+        return {
+          for: label.htmlFor,
+          overflows: label.scrollWidth > label.clientWidth,
+          clear: label.getBoundingClientRect().right <= control.left + 0.5
+        };
+      })
+  );
+
+for (const width of [360, 390, 800, 1280]) {
+  test(`at ${width}px no value or label clips, and an error moves no field`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page, null);
+    for (const [name, value] of LONGEST_VALID) {
+      await page.locator(`input[name="${name}"]`).fill(value);
+    }
+
+    const valid = await inputBoxes(page);
+    expect(valid.map(({ name }) => name)).toEqual([
+      ...LONGEST_VALID.map(([name]) => name),
+      ...OUTPUTS
+    ]);
+    for (const box of valid) {
+      expect(box.value, box.name).not.toBe('');
+      expect(box, box.name).toMatchObject({ clipped: false });
+    }
+    const labels = await labelBoxes(page);
+    // every labelled row, in order; a keratometry axis's "@" is not a row label
+    const notAnAxis = LONGEST_VALID.map(([name]) => name).filter(
+      (name) => !name.startsWith('corneaProfile.axis')
+    );
+    expect(labels.map((label) => label.for)).toEqual([
+      ...notAnAxis.slice(0, 11).map((name) => `${name}field`),
+      'corneaProfile.previousSurgery',
+      ...notAnAxis.slice(11).map((name) => `${name}field`),
+      ...OUTPUTS.map((name) => `${name}field`)
+    ]);
+    for (const label of labels) {
+      expect(label, label.for).toMatchObject({ overflows: false, clear: true });
+    }
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(width);
+
+    // every typed field invalid and touched: each shows its message
+    for (const [name] of LONGEST_VALID) {
+      const field = page.locator(`input[name="${name}"]`);
+      await field.fill('9999');
+      await field.blur();
+      await expect(field).toHaveAttribute('aria-invalid', 'true');
+    }
+    const invalid = await inputBoxes(page);
+    expect(
+      invalid.map(({ name, left, width }) => ({ name, left, width }))
+    ).toEqual(valid.map(({ name, left, width }) => ({ name, left, width })));
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(width);
   });
 }
 
