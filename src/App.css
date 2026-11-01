@@ -812,8 +812,9 @@ input[type='number']::-webkit-outer-spin-button {
 
 /* The band caption under each gauge: the same text as the gauge's name, made
    visible. It qualifies a clinical value, so full --ink (7:1, pinned in
-   contrast.test.ts), and it carries numerals ("2.5th"), so Newsreader. Its
-   left and right margins are set inline, from the plot insets. */
+   contrast.test.ts). It is a prose caption, so Newsreader: numbers inside
+   running text ("2.5th") stay in it (#193). Its left and right margins are
+   set inline, from the plot insets. */
 .gauge-band {
   color: var(--ink);
   font-family: var(--prose);
