@@ -25,18 +25,18 @@
       - columnheader "Vault (μm)"
       - columnheader "Corneal Endothelium to ICL (mm)"
   - rowgroup:
-    - row /\d+\.\d+ mm \d+\.\d+ -\d+\.\d+/:
+    - row /\d+\.\d+ mm \d+\.\d+ \d+\.\d+/:
       - rowheader /\d+\.\d+ mm/
       - cell /\d+\.\d+/
-      - cell /-\d+\.\d+/
-    - row /\d+\.\d+ mm \d+\.\d+ -\d+\.\d+/:
+      - cell /\d+\.\d+/
+    - row /\d+\.\d+ mm \d+\.\d+ \d+\.\d+/:
       - rowheader /\d+\.\d+ mm/
       - cell /\d+\.\d+/
-      - cell /-\d+\.\d+/
-    - row /\d+\.\d+ mm \d+\.\d+ -\d+\.\d+/:
+      - cell /\d+\.\d+/
+    - row /\d+\.\d+ mm \d+\.\d+ 2/:
       - rowheader /\d+\.\d+ mm/
       - cell /\d+\.\d+/
-      - cell /-\d+\.\d+/
+      - cell "2"
 - separator
 - heading /Probability of \d+ < Vault < \d+ \(μm\)/ [level=4]
 - table:
@@ -45,15 +45,15 @@
       - columnheader "Lens Size"
       - columnheader "Probability (%)"
   - rowgroup:
-    - row /\d+\.\d+ mm 0/:
+    - row /\d+\.\d+ mm \d+\.\d+/:
       - rowheader /\d+\.\d+ mm/
-      - cell "0"
-    - row /\d+\.\d+ mm 0/:
+      - cell /\d+\.\d+/
+    - row /\d+\.\d+ mm \d+\.\d+/:
       - rowheader /\d+\.\d+ mm/
-      - cell "0"
-    - row /\d+\.\d+ mm 0/:
+      - cell /\d+\.\d+/
+    - row /\d+\.\d+ mm 9\.6/:
       - rowheader /\d+\.\d+ mm/
-      - cell "0"
+      - cell "9.6"
 - contentinfo:
   - list:
     - listitem:

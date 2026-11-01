@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { gotoTab, openApp } from './lib/app';
+import { fillRow, gotoTab, openApp } from './lib/app';
+
+import type { GoldenRow } from '../src/golden/types';
+import inputs from '../src/golden/inputs.json';
 
 /**
  * Visual and structural coverage for every route, at two viewports (#121).
@@ -46,6 +49,15 @@ const ROUTES = [
   { name: 'matrix', tab: 'Floating Matrix' },
   { name: 'regression', tab: 'Regression' }
 ] as const;
+
+/*
+ * Floating Matrix and Regression show a note naming what to enter, and no
+ * table, until the inputs they compute from are present (#197). Their shots
+ * enter golden row 01 first, so the tables stay under visual coverage; the
+ * empty-state notes are pinned by their own tests below.
+ */
+const BASELINE = inputs.rows[0] as GoldenRow;
+const FILLED_TABS: readonly string[] = ['Floating Matrix', 'Regression'];
 
 /**
  * The footer renders the release tag and the commit the bundle was built
@@ -93,16 +105,24 @@ const pinBuildStamp = async (page: Page) => {
 };
 
 /**
- * The form is left at INITIAL_VALUES: an empty patient with zeroed biometry.
- * That is the deterministic state - every rendered number is then derived
- * from constants or from src/data.csv, which does not change - and it is also
- * the state that shows the most structure, since no validation styling is
- * triggered (the one exception, the narrow patient test, triggers it on
- * purpose). The clock is pinned by openApp regardless, because
- * PatientInfo.age() reads Date.now().
+ * Patient and Biometric Normality are left at INITIAL_VALUES: an empty
+ * patient with every measured field empty (#196). Floating Matrix and
+ * Regression are opened with golden row 01 entered (see FILLED_TABS), since
+ * an empty form shows them as a note. Both are deterministic - every rendered
+ * number is derived from constants, src/data.csv or src/golden/inputs.json,
+ * none of which change - and neither triggers validation styling (the one
+ * exception, the narrow patient test, triggers it on purpose). The clock is
+ * pinned by openApp regardless, because PatientInfo.age() reads Date.now().
  */
-const open = async (page: Page, tab: string | null) => {
+const open = async (
+  page: Page,
+  tab: string | null,
+  filled: boolean = tab !== null && FILLED_TABS.includes(tab)
+) => {
   await openApp(page);
+  if (filled) {
+    await fillRow(page, BASELINE);
+  }
   if (tab !== null) {
     await gotoTab(page, tab);
   }
@@ -437,6 +457,33 @@ for (const { rootFontPx, ...viewport } of MATRIX_SCROLL_VIEWPORTS) {
       }
       expect(violations).toEqual([]);
     });
+  });
+}
+
+/*
+ * On an empty form the two computed tabs name what to enter instead of
+ * showing numbers from missing inputs (#197). Inline: the note is the whole
+ * of what changes, and the shell around it is pinned by the route fixtures.
+ */
+for (const { tab, note } of [
+  {
+    tab: 'Floating Matrix',
+    note: 'Enter AtA and CLR on the Patient tab to see the matching eyes.'
+  },
+  {
+    tab: 'Regression',
+    note:
+      'Enter Date of Birth, AtA, CLR, ACD, KAntFlt, KAntStp, CCT, Sphere, ' +
+      'Cylindre and Vertex on the Patient tab to see the vault prediction ' +
+      'and its probabilities.'
+  }
+]) {
+  test(`${tab} on an empty form names what to enter, and shows no table`, async ({
+    page
+  }) => {
+    await open(page, tab, false);
+    await expect(page.getByText(note, { exact: true })).toBeVisible();
+    await expect(page.locator('table')).toHaveCount(0);
   });
 }
 
