@@ -17,6 +17,15 @@
   - listitem:
     - link "Regression":
       - /url: "#/regression"
+- text: Load an example case
+- combobox "Load an example case":
+  - option "Choose…" [selected]
+  - option "Myopia with astigmatism, average anterior segment"
+  - option "Myopia with astigmatism, steep posterior cornea measured"
+  - 'option "After myopic laser surgery: flat, thinner cornea"'
+  - 'option "After hyperopic laser surgery: steep cornea"'
+  - option "Shallow anterior chamber, narrow angle"
+  - option "High myopia, wide, deep anterior segment"
 - heading "Information" [level=4]
 - text: Name
 - textbox "Name":

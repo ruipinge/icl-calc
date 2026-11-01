@@ -628,6 +628,32 @@ input[type='number']::-webkit-outer-spin-button {
   min-width: 0;
 }
 
+/*
+ * Load an example case: a measured row without a unit - the label, then the
+ * select, on one line and packed to the left (otherwise the auto label track
+ * takes the free space and pushes the select to the far edge); stacked under
+ * 48rem with Information. The select's
+ * track is capped and can shrink to nothing, so the longest case label
+ * truncates inside the control rather than widening the page.
+ */
+.preset-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 24rem);
+  justify-content: start;
+  align-items: baseline;
+  column-gap: 0.7rem;
+  margin-bottom: 1.5rem;
+}
+
+.preset-row > label {
+  padding: 0.6rem 0;
+}
+
+.preset-row > select {
+  min-width: 0;
+  max-width: 100%;
+}
+
 /* Information: four cells in a row, stacked under 48rem. */
 .idgroup {
   display: grid;
@@ -678,6 +704,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 @media (max-width: 48rem) {
+  .preset-row,
   .idgroup,
   .patient-grid {
     grid-template-columns: minmax(0, 1fr);
