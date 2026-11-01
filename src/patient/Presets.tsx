@@ -1,6 +1,6 @@
 import { PRESETS, Preset } from '../presets';
 import { useRef, useState } from 'react';
-import { ICLInputs } from '../types';
+import { ICLFormValues } from '../types';
 import { useFormikContext } from 'formik';
 
 const GROUPS = ['biometry', 'corneaProfile', 'spectacleRefraction'] as const;
@@ -27,7 +27,7 @@ const GROUPS = ['biometry', 'corneaProfile', 'spectacleRefraction'] as const;
  * every preset is valid, and errors show for touched fields only, as before.
  */
 export const Presets = () => {
-  const { values, setValues } = useFormikContext<ICLInputs>();
+  const { values, setValues } = useFormikContext<ICLFormValues>();
   const [chosen, setChosen] = useState('');
   const [loadedId, setLoadedId] = useState('');
   const selectRef = useRef<HTMLSelectElement>(null);

@@ -155,10 +155,11 @@ it('is cleared by Reset like everything else', async () => {
 
   fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
 
+  // back to empty, where every measured field starts (#196); an empty
+  // number input reads as null
+  expect(INITIAL_VALUES.biometry.ata).toBe('');
   await waitFor(() => {
-    expect(screen.getByRole('spinbutton', { name: ATA })).toHaveValue(
-      INITIAL_VALUES.biometry.ata
-    );
+    expect(screen.getByRole('spinbutton', { name: ATA })).toHaveValue(null);
   });
   expect(screen.getByLabelText('Name')).toHaveValue('');
   expect(combobox()).toHaveValue('');
