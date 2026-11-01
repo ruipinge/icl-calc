@@ -47,10 +47,10 @@ const ATA_MIN = 0,
 const formatError = (min: number, max: number) =>
   `${INVALID_ERROR} [${min}, ${max}]`;
 
-// Posterior keratometry is optional, and "not measured" is encoded as 0 both
-// by INITIAL_VALUES and by calcRadiusPosterior's `if (kpf && kps)` guard, so
-// a plain min/max cannot express the rule: 0 has to stay valid while every
-// other sub-floor value - a negative above all - must not.
+// Posterior keratometry is optional, and "not measured" is encoded as empty
+// (INITIAL_VALUES) or 0 (calcRadiusPosterior's `if (kpf && kps)` guard reads
+// both alike), so a plain min/max cannot express the rule: 0 has to stay
+// valid while every other sub-floor value - a negative above all - must not.
 const formatPosteriorError = (min: number, max: number) =>
   `${formatError(min, max)} or 0 if not measured.`;
 

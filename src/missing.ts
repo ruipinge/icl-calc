@@ -40,12 +40,19 @@ export interface RequiredField {
   readonly isMissing: (values: ICLFormValues) => boolean;
 }
 
-const measured = <
-  S extends 'biometry' | 'corneaProfile' | 'spectacleRefraction'
->(
+type Section = 'biometry' | 'corneaProfile' | 'spectacleRefraction';
+
+/* The keys of a section that hold a measurement (not `previousSurgery`). */
+type NumericKey<S extends Section> = {
+  [K in keyof ICLFormValues[S]]: ICLFormValues[S][K] extends number | ''
+    ? K
+    : never;
+}[keyof ICLFormValues[S]];
+
+const measured = <S extends Section>(
   label: string,
   section: S,
-  key: keyof ICLFormValues[S]
+  key: NumericKey<S>
 ): RequiredField => ({
   label,
   isMissing: (values) => measurement(values[section][key]) === undefined
@@ -156,4 +163,57 @@ export const iclPowerInputs = (
       vertex: orZero(spectacleRefraction.vertex)
     }
   };
+};
+
+/** What the Regression needs, every one present: see `regressionInputs`. */
+export interface RegressionNumbers {
+  readonly acd: number;
+  readonly ata: number;
+  readonly clr: number;
+  readonly age: number;
+  /** The inputs of the ICL formulas, for the spherical equivalent. */
+  readonly power: ICLInputs;
+}
+
+/**
+ * The numbers the Regression is fed, or `undefined` when any field in
+ * `REGRESSION_FIELDS` is missing. Present fields carry exactly the entered
+ * numbers, so the table computes what it did from the form values themselves.
+ *
+ * @param {ICLFormValues} values - The form's values
+ * @returns {RegressionNumbers | undefined}
+ */
+export const regressionInputs = (
+  values: ICLFormValues
+): RegressionNumbers | undefined => {
+  const power = iclPowerInputs(values);
+  const age = knownAge(values.patient);
+  const acd = measurement(values.biometry.acd);
+  const ata = measurement(values.biometry.ata);
+  const clr = measurement(values.biometry.clr);
+  if (
+    power === undefined ||
+    age === undefined ||
+    acd === undefined ||
+    ata === undefined ||
+    clr === undefined
+  ) {
+    return undefined;
+  }
+  return { acd, ata, clr, age, power };
+};
+
+/**
+ * The AtA and CLR the floating matrix filters on, or `undefined` when either
+ * is missing (`MATRIX_FIELDS`).
+ *
+ * @param {ICLFormValues} values - The form's values
+ * @returns {{ ata: number, clr: number } | undefined}
+ */
+export const matrixInputs = (
+  values: ICLFormValues
+): { ata: number; clr: number } | undefined => {
+  const ata = measurement(values.biometry.ata);
+  const clr = measurement(values.biometry.clr);
+  return ata === undefined || clr === undefined ? undefined : { ata, clr };
 };

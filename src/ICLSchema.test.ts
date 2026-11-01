@@ -65,9 +65,9 @@ describe('posterior keratometry validation', () => {
   it.each(['kpf', 'kps'] as const)(
     'accepts %s = 0, the not-supplied sentinel',
     async (field) => {
-      // Every fixture row other than 02, and INITIAL_VALUES itself, encodes
-      // "not measured" as 0; calcRadiusPosterior's `if (kpf && kps)` guard
-      // reads it the same way. A bare `.min(4)` would reject all of them.
+      // Every fixture row other than 02 encodes "not measured" as 0 (the
+      // form itself starts empty); calcRadiusPosterior's `if (kpf && kps)`
+      // guard reads both alike. A bare `.min(4)` would reject all of them.
       await expect(
         ICLSchema.validate(withCornea({ kpf: 0, kps: 0, axispf: 0, axisps: 0 }))
       ).resolves.toBeTruthy();

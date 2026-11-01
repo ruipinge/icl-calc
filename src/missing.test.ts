@@ -10,8 +10,10 @@ import {
   REGRESSION_FIELDS,
   iclPowerInputs,
   knownAge,
+  matrixInputs,
   measurement,
-  missingLabels
+  missingLabels,
+  regressionInputs
 } from './missing';
 
 const patient = (dateOfBirth: string) =>
@@ -200,5 +202,52 @@ describe('iclPowerInputs', () => {
       ...FULL,
       [section]: { ...FULL[section], [key]: 0 }
     });
+  });
+});
+
+describe('regressionInputs and matrixInputs', () => {
+  it('carry exactly the entered numbers when everything is present', () => {
+    expect(regressionInputs(FULL)).toEqual({
+      acd: 3.2,
+      ata: 11.8,
+      clr: 250,
+      age: FULL.patient.age(),
+      power: iclPowerInputs(FULL)
+    });
+    expect(matrixInputs(FULL)).toEqual({ ata: 11.8, clr: 250 });
+  });
+
+  it('are undefined on a fresh form', () => {
+    expect(regressionInputs(INITIAL_VALUES)).toBeUndefined();
+    expect(matrixInputs(INITIAL_VALUES)).toBeUndefined();
+  });
+
+  it.each([
+    ['biometry', 'ata'],
+    ['biometry', 'clr'],
+    ['biometry', 'acd'],
+    ['corneaProfile', 'kaf'],
+    ['spectacleRefraction', 'vertex']
+  ] as const)('regression is undefined without %s.%s', (section, key) => {
+    expect(regressionInputs(without(section, key))).toBeUndefined();
+  });
+
+  it('regression is undefined without a known date of birth', () => {
+    expect(
+      regressionInputs({ ...FULL, patient: patient('2999-01-01') })
+    ).toBeUndefined();
+  });
+
+  it.each(['ata', 'clr'])('matrix is undefined without %s', (key) => {
+    expect(matrixInputs(without('biometry', key))).toBeUndefined();
+  });
+
+  it('matrix needs neither the date of birth nor the ICL power fields', () => {
+    expect(
+      matrixInputs({
+        ...INITIAL_VALUES,
+        biometry: { ...INITIAL_VALUES.biometry, ata: 11.8, clr: 250 }
+      })
+    ).toEqual({ ata: 11.8, clr: 250 });
   });
 });

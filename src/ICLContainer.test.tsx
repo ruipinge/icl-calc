@@ -1,13 +1,32 @@
-import { ICLInputs, INITIAL_VALUES, PreviousSurgery } from './types';
+import {
+  ICLInputs,
+  INITIAL_VALUES,
+  PatientInfo,
+  PreviousSurgery
+} from './types';
 import {
   calcICLAxis,
   calcICLCylindre,
   calcICLSphere,
   calcICLSphericalEquivalent
 } from './formulas';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within
+} from '@testing-library/react';
 
 import { ICLContainer } from './ICLContainer';
+import { Regression } from './regression';
+import { vi } from 'vitest';
+
+/*
+ * Every test renders the whole app, and many fire a dozen changes that each
+ * re-validate the form; on a busy machine that outruns the 5s default.
+ */
+vi.setConfig({ testTimeout: 30_000 });
 
 /**
  * ICLContainer renders its own <HashRouter>, so this must NOT wrap it in
@@ -112,6 +131,25 @@ const inOrder = (
   );
 };
 
+/* Every field either result tab needs: the seven ICL power fields, AtA, CLR, a date of birth. */
+const FILL: [string, string][] = [
+  ['Angle to Angle (AtA), millimetres', '11.8'],
+  ['Crystaline Lens Rise (CLR), micrometres', '250'],
+  ['Internal Anterior Chamber Depth (ACD), millimetres', '3.2'],
+  ['Anterior Keratometry Flat (KAntFlt), dioptres', '43'],
+  ['Anterior Keratometry Steep (KAntStp), dioptres', '44.5'],
+  ['Central Corneal Thickness (CCT), micrometres', '540'],
+  ['Sphere (spectacle refraction), dioptres', '-10'],
+  ['Cylindre (spectacle refraction), dioptres', '-2.25'],
+  ['Vertex, millimetres', '12']
+];
+const fillEverything = () => {
+  FILL.forEach(([name, value]) => enterNumber(name, value));
+  fireEvent.change(screen.getByLabelText('Date of Birth'), {
+    target: { value: '2000-07-01' }
+  });
+};
+
 it('lays the Patient tab out in five sections, in order', () => {
   renderWithHash();
 
@@ -163,8 +201,11 @@ it('shows the six normality charts on their route', () => {
   expect(screen.queryByLabelText('Name')).toBeNull();
 });
 
-it('shows the floating matrix on its route', () => {
-  renderWithHash('#matrix');
+it('shows the floating matrix on its route', async () => {
+  renderWithHash();
+  fillEverything();
+  fireEvent.click(screen.getByText('Floating Matrix'));
+  await screen.findByRole('rowheader', { name: 'Number of Eyes' });
 
   expect(
     screen.getByRole('rowheader', { name: 'Number of Eyes' })
@@ -172,8 +213,11 @@ it('shows the floating matrix on its route', () => {
   expect(screen.getAllByRole('row')).toHaveLength(13);
 });
 
-it('shows both regression tables on their route', () => {
-  renderWithHash('#regression');
+it('shows both regression tables on their route', async () => {
+  renderWithHash();
+  fillEverything();
+  fireEvent.click(screen.getByText('Regression'));
+  await screen.findByRole('heading', { name: 'Vault Prediction' });
 
   expect(
     screen.getByRole('heading', { name: 'Vault Prediction' })
@@ -252,6 +296,7 @@ it('switches to Biometric Normality tab when clicked', async () => {
 
 it('switches to Floating Matrix tab when clicked', async () => {
   renderWithHash();
+  fillEverything();
 
   fireEvent.click(screen.getByText('Floating Matrix'));
 
@@ -263,6 +308,7 @@ it('switches to Floating Matrix tab when clicked', async () => {
 
 it('switches to Regression tab when clicked', async () => {
   renderWithHash();
+  fillEverything();
 
   fireEvent.click(screen.getByText('Regression'));
 
@@ -285,8 +331,8 @@ it('switches to Regression tab when clicked', async () => {
  * if a future version drops it, they go red and a shim becomes real work.
  */
 it.each([
-  ['#matrix', /Number of Eyes/],
-  ['#regression', /Vault Prediction/],
+  ['#matrix', /to see the matching eyes\./],
+  ['#regression', /to see the vault prediction and its probabilities\./],
   ['#normality', /Angle to Angle - AtA \(mm\)/]
 ])('resolves the legacy %s URL to its tab', (hash, expected) => {
   renderWithHash(hash);
@@ -295,8 +341,8 @@ it.each([
 });
 
 it.each([
-  ['#/matrix', /Number of Eyes/],
-  ['#/regression', /Vault Prediction/],
+  ['#/matrix', /to see the matching eyes\./],
+  ['#/regression', /to see the vault prediction and its probabilities\./],
   ['#/normality', /Angle to Angle - AtA \(mm\)/]
 ])('resolves the current %s URL to its tab', (hash, expected) => {
   renderWithHash(hash);
@@ -503,5 +549,130 @@ describe('a fresh form, and the ICL Power it computes (#196)', () => {
         .filter((element) => element.hasAttribute('aria-invalid'))
     ).toEqual([wtw]);
     expect(screen.getAllByText(/^Enter a value/)).toHaveLength(1);
+  });
+});
+
+/*
+ * #197: the Floating Matrix and the Regression are not drawn from numbers
+ * nobody entered; each says what to enter instead.
+ */
+describe('Matrix and Regression with missing inputs (#197)', () => {
+  /* What fillEverything enters, as the formulas take it. */
+  const INPUTS: ICLInputs = {
+    patient: INITIAL_VALUES.patient,
+    biometry: { ata: 11.8, wtw: 0, clr: 250, acd: 3.2, acan: 0, acat: 0 },
+    corneaProfile: {
+      kaf: 43,
+      kas: 44.5,
+      kpf: 0,
+      kps: 0,
+      axisaf: 0,
+      axisas: 0,
+      axispf: 0,
+      axisps: 0,
+      cct: 540,
+      previousSurgery: PreviousSurgery.none
+    },
+    spectacleRefraction: { sphere: -10, cylindre: -2.25, axis: 0, vertex: 12 }
+  };
+  const NOTE = (list: string, purpose: string) =>
+    `Enter ${list} on the Patient tab to see ${purpose}.`;
+  const REGRESSION_PURPOSE = 'the vault prediction and its probabilities';
+  const noTables = () => expect(screen.queryAllByRole('table')).toHaveLength(0);
+
+  it('names every missing field on a fresh Regression tab, with no table', () => {
+    renderWithHash('#regression');
+
+    expect(
+      screen.getByText(
+        NOTE(
+          'Date of Birth, AtA, CLR, ACD, KAntFlt, KAntStp, CCT, Sphere, Cylindre and Vertex',
+          REGRESSION_PURPOSE
+        )
+      )
+    ).toBeVisible();
+    noTables();
+  });
+
+  it('names AtA and CLR on a fresh Matrix tab, with no table or summary', () => {
+    renderWithHash('#matrix');
+
+    expect(
+      screen.getByText(NOTE('AtA and CLR', 'the matching eyes'))
+    ).toBeVisible();
+    noTables();
+    expect(screen.queryByTestId('matrix-summary')).toBeNull();
+  });
+
+  it('shows both tables, 2 on Regression and 1 on Matrix, once all is entered', async () => {
+    renderWithHash();
+    fillEverything();
+    fireEvent.click(screen.getByText('Regression'));
+    await screen.findByRole('heading', { name: 'Vault Prediction' });
+    expect(screen.getAllByRole('table')).toHaveLength(2);
+    expect(screen.queryByText(/on the Patient tab to see/)).toBeNull();
+
+    fireEvent.click(screen.getByText('Floating Matrix'));
+    await screen.findByTestId('matrix-summary');
+    expect(screen.getAllByRole('table')).toHaveLength(1);
+    expect(screen.queryByText(/on the Patient tab to see/)).toBeNull();
+  });
+
+  it.each(['2999-01-01', 'not a date', ''])(
+    'asks for the Date of Birth alone when it is %j',
+    async (dateOfBirth) => {
+      renderWithHash();
+      fillEverything();
+      fireEvent.change(screen.getByLabelText('Date of Birth'), {
+        target: { value: dateOfBirth }
+      });
+      fireEvent.click(screen.getByText('Regression'));
+
+      expect(
+        await screen.findByText(NOTE('Date of Birth', REGRESSION_PURPOSE))
+      ).toBeVisible();
+      noTables();
+    }
+  );
+
+  it('brings the Matrix note back when AtA is cleared', async () => {
+    renderWithHash();
+    fillEverything();
+    enterNumber('Angle to Angle (AtA), millimetres', '');
+    fireEvent.click(screen.getByText('Floating Matrix'));
+
+    expect(
+      await screen.findByText(NOTE('AtA', 'the matching eyes'))
+    ).toBeVisible();
+    noTables();
+  });
+
+  it('feeds the components exactly the entered numbers', async () => {
+    renderWithHash();
+    fillEverything();
+    fireEvent.click(screen.getByText('Regression'));
+    await screen.findByRole('heading', { name: 'Vault Prediction' });
+    const view = render(
+      <Regression
+        acd={3.2}
+        ata={11.8}
+        clr={250}
+        se={calcICLSphericalEquivalent(INPUTS)}
+        age={new PatientInfo({
+          name: '',
+          dateOfBirth: '2000-07-01',
+          eye: 'left'
+        }).age()}
+      />
+    );
+    const rows = (tables: HTMLElement[]) =>
+      tables.flatMap((table) =>
+        within(table)
+          .getAllByRole('row')
+          .map((row) => row.textContent)
+      );
+    const shown = rows(screen.getAllByRole('table').slice(0, 2));
+    expect(shown.length).toBeGreaterThan(0);
+    expect(shown).toEqual(rows(within(view.container).getAllByRole('table')));
   });
 });
