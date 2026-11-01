@@ -486,15 +486,15 @@ input[type='number']::-webkit-outer-spin-button {
  *
  * Two tracks: the label, and the value. A field's unit is in its label,
  * "AtA (mm)", so there is no unit column and the value track holds the
- * value alone. Its longest valid one is a sphere such as "-24.125", 55px in
- * Newsreader measured in Chromium ("-1000" for CLR is 42px, an ICL output
- * like "-13.62" 46px); with the input's 0.5rem paddings that is 71px, so
- * 4.75rem leaves 5px to spare. visual.spec.ts types the longest value into
- * every field at four widths and fails if one is clipped.
+ * value alone. Its longest valid one is a sphere such as "-24.125", 64px in
+ * Inter's tabular digits (#193) measured in Chromium; with the input's
+ * 0.5rem paddings that is 80px, so 5.25rem leaves 4px to spare.
+ * visual.spec.ts types the longest value into every field at four widths
+ * and fails if one is clipped.
  */
 .fieldgroup {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 4.75rem;
+  grid-template-columns: minmax(0, 1fr) 5.25rem;
   align-items: baseline;
   margin-bottom: 2rem;
 }
@@ -614,14 +614,15 @@ input[type='number']::-webkit-outer-spin-button {
 /*
  * Cornea Profile: a keratometry reading and its axis share one row, read
  * "X dpt at Y º" - label | K | @ | axis | º. Measured in Chromium: the K
- * track holds "54.125" (49px of digits, three decimals as some biometers
- * report K in eighths of a dioptre; 65px with padding) with 7px to spare,
- * the axis track "179.5" (40px; 56px with padding, an axis to one decimal
- * as the ICL axis output is rounded) with 4px, the "@" is 15px and the º
- * mark 7px after a 0.3rem gap. The tracks right of the label total 10.75rem.
+ * track holds "54.125" in Inter (#193) (57px of digits, three decimals as
+ * some biometers report K in eighths of a dioptre; 73px with padding) with
+ * 7px to spare, the axis track "179.5" (45px; 61px with padding, an axis
+ * to one decimal as the ICL axis output is rounded) with 3px, the "@" is
+ * 15px and the º mark 7px after a 0.3rem gap. The tracks right of the label
+ * total 11.5rem.
  */
 .kgroup {
-  grid-template-columns: minmax(0, 1fr) 4.5rem 1.5rem 3.75rem 1rem;
+  grid-template-columns: minmax(0, 1fr) 5rem 1.5rem 4rem 1rem;
 }
 
 /* plain rows (CCT): the control spans the value area */
@@ -723,11 +724,11 @@ input[type='number']::-webkit-outer-spin-button {
 
 /*
  * The patient form: Biometry | Cornea Profile | Refraction + ICL Power.
- * Each group's value tracks are fixed (4.75rem; 10.75rem in Cornea Profile,
+ * Each group's value tracks are fixed (5.25rem; 11.5rem in Cornea Profile,
  * whose rows carry an axis as well), so the label track is what narrows;
  * below 75rem three columns leave it too little room for the captions,
  * which then wrap word by word. Measured in Chromium, the Cornea Profile
- * label track is 148px at a 360px viewport, room for its longest label,
+ * label track is 136px at a 360px viewport, room for its longest label,
  * "KPostStp (dpt)" (103px, 114px with its padding), on one line, so a
  * keratometry row keeps its short name whole at every width down to 360px.
  */
