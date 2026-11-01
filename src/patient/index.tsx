@@ -4,6 +4,7 @@ import { FormikState } from 'formik';
 import { ICLFormValues } from '../types';
 import { ICLPower } from './ICLPower';
 import { Info } from './Info';
+import { Presets } from './Presets';
 import { SpectacleRefraction } from './SpectacleRefraction';
 
 export const Patient = ({
@@ -13,6 +14,7 @@ export const Patient = ({
   ...otherProps
 }: FormikState<ICLFormValues>) => (
   <>
+    <Presets />
     <Info values={values} errors={errors} touched={touched} {...otherProps} />
     <hr />
     <div className="patient-grid">
