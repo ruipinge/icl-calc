@@ -18,7 +18,9 @@ Inputs are its `web/Inter-Regular.woff2` (sha256 `e06f6b1b…0ae085`) and
 `web/Inter-Medium.woff2` (sha256 `0ff3e946…3f2a48`). Licence: SIL Open Font
 License 1.1, in `inter-LICENSE.txt` beside this file.
 
-Subset with fontTools 4.68.0 (brotli 1.2.1):
+Subset with fontTools 4.68.0 and brotli 1.2.1, **without** `uharfbuzz`
+installed (with it, fontTools repacks GSUB and GPOS through HarfBuzz: the
+font is the same, the bytes are not):
 
 ```sh
 U="U+0020-007E,U+00A0-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+03BC,\
@@ -53,8 +55,8 @@ Inter's `tnum` widens the hyphen-minus to a digit's width, with a third of
 an em of space before it, so "-4.09" read "- 4.09" and the sign looked
 detached from its value. Every column of numbers in the app is
 right-aligned, so the sign is the leftmost character and its width moves no
-digit: the narrow hyphen keeps the columns aligned. The two steps reproduce these files byte
-for byte (sha256 `abbe727d…883944` for 400, `322fa3e1…7693a2` for 500).
+digit: the narrow hyphen keeps the columns aligned. The two steps
+reproduce these files byte for byte (sha256 `abbe727d…883944` for 400, `322fa3e1…7693a2` for 500).
 
 - `U+03BC` is the Greek mu that every "μm" in the app uses. Neither the
   Newsreader nor the Poppins subset has it, so before #193 it fell back to a
@@ -62,7 +64,8 @@ for byte (sha256 `abbe727d…883944` for 400, `322fa3e1…7693a2` for 500).
 - `tnum` makes the digits tabular. `ss02` is Inter's disambiguation set:
   a slashed 0, and I and l that cannot be read as 1. It was picked over
   `zero` + `cv01` by rendering both (the prototype for #193).
-- Every other OpenType feature is dropped.
+- `kern` is kept for spacing in the messages; every other OpenType feature
+  is dropped.
 
 `src/fonts.test.ts` reads these files' `cmap` tables and fails if a character
 the app renders is missing from a font stack's self-hosted faces.

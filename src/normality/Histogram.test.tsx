@@ -181,8 +181,9 @@ describe('in a browser that has ResizeObserver', () => {
 /*
  * Spec §7: the histogram is set in Treeye tokens - indigo bars on a --rule
  * grid, axis labels in --muted, the title in Poppins 500 and every axis
- * numeral in the numeric face (--numeric, Inter, tabular with ss02; #193). Each is written as a var() reference rather than resolved, so the
- * page's tokens are the single source and nothing is read at render time.
+ * numeral in the numeric face (--numeric, Inter, tabular with ss02; #193).
+ * Each is written as a var() reference rather than resolved, so the page's
+ * tokens are the single source and nothing is read at render time.
  */
 describe('in Treeye tokens', () => {
   afterEach(() => {

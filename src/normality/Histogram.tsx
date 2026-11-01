@@ -40,9 +40,10 @@ const FALLBACK_WIDTH = 340;
 // Spec §7: indigo bars on a --rule grid, the title in Poppins 500, and every
 // axis numeral in the numeric face, Inter, with tabular digits and its
 // disambiguated 0 (#193) - Poppins' served subsets have proportional digits.
-// The axis title is a label, so Poppins too. The bars carry no outline. These are var() references, not values read
-// with getComputedStyle: the page's tokens stay the one source, and nothing
-// about the chart's appearance is resolved during render.
+// The axis title is a label, so Poppins too. The bars carry no outline.
+// These are var() references, not values read with getComputedStyle: the
+// page's tokens stay the one source, and nothing about the chart's
+// appearance is resolved during render.
 const BAR_STYLE = { fill: 'var(--leaf-indigo)' };
 const GRIDLINE_STYLE = { stroke: 'var(--rule)' };
 const TITLE_STYLE = { fontFamily: 'var(--display)', fontWeight: 500 };

@@ -12,9 +12,10 @@ import ts from 'typescript';
  *
  * This reads the served WOFF2 files' cmap tables and the font stacks in
  * App.css, collects the characters in every string literal and JSX text in
- * src/, and holds each stack to all of them. A stack covers a character when
- * any of its self-hosted faces does: that is how the browser falls back, glyph
- * by glyph, within the stack.
+ * src/, and holds each stack to all of them. The browser picks one face per
+ * family, by weight, and falls back glyph by glyph to the next family, never
+ * to another weight of the same one. So a family covers a character only when
+ * every one of its weights has it, and a stack when one of its families does.
  */
 
 const SRC = __dirname;
@@ -128,11 +129,16 @@ const cmapOf = (file: string): Set<number> =>
 
 /* The self-hosted files of each family, from App.css's @font-face rules. */
 const faces = new Map<string, string[]>();
+const weights: [url: string, weight: string][] = [];
 for (const [, rule] of css.matchAll(/@font-face\s*\{([^}]*)\}/g)) {
   const family = /font-family:\s*'([^']+)'/.exec(rule)?.[1];
   const url = /url\('\.\/([^']+)'\)/.exec(rule)?.[1];
-  if (!family || !url) throw new Error(`unreadable @font-face: ${rule}`);
+  const weight = /font-weight:\s*(\d+)\s*;/.exec(rule)?.[1];
+  if (!family || !url || !weight) {
+    throw new Error(`unreadable @font-face: ${rule}`);
+  }
   faces.set(family, [...(faces.get(family) ?? []), url]);
+  weights.push([url, weight]);
 }
 
 const root = /:root\s*\{([^}]*)\}/.exec(css)?.[1] ?? '';
@@ -142,13 +148,19 @@ const stack = (token: string): string[] => {
   return value.split(',').map((f) => f.trim().replace(/^'|'$/g, ''));
 };
 
-/* What a stack can draw from its self-hosted faces, every weight together. */
+/* The characters every one of these sets has. */
+const shared = (sets: Set<number>[]): Set<number> =>
+  sets.length === 0
+    ? new Set()
+    : new Set([...sets[0]].filter((cp) => sets.every((s) => s.has(cp))));
+
+/* What a family draws at every weight: the characters all its faces share. */
+const family = (name: string): Set<number> =>
+  shared((faces.get(name) ?? []).map(cmapOf));
+
+/* What a stack can draw from its self-hosted families. */
 const covered = (families: string[]): Set<number> =>
-  new Set(
-    families.flatMap((family) =>
-      (faces.get(family) ?? []).flatMap((file) => [...cmapOf(file)])
-    )
-  );
+  new Set(families.flatMap((name) => [...family(name)]));
 
 // ---------------------------------------------------- what the app renders
 
@@ -187,8 +199,10 @@ const strings = (path: string, text = readFileSync(path, 'utf8')): string[] => {
 
 /* Each non-ASCII character in src/'s strings, with one file that uses it. */
 const used = new Map<number, string>();
+const all: string[] = [];
 for (const path of sources(SRC)) {
   for (const text of strings(path)) {
+    all.push(text);
     for (const char of text) {
       const cp = char.codePointAt(0)!;
       if (cp > 0x7e && !used.has(cp)) used.set(cp, relative(SRC, path));
@@ -212,6 +226,9 @@ const missingFrom = (have: Set<number>, text: string): string[] =>
 const missing = (families: string[], text: string): string[] =>
   missingFrom(covered(families), text);
 
+const hasEntity = (text: string): boolean =>
+  /&(#\d+|#x[\da-f]+|[a-z]+\d*);/i.test(text);
+
 const usedText = [...used.keys()]
   .map((cp) => String.fromCodePoint(cp))
   .join('');
@@ -226,7 +243,7 @@ describe('the WOFF2 cmap reader', () => {
   it('skips a character mapped to glyph 0', () => {
     const words = [
       ...[0, 1, 3, 1, 0, 12], // header and one (3, 1) record at offset 12
-      ...[4, 32, 0, 4, 4, 1, 0], // format 4, two segments
+      ...[4, 36, 0, 4, 4, 1, 0], // format 4, 36 bytes, two segments
       ...[0x42, 0xffff, 0], // end codes, pad
       ...[0x41, 0xffff], // start codes
       ...[0, 1], // deltas
@@ -263,11 +280,29 @@ describe('the strings the app renders', () => {
       )
     ).toEqual(['lit', 'head', 'mid', 'tail', 'plain', 'jsx']));
 
-  it('include the mu of "μm" and the "º" of an axis', () => {
-    expect(used.has(0x03bc)).toBe(true);
-    expect(used.has(0x00ba)).toBe(true);
+  it('include the mu of "μm"', () => expect(used.has(0x03bc)).toBe(true));
+
+  /*
+   * JSX text keeps entities as written ("&micro;"), so a character written
+   * as one would escape the check above. None are used; keep it that way.
+   */
+  it('write no character as an HTML entity', () =>
+    expect(all.filter(hasEntity)).toEqual([]));
+
+  it('would notice an entity', () => {
+    expect(hasEntity('12&micro;m')).toBe(true);
+    expect(hasEntity('&#956;m')).toBe(true);
+    expect(hasEntity('a & b; c')).toBe(false);
+    expect(hasEntity('AT&T')).toBe(false);
   });
 });
+
+/*
+ * One weight lacking a character is enough to lose it: the browser will not
+ * borrow it from the family's other weight.
+ */
+it('credits a family only with what all its weights have', () =>
+  expect([...shared([new Set([1, 2]), new Set([2, 3])])]).toEqual([2]));
 
 describe.each(['--display', '--prose', '--numeric'])(
   'the %s stack',
@@ -331,6 +366,7 @@ const body = (selector: string): string => {
  * `.unit` is the one exception to tabular-nums: a unit has no digits.
  */
 describe.each([
+  // the base rule for both; `select` then takes --display, as it holds words
   ['input, select', true],
   ['tbody td, tbody th.numeric', true],
   ['.mrow-error', true],
@@ -352,3 +388,27 @@ describe.each([
 
 it('puts the numeric face first in its own stack', () =>
   expect(stack('--numeric')[0]).toBe('Inter'));
+
+// The rule for `select` alone, not the `input,\nselect` list above it.
+it('sets a select, which holds words, in --display', () =>
+  expect(/\}\s*select\s*\{([^}]*)\}/.exec(css)?.[1]).toMatch(
+    /font-family:\s*var\(--display\)\s*;/
+  ));
+
+/* Where in App.css a rule starts, for the cascade order of equal selectors. */
+const position = (selector: string): number =>
+  css.indexOf(`${body(selector)}}`);
+
+/*
+ * `tbody th.numeric` and `tbody th[scope='row']` are equally specific, so the
+ * numeric face wins only from the later rule.
+ */
+it('sets a numeric row header after the row-header rule, so it wins', () =>
+  expect(position('tbody td, tbody th.numeric')).toBeGreaterThan(
+    position("tbody th[scope='row']")
+  ));
+
+/* Each face is the file of its weight, so no weight is served the wrong one. */
+it.each(weights)('serves %s at weight %s', (url, weight) =>
+  expect(url).toMatch(new RegExp(`-${weight}-`))
+);

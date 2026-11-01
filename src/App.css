@@ -625,8 +625,13 @@ input[type='number']::-webkit-outer-spin-button {
  * axis reads as the continuation of that reading, not as a row of its own.
  */
 @media (max-width: 24rem) {
+  /*
+   * The axis track is 3.25rem, as on the wide layout: Inter's tabular digits
+   * (#193) set a three-digit axis 31px wide, which 2.75rem less its padding
+   * (28px) clipped to "18" and a sliver of "0".
+   */
   .kgroup {
-    grid-template-columns: minmax(0, 1fr) 1.5rem 2.75rem 2.4rem;
+    grid-template-columns: minmax(0, 1fr) 1.5rem 3.25rem 2.4rem;
   }
 
   .kgroup > .mrow > label:not(.kat) + .mvalue {
