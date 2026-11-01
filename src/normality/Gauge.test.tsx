@@ -7,6 +7,7 @@ import {
   gaugeOptions,
   quantile
 } from './Gauge';
+import { PLOT_INSET_LEFT, PLOT_INSET_RIGHT } from './plot-inset';
 import { render, screen } from '@testing-library/react';
 
 const DATASET = [
@@ -171,6 +172,12 @@ it('aligns the caption with the bar', () => {
   const { gauge, caption } = captionOf(4);
 
   expect(caption.getAttribute('style')).toBe(gauge.getAttribute('style'));
+  // Pinned to the insets themselves too: equal styles alone stay green when
+  // both lose them.
+  expect(caption).toHaveStyle({
+    marginLeft: `${PLOT_INSET_LEFT}px`,
+    marginRight: `${PLOT_INSET_RIGHT}px`
+  });
 });
 
 it('is an image named by its metric, value and band', () => {

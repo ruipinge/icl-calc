@@ -210,9 +210,10 @@ test.describe('narrow (360x780)', () => {
   /*
    * At INITIAL_VALUES every gauge but one is out of range, so the routes
    * above show only "below the range" and "no value entered" under the
-   * gauges (#194). Here the measurements land in a band, in each tail and
-   * above the range, so the shot holds every kind of caption, the longest
-   * at the narrowest width.
+   * gauges (#194). Here they land in two inner bands, below the range and
+   * above it, with Age still empty, so the shot holds each kind of caption
+   * - a band, below, above, none - and the longest band name ("between the
+   * 75th and 97.5th percentiles") at the narrowest width.
    */
   test('normality with measurements entered looks right', async ({ page }) => {
     await open(page, null);

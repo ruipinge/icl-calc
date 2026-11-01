@@ -98,9 +98,10 @@ const BAND_NAMES = [
  * Names the band a value falls in, for the gauge's accessible name and its
  * visible caption. Bands are half-open `[min, max)` except the last, which is
  * closed. A value under the first band is below the range of the dataset, one
- * over the last band is above it. A value no band holds for any other reason
- * (NaN, or no bands at all) is outside the range, never `undefined`; NaN never
- * reaches this from Gauge, since `measurement` filters it.
+ * over the last band is above it. With no bands, or for NaN (every comparison
+ * with it is false, so no band claims it), the value is outside the range,
+ * never `undefined`; NaN never reaches this from Gauge, since `measurement`
+ * filters it.
  *
  * @param {number} value - The measurement
  * @param {Band[]} bands - From `buildZones`
