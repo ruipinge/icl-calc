@@ -16,7 +16,7 @@ export const VaultProbability = (values: RegressionInfo) => (
       <tbody>
         {LENS_SIZES.map((size, index) => (
           <tr key={size.id}>
-            <th scope="row" className={LENS_CLASSES[index]}>
+            <th scope="row" className={`${LENS_CLASSES[index]} numeric`}>
               {size.label}
             </th>
             <td>

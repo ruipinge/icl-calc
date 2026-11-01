@@ -242,6 +242,56 @@ test.describe('narrow (360x780)', () => {
 });
 
 /*
+ * #193: no value is clipped by its input. Every field holds the longest value
+ * at the precision a biometer reports it: keratometry to two decimals, axes
+ * as whole degrees (all tabular digits are one width, so "180" stands for
+ * every axis). Each input's text must fit inside it, at every viewport the
+ * fixtures use plus the 800px tablet. A clipped "180" reads as "18".
+ *
+ * Not guaranteed, and an owner decision on #193: a third decimal of
+ * keratometry ("43.125") or a decimal axis ("176.5") is wider than its
+ * input; the decimal axis was already clipped in Newsreader.
+ */
+const LONG_VALUES: [name: string, value: string][] = [
+  ['biometry.ata', '12.25'],
+  ['biometry.wtw', '11.75'],
+  ['biometry.clr', '-1000'],
+  ['biometry.acd', '3.25'],
+  ['biometry.acan', '45.5'],
+  ['biometry.acat', '45.5'],
+  ['corneaProfile.kaf', '43.25'],
+  ['corneaProfile.kas', '44.75'],
+  ['corneaProfile.kpf', '6.25'],
+  ['corneaProfile.kps', '6.75'],
+  ['corneaProfile.axisaf', '180'],
+  ['corneaProfile.axisas', '180'],
+  ['corneaProfile.cct', '700'],
+  ['spectacleRefraction.sphere', '-12.75'],
+  ['spectacleRefraction.cylindre', '-7.75'],
+  ['spectacleRefraction.axis', '180'],
+  ['spectacleRefraction.vertex', '12']
+];
+for (const width of [360, 390, 800, 1280]) {
+  test.describe(`values at ${width}px`, () => {
+    test.use({ viewport: { width, height: 900 } });
+
+    test('every patient value fits inside its input', async ({ page }) => {
+      await open(page, null);
+      await page.evaluate(() => document.fonts.ready);
+      for (const [name, value] of LONG_VALUES) {
+        await page.locator(`input[name="${name}"]`).fill(value);
+      }
+      const clipped = await page.evaluate(() =>
+        [...document.querySelectorAll('input')]
+          .filter((input) => input.scrollWidth > input.clientWidth)
+          .map((input) => `${input.name}="${input.value}"`)
+      );
+      expect(clipped).toEqual([]);
+    });
+  });
+}
+
+/*
  * Structure, asserted once per route rather than once per viewport. This
  * application is responsive through CSS alone - no route renders different
  * elements at a different width - so a second copy per viewport would record

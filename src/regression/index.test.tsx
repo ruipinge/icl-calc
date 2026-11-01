@@ -101,13 +101,14 @@ it('accents each row header with its lens size, in order', () => {
 
   const rowHeaders = screen.getAllByRole('rowheader');
 
+  // `numeric` sets the size in the numeric face (#193)
   expect(rowHeaders.map((h) => h.className)).toEqual([
-    'lens-small',
-    'lens-medium',
-    'lens-large',
-    'lens-small',
-    'lens-medium',
-    'lens-large'
+    'lens-small numeric',
+    'lens-medium numeric',
+    'lens-large numeric',
+    'lens-small numeric',
+    'lens-medium numeric',
+    'lens-large numeric'
   ]);
 });
 
