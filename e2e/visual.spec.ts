@@ -242,10 +242,15 @@ test.describe('narrow (360x780)', () => {
 });
 
 /*
- * #193: no value is clipped by its input. Every field holds a long valid
- * value (an axis's three digits are the widest, all tabular digits being one
- * width); each input's text must fit inside it, at every viewport the
+ * #193: no value is clipped by its input. Every field holds the longest value
+ * at the precision a biometer reports it: keratometry to two decimals, axes
+ * as whole degrees (all tabular digits are one width, so "180" stands for
+ * every axis). Each input's text must fit inside it, at every viewport the
  * fixtures use plus the 800px tablet. A clipped "180" reads as "18".
+ *
+ * Not guaranteed, and an owner decision on #193: a third decimal of
+ * keratometry ("43.125") or a decimal axis ("176.5") is wider than its
+ * input; the decimal axis was already clipped in Newsreader.
  */
 const LONG_VALUES: [name: string, value: string][] = [
   ['biometry.ata', '12.25'],

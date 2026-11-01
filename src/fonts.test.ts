@@ -129,7 +129,7 @@ const cmapOf = (file: string): Set<number> =>
 
 /* The self-hosted files of each family, from App.css's @font-face rules. */
 const faces = new Map<string, string[]>();
-const weights: [url: string, weight: string][] = [];
+const weights: [url: string, family: string, weight: string][] = [];
 for (const [, rule] of css.matchAll(/@font-face\s*\{([^}]*)\}/g)) {
   const family = /font-family:\s*'([^']+)'/.exec(rule)?.[1];
   const url = /url\('\.\/([^']+)'\)/.exec(rule)?.[1];
@@ -138,7 +138,7 @@ for (const [, rule] of css.matchAll(/@font-face\s*\{([^}]*)\}/g)) {
     throw new Error(`unreadable @font-face: ${rule}`);
   }
   faces.set(family, [...(faces.get(family) ?? []), url]);
-  weights.push([url, weight]);
+  weights.push([url, family, weight]);
 }
 
 const root = /:root\s*\{([^}]*)\}/.exec(css)?.[1] ?? '';
@@ -344,7 +344,7 @@ it.each([
 // ------------------------------------------------------------- the roles
 
 /* The declaration block of the rule whose selector list is exactly this. */
-const body = (selector: string): string => {
+const rule = (selector: string): RegExpExecArray => {
   const list = selector
     .split(',')
     .map((s) =>
@@ -358,8 +358,9 @@ const body = (selector: string): string => {
     css
   );
   if (!match) throw new Error(`no rule for ${selector}`);
-  return match[1];
+  return match;
 };
+const body = (selector: string): string => rule(selector)[1];
 
 /*
  * #193's scope: what is set in the numeric face, tabular and with ss02.
@@ -396,8 +397,7 @@ it('sets a select, which holds words, in --display', () =>
   ));
 
 /* Where in App.css a rule starts, for the cascade order of equal selectors. */
-const position = (selector: string): number =>
-  css.indexOf(`${body(selector)}}`);
+const position = (selector: string): number => rule(selector).index;
 
 /*
  * `tbody th.numeric` and `tbody th[scope='row']` are equally specific, so the
@@ -409,6 +409,6 @@ it('sets a numeric row header after the row-header rule, so it wins', () =>
   ));
 
 /* Each face is the file of its weight, so no weight is served the wrong one. */
-it.each(weights)('serves %s at weight %s', (url, weight) =>
-  expect(url).toMatch(new RegExp(`-${weight}-`))
+it.each(weights)('serves %s as %s at weight %s', (url, name, weight) =>
+  expect(url).toMatch(new RegExp(`^fonts/${name.toLowerCase()}-${weight}-`))
 );

@@ -56,7 +56,8 @@ an em of space before it, so "-4.09" read "- 4.09" and the sign looked
 detached from its value. Every column of numbers in the app is
 right-aligned, so the sign is the leftmost character and its width moves no
 digit: the narrow hyphen keeps the columns aligned. The two steps
-reproduce these files byte for byte (sha256 `abbe727d…883944` for 400, `322fa3e1…7693a2` for 500).
+reproduce these files byte for byte (sha256 `abbe727d…883944` for 400,
+`322fa3e1…7693a2` for 500).
 
 - `U+03BC` is the Greek mu that every "μm" in the app uses. Neither the
   Newsreader nor the Poppins subset has it, so before #193 it fell back to a
@@ -64,8 +65,10 @@ reproduce these files byte for byte (sha256 `abbe727d…883944` for 400, `322fa3
 - `tnum` makes the digits tabular. `ss02` is Inter's disambiguation set:
   a slashed 0, and I and l that cannot be read as 1. It was picked over
   `zero` + `cv01` by rendering both (the prototype for #193).
-- `kern` is kept for spacing in the messages; every other OpenType feature
-  is dropped.
+- `kern` is kept for spacing in the messages, and `ccmp`, `mark` and `mkmk`
+  as named in the command (they hold no lookups for these characters, so
+  the subset lists only `kern`, `ss02` and `tnum`). Every other feature is
+  dropped.
 
 `src/fonts.test.ts` reads these files' `cmap` tables and fails if a character
 the app renders is missing from a font stack's self-hosted faces.
