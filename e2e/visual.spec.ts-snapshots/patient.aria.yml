@@ -26,6 +26,8 @@
   - 'option "After hyperopic laser surgery: steep cornea"'
   - option "Shallow anterior chamber, narrow angle"
   - option "High myopia, wide, deep anterior segment"
+- button "Load" [disabled]
+- status
 - heading "Information" [level=4]
 - text: Name
 - textbox "Name":
