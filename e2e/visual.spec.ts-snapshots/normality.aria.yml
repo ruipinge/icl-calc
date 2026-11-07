@@ -23,8 +23,8 @@
 - 'img "Crystalline Lens Rise - CLR (μm): no value entered"'
 - img "Histogram of Internal Anterior Chamber Depth - ACD (mm)": /Internal Anterior Chamber Depth - ACD \(mm\) 0 \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
 - 'img "Internal Anterior Chamber Depth - ACD (mm): no value entered"'
-- img "Histogram of Average Anterior Chamber Angle - ACA (º)": /Average Anterior Chamber Angle - ACA \(º\) 0 \d+ \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
-- 'img "Average Anterior Chamber Angle - ACA (º): no value entered"'
+- img "Histogram of Average Anterior Chamber Angle - ACA (°)": /Average Anterior Chamber Angle - ACA \(°\) 0 \d+ \d+ \d+ \d+ Number of Eyes \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
+- 'img "Average Anterior Chamber Angle - ACA (°): no value entered"'
 - img "Histogram of White to White - WtW (mm)": /White to White - WtW \(mm\) 0 \d+ \d+ \d+ Number of Eyes 9\.8 \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/
 - 'img "White to White - WtW (mm): no value entered"'
 - img "Histogram of Age (years)": /Age \(years\) 0 \d+ \d+ \d+ Number of Eyes \d+ \d+\.\d+ \d+\.\d+ \d+\.\d+ \d+\.\d+/

@@ -14,7 +14,7 @@ const renderPatient = () => {
   return render(<ICLContainer />);
 };
 
-const ATA = 'Angle to Angle (AtA), millimetres';
+const ATA = 'AtA (mm), Angle to Angle, millimetres';
 const combobox = () =>
   screen.getByRole('combobox', { name: 'Load an example case' });
 const loadButton = () => screen.getByRole('button', { name: 'Load' });
@@ -50,7 +50,7 @@ it('applies a preset to the clinical fields and leaves identity alone', async ()
   });
   expect(
     screen.getByRole('spinbutton', {
-      name: 'Central Corneal Thickness (CCT), micrometres'
+      name: 'CCT (μm), Central Corneal Thickness, micrometres'
     })
   ).toHaveValue(values.corneaProfile.cct);
   expect(
@@ -60,7 +60,7 @@ it('applies a preset to the clinical fields and leaves identity alone', async ()
   ).toHaveValue(values.corneaProfile.previousSurgery);
   expect(
     screen.getByRole('spinbutton', {
-      name: 'Sphere (spectacle refraction), dioptres'
+      name: 'Sphere (dpt) (spectacle refraction), dioptres'
     })
   ).toHaveValue(values.spectacleRefraction.sphere);
 
@@ -74,7 +74,7 @@ it('applies a preset to the clinical fields and leaves identity alone', async ()
     eye: 'right'
   }).age();
   expect(age).toBeGreaterThan(0);
-  expect(screen.getByRole('textbox', { name: 'Age, years' })).toHaveValue(
+  expect(screen.getByRole('textbox', { name: 'Age (years)' })).toHaveValue(
     String(age)
   );
 });

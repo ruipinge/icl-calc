@@ -12,7 +12,8 @@ export const CorneaProfile = ({
     <h4>Cornea Profile</h4>
     <div className="fieldgroup kgroup">
       <KeratometryRow
-        label="Anterior Keratometry Flat (KAntFlt)"
+        label="KAntFlt"
+        caption="Anterior Keratometry Flat"
         name="corneaProfile.kaf"
         axisSrLabel="Anterior Keratometry Flat axis"
         axisName="corneaProfile.axisaf"
@@ -22,7 +23,8 @@ export const CorneaProfile = ({
         axisTouched={touched.corneaProfile?.axisaf}
       />
       <KeratometryRow
-        label="Anterior Keratometry Steep (KAntStp)"
+        label="KAntStp"
+        caption="Anterior Keratometry Steep"
         name="corneaProfile.kas"
         axisSrLabel="Anterior Keratometry Steep axis"
         axisName="corneaProfile.axisas"
@@ -32,7 +34,8 @@ export const CorneaProfile = ({
         axisTouched={touched.corneaProfile?.axisas}
       />
       <KeratometryRow
-        label="Posterior Keratometry Flat (KPostFlt)"
+        label="KPostFlt"
+        caption="Posterior Keratometry Flat"
         name="corneaProfile.kpf"
         axisSrLabel="Posterior Keratometry Flat axis"
         axisName="corneaProfile.axispf"
@@ -42,7 +45,8 @@ export const CorneaProfile = ({
         axisTouched={touched.corneaProfile?.axispf}
       />
       <KeratometryRow
-        label="Posterior Keratometry Steep (KPostStp)"
+        label="KPostStp"
+        caption="Posterior Keratometry Steep"
         name="corneaProfile.kps"
         axisSrLabel="Posterior Keratometry Steep axis"
         axisName="corneaProfile.axisps"
@@ -52,7 +56,8 @@ export const CorneaProfile = ({
         axisTouched={touched.corneaProfile?.axisps}
       />
       <FieldWithUnit
-        label="Central Corneal Thickness (CCT)"
+        label="CCT"
+        caption="Central Corneal Thickness"
         name="corneaProfile.cct"
         unit="μm"
         error={errors.corneaProfile?.cct}

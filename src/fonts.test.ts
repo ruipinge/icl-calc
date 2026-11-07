@@ -364,15 +364,15 @@ const body = (selector: string): string => rule(selector)[1];
 
 /*
  * #193's scope: what is set in the numeric face, tabular and with ss02.
- * `.unit` is the one exception to tabular-nums: a unit has no digits.
+ * Units have no mark of their own since #192: each is in its field's label,
+ * set with the label.
  */
 describe.each([
   // the base rule for both; `select` then takes --display, as it holds words
   ['input, select', true],
   ['tbody td, tbody th.numeric', true],
   ['.mrow-error', true],
-  ['.ledger-summary', true],
-  ['.unit', false]
+  ['.ledger-summary', true]
 ])('%s', (selector, tabular) => {
   it('is set in the numeric face with ss02', () => {
     expect(body(selector)).toMatch(/font-family:\s*var\(--numeric\)\s*;/);

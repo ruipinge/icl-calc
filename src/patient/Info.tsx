@@ -1,7 +1,7 @@
 import { Field, FormikState } from 'formik';
-import { UnitMark, fieldValidity } from './validity';
 
 import { ICLFormValues } from '../types';
+import { fieldValidity } from './validity';
 import { knownAge } from '../missing';
 
 export const Info = ({
@@ -41,19 +41,14 @@ export const Info = ({
           {dobMessage}
         </div>
         <div className="idcell">
-          <label htmlFor="fieldAge">
-            <span aria-hidden="true">Age</span>
-            <span className="sr-only">Age, years</span>
-          </label>
-          <div className="idvalue">
-            <input
-              name="age"
-              id="fieldAge"
-              disabled={true}
-              value={knownAge(values.patient) ?? ''}
-            />
-            <UnitMark>years</UnitMark>
-          </div>
+          {/* the label carries the unit, as every measured field's does */}
+          <label htmlFor="fieldAge">Age (years)</label>
+          <input
+            name="age"
+            id="fieldAge"
+            disabled={true}
+            value={knownAge(values.patient) ?? ''}
+          />
         </div>
         <div className="idcell">
           <label htmlFor="fieldEye">Eye</label>
