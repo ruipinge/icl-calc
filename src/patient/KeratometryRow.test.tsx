@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import { KeratometryRow } from './KeratometryRow';
 
 /*
- * A keratometry reading is read as "X dpt at Y º": the value and its axis
+ * A keratometry reading is read as "X dpt at Y °": the value and its axis
  * share one row of the Cornea Profile grid. Each control keeps its own
  * accessible name; the visible "@" is presentation only.
  */
@@ -30,7 +30,7 @@ it('names the reading in dioptres and its axis in degrees', () => {
 
   expect(
     screen.getByRole('spinbutton', {
-      name: 'KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres'
+      name: 'KAntFlt (dpt @ °), Anterior Keratometry Flat, dioptres'
     })
   ).toHaveValue(42);
   expect(
@@ -100,7 +100,7 @@ it('lays the reading and its axis out as one row, then each message, K first', (
   });
 
   expect(rowCells(container)).toEqual([
-    'label:KAntFlt (dpt @ º)',
+    'label:KAntFlt (dpt @ °)',
     'input:corneaProfile.kaf',
     'label:@',
     'input:corneaProfile.axisaf',
@@ -113,7 +113,7 @@ it("names an axis message as the axis's alone", () => {
   const { container } = renderRow({ axisError: 'Bad axis', axisTouched: true });
 
   expect(rowCells(container)).toEqual([
-    'label:KAntFlt (dpt @ º)',
+    'label:KAntFlt (dpt @ °)',
     'input:corneaProfile.kaf',
     'label:@',
     'input:corneaProfile.axisaf',
@@ -125,7 +125,7 @@ it("names a K message as the reading's alone", () => {
   const { container } = renderRow({ error: 'Bad K', touched: true });
 
   expect(rowCells(container)).toEqual([
-    'label:KAntFlt (dpt @ º)',
+    'label:KAntFlt (dpt @ °)',
     'input:corneaProfile.kaf',
     'label:@',
     'input:corneaProfile.axisaf',
@@ -177,13 +177,13 @@ it.each([
 
 /*
  * The reading's label is its short name with both units in brackets, in the
- * order the controls follow - "KAntFlt (dpt @ º)" - over the full name as a
+ * order the controls follow - "KAntFlt (dpt @ °)" - over the full name as a
  * caption. Neither input has a unit mark beside it.
  */
 it('labels the reading with its short name and unit, over its full name', () => {
   renderRow();
 
-  expect(screen.getByText('KAntFlt (dpt @ º)')).toHaveAttribute(
+  expect(screen.getByText('KAntFlt (dpt @ °)')).toHaveAttribute(
     'aria-hidden',
     'true'
   );
@@ -193,7 +193,7 @@ it('labels the reading with its short name and unit, over its full name', () => 
 it('puts no unit mark after either input', () => {
   renderRow();
 
-  expect(screen.queryByText('º')).toBeNull();
+  expect(screen.queryByText('°')).toBeNull();
   expect(screen.queryByText('dpt')).toBeNull();
 });
 

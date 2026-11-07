@@ -47,7 +47,7 @@ const GRAPH_CONFIGS: GraphConfig[] = [
     values: VALUES.ACD
   },
   {
-    title: 'Average Anterior Chamber Angle - ACA (º)',
+    title: 'Average Anterior Chamber Angle - ACA (°)',
     data: HISTOGRAM_DATA.aca,
     arg: 'aca',
     values: VALUES.ACA

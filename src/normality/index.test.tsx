@@ -21,7 +21,7 @@ const GRAPHS = [
   ['Angle to Angle - AtA (mm)', HISTOGRAM_DATA.ata],
   ['Crystalline Lens Rise - CLR (μm)', HISTOGRAM_DATA.clr],
   ['Internal Anterior Chamber Depth - ACD (mm)', HISTOGRAM_DATA.acd],
-  ['Average Anterior Chamber Angle - ACA (º)', HISTOGRAM_DATA.aca],
+  ['Average Anterior Chamber Angle - ACA (°)', HISTOGRAM_DATA.aca],
   ['White to White - WtW (mm)', HISTOGRAM_DATA.wtw],
   ['Age (years)', HISTOGRAM_DATA.age]
 ] as const;
@@ -120,7 +120,7 @@ it('exposes six gauges as images named for their metric, value and band', () => 
     'Angle to Angle - AtA (mm): 11.8, between the 2.5th and 25th percentiles',
     'Crystalline Lens Rise - CLR (μm): 0, between the 25th and 75th percentiles',
     'Internal Anterior Chamber Depth - ACD (mm): 4.1, above the 97.5th percentile',
-    'Average Anterior Chamber Angle - ACA (º): 31, between the 2.5th and 25th percentiles',
+    'Average Anterior Chamber Angle - ACA (°): 31, between the 2.5th and 25th percentiles',
     'White to White - WtW (mm): 8.6, below the range of the dataset',
     'Age (years): 20, below the 2.5th percentile'
   ]);

@@ -45,7 +45,7 @@ export const Biometry = ({
         label="ACAn"
         caption="Anterior Chamber Angle nasal"
         name="biometry.acan"
-        unit="º"
+        unit="°"
         error={errors.biometry?.acan}
         touched={touched.biometry?.acan}
       />
@@ -53,7 +53,7 @@ export const Biometry = ({
         label="ACAt"
         caption="Anterior Chamber Angle temporal"
         name="biometry.acat"
-        unit="º"
+        unit="°"
         error={errors.biometry?.acat}
         touched={touched.biometry?.acat}
       />

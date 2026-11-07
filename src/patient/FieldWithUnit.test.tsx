@@ -132,7 +132,7 @@ it('uses srLabel in place of the visible label, and shows the label as given', (
     caption: undefined,
     srLabel: 'Anterior Keratometry Flat axis',
     name: 'corneaProfile.axisaf',
-    unit: 'º'
+    unit: '°'
   });
   expect(
     screen.getByRole('spinbutton', {
@@ -211,7 +211,7 @@ it('puts labelClassName on the label', () => {
     label: '@',
     srLabel: 'Axis',
     name: 'a',
-    unit: 'º',
+    unit: '°',
     labelClassName: 'kat'
   });
   // the label's class is the only hook the stylesheet has; no role exposes it

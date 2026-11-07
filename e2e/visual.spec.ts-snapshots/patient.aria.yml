@@ -52,25 +52,25 @@
 - spinbutton "CLR (μm), Crystaline Lens Rise, micrometres"
 - text: ACD (mm), Internal Anterior Chamber Depth, millimetres
 - spinbutton "ACD (mm), Internal Anterior Chamber Depth, millimetres"
-- text: ACAn (º), Anterior Chamber Angle nasal, degrees
-- spinbutton "ACAn (º), Anterior Chamber Angle nasal, degrees"
-- text: ACAt (º), Anterior Chamber Angle temporal, degrees
-- spinbutton "ACAt (º), Anterior Chamber Angle temporal, degrees"
+- text: ACAn (°), Anterior Chamber Angle nasal, degrees
+- spinbutton "ACAn (°), Anterior Chamber Angle nasal, degrees"
+- text: ACAt (°), Anterior Chamber Angle temporal, degrees
+- spinbutton "ACAt (°), Anterior Chamber Angle temporal, degrees"
 - heading "Cornea Profile" [level=4]
-- text: KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres
-- spinbutton "KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres"
+- text: KAntFlt (dpt @ °), Anterior Keratometry Flat, dioptres
+- spinbutton "KAntFlt (dpt @ °), Anterior Keratometry Flat, dioptres"
 - text: Anterior Keratometry Flat axis, degrees
 - spinbutton "Anterior Keratometry Flat axis, degrees"
-- text: KAntStp (dpt @ º), Anterior Keratometry Steep, dioptres
-- spinbutton "KAntStp (dpt @ º), Anterior Keratometry Steep, dioptres"
+- text: KAntStp (dpt @ °), Anterior Keratometry Steep, dioptres
+- spinbutton "KAntStp (dpt @ °), Anterior Keratometry Steep, dioptres"
 - text: Anterior Keratometry Steep axis, degrees
 - spinbutton "Anterior Keratometry Steep axis, degrees"
-- text: KPostFlt (dpt @ º), Posterior Keratometry Flat, dioptres
-- spinbutton "KPostFlt (dpt @ º), Posterior Keratometry Flat, dioptres"
+- text: KPostFlt (dpt @ °), Posterior Keratometry Flat, dioptres
+- spinbutton "KPostFlt (dpt @ °), Posterior Keratometry Flat, dioptres"
 - text: Posterior Keratometry Flat axis, degrees
 - spinbutton "Posterior Keratometry Flat axis, degrees"
-- text: KPostStp (dpt @ º), Posterior Keratometry Steep, dioptres
-- spinbutton "KPostStp (dpt @ º), Posterior Keratometry Steep, dioptres"
+- text: KPostStp (dpt @ °), Posterior Keratometry Steep, dioptres
+- spinbutton "KPostStp (dpt @ °), Posterior Keratometry Steep, dioptres"
 - text: Posterior Keratometry Steep axis, degrees
 - spinbutton "Posterior Keratometry Steep axis, degrees"
 - text: CCT (μm), Central Corneal Thickness, micrometres
@@ -85,8 +85,8 @@
 - spinbutton "Sphere (dpt) (spectacle refraction), dioptres"
 - text: Cylindre (dpt) (spectacle refraction), dioptres
 - spinbutton "Cylindre (dpt) (spectacle refraction), dioptres"
-- text: Axis (º) (spectacle refraction), degrees
-- spinbutton "Axis (º) (spectacle refraction), degrees"
+- text: Axis (°) (spectacle refraction), degrees
+- spinbutton "Axis (°) (spectacle refraction), degrees"
 - text: Vertex (mm), millimetres
 - spinbutton "Vertex (mm), millimetres"
 - heading "ICL Power" [level=4]
@@ -94,8 +94,8 @@
 - textbox "Sphere (dpt) (ICL power), dioptres" [disabled]
 - text: Cylindre (dpt) (ICL power), dioptres
 - textbox "Cylindre (dpt) (ICL power), dioptres" [disabled]
-- text: Axis (º) (ICL power), degrees
-- textbox "Axis (º) (ICL power), degrees" [disabled]
+- text: Axis (°) (ICL power), degrees
+- textbox "Axis (°) (ICL power), degrees" [disabled]
 - text: SE (dpt), Spherical Equivalent (ICL power), dioptres
 - textbox "SE (dpt), Spherical Equivalent (ICL power), dioptres" [disabled]
 - contentinfo:

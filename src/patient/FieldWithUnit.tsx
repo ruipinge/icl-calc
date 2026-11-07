@@ -3,13 +3,13 @@ import * as React from 'react';
 import { Field } from 'formik';
 import { fieldValidity } from './validity';
 
-type Unit = 'mm' | 'nm' | 'º' | 'dpt' | 'μm';
+type Unit = 'mm' | 'nm' | '°' | 'dpt' | 'μm';
 
 const UNITS: Map<Unit, string> = new Map([
   ['mm', 'millimetres'], // 10^(-3) metres
   ['μm', 'micrometres'], // 10^(-6) metres (aka "micron", or "micra")
   ['nm', 'nanometres'], // 10^(-9) metres
-  ['º', 'degrees'],
+  ['°', 'degrees'],
   ['dpt', 'dioptres']
 ]);
 
@@ -22,7 +22,7 @@ export interface FieldWithUnitProps {
   caption?: string;
   /*
    * the units shown in the brackets when the label speaks for more than its
-   * own control: a keratometry row reads "KAntFlt (dpt @ º)", K and axis
+   * own control: a keratometry row reads "KAntFlt (dpt @ °)", K and axis
    */
   shownUnits?: string;
   /* names the control in place of the label, which is then shown as given */

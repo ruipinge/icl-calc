@@ -45,7 +45,7 @@ export const ICLPower = ({ values }: FormikState<ICLFormValues>) => {
           qualifier=" (ICL power)"
           name="iclAxis"
           value={axis === undefined ? '' : calcICLAxis(axis)}
-          unit="º"
+          unit="°"
           disabled={true}
         />
         <FieldWithUnit

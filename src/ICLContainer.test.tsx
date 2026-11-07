@@ -79,20 +79,20 @@ const MEASURED_FIELDS = [
   'WtW (mm), White to White, millimetres',
   'CLR (μm), Crystaline Lens Rise, micrometres',
   'ACD (mm), Internal Anterior Chamber Depth, millimetres',
-  'ACAn (º), Anterior Chamber Angle nasal, degrees',
-  'ACAt (º), Anterior Chamber Angle temporal, degrees',
-  'KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres',
+  'ACAn (°), Anterior Chamber Angle nasal, degrees',
+  'ACAt (°), Anterior Chamber Angle temporal, degrees',
+  'KAntFlt (dpt @ °), Anterior Keratometry Flat, dioptres',
   'Anterior Keratometry Flat axis, degrees',
-  'KAntStp (dpt @ º), Anterior Keratometry Steep, dioptres',
+  'KAntStp (dpt @ °), Anterior Keratometry Steep, dioptres',
   'Anterior Keratometry Steep axis, degrees',
-  'KPostFlt (dpt @ º), Posterior Keratometry Flat, dioptres',
+  'KPostFlt (dpt @ °), Posterior Keratometry Flat, dioptres',
   'Posterior Keratometry Flat axis, degrees',
-  'KPostStp (dpt @ º), Posterior Keratometry Steep, dioptres',
+  'KPostStp (dpt @ °), Posterior Keratometry Steep, dioptres',
   'Posterior Keratometry Steep axis, degrees',
   'CCT (μm), Central Corneal Thickness, micrometres',
   'Sphere (dpt) (spectacle refraction), dioptres',
   'Cylindre (dpt) (spectacle refraction), dioptres',
-  'Axis (º) (spectacle refraction), degrees',
+  'Axis (°) (spectacle refraction), degrees',
   'Vertex (mm), millimetres'
 ];
 
@@ -101,7 +101,7 @@ const COMPUTED_FIELDS = [
   'Age (years)',
   'Sphere (dpt) (ICL power), dioptres',
   'Cylindre (dpt) (ICL power), dioptres',
-  'Axis (º) (ICL power), degrees',
+  'Axis (°) (ICL power), degrees',
   'SE (dpt), Spherical Equivalent (ICL power), dioptres'
 ];
 
@@ -132,8 +132,8 @@ const FILL: [string, string][] = [
   ['AtA (mm), Angle to Angle, millimetres', '11.8'],
   ['CLR (μm), Crystaline Lens Rise, micrometres', '250'],
   ['ACD (mm), Internal Anterior Chamber Depth, millimetres', '3.2'],
-  ['KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres', '43'],
-  ['KAntStp (dpt @ º), Anterior Keratometry Steep, dioptres', '44.5'],
+  ['KAntFlt (dpt @ °), Anterior Keratometry Flat, dioptres', '43'],
+  ['KAntStp (dpt @ °), Anterior Keratometry Steep, dioptres', '44.5'],
   ['CCT (μm), Central Corneal Thickness, micrometres', '540'],
   ['Sphere (dpt) (spectacle refraction), dioptres', '-10'],
   ['Cylindre (dpt) (spectacle refraction), dioptres', '-2.25'],
@@ -372,7 +372,7 @@ it.each(['#', '#/', ''])('resolves %s to the Patient tab', (hash) => {
 });
 
 describe('Normality gauges with missing ACA or age inputs (#138)', () => {
-  const ACA = 'Average Anterior Chamber Angle - ACA (º)';
+  const ACA = 'Average Anterior Chamber Angle - ACA (°)';
   const enter = (label: string, value: string) =>
     fireEvent.change(screen.getByLabelText(label), { target: { value } });
   const enterAngle = enterNumber;
@@ -385,17 +385,17 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
 
   it('names the mean of a full ACA pair', async () => {
     renderWithHash();
-    enterAngle('ACAn (º), Anterior Chamber Angle nasal, degrees', '30');
-    enterAngle('ACAt (º), Anterior Chamber Angle temporal, degrees', '32');
+    enterAngle('ACAn (°), Anterior Chamber Angle nasal, degrees', '30');
+    enterAngle('ACAt (°), Anterior Chamber Angle temporal, degrees', '32');
     goToNormality();
     await waitFor(() => {
-      expect(gaugeName(ACA)).toMatch(/^Average .*\(º\): 31, /);
+      expect(gaugeName(ACA)).toMatch(/^Average .*\(°\): 31, /);
     });
   });
 
   it.each([
-    ['temporal', 'ACAt (º), Anterior Chamber Angle temporal, degrees'],
-    ['nasal', 'ACAn (º), Anterior Chamber Angle nasal, degrees']
+    ['temporal', 'ACAt (°), Anterior Chamber Angle temporal, degrees'],
+    ['nasal', 'ACAn (°), Anterior Chamber Angle nasal, degrees']
   ])('names no ACA when only the %s angle is entered', async (_side, kept) => {
     renderWithHash();
     // The other side is untouched, so still empty (#196).
@@ -408,8 +408,8 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
 
   it('names no ACA when both angles are cleared', async () => {
     renderWithHash();
-    enterAngle('ACAn (º), Anterior Chamber Angle nasal, degrees', '');
-    enterAngle('ACAt (º), Anterior Chamber Angle temporal, degrees', '');
+    enterAngle('ACAn (°), Anterior Chamber Angle nasal, degrees', '');
+    enterAngle('ACAt (°), Anterior Chamber Angle temporal, degrees', '');
     goToNormality();
     await waitFor(() => {
       expect(gaugeName(ACA)).toBe(`${ACA}: no value entered`);
@@ -444,8 +444,8 @@ describe('Normality gauges with missing ACA or age inputs (#138)', () => {
 describe('a fresh form, and the ICL Power it computes (#196)', () => {
   const ICL_POWER_INPUTS: [string, string][] = [
     ['ACD (mm), Internal Anterior Chamber Depth, millimetres', '3.2'],
-    ['KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres', '43'],
-    ['KAntStp (dpt @ º), Anterior Keratometry Steep, dioptres', '44.5'],
+    ['KAntFlt (dpt @ °), Anterior Keratometry Flat, dioptres', '43'],
+    ['KAntStp (dpt @ °), Anterior Keratometry Steep, dioptres', '44.5'],
     ['CCT (μm), Central Corneal Thickness, micrometres', '540'],
     ['Sphere (dpt) (spectacle refraction), dioptres', '-10'],
     ['Cylindre (dpt) (spectacle refraction), dioptres', '-2.25'],
@@ -478,7 +478,7 @@ describe('a fresh form, and the ICL Power it computes (#196)', () => {
     output('SE (dpt), Spherical Equivalent (ICL power), dioptres')
   ];
   const axisOutput = () =>
-    screen.getByRole('textbox', { name: 'Axis (º) (ICL power), degrees' });
+    screen.getByRole('textbox', { name: 'Axis (°) (ICL power), degrees' });
   const enter = enterNumber;
   const enterAll = () =>
     ICL_POWER_INPUTS.forEach(([name, value]) => enter(name, value));
@@ -522,7 +522,7 @@ describe('a fresh form, and the ICL Power it computes (#196)', () => {
 
   it('computes Axis from the refraction axis alone', async () => {
     renderWithHash();
-    enter('Axis (º) (spectacle refraction), degrees', '50');
+    enter('Axis (°) (spectacle refraction), degrees', '50');
 
     await waitFor(() => {
       expect(axisOutput()).toHaveValue(String(calcICLAxis(50)));

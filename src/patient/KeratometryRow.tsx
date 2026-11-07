@@ -15,9 +15,9 @@ interface KeratometryRowProps {
 }
 
 /*
- * A keratometry reading as a clinician says it, "X dpt at Y º", on one row:
+ * A keratometry reading as a clinician says it, "X dpt at Y °", on one row:
  * label | K | @ | axis. The label carries both units in the order the
- * controls follow it, "KAntFlt (dpt @ º)", so neither input has a mark
+ * controls follow it, "KAntFlt (dpt @ °)", so neither input has a mark
  * beside it. Each control keeps its own name. Its message
  * follows the row's cells on a line of its own, across the whole row, and
  * opens with which control it is about - "K: " or "Axis: " - so a message
@@ -37,7 +37,7 @@ export const KeratometryRow: React.FC<KeratometryRowProps> = ({
   const k = measuredParts({
     label,
     caption,
-    shownUnits: 'dpt @ º',
+    shownUnits: 'dpt @ °',
     name,
     unit: 'dpt',
     error,
@@ -49,7 +49,7 @@ export const KeratometryRow: React.FC<KeratometryRowProps> = ({
     srLabel: axisSrLabel,
     labelClassName: 'kat',
     name: axisName,
-    unit: 'º',
+    unit: '°',
     error: axisError,
     touched: axisTouched,
     messagePrefix: 'Axis: '

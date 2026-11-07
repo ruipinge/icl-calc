@@ -29,7 +29,7 @@ export const SpectacleRefraction = ({
         label="Axis"
         qualifier=" (spectacle refraction)"
         name="spectacleRefraction.axis"
-        unit="º"
+        unit="°"
         error={errors.spectacleRefraction?.axis}
         touched={touched.spectacleRefraction?.axis}
       />

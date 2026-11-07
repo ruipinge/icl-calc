@@ -186,7 +186,7 @@ test.describe('narrow (360x780)', () => {
   }) => {
     await open(page, null);
     for (const [name, value] of [
-      ['KAntFlt (dpt @ º), Anterior Keratometry Flat, dioptres', '99'],
+      ['KAntFlt (dpt @ °), Anterior Keratometry Flat, dioptres', '99'],
       ['Anterior Keratometry Flat axis, degrees', '400']
     ]) {
       const field = page.getByRole('spinbutton', { name });
@@ -221,8 +221,8 @@ test.describe('narrow (360x780)', () => {
       ['WtW (mm), White to White, millimetres', '15'],
       ['CLR (μm), Crystaline Lens Rise, micrometres', '300'],
       ['ACD (mm), Internal Anterior Chamber Depth, millimetres', '1'],
-      ['ACAn (º), Anterior Chamber Angle nasal, degrees', '40'],
-      ['ACAt (º), Anterior Chamber Angle temporal, degrees', '40']
+      ['ACAn (°), Anterior Chamber Angle nasal, degrees', '40'],
+      ['ACAt (°), Anterior Chamber Angle temporal, degrees', '40']
     ]) {
       const field = page.getByRole('spinbutton', { name });
       await field.fill(value);
@@ -291,7 +291,7 @@ for (const width of [360, 390, 800, 1280]) {
 
 /*
  * #192 and #195. Each field's unit is in its label - a keratometry row's
- * label carries its axis's too, "KAntFlt (dpt @ º)" - so every value track
+ * label carries its axis's too, "KAntFlt (dpt @ °)" - so every value track
  * holds the value alone. The tracks are sized to the longest valid values,
  * a width a font or track change could silently make too small. So, at
  * every width the form is checked at, with the longest value each field

@@ -603,8 +603,8 @@ input[type='number']::-webkit-outer-spin-button {
 
 /*
  * Cornea Profile: a keratometry reading and its axis share one row, read
- * "X dpt at Y º" - label | K | @ | axis, the label carrying both units,
- * "KAntFlt (dpt @ º)". Measured in Chromium: the K
+ * "X dpt at Y °" - label | K | @ | axis, the label carrying both units,
+ * "KAntFlt (dpt @ °)". Measured in Chromium: the K
  * track holds "54.125" in Inter (#193) (57px of digits, three decimals as
  * some biometers report K in eighths of a dioptre; 73px with padding) with
  * 7px to spare, the axis track "179.5" (45px; 61px with padding, an axis
@@ -723,7 +723,7 @@ input[type='number']::-webkit-outer-spin-button {
  * whose rows carry an axis as well), so the label track is what narrows;
  * below 75rem three columns leave it too little room for the captions,
  * which then wrap word by word. The Cornea Profile label track is 152px at
- * a 360px viewport, and its longest label, "KPostStp (dpt @ º)", sets on
+ * a 360px viewport, and its longest label, "KPostStp (dpt @ °)", sets on
  * one line there (patient-error-narrow.png); visual.spec.ts fails if any
  * label overflows its track.
  */
