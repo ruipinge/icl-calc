@@ -365,6 +365,48 @@ const labelBoxes = (page: Page) =>
       })
   );
 
+/*
+ * For each row showing a message, the space between the bottom of the row's
+ * lowest content - a control's box, a label's text without its padding - and
+ * the top of the message's box. A cell that kept its 0.6rem would push the
+ * message down by it.
+ */
+const messageGaps = (page: Page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll<HTMLElement>('.mrow-error')]
+      .filter(
+        (message) => !message.previousElementSibling!.matches('.mrow-error')
+      )
+      .map((message) => {
+        const cells = [...message.parentElement!.children].filter(
+          (cell) => !cell.matches('.mrow-error')
+        );
+        const bottom = Math.max(
+          ...cells.map((cell) => {
+            const box = cell.getBoundingClientRect();
+            return cell.matches('label')
+              ? box.bottom - parseFloat(getComputedStyle(cell).paddingBottom)
+              : box.bottom;
+          })
+        );
+        const marginTop = parseFloat(getComputedStyle(message).marginTop);
+        return {
+          for: message.querySelector('[id]')!.id,
+          gap: message.getBoundingClientRect().top - marginTop - bottom
+        };
+      })
+  );
+
+test('Age sets its value right, as every measured value does', async ({
+  page
+}) => {
+  await open(page, null);
+  const align = (selector: string) =>
+    page.locator(selector).evaluate((el) => getComputedStyle(el).textAlign);
+  expect(await align('input[name="biometry.ata"]')).toBe('right');
+  expect(await align('input[name="age"]')).toBe('right');
+});
+
 for (const width of [360, 390, 800, 1280]) {
   test(`at ${width}px no value or label clips, and an error moves no field`, async ({
     page
@@ -413,6 +455,12 @@ for (const width of [360, 390, 800, 1280]) {
     expect(
       invalid.map(({ name, left, width }) => ({ name, left, width }))
     ).toEqual(valid.map(({ name, left, width }) => ({ name, left, width })));
+    // each message hangs just under its row, with no cell's padding between
+    const gaps = await messageGaps(page);
+    expect(gaps).toHaveLength(LONGEST_VALID.length - 4);
+    for (const { for: id, gap } of gaps) {
+      expect(Math.abs(gap), id).toBeLessThan(1);
+    }
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth)
     ).toBe(width);

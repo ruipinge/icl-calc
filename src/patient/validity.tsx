@@ -23,9 +23,10 @@ const keepRangesWhole = (text: string): React.ReactNode[] =>
  * cannot drift apart.
  *
  * A prefix names which of a row's controls the message is about ("K: ",
- * "Axis: ") for a sighted reader. It sits outside the element the control's
- * aria-describedby points at, and is hidden, so the description announced is
- * the message alone: the control's own name already says which field it is.
+ * "Axis: "). It is read in the page, so a screen reader going line by line
+ * can tell a row's two messages apart, but it sits outside the element the
+ * control's aria-describedby points at, so the description announced is the
+ * message alone: the control's own name already says which field it is.
  */
 export const fieldValidity = (
   name: string,

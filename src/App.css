@@ -620,8 +620,13 @@ input[type='number']::-webkit-outer-spin-button {
   grid-column: 2 / -1;
 }
 
+/*
+ * Sides only: the top and bottom come from `.mrow > label`, so a row
+ * showing a message still takes the "@" cell's bottom padding away.
+ */
 .mrow > label.kat {
-  padding: 0.6rem 0.25rem;
+  padding-right: 0.25rem;
+  padding-left: 0.25rem;
   text-align: center;
 }
 
@@ -701,6 +706,11 @@ input[type='number']::-webkit-outer-spin-button {
   display: flex;
   flex-direction: column;
   min-width: 0;
+}
+
+/* Age is a number, so it sets right like every measured value */
+.idcell > input[name='age'] {
+  text-align: right;
 }
 
 .idcell > input[aria-invalid='true'] {
