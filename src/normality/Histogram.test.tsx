@@ -176,6 +176,67 @@ describe('in a browser that has ResizeObserver', () => {
 
     expect(observer.disconnect).toHaveBeenCalledTimes(1);
   });
+
+  /*
+   * No two x-axis labels overlap. The step between labelled bins is the
+   * smallest k >= 2 for which k slots fit the widest label, estimated at
+   * 0.64em a character at 11px, plus 4px. AtA's widest label, "11.288", needs
+   * 6 * 7.04 + 4 = 46.24px. A slot is (width - 71 - 15) / 10, so two slots
+   * fit it from a 317.2px chart up: 318 keeps every other bin, 317 and the
+   * 280px chart of a 320px phone step by 3.
+   */
+  describe('x-axis label step', () => {
+    const AtA = 'Angle to Angle - AtA (mm)';
+
+    const axis = () => {
+      const ticks = screen.getAllByTestId('x-tick');
+      return {
+        labels: ticks.map((tick) => tick.textContent),
+        tickX: ticks.map((tick) => tick.getAttribute('x')),
+        gridX: screen
+          .getAllByTestId('bin-gridline')
+          .map((line) => line.getAttribute('x1'))
+      };
+    };
+
+    it('labels every other bin, with a gridline at each, when two slots fit', () => {
+      render(<Histogram title={AtA} data={HISTOGRAM_DATA.ata} />);
+
+      const { labels, tickX, gridX } = axis();
+      expect(labels).toEqual(['10.72', '11.288', '11.856', '12.424', '12.992']);
+      expect(gridX).toEqual(tickX);
+    });
+
+    it('steps by 3, with the gridlines following, in a 280px chart', () => {
+      containerWidth = 280;
+      render(<Histogram title={AtA} data={HISTOGRAM_DATA.ata} />);
+
+      const { labels, tickX, gridX } = axis();
+      // Bins 0, 3, 6 and 9.
+      expect(labels).toEqual(['10.72', '11.572', '12.424', '13.276']);
+      expect(gridX).toEqual(tickX);
+    });
+
+    it('keeps step 2 just above the boundary and takes 3 just below it', () => {
+      containerWidth = 318;
+      const { unmount } = render(
+        <Histogram title={AtA} data={HISTOGRAM_DATA.ata} />
+      );
+      expect(axis().labels).toHaveLength(5);
+      unmount();
+
+      containerWidth = 317;
+      render(<Histogram title={AtA} data={HISTOGRAM_DATA.ata} />);
+      expect(axis().labels).toHaveLength(4);
+    });
+
+    it('chooses the step per chart: Age keeps 2 where AtA needs 3', () => {
+      containerWidth = 280;
+      render(<Histogram title="Age (years)" data={HISTOGRAM_DATA.age} />);
+
+      expect(axis().labels).toEqual(['17', '24.4', '31.8', '39.2', '46.6']);
+    });
+  });
 });
 
 /*

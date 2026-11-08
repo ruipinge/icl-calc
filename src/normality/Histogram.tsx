@@ -33,6 +33,16 @@ const TITLE_LINE_HEIGHT = 17;
 // Every long title is "<name> - <abbreviation> (<unit>)"; it breaks here.
 const TITLE_BREAK = ' - ';
 const BAR_WIDTH_RATIO = 0.88;
+// The x-axis labels' font size, and the per-character advance, in em, assumed
+// for them when choosing how many bins to skip between labels. Inter's digits
+// are tabular, so 0.64em (7.04px at 11px) bounds every measured label from
+// above: "11.288" is 40px over 6 characters, "-470" 28px over 4, "17" 14px over
+// 2. An upper bound keeps the choice render-free and deterministic: nothing is
+// measured, so nothing is re-measured. MIN_LABEL_GAP is the least clear space
+// left between neighbouring labels.
+const X_LABEL_FONT_SIZE = 11;
+const LABEL_CHAR_EM = 0.64;
+const MIN_LABEL_GAP = 4;
 
 // Used until the container has been measured, and under jsdom, where
 // getBoundingClientRect reports 0 and ResizeObserver does not exist. Keeping a
@@ -143,6 +153,18 @@ const useNaturalTitleWidth = (title: string) => {
 const formatAxisNumber = (value: number): string =>
   Number(value.toFixed(3)).toString();
 
+/**
+ * How many bins apart the x-axis labels go: the smallest step of at least 2
+ * whose span fits the widest label, estimated, plus MIN_LABEL_GAP.
+ */
+const labelStep = (data: HistogramEntry[], slotWidth: number): number => {
+  const longest = Math.max(
+    ...data.map((bin) => formatAxisNumber(bin.from).length)
+  );
+  const needed = longest * LABEL_CHAR_EM * X_LABEL_FONT_SIZE + MIN_LABEL_GAP;
+  return Math.max(2, Math.ceil(needed / slotWidth));
+};
+
 export const Histogram = ({
   data,
   title
@@ -187,6 +209,7 @@ export const Histogram = ({
 
   const slotWidth = plotWidth / data.length;
   const barWidth = slotWidth * BAR_WIDTH_RATIO;
+  const step = labelStep(data, slotWidth);
 
   return (
     <div ref={ref}>
@@ -281,10 +304,13 @@ export const Histogram = ({
           Number of Eyes
         </text>
 
-        {/* X axis: amCharts labelled every other bin (minGridDistance = 30),
-          and drew a vertical gridline at each labelled category. */}
+        {/* X axis: a label on bin 0 and every step-th bin after it, with a
+          vertical gridline at each labelled bin. amCharts labelled every
+          other bin; that is still the step wherever two slots fit the
+          widest label, and a narrower chart skips more bins so that no two
+          labels overlap. */}
         {data.map((bin, i) => {
-          if (i % 2 !== 0) {
+          if (i % step !== 0) {
             return null;
           }
           const x = plotLeft + i * slotWidth + slotWidth / 2;
@@ -300,10 +326,11 @@ export const Histogram = ({
                 style={GRIDLINE_STYLE}
               />
               <text
+                data-testid="x-tick"
                 x={x}
                 y={plotBottom + 16}
                 textAnchor="middle"
-                fontSize={11}
+                fontSize={X_LABEL_FONT_SIZE}
                 style={NUMERAL_STYLE}
               >
                 {formatAxisNumber(bin.from)}

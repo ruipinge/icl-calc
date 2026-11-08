@@ -848,3 +848,50 @@ for (const width of [320, 360, 390, 800, 1280]) {
     }
   });
 }
+
+/*
+ * No two x-axis labels on a histogram overlap. A chart labels bin 0 and
+ * every k-th bin after it, k chosen from the widest label's estimated width;
+ * this measures what the estimate is for. At 320px AtA's labels, 40px wide
+ * at a 38.8px pitch, ran together as "11.28811.856" before it. Every chart
+ * must be present and carry at least 3 labels, so the check cannot pass on
+ * an empty page, and no tolerance is given in the labels' favour.
+ */
+for (const width of [320, 360, 390, 800, 1280]) {
+  test(`at ${width}px no two histogram x-axis labels overlap`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page, 'Biometric Normality');
+    await page.evaluate(() => document.fonts.ready);
+    const charts = await page
+      .locator('[data-testid="histogram"]')
+      .evaluateAll((svgs) =>
+        svgs.map((svg) => ({
+          title: svg.getAttribute('aria-label'),
+          ticks: [...svg.querySelectorAll('[data-testid="x-tick"]')].map(
+            (tick) => {
+              const box = tick.getBoundingClientRect();
+              return {
+                text: tick.textContent,
+                left: box.left,
+                right: box.right
+              };
+            }
+          )
+        }))
+      );
+    expect(charts).toHaveLength(6);
+    for (const { title, ticks } of charts) {
+      expect(ticks.length, `${title} at ${width}px`).toBeGreaterThanOrEqual(3);
+      for (let i = 1; i < ticks.length; i++) {
+        const prev = ticks[i - 1];
+        const next = ticks[i];
+        expect(
+          next.left,
+          `${title} at ${width}px: "${prev.text}" then "${next.text}"`
+        ).toBeGreaterThanOrEqual(prev.right);
+      }
+    }
+  });
+}
