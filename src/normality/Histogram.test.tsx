@@ -1,5 +1,5 @@
 import { PLOT_INSET_LEFT, PLOT_INSET_RIGHT } from './plot-inset';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 
 import { HISTOGRAM_DATA } from '../db';
 import { Histogram } from './Histogram';
@@ -247,5 +247,225 @@ describe('in Treeye tokens', () => {
       <Histogram title="Angle to Angle - AtA (mm)" data={HISTOGRAM_DATA.ata} />
     );
     expect(spy).not.toHaveBeenCalled();
+  });
+});
+
+/*
+ * No title clips its chart. SVG text never wraps and the SVG is exactly as
+ * wide as its column, so a title wider than the column was cut off at both
+ * edges - the ACD title is 334px at 14px Poppins, against a 280px SVG on a
+ * 320px phone. A title wider than the SVG less 4px a side breaks onto two
+ * lines at " - " and the chart moves down one 17px line beneath it.
+ *
+ * jsdom has no getComputedTextLength (and no document.fonts), so every test
+ * above runs on the unwrapped path. Here the natural width is stubbed on
+ * SVGElement.prototype; FALLBACK_WIDTH is 340, so 332px is the most that fits.
+ */
+describe('a title wider than its chart', () => {
+  const ACD = 'Internal Anterior Chamber Depth - ACD (mm)';
+  let naturalWidth: number;
+  let measure: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    naturalWidth = 400;
+    measure = vi.fn(() => naturalWidth);
+    Object.defineProperty(SVGElement.prototype, 'getComputedTextLength', {
+      configurable: true,
+      value: measure
+    });
+  });
+
+  afterEach(() => {
+    delete (SVGElement.prototype as { getComputedTextLength?: unknown })
+      .getComputedTextLength;
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  const geometry = () => ({
+    gridlines: screen
+      .getAllByTestId('gridline')
+      .map((line) => Number(line.getAttribute('y1'))),
+    bars: screen.getAllByTestId('bar').map((bar) => ({
+      x: bar.getAttribute('x'),
+      height: bar.getAttribute('height')
+    }))
+  });
+
+  it('breaks onto two lines at " - " and moves the chart down one line', () => {
+    naturalWidth = 300;
+    const { unmount } = render(
+      <Histogram title={ACD} data={HISTOGRAM_DATA.acd} />
+    );
+    const flat = geometry();
+    unmount();
+
+    naturalWidth = 333;
+    render(<Histogram title={ACD} data={HISTOGRAM_DATA.acd} />);
+
+    const title = screen.getByTestId('histogram-title');
+    const lines = within(title).getAllByText(/./, { selector: 'tspan' });
+    expect(lines.map((line) => line.textContent)).toEqual([
+      'Internal Anterior Chamber Depth',
+      'ACD (mm)'
+    ]);
+    expect(lines[1].getAttribute('dy')).toBe('17');
+    expect(screen.getByTestId('histogram').getAttribute('height')).toBe('317');
+    const wrapped = geometry();
+    expect(Math.min(...wrapped.gridlines)).toBe(34 + 17);
+    expect(wrapped.gridlines).toEqual(flat.gridlines.map((y) => y + 17));
+    expect(wrapped.bars).toEqual(flat.bars);
+  });
+
+  it('stays on one line, as before, when it fits', () => {
+    naturalWidth = 332;
+    render(<Histogram title={ACD} data={HISTOGRAM_DATA.acd} />);
+
+    expect(measure).toHaveBeenCalled();
+    expect(screen.getByText(ACD)).toBe(screen.getByTestId('histogram-title'));
+    expect(screen.getByTestId('histogram').getAttribute('height')).toBe('300');
+    expect(Math.min(...geometry().gridlines)).toBe(34);
+  });
+
+  it('never wraps a title without " - "', () => {
+    naturalWidth = 1000;
+    render(
+      <Histogram title="A long title with no break" data={HISTOGRAM_DATA.age} />
+    );
+
+    expect(measure).toHaveBeenCalled();
+    expect(
+      within(screen.getByTestId('histogram-title')).queryAllByText(/./, {
+        selector: 'tspan'
+      })
+    ).toHaveLength(0);
+    expect(screen.getByTestId('histogram').getAttribute('height')).toBe('300');
+  });
+
+  it('re-measures a new title rather than reuse the old one', () => {
+    const { rerender } = render(
+      <Histogram title={ACD} data={HISTOGRAM_DATA.acd} />
+    );
+    expect(screen.getAllByText(/./, { selector: 'tspan' })).toHaveLength(2);
+
+    naturalWidth = 200;
+    rerender(<Histogram title="Age - Years" data={HISTOGRAM_DATA.age} />);
+
+    expect(measure).toHaveBeenCalledTimes(2);
+    expect(screen.getByText('Age - Years')).toBeInTheDocument();
+  });
+
+  it('un-wraps when its column widens past it, without re-measuring', () => {
+    let resize = () => {};
+    class FakeResizeObserver {
+      observe = vi.fn();
+      disconnect = vi.fn();
+      constructor(callback: ResizeObserverCallback) {
+        resize = () => callback([], this as unknown as ResizeObserver);
+      }
+    }
+    let containerWidth = 300;
+    vi.stubGlobal('ResizeObserver', FakeResizeObserver);
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      () => ({ width: containerWidth }) as DOMRect
+    );
+    naturalWidth = 334;
+    render(<Histogram title={ACD} data={HISTOGRAM_DATA.acd} />);
+    expect(screen.getByTestId('histogram').getAttribute('height')).toBe('317');
+
+    containerWidth = 342;
+    act(() => resize());
+
+    expect(screen.getByText(ACD)).toBe(screen.getByTestId('histogram-title'));
+    expect(screen.getByTestId('histogram').getAttribute('height')).toBe('300');
+    expect(measure).toHaveBeenCalledTimes(1);
+  });
+
+  /*
+   * The first measurement can be taken in a fallback face, before the
+   * self-hosted Poppins has loaded, so a finished font load measures again.
+   */
+  describe('when fonts load', () => {
+    let resolveReady: () => void;
+    let fonts: {
+      ready: Promise<void>;
+      addEventListener: ReturnType<typeof vi.fn>;
+      removeEventListener: ReturnType<typeof vi.fn>;
+    };
+
+    beforeEach(() => {
+      fonts = {
+        ready: new Promise<void>((resolve) => {
+          resolveReady = resolve;
+        }),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn()
+      };
+      Object.defineProperty(document, 'fonts', {
+        configurable: true,
+        value: fonts
+      });
+    });
+
+    afterEach(() => {
+      delete (document as { fonts?: unknown }).fonts;
+    });
+
+    const loadingDone = () => {
+      const [[event, listener]] = fonts.addEventListener.mock.calls as [
+        string,
+        () => void
+      ][];
+      expect(event).toBe('loadingdone');
+      return listener;
+    };
+
+    it('re-measures on loadingdone', () => {
+      render(<Histogram title={ACD} data={HISTOGRAM_DATA.acd} />);
+      expect(screen.getByTestId('histogram').getAttribute('height')).toBe(
+        '317'
+      );
+
+      naturalWidth = 300;
+      act(() => loadingDone()());
+
+      expect(measure).toHaveBeenCalledTimes(2);
+      expect(screen.getByTestId('histogram').getAttribute('height')).toBe(
+        '300'
+      );
+    });
+
+    it('re-measures once fonts are ready', async () => {
+      render(<Histogram title={ACD} data={HISTOGRAM_DATA.acd} />);
+      expect(screen.getByTestId('histogram').getAttribute('height')).toBe(
+        '317'
+      );
+
+      naturalWidth = 300;
+      await act(async () => {
+        resolveReady();
+        await fonts.ready;
+      });
+
+      expect(measure).toHaveBeenCalledTimes(2);
+      expect(screen.getByTestId('histogram').getAttribute('height')).toBe(
+        '300'
+      );
+    });
+
+    it('removes its loadingdone listener on unmount', () => {
+      const { unmount } = render(
+        <Histogram title={ACD} data={HISTOGRAM_DATA.acd} />
+      );
+      const listener = loadingDone();
+      expect(fonts.removeEventListener).not.toHaveBeenCalled();
+
+      unmount();
+
+      expect(fonts.removeEventListener).toHaveBeenCalledWith(
+        'loadingdone',
+        listener
+      );
+    });
   });
 });

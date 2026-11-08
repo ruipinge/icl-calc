@@ -797,3 +797,66 @@ for (const width of [320, 360, 390, 800, 1280]) {
     expect(found?.mid).toBeLessThanOrEqual(found?.bottom ?? -Infinity);
   });
 }
+
+/*
+ * No histogram title clips its chart. SVG text never wraps, and the SVG is
+ * exactly as wide as its column, so a title wider than the column was cut
+ * off at both edges: "Internal Anterior Chamber Depth - ACD (mm)" is 334px
+ * at 14px Poppins, against a 320px SVG at 360 and 280px at 320. A title too
+ * wide breaks onto two lines and the chart moves down beneath it, so each
+ * title must lie inside its SVG and above the plot's top gridline.
+ */
+for (const width of [320, 360, 390, 800, 1280]) {
+  test(`at ${width}px every histogram title fits inside its chart`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page, 'Biometric Normality');
+    await page.evaluate(() => document.fonts.ready);
+    const charts = await page
+      .locator('[data-testid="histogram"]')
+      .evaluateAll((svgs) =>
+        svgs.map((svg) => {
+          const box = svg.getBoundingClientRect();
+          const title = svg.querySelector('[data-testid="histogram-title"]');
+          const gridlines = [
+            ...svg.querySelectorAll('[data-testid="gridline"]')
+          ].map((line) => line.getBoundingClientRect().top);
+          return {
+            svg: { left: box.left, right: box.right },
+            title:
+              title === null
+                ? null
+                : {
+                    text: title.textContent,
+                    lines: title.querySelectorAll('tspan').length,
+                    ...title.getBoundingClientRect().toJSON()
+                  },
+            topGridline: gridlines.length ? Math.min(...gridlines) : null
+          };
+        })
+      );
+    expect(charts).toHaveLength(6);
+    for (const { svg, title, topGridline } of charts) {
+      expect(title).not.toBeNull();
+      expect(topGridline).not.toBeNull();
+      const label = `${title?.text} at ${width}px`;
+      expect(title?.left, label).toBeGreaterThanOrEqual(svg.left - 0.5);
+      expect(title?.right, label).toBeLessThanOrEqual(svg.right + 0.5);
+      expect(title?.bottom, label).toBeLessThanOrEqual(
+        topGridline ?? -Infinity
+      );
+    }
+    test.info().annotations.push({
+      type: 'titles',
+      description: JSON.stringify(
+        charts.map(({ svg, title }) => ({
+          text: title?.text,
+          lines: title?.lines,
+          width: title?.width,
+          svg: svg.right - svg.left
+        }))
+      )
+    });
+  });
+}
