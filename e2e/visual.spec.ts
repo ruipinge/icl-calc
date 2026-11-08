@@ -847,16 +847,5 @@ for (const width of [320, 360, 390, 800, 1280]) {
         topGridline ?? -Infinity
       );
     }
-    test.info().annotations.push({
-      type: 'titles',
-      description: JSON.stringify(
-        charts.map(({ svg, title }) => ({
-          text: title?.text,
-          lines: title?.lines,
-          width: title?.width,
-          svg: svg.right - svg.left
-        }))
-      )
-    });
   });
 }

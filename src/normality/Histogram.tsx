@@ -212,7 +212,15 @@ export const Histogram = ({
             phones (320px at 360, 280px at 320), and SVG text never wraps -
             the SVG clips it. Fitting it by font size would take it below
             the 0.8rem minimum, so a title wider than the SVG less
-            TITLE_PADDING a side breaks at " - " onto two lines instead. */}
+            TITLE_PADDING a side breaks at " - " onto two lines instead.
+            Once wrapped nothing re-checks that the first line fits. It
+            does at 320px ("Internal Anterior Chamber Depth" is about
+            246px in a 280px chart), so a longer prefix or a narrower
+            column would need a further fallback. The wrapped title's
+            text content drops " - ". Screen readers are unaffected (the
+            SVG is role="img" with an aria-label), but an aria snapshot
+            of the narrow Normality route reads the img's text
+            differently from the 1280 fixture. */}
         <text
           ref={titleRef}
           data-testid="histogram-title"
