@@ -1,4 +1,15 @@
-export const Footer = () => (
+/*
+ * `previewLabel` is empty everywhere except the Cloudflare preview, which
+ * sets it at build time. It replaces the release link with plain text: no
+ * release tag exists for a preview, so the releases/tag URL would 404; the
+ * commit link beside it already identifies the exact source; and a branch
+ * link would move under a deployed bundle.
+ */
+export const Footer = ({
+  previewLabel = import.meta.env.VITE_APP_PREVIEW_LABEL as string
+}: {
+  previewLabel?: string;
+}) => (
   <footer className="site-footer">
     <div className="wrap">
       {/*
@@ -9,13 +20,17 @@ export const Footer = () => (
       <div className="rule" />
       <ul>
         <li>
-          <a
-            href={`https://github.com/ruipinge/icl-calc/releases/tag/v${
-              import.meta.env.VITE_APP_VERSION
-            }`}
-          >
-            {`v${import.meta.env.VITE_APP_VERSION}`}
-          </a>{' '}
+          {previewLabel ? (
+            <span>{previewLabel}</span>
+          ) : (
+            <a
+              href={`https://github.com/ruipinge/icl-calc/releases/tag/v${
+                import.meta.env.VITE_APP_VERSION
+              }`}
+            >
+              {`v${import.meta.env.VITE_APP_VERSION}`}
+            </a>
+          )}{' '}
           <a
             href={`https://github.com/ruipinge/icl-calc/commit/${
               import.meta.env.VITE_APP_COMMIT

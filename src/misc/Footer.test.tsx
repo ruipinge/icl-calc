@@ -72,3 +72,33 @@ it('carries the no-warranty disclaimer', () => {
     )
   ).toBeInTheDocument();
 });
+
+/*
+ * The Cloudflare preview labels itself instead of linking a release: no tag
+ * exists for it, so the releases/tag URL would 404. The commit link stays,
+ * because it is what identifies the exact source.
+ */
+describe('preview build', () => {
+  it('shows the preview label as plain text, not a release link', () => {
+    render(<Footer previewLabel="v2.0.0 preview" />);
+
+    expect(screen.getByText('v2.0.0 preview')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'v2.0.0 preview' })
+    ).not.toBeInTheDocument();
+    expect(
+      screen
+        .getAllByRole('link')
+        .filter((link) => link.getAttribute('href')?.includes('/releases/tag/'))
+    ).toHaveLength(0);
+  });
+
+  it('still links the commit the preview was built from', () => {
+    render(<Footer previewLabel="v2.0.0 preview" />);
+
+    expect(screen.getByRole('link', { name: '(0000000)' })).toHaveAttribute(
+      'href',
+      'https://github.com/ruipinge/icl-calc/commit/0000000'
+    );
+  });
+});

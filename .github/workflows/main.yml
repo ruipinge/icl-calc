@@ -641,11 +641,18 @@ jobs:
         run: npm ci --prefer-offline
 
       # No base override, unlike the retired gh-pages stopgap (#171), so these
-      # are the same bytes L2 validated. This preview serves the
-      # app at /icl-calc/, which is the base production uses today and the one
-      # tools.treeye.science/icl-calc/ will use after #123 - so one value is
-      # correct everywhere and there is nothing to parameterise.
+      # are L2's bytes except the footer's version label: only that string
+      # differs. No computed value, no input and no table text L2 reads
+      # changes. This preview serves the app at /icl-calc/, which is the base
+      # production uses today and the one tools.treeye.science/icl-calc/ will
+      # use after #123 - so one value is correct everywhere and there is
+      # nothing to parameterise.
+      #
+      # APP_PREVIEW_LABEL swaps the footer's release link for this text: the
+      # preview has no release tag to link. Set here and nowhere else.
       - name: Build the bundle to upload
+        env:
+          APP_PREVIEW_LABEL: v2.0.0 preview
         run: npm run build
 
       # Direct Upload serves the uploaded directory as the site root, but the

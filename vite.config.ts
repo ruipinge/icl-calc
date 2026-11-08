@@ -60,6 +60,13 @@ export default defineConfig(({ mode }) => ({
     // Pinned in test mode for the same reason as the version above.
     'import.meta.env.VITE_APP_COMMIT': JSON.stringify(
       mode === 'test' ? '0000000' : (process.env.GITHUB_SHA ?? 'dev').slice(0, 7)
+    ),
+    // Set only by the preview-cloudflare job; empty everywhere else (release,
+    // L2, visual-assert, local), which renders the release link exactly as
+    // before. Pinned empty in test mode like the other two. The version
+    // define above stays untouched, so Sentry's release string is unaffected.
+    'import.meta.env.VITE_APP_PREVIEW_LABEL': JSON.stringify(
+      mode === 'test' ? '' : (process.env.APP_PREVIEW_LABEL ?? '')
     )
   },
   test: {
