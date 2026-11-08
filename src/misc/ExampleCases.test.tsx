@@ -404,9 +404,14 @@ it('does not confirm an edited case again when its value is typed back', async (
 
 // Examples is in the sticky header; the confirmation is at the top of the
 // page, out of sight for a clinician scrolled down a tab.
-it('scrolls the confirmation into view when a case loads', async () => {
-  const { label } = preset('steep-cornea');
-  const scrollIntoView = vi.fn();
+it('scrolls the confirmation into view once it has rendered, on every load', async () => {
+  const { label, values } = preset('steep-cornea');
+  // the text at call time: scrolling the still-empty line lands it under
+  // the sticky header once it fills
+  const textAtCall: (string | null)[] = [];
+  const scrollIntoView = vi.fn(function (this: Element) {
+    textAtCall.push(this.textContent);
+  });
   const original = Object.getOwnPropertyDescriptor(
     Element.prototype,
     'scrollIntoView'
@@ -422,6 +427,20 @@ it('scrolls the confirmation into view when a case loads', async () => {
     expect(scrollIntoView).toHaveBeenCalledTimes(1);
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
     expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByRole('status'));
+    expect(textAtCall).toEqual([loadedText(label)]);
+
+    // re-applying the same case, unedited, is a new load and scrolls again
+    choose('steep-cornea');
+    await waitFor(() => {
+      expect(scrollIntoView).toHaveBeenCalledTimes(2);
+    });
+    expect(textAtCall).toEqual([loadedText(label), loadedText(label)]);
+
+    // an edit and a revert never scroll
+    await editAta(String(values.biometry.ata + 1));
+    await editAta(String(values.biometry.ata));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(scrollIntoView).toHaveBeenCalledTimes(2);
   } finally {
     if (original) {
       Object.defineProperty(Element.prototype, 'scrollIntoView', original);

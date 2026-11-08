@@ -1,4 +1,10 @@
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import {
+  KeyboardEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from 'react';
 import { PRESETS, Preset } from '../presets';
 import { ICLFormValues } from '../types';
 import { useFormikContext } from 'formik';
@@ -55,6 +61,7 @@ export const ExamplesMenu = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const loads = useRef(0);
 
   useEffect(() => {
     if (!open) return;
@@ -75,14 +82,10 @@ export const ExamplesMenu = () => {
     // so no render sees the new id beside the old values (which ExampleStatus
     // would read as an edit and clear)
     void setValues({ ...values, ...preset.values });
-    setStatus({ example: preset.id });
+    // a fresh `load` per click, so re-applying the same case scrolls again
+    loads.current += 1;
+    setStatus({ example: preset.id, load: loads.current });
     close();
-    // Examples sits in the sticky header, the confirmation at the top of the
-    // page: bring it into view for a clinician scrolled down a tab. jsdom
-    // has no scrollIntoView.
-    document
-      .getElementById('example-status')
-      ?.scrollIntoView?.({ block: 'nearest' });
   };
 
   const focusItem = (index: number) => {
@@ -168,8 +171,21 @@ export const ExampleStatus = () => {
   useEffect(() => {
     if (edited) setStatus(undefined);
   }, [edited, setStatus]);
+  /*
+   * Examples sits in the sticky header, this line at the top of the page:
+   * bring it into view for a clinician scrolled down a tab. Only after the
+   * text has rendered - an empty <p> collapses its margins through, so the
+   * line moves once filled, and a scroll taken before lands it under the
+   * header. Keyed on the load counter, so an edit or a revert never
+   * scrolls. jsdom has no scrollIntoView.
+   */
+  const load = (status as { load?: unknown } | undefined)?.load;
+  const ref = useRef<HTMLParagraphElement>(null);
+  useLayoutEffect(() => {
+    if (load !== undefined) ref.current?.scrollIntoView?.({ block: 'nearest' });
+  }, [load]);
   return (
-    <p id="example-status" role="status" className="example-status">
+    <p id="example-status" ref={ref} role="status" className="example-status">
       {loaded &&
         `Loaded "${loaded.label}". Name, date of birth and eye were kept as entered.`}
     </p>
