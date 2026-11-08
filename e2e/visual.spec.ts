@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { fillRow, gotoTab, openApp } from './lib/app';
 
 import type { GoldenRow } from '../src/golden/types';
@@ -269,7 +269,7 @@ const LONG_VALUES: [name: string, value: string][] = [
   ['spectacleRefraction.axis', '180'],
   ['spectacleRefraction.vertex', '12']
 ];
-for (const width of [360, 390, 800, 1280]) {
+for (const width of [320, 360, 390, 800, 1280]) {
   test.describe(`values at ${width}px`, () => {
     test.use({ viewport: { width, height: 900 } });
 
@@ -407,7 +407,7 @@ test('Age sets its value right, as every measured value does', async ({
   expect(await align('input[name="age"]')).toBe('right');
 });
 
-for (const width of [360, 390, 800, 1280]) {
+for (const width of [320, 360, 390, 800, 1280]) {
   test(`at ${width}px no value or label clips, and an error moves no field`, async ({
     page
   }) => {
@@ -464,6 +464,137 @@ for (const width of [360, 390, 800, 1280]) {
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth)
     ).toBe(width);
+  });
+}
+
+/*
+ * #205, #206. The header holds the logo, the tool name and the Examples and
+ * Reset buttons at every width the form is checked at: the page does not
+ * scroll sideways, every header control is inside the viewport and a full
+ * 44px target, and the open examples panel - every case in it a 44px target
+ * - stays inside the viewport too.
+ */
+for (const width of [320, 360, 390, 800, 1280]) {
+  test(`at ${width}px the header and its examples panel fit`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page, null);
+    const boxes = (selector: string) =>
+      page.locator(selector).evaluateAll((elements) =>
+        elements.map((element) => {
+          const box = element.getBoundingClientRect();
+          return {
+            text: element.getAttribute('aria-label') ?? element.textContent,
+            left: box.left,
+            right: box.right,
+            height: box.height
+          };
+        })
+      );
+    const inside = (box: { left: number; right: number }) =>
+      box.left >= 0 && box.right <= width;
+
+    const controls = await boxes('nav a, nav button');
+    expect(controls.map((box) => box.text)).toEqual([
+      'Treeye',
+      'ICL Size Calc',
+      'Examples',
+      'Reset'
+    ]);
+    for (const box of controls) {
+      expect(inside(box), box.text ?? '').toBe(true);
+    }
+    for (const box of controls.slice(2)) {
+      expect(box.height, box.text ?? '').toBeGreaterThanOrEqual(44);
+    }
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(width);
+
+    await page.getByRole('button', { name: 'Examples' }).click();
+    const [panel] = await boxes('#examples-panel');
+    expect(inside(panel)).toBe(true);
+    const items = await boxes('#examples-panel button');
+    expect(items).toHaveLength(6);
+    for (const item of items) {
+      expect(inside(item), item.text ?? '').toBe(true);
+      expect(item.height, item.text ?? '').toBeGreaterThanOrEqual(44);
+    }
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(width);
+  });
+}
+
+/*
+ * #206. On a short screen - a phone held sideways, or a desktop at 400% zoom
+ * - the panel, which hangs from the sticky header, ends inside the viewport
+ * and scrolls itself, so the last case can still be reached.
+ */
+for (const viewport of [
+  { width: 320, height: 480 },
+  { width: 844, height: 390 },
+  { width: 320, height: 256 }
+]) {
+  test(`at ${viewport.width}x${viewport.height} every example case can be reached`, async ({
+    page
+  }) => {
+    await page.setViewportSize(viewport);
+    await open(page, null);
+    await page.getByRole('button', { name: 'Examples' }).click();
+    const panel = page.locator('#examples-panel');
+    const last = panel.getByRole('button').last();
+    // scrolled as a person would, with the wheel over the panel
+    await panel.hover();
+    await page.mouse.wheel(0, 2000);
+    await expect
+      .poll(() =>
+        last.evaluate((element) => element.getBoundingClientRect().bottom)
+      )
+      .toBeLessThanOrEqual(viewport.height);
+  });
+}
+
+/*
+ * #206. A case loaded from far down a tab is confirmed where the clinician
+ * can see it: the confirmation is scrolled into view, below the sticky
+ * header, at a phone's and a desktop's width.
+ */
+for (const viewport of [
+  { width: 390, height: 844 },
+  { width: 1280, height: 600 }
+]) {
+  test(`at ${viewport.width}px a case loaded from down the page is confirmed in view`, async ({
+    page
+  }) => {
+    await page.setViewportSize(viewport);
+    await open(page, null);
+    await page.evaluate(() =>
+      window.scrollTo(0, document.documentElement.scrollHeight)
+    );
+    // Clicked in the page, not through Playwright's click: that scrolls the
+    // target into view first, and for anything in the sticky header that
+    // scrolls the page back to the top, hiding the case under test.
+    const click = (locator: Locator) =>
+      locator.evaluate((element: HTMLElement) => element.click());
+    await click(page.getByRole('button', { name: 'Examples' }));
+    // the case under test: the confirmation's place is scrolled out of view
+    expect(
+      await page
+        .getByRole('status')
+        .evaluate((element) => element.getBoundingClientRect().top)
+    ).toBeLessThan(0);
+    await click(page.locator('#examples-panel').getByRole('button').first());
+    const status = page.getByRole('status');
+    await expect(status).toContainText('Loaded');
+    const header = await page
+      .locator('nav')
+      .evaluate((element) => element.getBoundingClientRect().bottom);
+    const box = await status.evaluate((element) => ({
+      top: element.getBoundingClientRect().top
+    }));
+    expect(box.top).toBeGreaterThanOrEqual(header);
   });
 }
 

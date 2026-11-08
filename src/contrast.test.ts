@@ -69,7 +69,11 @@ const PAIRS: [role: string, fg: string, bg: string, min: number][] = [
   ['gauge band caption', '--ink', '--paper', 7],
   ['gauge zone against its paper gap', '--leaf-crimson', '--paper', 3],
   ['gauge zone against its paper gap', '--leaf-ember', '--paper', 3],
-  ['gauge zone against its paper gap', '--leaf-jade', '--paper', 3]
+  ['gauge zone against its paper gap', '--leaf-jade', '--paper', 3],
+  // #206: an example case names the clinical values it loads, so its label,
+  // the panel's caption and the confirmation after loading are held to 7:1
+  ['example case, its caption, the loaded confirmation', '--ink', '--paper', 7],
+  ['example case under the pointer or focus', '--violet', '--rule', 7]
 ];
 it.each(PAIRS)('%s: %s on %s is at least %d:1', (_, fg, bg, min) =>
   expect(contrast(token(fg), token(bg))).toBeGreaterThanOrEqual(min)
@@ -101,6 +105,18 @@ const USES: [selector: string, declaration: RegExp][] = [
   ['input, select', /min-height:\s*2\.75rem\s*;/],
   ['.tabs a', /min-height:\s*2\.75rem\s*;/],
   ['.btn-ghost', /min-height:\s*2\.75rem\s*;/],
+  ['.examples-item', /min-height:\s*2\.75rem\s*;/],
+  ['.examples-item', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  ['.examples-caption', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  ['.example-status', /(?:^|[;\s])color:\s*var\(--ink\)/],
+  [
+    '.examples-item:hover, .examples-item:focus-visible',
+    /(?:^|[;\s])color:\s*var\(--violet\)/
+  ],
+  [
+    '.examples-item:hover, .examples-item:focus-visible',
+    /(?:^|[;\s])background:\s*var\(--rule\)/
+  ],
   // Case-folding turns μ into Μ, so micrometres would read as millimetres.
   ['.ledger thead th', /(?:^|[;\s])text-transform:\s*none\s*;/],
   ['.regression-block h4', /(?:^|[;\s])color:\s*var\(--ink\)/],

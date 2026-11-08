@@ -10,6 +10,7 @@ import {
 } from './missing';
 import { Route, HashRouter as Router, Routes } from 'react-router-dom';
 
+import { ExampleStatus } from './misc/ExampleCases';
 import { Footer } from './misc/Footer';
 import { ICLSchema } from './ICLSchema';
 import { Matrix } from './matrix';
@@ -143,6 +144,7 @@ const FormContent = ({
         */}
         <Router>
           <TabLinks />
+          <ExampleStatus />
           <TabContent
             values={values}
             errors={errors}

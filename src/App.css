@@ -132,6 +132,13 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /*
+   * The sticky header's height: one line, or two under 36rem (#205). The
+   * scroll padding keeps a focused field, or the example-case confirmation
+   * scrolled into view on load, clear of the header (#206).
+   */
+  --chrome-height: 3.75rem;
+  scroll-padding-top: calc(var(--chrome-height) + 1rem);
 }
 
 body {
@@ -320,8 +327,14 @@ tbody th.numeric {
  * the same bar, symbol, wordmark and spacing. Three differences, and only
  * these: the bar is tinted rather than translucent white, so the opaque tint
  * needs no backdrop blur; the tool name follows the logo and outranks it,
- * because the tool is the page and the site is its context; and Reset sits
- * where the site's nav would be.
+ * because the tool is the page and the site is its context; and Examples
+ * and Reset sit, as one group, where the site's nav would be (#206).
+ *
+ * Under 36rem - a phone, where the tabs become a grid too - the two buttons
+ * take a second line of their own, right-aligned, so the logo, wordmark and
+ * tool name keep the site's sizes on the first (#205). The logo link is
+ * 2.75rem tall so that first line is a full target's height; on one line the
+ * bar is the site's 3.75rem.
  */
 .chrome {
   position: sticky;
@@ -333,15 +346,19 @@ tbody th.numeric {
 
 .chrome-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1.5rem;
+  column-gap: 1.5rem;
+  row-gap: 0.25rem;
   min-height: 3.75rem;
+  padding-block: 0.5rem;
 }
 
 .chrome .home {
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  min-height: 2.75rem;
   text-decoration: none;
 }
 .chrome .home > span {
@@ -369,8 +386,97 @@ tbody th.numeric {
   border-left: 1px solid var(--faint);
   margin-left: -0.5rem;
 }
-.chrome .btn-ghost {
+.chrome-actions {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
   margin-left: auto;
+}
+
+/* the open button keeps the hover border, so it reads as the panel's owner */
+.btn-ghost[aria-expanded='true'] {
+  border-color: var(--violet);
+}
+
+@media (max-width: 36rem) {
+  html {
+    --chrome-height: 6.75rem;
+  }
+  .chrome-actions {
+    flex-basis: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/*
+ * The examples panel hangs under the button group, right-aligned to it (the
+ * group, not the Examples button, so it never runs off the left edge), and
+ * is never wider than the column. Case labels wrap inside their item; each
+ * item is a full-width 2.75rem target.
+ */
+.examples-panel {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 20;
+  width: min(24rem, calc(100vw - 2 * var(--gutter)));
+  /* it hangs from the sticky header, so it scrolls itself on a short screen */
+  max-height: calc(100dvh - var(--chrome-height) - 1rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.5rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1.5rem rgb(42 34 48 / 0.15);
+}
+
+.examples-caption {
+  margin: 0.25rem 0.75rem 0.5rem;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.examples-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.examples-item {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--display);
+  font-weight: 300;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  text-align: left;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-radius: 0.35rem;
+  cursor: pointer;
+}
+.examples-item:hover,
+.examples-item:focus-visible {
+  color: var(--violet);
+  background: var(--rule);
+}
+
+/*
+ * The confirmation after a case loads, under the tab strip so it shows on
+ * whichever tab the case was chosen from. Empty, and no height, otherwise.
+ */
+.example-status {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+.example-status:not(:empty) {
+  margin: -0.75rem 0 1.25rem;
 }
 
 /*
@@ -641,64 +747,6 @@ input[type='number']::-webkit-outer-spin-button {
 .mrow-select > select {
   grid-column: 2 / -1;
   min-width: 0;
-}
-
-/*
- * Load an example case: a measured row without a unit - the label, the
- * select and its Load button on one line, packed to the left (otherwise the
- * auto label track takes the free space and pushes the controls to the far
- * edge). Under 48rem the label takes its own line. The select's track is
- * capped and can shrink to nothing, so the longest case label truncates
- * inside the control rather than widening the page. The status line under
- * it is empty, and takes no height, until a case is loaded.
- */
-.presets {
-  margin-bottom: 1.5rem;
-}
-
-.preset-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 24rem) auto;
-  justify-content: start;
-  align-items: baseline;
-  column-gap: 0.7rem;
-}
-
-.preset-row > label {
-  padding: 0.6rem 0;
-}
-
-.preset-row > select {
-  min-width: 0;
-  max-width: 100%;
-}
-
-.preset-status {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--ink);
-}
-
-.preset-status:not(:empty) {
-  margin-top: 0.4rem;
-}
-
-.btn-ghost:disabled,
-.btn-ghost:disabled:hover {
-  color: var(--muted);
-  border-color: var(--rule);
-  border-style: dashed;
-  cursor: default;
-}
-
-@media (max-width: 48rem) {
-  .preset-row {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .preset-row > label {
-    grid-column: 1 / -1;
-  }
 }
 
 /* Information: four cells in a row, stacked under 48rem. */
