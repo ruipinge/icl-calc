@@ -459,6 +459,13 @@ tbody th.numeric {
   display: inline-block;
   padding-block: 0.3rem;
 }
+/*
+ * The links above are inline-block, an atomic inline, so a line may break
+ * between one and the text after it. Keeps a trailing full stop with its link.
+ */
+.site-footer .nowrap {
+  white-space: nowrap;
+}
 .site-footer a:hover {
   color: var(--violet);
 }

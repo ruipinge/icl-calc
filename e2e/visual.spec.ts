@@ -765,3 +765,35 @@ test('the accessibility tree does not change with viewport', async ({
   // laying the same ones out differently.
   expect(trees[0]).toBe(trees[1]);
 });
+
+for (const width of [320, 360, 390, 800, 1280]) {
+  test(`at ${width}px the footer's full stop stays on the line of "Rui Pinge"`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 780 });
+    await open(page, null);
+    const link = page.locator('.site-footer a', { hasText: 'Rui Pinge' });
+    await expect(link).toHaveCount(1);
+    const found = await link.evaluate((a) => {
+      const stop = a.nextSibling;
+      if (stop === null || stop.nodeType !== Node.TEXT_NODE) {
+        return null;
+      }
+      const range = document.createRange();
+      range.selectNodeContents(stop);
+      const dot = range.getBoundingClientRect();
+      const box = a.getBoundingClientRect();
+      return {
+        text: stop.textContent,
+        mid: (dot.top + dot.bottom) / 2,
+        top: box.top,
+        bottom: box.bottom
+      };
+    });
+    // present, so the check below cannot pass vacuously
+    expect(found).not.toBeNull();
+    expect(found?.text).toBe('.');
+    expect(found?.mid).toBeGreaterThanOrEqual(found?.top ?? Infinity);
+    expect(found?.mid).toBeLessThanOrEqual(found?.bottom ?? -Infinity);
+  });
+}
