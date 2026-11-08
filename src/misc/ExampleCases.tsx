@@ -71,9 +71,18 @@ export const ExamplesMenu = () => {
   };
 
   const load = (preset: Preset) => {
+    // values before status: Formik 2 applies each to its state ref at once,
+    // so no render sees the new id beside the old values (which ExampleStatus
+    // would read as an edit and clear)
     void setValues({ ...values, ...preset.values });
     setStatus({ example: preset.id });
     close();
+    // Examples sits in the sticky header, the confirmation at the top of the
+    // page: bring it into view for a clinician scrolled down a tab. jsdom
+    // has no scrollIntoView.
+    document
+      .getElementById('example-status')
+      ?.scrollIntoView?.({ block: 'nearest' });
   };
 
   const focusItem = (index: number) => {
@@ -143,12 +152,24 @@ export const ExamplesMenu = () => {
   );
 };
 
-// Always mounted, so the live region exists before its text changes.
+/*
+ * Always mounted, so the live region exists before its text changes.
+ *
+ * The first edit away from the loaded case drops its id, so typing the
+ * original value back does not bring the confirmation back: by then the
+ * clinician has entered data. Clearing makes `example` undefined, so the
+ * effect cannot loop.
+ */
 export const ExampleStatus = () => {
-  const { values, status } = useFormikContext<ICLFormValues>();
+  const { values, status, setStatus } = useFormikContext<ICLFormValues>();
   const loaded = loadedExample(values, status);
+  const example = (status as { example?: unknown } | undefined)?.example;
+  const edited = example !== undefined && loaded === undefined;
+  useEffect(() => {
+    if (edited) setStatus(undefined);
+  }, [edited, setStatus]);
   return (
-    <p role="status" className="example-status">
+    <p id="example-status" role="status" className="example-status">
       {loaded &&
         `Loaded "${loaded.label}". Name, date of birth and eye were kept as entered.`}
     </p>

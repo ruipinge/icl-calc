@@ -68,6 +68,18 @@ it('discloses the cases, in order, from a collapsed Examples button', () => {
   expect(items.map((b) => list.contains(b))).toEqual(PRESETS.map(() => true));
 });
 
+it('collapses when Examples is clicked a second time', () => {
+  renderAt();
+
+  fireEvent.click(examples());
+  expect(examples()).toHaveAttribute('aria-expanded', 'true');
+  fireEvent.click(examples());
+
+  expect(examples()).toHaveAttribute('aria-expanded', 'false');
+  expect(examples()).not.toHaveAttribute('aria-controls');
+  expect(screen.queryByText(CAPTION)).toBeNull();
+});
+
 // Enter and Space load only because the items are native buttons, which
 // turn both keys into a click; jsdom does not synthesise that, so this pins
 // the element instead. Neither control is a form field.
@@ -367,6 +379,57 @@ it.each([
     });
   }
 );
+
+// Once edited, the data is the clinician's: typing the case's value back
+// must not bring the confirmation back, nor re-announce it.
+it('does not confirm an edited case again when its value is typed back', async () => {
+  const { label, values } = preset('typical-myope');
+  renderAt();
+
+  choose('typical-myope');
+  await waitFor(() => {
+    expect(screen.getByRole('status')).toHaveTextContent(loadedText(label));
+  });
+
+  await editAta(String(values.biometry.ata + 1));
+  await waitFor(() => {
+    expect(screen.getByRole('status')).toHaveTextContent('');
+  });
+
+  await editAta(String(values.biometry.ata));
+  // give any stray Formik update the chance to land before asserting
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  expect(screen.getByRole('status')).toHaveTextContent('');
+});
+
+// Examples is in the sticky header; the confirmation is at the top of the
+// page, out of sight for a clinician scrolled down a tab.
+it('scrolls the confirmation into view when a case loads', async () => {
+  const { label } = preset('steep-cornea');
+  const scrollIntoView = vi.fn();
+  const original = Object.getOwnPropertyDescriptor(
+    Element.prototype,
+    'scrollIntoView'
+  );
+  Element.prototype.scrollIntoView = scrollIntoView;
+  try {
+    renderAt();
+    choose('steep-cornea');
+    await waitFor(() => {
+      expect(screen.getByRole('status')).toHaveTextContent(loadedText(label));
+    });
+
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
+    expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByRole('status'));
+  } finally {
+    if (original) {
+      Object.defineProperty(Element.prototype, 'scrollIntoView', original);
+    } else {
+      delete (Element.prototype as Partial<Element>).scrollIntoView;
+    }
+  }
+});
 
 // The confirmation lives in the shell, under the tabs, not on Patient.
 it('confirms a case loaded from another tab, and keeps it on Patient', async () => {
