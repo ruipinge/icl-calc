@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { fillRow, gotoTab, openApp } from './lib/app';
 
 import type { GoldenRow } from '../src/golden/types';
@@ -524,6 +524,77 @@ for (const width of [320, 360, 390, 800, 1280]) {
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth)
     ).toBe(width);
+  });
+}
+
+/*
+ * #206. On a short screen - a phone held sideways, or a desktop at 400% zoom
+ * - the panel, which hangs from the sticky header, ends inside the viewport
+ * and scrolls itself, so the last case can still be reached.
+ */
+for (const viewport of [
+  { width: 320, height: 480 },
+  { width: 844, height: 390 },
+  { width: 320, height: 256 }
+]) {
+  test(`at ${viewport.width}x${viewport.height} every example case can be reached`, async ({
+    page
+  }) => {
+    await page.setViewportSize(viewport);
+    await open(page, null);
+    await page.getByRole('button', { name: 'Examples' }).click();
+    const panel = page.locator('#examples-panel');
+    const last = panel.getByRole('button').last();
+    // scrolled as a person would, with the wheel over the panel
+    await panel.hover();
+    await page.mouse.wheel(0, 2000);
+    await expect
+      .poll(() =>
+        last.evaluate((element) => element.getBoundingClientRect().bottom)
+      )
+      .toBeLessThanOrEqual(viewport.height);
+  });
+}
+
+/*
+ * #206. A case loaded from far down a tab is confirmed where the clinician
+ * can see it: the confirmation is scrolled into view, below the sticky
+ * header, at a phone's and a desktop's width.
+ */
+for (const viewport of [
+  { width: 390, height: 844 },
+  { width: 1280, height: 600 }
+]) {
+  test(`at ${viewport.width}px a case loaded from down the page is confirmed in view`, async ({
+    page
+  }) => {
+    await page.setViewportSize(viewport);
+    await open(page, null);
+    await page.evaluate(() =>
+      window.scrollTo(0, document.documentElement.scrollHeight)
+    );
+    // Clicked in the page, not through Playwright's click: that scrolls the
+    // target into view first, and for anything in the sticky header that
+    // scrolls the page back to the top, hiding the case under test.
+    const click = (locator: Locator) =>
+      locator.evaluate((element: HTMLElement) => element.click());
+    await click(page.getByRole('button', { name: 'Examples' }));
+    // the case under test: the confirmation's place is scrolled out of view
+    expect(
+      await page
+        .getByRole('status')
+        .evaluate((element) => element.getBoundingClientRect().top)
+    ).toBeLessThan(0);
+    await click(page.locator('#examples-panel').getByRole('button').first());
+    const status = page.getByRole('status');
+    await expect(status).toContainText('Loaded');
+    const header = await page
+      .locator('nav')
+      .evaluate((element) => element.getBoundingClientRect().bottom);
+    const box = await status.evaluate((element) => ({
+      top: element.getBoundingClientRect().top
+    }));
+    expect(box.top).toBeGreaterThanOrEqual(header);
   });
 }
 

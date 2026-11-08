@@ -3,6 +3,7 @@
     - /url: https://treeye.science/
   - link "ICL Size Calc":
     - /url: /icl-calc/
+  - button "Examples"
   - button "Reset"
 - list:
   - listitem:
@@ -17,6 +18,7 @@
   - listitem:
     - link "Regression":
       - /url: "#/regression"
+- status
 - table:
   - rowgroup:
     - row /Lens Size \d+\.\d+ mm \d+\.\d+ mm \d+\.\d+ mm/:

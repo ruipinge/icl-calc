@@ -132,6 +132,13 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /*
+   * The sticky header's height: one line, or two under 36rem (#205). The
+   * scroll padding keeps a focused field, or the example-case confirmation
+   * scrolled into view on load, clear of the header (#206).
+   */
+  --chrome-height: 3.75rem;
+  scroll-padding-top: calc(var(--chrome-height) + 1rem);
 }
 
 body {
@@ -323,11 +330,11 @@ tbody th.numeric {
  * because the tool is the page and the site is its context; and Examples
  * and Reset sit, as one group, where the site's nav would be (#206).
  *
- * The bar wraps (#205). When the logo, the tool name and the two buttons do
- * not fit on one line - on a phone - the buttons take a second line of their
- * own, right-aligned, and the logo, wordmark and tool name keep the site's
- * sizes on the first. The logo link is 2.75rem tall so that first line is a
- * full target's height; on one line the bar is the site's 3.75rem.
+ * Under 36rem - a phone, where the tabs become a grid too - the two buttons
+ * take a second line of their own, right-aligned, so the logo, wordmark and
+ * tool name keep the site's sizes on the first (#205). The logo link is
+ * 2.75rem tall so that first line is a full target's height; on one line the
+ * bar is the site's 3.75rem.
  */
 .chrome {
   position: sticky;
@@ -391,6 +398,16 @@ tbody th.numeric {
   border-color: var(--violet);
 }
 
+@media (max-width: 36rem) {
+  html {
+    --chrome-height: 6.75rem;
+  }
+  .chrome-actions {
+    flex-basis: 100%;
+    justify-content: flex-end;
+  }
+}
+
 /*
  * The examples panel hangs under the button group, right-aligned to it (the
  * group, not the Examples button, so it never runs off the left edge), and
@@ -403,6 +420,10 @@ tbody th.numeric {
   right: 0;
   z-index: 20;
   width: min(24rem, calc(100vw - 2 * var(--gutter)));
+  /* it hangs from the sticky header, so it scrolls itself on a short screen */
+  max-height: calc(100dvh - var(--chrome-height) - 1rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 0.5rem;
   background: var(--paper);
   border: 1px solid var(--rule);
