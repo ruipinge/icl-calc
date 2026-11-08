@@ -855,7 +855,8 @@ for (const width of [320, 360, 390, 800, 1280]) {
  * this measures what the estimate is for. At 320px AtA's labels, 40px wide
  * at a 38.8px pitch, ran together as "11.28811.856" before it. Every chart
  * must be present and carry at least 3 labels, so the check cannot pass on
- * an empty page, and no tolerance is given in the labels' favour.
+ * an empty page, and no tolerance is given in the labels' favour. The first
+ * and last labels must also sit inside the SVG, or they would be clipped.
  */
 for (const width of [320, 360, 390, 800, 1280]) {
   test(`at ${width}px no two histogram x-axis labels overlap`, async ({
@@ -869,6 +870,8 @@ for (const width of [320, 360, 390, 800, 1280]) {
       .evaluateAll((svgs) =>
         svgs.map((svg) => ({
           title: svg.getAttribute('aria-label'),
+          svgLeft: svg.getBoundingClientRect().left,
+          svgRight: svg.getBoundingClientRect().right,
           ticks: [...svg.querySelectorAll('[data-testid="x-tick"]')].map(
             (tick) => {
               const box = tick.getBoundingClientRect();
@@ -882,8 +885,16 @@ for (const width of [320, 360, 390, 800, 1280]) {
         }))
       );
     expect(charts).toHaveLength(6);
-    for (const { title, ticks } of charts) {
+    for (const { title, svgLeft, svgRight, ticks } of charts) {
       expect(ticks.length, `${title} at ${width}px`).toBeGreaterThanOrEqual(3);
+      expect(
+        ticks[0].left,
+        `${title} at ${width}px: first label "${ticks[0].text}" inside the chart`
+      ).toBeGreaterThanOrEqual(svgLeft);
+      expect(
+        ticks[ticks.length - 1].right,
+        `${title} at ${width}px: last label "${ticks[ticks.length - 1].text}" inside the chart`
+      ).toBeLessThanOrEqual(svgRight);
       for (let i = 1; i < ticks.length; i++) {
         const prev = ticks[i - 1];
         const next = ticks[i];

@@ -40,6 +40,10 @@ const BAR_WIDTH_RATIO = 0.88;
 // 2. An upper bound keeps the choice render-free and deterministic: nothing is
 // measured, so nothing is re-measured. MIN_LABEL_GAP is the least clear space
 // left between neighbouring labels.
+// Margins: AtA at 360px sits about 0.56px above the step-3 threshold (46.8
+// against 46.24), so a layout change narrowing the column by about 2px would
+// flip it to step 3 at a width with PNG fixtures. The 0.64em bound also
+// assumes Inter's tabular digits; a fallback face could set wider labels.
 const X_LABEL_FONT_SIZE = 11;
 const LABEL_CHAR_EM = 0.64;
 const MIN_LABEL_GAP = 4;
