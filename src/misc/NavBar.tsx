@@ -24,6 +24,7 @@
  * wrapping spans are `display: contents`, so the SVGs lay out as direct
  * children of the link, as they do on the site.
  */
+import { ExamplesMenu } from './ExampleCases';
 import icon from './treeye-header/icon.svg?raw';
 import wordmark from './treeye-header/wordmark.svg?raw';
 
@@ -37,15 +38,18 @@ export const NavBar = ({ resetForm }: { resetForm: (a?: any) => void }) => (
       <a className="toolname" href={import.meta.env.BASE_URL}>
         ICL Size Calc
       </a>
-      <button
-        type="button"
-        className="btn-ghost"
-        onClick={() => {
-          resetForm();
-        }}
-      >
-        Reset
-      </button>
+      <div className="chrome-actions">
+        <ExamplesMenu />
+        <button
+          type="button"
+          className="btn-ghost"
+          onClick={() => {
+            resetForm();
+          }}
+        >
+          Reset
+        </button>
+      </div>
     </div>
   </nav>
 );

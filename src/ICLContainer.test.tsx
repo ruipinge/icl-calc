@@ -184,14 +184,12 @@ it('renders the computed outputs after the free-text fields, all disabled', () =
   expect(textboxes[1]).toBeEnabled();
 });
 
-it('offers the example cases, eye and previous-surgery choices as selects', () => {
+it('offers the eye and previous-surgery choices as selects', () => {
   renderWithHash();
 
-  inOrder('combobox', [
-    'Load an example case',
-    'Eye',
-    'Previous Corneal Refractive Surgery'
-  ]).forEach(([actual, expected]) => expect(actual).toBe(expected));
+  inOrder('combobox', ['Eye', 'Previous Corneal Refractive Surgery']).forEach(
+    ([actual, expected]) => expect(actual).toBe(expected)
+  );
 });
 
 it('shows the six normality charts on their route', () => {

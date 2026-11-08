@@ -1,8 +1,18 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { Formik } from 'formik';
+import { INITIAL_VALUES } from '../types';
 import { NavBar } from './NavBar';
 import { createHash } from 'node:crypto';
 import icon from './treeye-header/icon.svg?raw';
 import wordmark from './treeye-header/wordmark.svg?raw';
+
+// The Examples button reads and writes the form, so it needs a Formik context.
+const renderNavBar = (resetForm: () => void = () => {}) =>
+  render(
+    <Formik initialValues={INITIAL_VALUES} onSubmit={() => {}}>
+      <NavBar resetForm={resetForm} />
+    </Formik>
+  );
 
 /*
  * Replaces an asFragment() snapshot (#121). The snapshot recorded this
@@ -17,7 +27,7 @@ import wordmark from './treeye-header/wordmark.svg?raw';
  * base-path guard the pin exists to enable.
  */
 it('points the brand link at the configured base path', () => {
-  render(<NavBar resetForm={() => {}} />);
+  renderNavBar();
 
   expect(screen.getByRole('link', { name: 'ICL Size Calc' })).toHaveAttribute(
     'href',
@@ -33,7 +43,7 @@ it('points the brand link at the configured base path', () => {
  * guard asserted above and must not move.
  */
 it('links the Treeye mark at the group site', () => {
-  render(<NavBar resetForm={() => {}} />);
+  renderNavBar();
 
   expect(screen.getByRole('link', { name: 'Treeye' })).toHaveAttribute(
     'href',
@@ -63,7 +73,7 @@ it('keeps the Treeye artwork byte for byte as the site builds it', () => {
 // toContainHTML normalises both sides through the same parser, so this holds
 // the rendered link to the verbatim files rather than to a retyped copy.
 it('renders the site symbol and wordmark inside the Treeye link', () => {
-  render(<NavBar resetForm={() => {}} />);
+  renderNavBar();
 
   const home = screen.getByRole('link', { name: 'Treeye' });
 
@@ -74,7 +84,7 @@ it('renders the site symbol and wordmark inside the Treeye link', () => {
 // The tool name sits immediately after the logo: it is the page the user is
 // on, and the site is its context (#172, difference 2).
 it('places the tool name immediately after the Treeye link', () => {
-  render(<NavBar resetForm={() => {}} />);
+  renderNavBar();
 
   const links = screen.getAllByRole('link');
 
@@ -86,9 +96,21 @@ it('places the tool name immediately after the Treeye link', () => {
 it('resets the form when the Reset button is clicked', () => {
   let resets = 0;
 
-  render(<NavBar resetForm={() => (resets += 1)} />);
+  renderNavBar(() => (resets += 1));
 
   fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
 
   expect(resets).toBe(1);
+});
+
+// Examples sits with Reset, before it: both act on the whole form (#206).
+it('groups the Examples button with Reset, Examples first', () => {
+  const { container } = renderNavBar();
+
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+  const actions = container.querySelectorAll('.chrome-actions button');
+  expect(Array.from(actions)).toEqual([
+    screen.getByRole('button', { name: 'Examples' }),
+    screen.getByRole('button', { name: 'Reset' })
+  ]);
 });
