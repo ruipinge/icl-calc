@@ -77,7 +77,7 @@ const PATIENT_SECTIONS = [
 const MEASURED_FIELDS = [
   'AtA (mm), Angle to Angle, millimetres',
   'WtW (mm), White to White, millimetres',
-  'CLR (μm), Crystaline Lens Rise, micrometres',
+  'CLR (μm), Crystalline Lens Rise, micrometres',
   'ACD (mm), Internal Anterior Chamber Depth, millimetres',
   'ACAn (°), Anterior Chamber Angle nasal, degrees',
   'ACAt (°), Anterior Chamber Angle temporal, degrees',
@@ -130,7 +130,7 @@ const inOrder = (
 /* Every field either result tab needs: the seven ICL power fields, AtA, CLR, a date of birth. */
 const FILL: [string, string][] = [
   ['AtA (mm), Angle to Angle, millimetres', '11.8'],
-  ['CLR (μm), Crystaline Lens Rise, micrometres', '250'],
+  ['CLR (μm), Crystalline Lens Rise, micrometres', '250'],
   ['ACD (mm), Internal Anterior Chamber Depth, millimetres', '3.2'],
   ['KAntFlt (dpt @ °), Anterior Keratometry Flat, dioptres', '43'],
   ['KAntStp (dpt @ °), Anterior Keratometry Steep, dioptres', '44.5'],

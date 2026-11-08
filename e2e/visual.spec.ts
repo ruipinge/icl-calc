@@ -219,7 +219,7 @@ test.describe('narrow (360x780)', () => {
     for (const [name, value] of [
       ['AtA (mm), Angle to Angle, millimetres', '12'],
       ['WtW (mm), White to White, millimetres', '15'],
-      ['CLR (μm), Crystaline Lens Rise, micrometres', '300'],
+      ['CLR (μm), Crystalline Lens Rise, micrometres', '300'],
       ['ACD (mm), Internal Anterior Chamber Depth, millimetres', '1'],
       ['ACAn (°), Anterior Chamber Angle nasal, degrees', '40'],
       ['ACAt (°), Anterior Chamber Angle temporal, degrees', '40']
@@ -765,3 +765,144 @@ test('the accessibility tree does not change with viewport', async ({
   // laying the same ones out differently.
   expect(trees[0]).toBe(trees[1]);
 });
+
+for (const width of [320, 360, 390, 800, 1280]) {
+  test(`at ${width}px the footer's full stop stays on the line of "Rui Pinge"`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 780 });
+    await open(page, null);
+    const link = page.locator('.site-footer a', { hasText: 'Rui Pinge' });
+    await expect(link).toHaveCount(1);
+    const found = await link.evaluate((a) => {
+      const stop = a.nextSibling;
+      if (stop === null || stop.nodeType !== Node.TEXT_NODE) {
+        return null;
+      }
+      const range = document.createRange();
+      range.selectNodeContents(stop);
+      const dot = range.getBoundingClientRect();
+      const box = a.getBoundingClientRect();
+      return {
+        text: stop.textContent,
+        mid: (dot.top + dot.bottom) / 2,
+        top: box.top,
+        bottom: box.bottom
+      };
+    });
+    // present, so the check below cannot pass vacuously
+    expect(found).not.toBeNull();
+    expect(found?.text).toBe('.');
+    expect(found?.mid).toBeGreaterThanOrEqual(found?.top ?? Infinity);
+    expect(found?.mid).toBeLessThanOrEqual(found?.bottom ?? -Infinity);
+  });
+}
+
+/*
+ * No histogram title clips its chart. SVG text never wraps, and the SVG is
+ * exactly as wide as its column, so a title wider than the column was cut
+ * off at both edges: "Internal Anterior Chamber Depth - ACD (mm)" is 334px
+ * at 14px Poppins, against a 320px SVG at 360 and 280px at 320. A title too
+ * wide breaks onto two lines and the chart moves down beneath it, so each
+ * title must lie inside its SVG and above the plot's top gridline.
+ */
+for (const width of [320, 360, 390, 800, 1280]) {
+  test(`at ${width}px every histogram title fits inside its chart`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page, 'Biometric Normality');
+    await page.evaluate(() => document.fonts.ready);
+    const charts = await page
+      .locator('[data-testid="histogram"]')
+      .evaluateAll((svgs) =>
+        svgs.map((svg) => {
+          const box = svg.getBoundingClientRect();
+          const title = svg.querySelector('[data-testid="histogram-title"]');
+          const gridlines = [
+            ...svg.querySelectorAll('[data-testid="gridline"]')
+          ].map((line) => line.getBoundingClientRect().top);
+          return {
+            svg: { left: box.left, right: box.right },
+            title:
+              title === null
+                ? null
+                : {
+                    text: title.textContent,
+                    ...title.getBoundingClientRect().toJSON()
+                  },
+            topGridline: gridlines.length ? Math.min(...gridlines) : null
+          };
+        })
+      );
+    expect(charts).toHaveLength(6);
+    for (const { svg, title, topGridline } of charts) {
+      expect(title).not.toBeNull();
+      expect(topGridline).not.toBeNull();
+      const label = `${title?.text} at ${width}px`;
+      expect(title?.left, label).toBeGreaterThanOrEqual(svg.left - 0.5);
+      expect(title?.right, label).toBeLessThanOrEqual(svg.right + 0.5);
+      expect(title?.bottom, label).toBeLessThanOrEqual(
+        topGridline ?? -Infinity
+      );
+    }
+  });
+}
+
+/*
+ * No two x-axis labels on a histogram overlap. A chart labels bin 0 and
+ * every k-th bin after it, k chosen from the widest label's estimated width;
+ * this measures what the estimate is for. At 320px AtA's labels, 40px wide
+ * at a 38.8px pitch, ran together as "11.28811.856" before it. Every chart
+ * must be present and carry at least 3 labels, so the check cannot pass on
+ * an empty page, and no tolerance is given in the labels' favour. The first
+ * and last labels must also sit inside the SVG, or they would be clipped.
+ */
+for (const width of [320, 360, 390, 800, 1280]) {
+  test(`at ${width}px no two histogram x-axis labels overlap`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page, 'Biometric Normality');
+    await page.evaluate(() => document.fonts.ready);
+    const charts = await page
+      .locator('[data-testid="histogram"]')
+      .evaluateAll((svgs) =>
+        svgs.map((svg) => ({
+          title: svg.getAttribute('aria-label'),
+          svgLeft: svg.getBoundingClientRect().left,
+          svgRight: svg.getBoundingClientRect().right,
+          ticks: [...svg.querySelectorAll('[data-testid="x-tick"]')].map(
+            (tick) => {
+              const box = tick.getBoundingClientRect();
+              return {
+                text: tick.textContent,
+                left: box.left,
+                right: box.right
+              };
+            }
+          )
+        }))
+      );
+    expect(charts).toHaveLength(6);
+    for (const { title, svgLeft, svgRight, ticks } of charts) {
+      expect(ticks.length, `${title} at ${width}px`).toBeGreaterThanOrEqual(3);
+      expect(
+        ticks[0].left,
+        `${title} at ${width}px: first label "${ticks[0].text}" inside the chart`
+      ).toBeGreaterThanOrEqual(svgLeft);
+      expect(
+        ticks[ticks.length - 1].right,
+        `${title} at ${width}px: last label "${ticks[ticks.length - 1].text}" inside the chart`
+      ).toBeLessThanOrEqual(svgRight);
+      for (let i = 1; i < ticks.length; i++) {
+        const prev = ticks[i - 1];
+        const next = ticks[i];
+        expect(
+          next.left,
+          `${title} at ${width}px: "${prev.text}" then "${next.text}"`
+        ).toBeGreaterThanOrEqual(prev.right);
+      }
+    }
+  });
+}

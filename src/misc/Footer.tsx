@@ -44,7 +44,10 @@ export const Footer = () => (
         <a href="https://www.linkedin.com/in/pedro-serra-44697321/">
           Pedro Serra
         </a>{' '}
-        and <a href="https://ruipinge.github.io/resume">Rui Pinge</a>.
+        and{' '}
+        <span className="nowrap">
+          <a href="https://ruipinge.github.io/resume">Rui Pinge</a>.
+        </span>
       </p>
       <p>
         Available under the{' '}

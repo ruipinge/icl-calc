@@ -48,8 +48,8 @@
 - spinbutton "AtA (mm), Angle to Angle, millimetres"
 - text: WtW (mm), White to White, millimetres
 - spinbutton "WtW (mm), White to White, millimetres"
-- text: CLR (μm), Crystaline Lens Rise, micrometres
-- spinbutton "CLR (μm), Crystaline Lens Rise, micrometres"
+- text: CLR (μm), Crystalline Lens Rise, micrometres
+- spinbutton "CLR (μm), Crystalline Lens Rise, micrometres"
 - text: ACD (mm), Internal Anterior Chamber Depth, millimetres
 - spinbutton "ACD (mm), Internal Anterior Chamber Depth, millimetres"
 - text: ACAn (°), Anterior Chamber Angle nasal, degrees

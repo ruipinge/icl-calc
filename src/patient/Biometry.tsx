@@ -27,7 +27,7 @@ export const Biometry = ({
       />
       <FieldWithUnit
         label="CLR"
-        caption="Crystaline Lens Rise"
+        caption="Crystalline Lens Rise"
         name="biometry.clr"
         unit="μm"
         error={errors.biometry?.clr}

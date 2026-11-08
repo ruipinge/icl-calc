@@ -1,5 +1,5 @@
 import { PLOT_INSET_LEFT, PLOT_INSET_RIGHT } from './plot-inset';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { HistogramEntry } from '../db';
 
@@ -24,11 +24,29 @@ import { HistogramEntry } from '../db';
 const HEIGHT = 300;
 const MARGIN_TOP = 34;
 const MARGIN_BOTTOM = 28;
-const PLOT_TOP = MARGIN_TOP;
-const PLOT_BOTTOM = HEIGHT - MARGIN_BOTTOM;
-const PLOT_HEIGHT = PLOT_BOTTOM - PLOT_TOP;
+const PLOT_HEIGHT = HEIGHT - MARGIN_BOTTOM - MARGIN_TOP;
 const Y_TICK_STEP = 50;
+// The title's clearance from each edge of the SVG before it wraps, and the
+// distance between its two lines when it does.
+const TITLE_PADDING = 4;
+const TITLE_LINE_HEIGHT = 17;
+// Every long title is "<name> - <abbreviation> (<unit>)"; it breaks here.
+const TITLE_BREAK = ' - ';
 const BAR_WIDTH_RATIO = 0.88;
+// The x-axis labels' font size, and the per-character advance, in em, assumed
+// for them when choosing how many bins to skip between labels. Inter's digits
+// are tabular, so 0.64em (7.04px at 11px) bounds every measured label from
+// above: "11.288" is 40px over 6 characters, "-470" 28px over 4, "17" 14px over
+// 2. An upper bound keeps the choice render-free and deterministic: nothing is
+// measured, so nothing is re-measured. MIN_LABEL_GAP is the least clear space
+// left between neighbouring labels.
+// Margins: AtA at 360px sits about 0.56px above the step-3 threshold (46.8
+// against 46.24), so a layout change narrowing the column by about 2px would
+// flip it to step 3 at a width with PNG fixtures. The 0.64em bound also
+// assumes Inter's tabular digits; a fallback face could set wider labels.
+const X_LABEL_FONT_SIZE = 11;
+const LABEL_CHAR_EM = 0.64;
+const MIN_LABEL_GAP = 4;
 
 // Used until the container has been measured, and under jsdom, where
 // getBoundingClientRect reports 0 and ResizeObserver does not exist. Keeping a
@@ -85,6 +103,52 @@ const useMeasuredWidth = () => {
   return { ref, width: width || FALLBACK_WIDTH };
 };
 
+/**
+ * The title's natural single-line width, in px, or null while unknown.
+ *
+ * Measured with getComputedTextLength, and only while the title is drawn on
+ * one line - null renders it on one line, and the layout effect measures it
+ * before paint. It does not depend on the container's width, so a resize
+ * needs no re-measure; a font arriving does, so a finished font load resets
+ * it. jsdom has neither document.fonts nor getComputedTextLength, and there
+ * it stays null: the title never wraps.
+ */
+const useNaturalTitleWidth = (title: string) => {
+  const ref = useRef<SVGTextElement>(null);
+  // Keyed to the title it was measured on, so a new title is never laid out
+  // with the old one's width.
+  const [measured, setMeasured] = useState<{
+    title: string;
+    width: number;
+  } | null>(null);
+  const naturalWidth = measured?.title === title ? measured.width : null;
+
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (
+      naturalWidth !== null ||
+      element === null ||
+      typeof element.getComputedTextLength !== 'function'
+    ) {
+      return;
+    }
+    setMeasured({ title, width: element.getComputedTextLength() });
+  }, [naturalWidth, title]);
+
+  useEffect(() => {
+    if (!('fonts' in document)) {
+      return;
+    }
+    const fonts = document.fonts;
+    const remeasure = () => setMeasured(null);
+    void fonts.ready.then(remeasure);
+    fonts.addEventListener('loadingdone', remeasure);
+    return () => fonts.removeEventListener('loadingdone', remeasure);
+  }, []);
+
+  return { ref, naturalWidth };
+};
+
 // amCharts' bin `from` values are exact fractions of the data range and can
 // carry long floating-point tails (e.g. 11.28800000000001). The old chart's
 // category axis rendered them cleanly because amCharts formats numbers for
@@ -92,6 +156,18 @@ const useMeasuredWidth = () => {
 // trailing zeros, rather than padding every label to a fixed precision.
 const formatAxisNumber = (value: number): string =>
   Number(value.toFixed(3)).toString();
+
+/**
+ * How many bins apart the x-axis labels go: the smallest step of at least 2
+ * whose span fits the widest label, estimated, plus MIN_LABEL_GAP.
+ */
+const labelStep = (data: HistogramEntry[], slotWidth: number): number => {
+  const longest = Math.max(
+    ...data.map((bin) => formatAxisNumber(bin.from).length)
+  );
+  const needed = longest * LABEL_CHAR_EM * X_LABEL_FONT_SIZE + MIN_LABEL_GAP;
+  return Math.max(2, Math.ceil(needed / slotWidth));
+};
 
 export const Histogram = ({
   data,
@@ -101,6 +177,20 @@ export const Histogram = ({
   title: string;
 }) => {
   const { ref, width } = useMeasuredWidth();
+  const { ref: titleRef, naturalWidth } = useNaturalTitleWidth(title);
+
+  // A title too wide for the SVG breaks onto two lines at " - ", and the
+  // whole chart moves down one line beneath it. The plot keeps its height,
+  // so bars, gridline spacing and every x coordinate are unchanged.
+  const breakAt = title.indexOf(TITLE_BREAK);
+  const wrapped =
+    breakAt !== -1 &&
+    naturalWidth !== null &&
+    naturalWidth > width - 2 * TITLE_PADDING;
+  const titleOffset = wrapped ? TITLE_LINE_HEIGHT : 0;
+  const height = HEIGHT + titleOffset;
+  const plotTop = MARGIN_TOP + titleOffset;
+  const plotBottom = height - MARGIN_BOTTOM;
 
   // These two are what keep the chart and the gauge beneath it on one axis.
   const plotLeft = PLOT_INSET_LEFT;
@@ -123,12 +213,13 @@ export const Histogram = ({
 
   const slotWidth = plotWidth / data.length;
   const barWidth = slotWidth * BAR_WIDTH_RATIO;
+  const step = labelStep(data, slotWidth);
 
   return (
     <div ref={ref}>
       <svg
         width={width}
-        height={HEIGHT}
+        height={height}
         role="img"
         aria-label={`Histogram of ${title}`}
         // The visual-capture harness (e2e/histogram-visual.spec.ts) targets
@@ -143,9 +234,23 @@ export const Histogram = ({
             centring on that inset area pushes the longer titles -
             "Internal Anterior Chamber Depth - ACD (mm)" - off the right
             edge. amCharts centred on the full width too. 14px, not the
-            16px it had in Newsreader: Poppins sets wider, and at 16px the
-            ACD title overran both edges of its column at both viewports. */}
+            16px it had in Newsreader: Poppins sets wider. Even at 14px the
+            ACD title (334px) is wider than its column on the narrowest
+            phones (320px at 360, 280px at 320), and SVG text never wraps -
+            the SVG clips it. Fitting it by font size would take it below
+            the 0.8rem minimum, so a title wider than the SVG less
+            TITLE_PADDING a side breaks at " - " onto two lines instead.
+            Once wrapped nothing re-checks that the first line fits. It
+            does at 320px ("Internal Anterior Chamber Depth" is about
+            246px in a 280px chart), so a longer prefix or a narrower
+            column would need a further fallback. The wrapped title's
+            text content drops " - ". Screen readers are unaffected (the
+            SVG is role="img" with an aria-label), but an aria snapshot
+            of the narrow Normality route reads the img's text
+            differently from the 1280 fixture. */}
         <text
+          ref={titleRef}
+          data-testid="histogram-title"
           x={width / 2}
           y={18}
           textAnchor="middle"
@@ -153,12 +258,21 @@ export const Histogram = ({
           fill="currentColor"
           style={TITLE_STYLE}
         >
-          {title}
+          {wrapped ? (
+            <>
+              <tspan x={width / 2}>{title.slice(0, breakAt)}</tspan>
+              <tspan x={width / 2} dy={TITLE_LINE_HEIGHT}>
+                {title.slice(breakAt + TITLE_BREAK.length)}
+              </tspan>
+            </>
+          ) : (
+            title
+          )}
         </text>
 
         {/* Y axis: gridlines + numeric labels every 50, plus the rotated title. */}
         {yTicks.map((tick) => {
-          const y = PLOT_BOTTOM - (tick / axisMax) * PLOT_HEIGHT;
+          const y = plotBottom - (tick / axisMax) * PLOT_HEIGHT;
           return (
             <g key={tick}>
               <line
@@ -185,19 +299,22 @@ export const Histogram = ({
         })}
         <text
           x={20}
-          y={(PLOT_TOP + PLOT_BOTTOM) / 2}
+          y={(plotTop + plotBottom) / 2}
           textAnchor="middle"
           fontSize={12}
           style={AXIS_LABEL_STYLE}
-          transform={`rotate(-90 20 ${(PLOT_TOP + PLOT_BOTTOM) / 2})`}
+          transform={`rotate(-90 20 ${(plotTop + plotBottom) / 2})`}
         >
           Number of Eyes
         </text>
 
-        {/* X axis: amCharts labelled every other bin (minGridDistance = 30),
-          and drew a vertical gridline at each labelled category. */}
+        {/* X axis: a label on bin 0 and every step-th bin after it, with a
+          vertical gridline at each labelled bin. amCharts labelled every
+          other bin; that is still the step wherever two slots fit the
+          widest label, and a narrower chart skips more bins so that no two
+          labels overlap. */}
         {data.map((bin, i) => {
-          if (i % 2 !== 0) {
+          if (i % step !== 0) {
             return null;
           }
           const x = plotLeft + i * slotWidth + slotWidth / 2;
@@ -207,16 +324,17 @@ export const Histogram = ({
                 data-testid="bin-gridline"
                 x1={x}
                 x2={x}
-                y1={PLOT_TOP}
-                y2={PLOT_BOTTOM}
+                y1={plotTop}
+                y2={plotBottom}
                 strokeWidth={1}
                 style={GRIDLINE_STYLE}
               />
               <text
+                data-testid="x-tick"
                 x={x}
-                y={PLOT_BOTTOM + 16}
+                y={plotBottom + 16}
                 textAnchor="middle"
-                fontSize={11}
+                fontSize={X_LABEL_FONT_SIZE}
                 style={NUMERAL_STYLE}
               >
                 {formatAxisNumber(bin.from)}
@@ -232,7 +350,7 @@ export const Histogram = ({
         {data.map((bin, i) => {
           const barHeight = (bin.count / axisMax) * PLOT_HEIGHT;
           const x = plotLeft + i * slotWidth + (slotWidth - barWidth) / 2;
-          const y = PLOT_BOTTOM - barHeight;
+          const y = plotBottom - barHeight;
           return (
             <rect
               key={bin.from}
