@@ -269,7 +269,7 @@ const LONG_VALUES: [name: string, value: string][] = [
   ['spectacleRefraction.axis', '180'],
   ['spectacleRefraction.vertex', '12']
 ];
-for (const width of [360, 390, 800, 1280]) {
+for (const width of [320, 360, 390, 800, 1280]) {
   test.describe(`values at ${width}px`, () => {
     test.use({ viewport: { width, height: 900 } });
 
@@ -407,7 +407,7 @@ test('Age sets its value right, as every measured value does', async ({
   expect(await align('input[name="age"]')).toBe('right');
 });
 
-for (const width of [360, 390, 800, 1280]) {
+for (const width of [320, 360, 390, 800, 1280]) {
   test(`at ${width}px no value or label clips, and an error moves no field`, async ({
     page
   }) => {
@@ -460,6 +460,66 @@ for (const width of [360, 390, 800, 1280]) {
     expect(gaps).toHaveLength(LONGEST_VALID.length - 4);
     for (const { for: id, gap } of gaps) {
       expect(Math.abs(gap), id).toBeLessThan(1);
+    }
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(width);
+  });
+}
+
+/*
+ * #205, #206. The header holds the logo, the tool name and the Examples and
+ * Reset buttons at every width the form is checked at: the page does not
+ * scroll sideways, every header control is inside the viewport and a full
+ * 44px target, and the open examples panel - every case in it a 44px target
+ * - stays inside the viewport too.
+ */
+for (const width of [320, 360, 390, 800, 1280]) {
+  test(`at ${width}px the header and its examples panel fit`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await open(page, null);
+    const boxes = (selector: string) =>
+      page.locator(selector).evaluateAll((elements) =>
+        elements.map((element) => {
+          const box = element.getBoundingClientRect();
+          return {
+            text: element.getAttribute('aria-label') ?? element.textContent,
+            left: box.left,
+            right: box.right,
+            height: box.height
+          };
+        })
+      );
+    const inside = (box: { left: number; right: number }) =>
+      box.left >= 0 && box.right <= width;
+
+    const controls = await boxes('nav a, nav button');
+    expect(controls.map((box) => box.text)).toEqual([
+      'Treeye',
+      'ICL Size Calc',
+      'Examples',
+      'Reset'
+    ]);
+    for (const box of controls) {
+      expect(inside(box), box.text ?? '').toBe(true);
+    }
+    for (const box of controls.slice(2)) {
+      expect(box.height, box.text ?? '').toBeGreaterThanOrEqual(44);
+    }
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth)
+    ).toBe(width);
+
+    await page.getByRole('button', { name: 'Examples' }).click();
+    const [panel] = await boxes('#examples-panel');
+    expect(inside(panel)).toBe(true);
+    const items = await boxes('#examples-panel button');
+    expect(items).toHaveLength(6);
+    for (const item of items) {
+      expect(inside(item), item.text ?? '').toBe(true);
+      expect(item.height, item.text ?? '').toBeGreaterThanOrEqual(44);
     }
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth)
