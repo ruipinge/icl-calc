@@ -219,7 +219,7 @@ test.describe('narrow (360x780)', () => {
     for (const [name, value] of [
       ['AtA (mm), Angle to Angle, millimetres', '12'],
       ['WtW (mm), White to White, millimetres', '15'],
-      ['CLR (μm), Crystaline Lens Rise, micrometres', '300'],
+      ['CLR (μm), Crystalline Lens Rise, micrometres', '300'],
       ['ACD (mm), Internal Anterior Chamber Depth, millimetres', '1'],
       ['ACAn (°), Anterior Chamber Angle nasal, degrees', '40'],
       ['ACAt (°), Anterior Chamber Angle temporal, degrees', '40']
