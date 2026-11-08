@@ -829,7 +829,6 @@ for (const width of [320, 360, 390, 800, 1280]) {
                 ? null
                 : {
                     text: title.textContent,
-                    lines: title.querySelectorAll('tspan').length,
                     ...title.getBoundingClientRect().toJSON()
                   },
             topGridline: gridlines.length ? Math.min(...gridlines) : null
