@@ -1,3 +1,4 @@
+import { afterEach, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 import { Footer } from './Footer';
@@ -79,10 +80,22 @@ it('carries the no-warranty disclaimer', () => {
  * because it is what identifies the exact source.
  */
 describe('preview build', () => {
-  it('shows the preview label as plain text, not a release link', () => {
-    render(<Footer previewLabel="v2.0.0 preview" />);
+  beforeEach(() => {
+    vi.stubEnv('VITE_APP_PREVIEW_LABEL', 'v2.0.0 preview');
+  });
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('shows the preview label', () => {
+    render(<Footer />);
 
     expect(screen.getByText('v2.0.0 preview')).toBeInTheDocument();
+  });
+
+  it('does not link the label to a release', () => {
+    render(<Footer />);
+
     expect(
       screen.queryByRole('link', { name: 'v2.0.0 preview' })
     ).not.toBeInTheDocument();
@@ -94,7 +107,7 @@ describe('preview build', () => {
   });
 
   it('still links the commit the preview was built from', () => {
-    render(<Footer previewLabel="v2.0.0 preview" />);
+    render(<Footer />);
 
     expect(screen.getByRole('link', { name: '(0000000)' })).toHaveAttribute(
       'href',

@@ -641,15 +641,17 @@ jobs:
         run: npm ci --prefer-offline
 
       # No base override, unlike the retired gh-pages stopgap (#171), so these
-      # are L2's bytes except the footer's version label: only that string
-      # differs. No computed value, no input and no table text L2 reads
-      # changes. This preview serves the app at /icl-calc/, which is the base
+      # are L2's bytes except the footer's version label: that string is the
+      # only source difference (the bundle hash and sourcemap follow from it).
+      # No computed value, no input and no table text L2 reads changes. This preview serves the app at /icl-calc/, which is the base
       # production uses today and the one tools.treeye.science/icl-calc/ will
       # use after #123 - so one value is correct everywhere and there is
       # nothing to parameterise.
       #
       # APP_PREVIEW_LABEL swaps the footer's release link for this text: the
       # preview has no release tag to link. Set here and nowhere else.
+      # Change or remove this label when v2.0.0 ships: #123 makes Cloudflare
+      # the live deployment, and "preview" would then be wrong.
       - name: Build the bundle to upload
         env:
           APP_PREVIEW_LABEL: v2.0.0 preview
