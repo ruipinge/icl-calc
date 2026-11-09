@@ -643,7 +643,9 @@ jobs:
       # No base override, unlike the retired gh-pages stopgap (#171), so these
       # are L2's bytes except the footer's version label: that string is the
       # only source difference (the bundle hash and sourcemap follow from it).
-      # No computed value, no input and no table text L2 reads changes. This preview serves the app at /icl-calc/, which is the base
+      # No computed value, no input and no table text L2 reads changes.
+      #
+      # This preview serves the app at /icl-calc/, which is the base
       # production uses today and the one tools.treeye.science/icl-calc/ will
       # use after #123 - so one value is correct everywhere and there is
       # nothing to parameterise.

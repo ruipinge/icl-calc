@@ -1,10 +1,11 @@
 /*
  * VITE_APP_PREVIEW_LABEL is read inline, like the version and commit, so a
  * build where it is empty folds the branch away. It is empty everywhere
- * except the Cloudflare preview, which sets it at build time. It replaces the release link with plain text: no
- * release tag exists for a preview, so the releases/tag URL would 404; the
- * commit link beside it already identifies the exact source; and a branch
- * link would move under a deployed bundle.
+ * except the Cloudflare preview, which sets it at build time. It replaces
+ * the release link with plain text: no release tag exists for a preview,
+ * so the releases/tag URL would 404; the commit link beside it already
+ * identifies the exact source; and a branch link would move under a
+ * deployed bundle.
  */
 export const Footer = () => (
   <footer className="site-footer">
