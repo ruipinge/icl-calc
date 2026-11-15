@@ -1,5 +1,8 @@
 # ICL Size Calc
 
+> [!WARNING]
+> This version of the ICL Calculator will be retired. Please use the new version at [treeye.science/tools/icl-calc](https://treeye.science/tools/icl-calc).
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![build](https://github.com/ruipinge/icl-calc/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/ruipinge/icl-calc/actions/workflows/main.yml)
 
